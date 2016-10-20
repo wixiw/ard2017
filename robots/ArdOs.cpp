@@ -6,141 +6,232 @@
  */
 
 #include "ArdOs.h"
-#include <Arduino.h>
 using namespace ard;
 
 #define HEARTBEAT_PIN 72
 
 //-------------------------------------------------------------------------------
 
+//infinite wait signal
+Signal infinite;
+
 //singleton instanciation
-ArdOs ArdOs::instance = ArdOs();
+ArdOs ArdOs::instance = ArdOs ();
 
-ArdOs::ArdOs()
+//helper to prevent user from exiting their threads, as it push FreeRtos in assert
+void
+ArdOs_genericRun (void* pvParameters)
 {
-	nextThreadRank = 0;
-	heartbeatCounter = 0;
-	heartbeatPinValue = 0;
-	for(int i=0; i<configMAX_PRIORITIES; ++i)
-	{
-		threads[i] = NULL;
-	}
+  ArdOs::genericRunParams* params = reinterpret_cast<ArdOs::genericRunParams*> (pvParameters);
+  ardAssert(params != NULL, "Generic params cast failed.");
+
+  //Informs that the task is started
+  char taskName[configMAX_TASK_NAME_LEN];
+  ard_getTaskName (taskName);
+  Serial.println (String ("[ArdOs] ") + taskName + " is running.");
+
+  //Run either the function or the class run method
+  if(params->pClass)
+    params->pClass->run();
+  else
+    params->method();
+
+  //Wait infinitly so that the thread context is never exited (else FreeRtos would asserts)
+  Serial.println (String ("[ArdOs] ") + taskName + " is finished.");
+  infinite.wait ();
 }
 
-void ArdOs::init() {
-
-	Serial.begin(115200);
+ArdOs::ArdOs ()
+{
+  nextThreadRank = 0;
+  heartbeatCounter = 0;
+  heartbeatPinValue = 0;
+  INIT_TABLE_TO_ZERO(threads);
+  INIT_TABLE_TO_ZERO(params);
 }
 
-void ArdOs::start() {
-
-	pinMode(13, OUTPUT);
-	pinMode(HEARTBEAT_PIN, OUTPUT);
-	digitalWrite(13, LOW);
-	digitalWrite(HEARTBEAT_PIN, instance.heartbeatPinValue);
-
-	// start FreeRTOS
-	Serial.println("Start scheduler.");
-	vTaskStartScheduler();
-
-	// should never reach this as the vTaskStartScheduler never ends
-	Serial.println("ERROR : Scheduler exited !");
-	while (1) {
-	};
+void
+ArdOs::init ()
+{
+  Serial.begin (115200);
+  infinite.init ();
+  pinMode (13, OUTPUT);
+  pinMode (HEARTBEAT_PIN, OUTPUT);
 }
 
-void ArdOs::kickHeartbeat() {
-	++instance.heartbeatCounter;
-	if(0 == instance.heartbeatCounter%1000000)
-	{
-		//Serial.println("Hearbeat toggle");
-		digitalWrite(HEARTBEAT_PIN, 1 - instance.heartbeatPinValue);
-		instance.heartbeatPinValue = 1 - instance.heartbeatPinValue;
-	}
+void
+ArdOs::start ()
+{
+
+  digitalWrite (13, LOW);
+  digitalWrite (HEARTBEAT_PIN, heartbeatPinValue);
+
+  // start FreeRTOS
+  Serial.println (String ("[ArdOs] ") + "Start scheduler.");
+  vTaskStartScheduler ();
+
+  // should never reach this as the vTaskStartScheduler never ends
+  Serial.println ("ERROR : Scheduler exited !");
+  while (1)
+    {
+    };
 }
 
-void ArdOs::createThread(const char * const name, TaskFunction_t runFunction,
-		uint16_t stack, uint16_t priority) {
-	configASSERT(instance.nextThreadRank < configMAX_PRIORITIES);
-	configASSERT(
-			pdPASS == xTaskCreate(runFunction, NULL, stack, NULL, priority, instance.threads[instance.nextThreadRank]));
-	++instance.nextThreadRank;
+void
+ArdOs::kickHeartbeat ()
+{
+  ++heartbeatCounter;
+  if (0 == heartbeatCounter % 100000)
+    {
+      //Serial.println("Hearbeat toggle");
+      digitalWrite (HEARTBEAT_PIN, 1 - heartbeatPinValue);
+      heartbeatPinValue = 1 - heartbeatPinValue;
+    }
+}
+
+void
+ArdOs::createThread_C (const char * const name, ThreadRunFct runFunction,
+		     uint16_t stack, uint16_t priority)
+{
+
+  //Check inputs
+  ardAssert(nextThreadRank < configMAX_PRIORITIES, "Too many threads.");
+  ardAssert(priority < 100,
+	    "priority is too high, check for stack/priority order.");
+
+  //fill the params
+  params[nextThreadRank].pClass = NULL;
+  params[nextThreadRank].method = runFunction;
+
+  //create the thread
+  ardAssert(
+      pdPASS == xTaskCreate(ArdOs_genericRun, name, stack, reinterpret_cast<void*>(&params[nextThreadRank]), priority, threads[nextThreadRank]),
+      "Task creation failed.");
+
+  //increment the table index
+  ++nextThreadRank;
+}
+
+void
+ArdOs::createThread_Cpp (const char * const name, IThread& pClass,
+		     uint16_t stack, uint16_t priority)
+{
+
+  //Check inputs
+  ardAssert(nextThreadRank < configMAX_PRIORITIES, "Too many threads.");
+  ardAssert(priority < 100,
+	    "priority is too high, check for stack/priority order.");
+
+  //fill the params
+  params[nextThreadRank].pClass = &pClass;
+  params[nextThreadRank].method = NULL;
+
+  //create the thread
+  ardAssert(
+      pdPASS == xTaskCreate(ArdOs_genericRun, name, stack, reinterpret_cast<void*>(&params[nextThreadRank]), priority, threads[nextThreadRank]),
+      "Task creation failed.");
+
+  //increment the table index
+  ++nextThreadRank;
 }
 
 //-------------------------------------------------------------------------------
 
-SwTimer::SwTimer() :
-		m_entryDate(0U), m_delay(0U), m_started(false) {
+SwTimer::SwTimer () :
+    m_entryDate (0U), m_delay (0U), m_started (false)
+{
 }
 
-void SwTimer::arm(uint32_t delayInMs) {
-	configASSERT(delayInMs != 0);
-	m_entryDate = millis();
-	m_delay = delayInMs;
-	m_started = true;
+void
+SwTimer::arm (uint32_t delayInMs)
+{
+  ardAssert(delayInMs != 0, "Delay shall be non null.");
+  m_entryDate = millis ();
+  m_delay = delayInMs;
+  m_started = true;
 }
 
-void SwTimer::cancel() {
-	m_started = false;
-	m_delay = 0U;
-	m_entryDate = 0U;
+void
+SwTimer::cancel ()
+{
+  m_started = false;
+  m_delay = 0U;
+  m_entryDate = 0U;
 }
 
-bool SwTimer::isFired() const {
-	if (m_started && m_delay <= millis() - m_entryDate)
-		return true;
-	else
-		return false;
-}
-
-//-------------------------------------------------------------------------------
-
-Mutex::Mutex() :
-		m_lock(0) {
-}
-
-bool Mutex::init() {
-	m_lock = xSemaphoreCreateMutex();
-	if (m_lock == 0)
-		return false;
-	else
-		return true;
-}
-
-void Mutex::acquire() {
-	configASSERT(m_lock != 0);
-	xSemaphoreTake(m_lock, portMAX_DELAY);
-}
-
-void Mutex::release() {
-	configASSERT(m_lock != 0);
-	xSemaphoreGive(m_lock);
+bool
+SwTimer::isFired () const
+{
+  if (m_started && m_delay <= millis () - m_entryDate)
+    return true;
+  else
+    return false;
 }
 
 //-------------------------------------------------------------------------------
 
-Signal::Signal() {
-	sem = 0;
+Mutex::Mutex () :
+    m_lock (0)
+{
 }
 
-bool Signal::init() {
-	sem = xSemaphoreCreateBinary();
-	xSemaphoreTake(sem, 0);
-	return sem != 0;
+bool
+Mutex::init ()
+{
+  m_lock = xSemaphoreCreateMutex();
+  if (m_lock == 0)
+    return false;
+  else
+    return true;
 }
 
-void Signal::wait() {
-	configASSERT(sem != 0);
-	xSemaphoreTake(sem, portMAX_DELAY);
+void
+Mutex::acquire ()
+{
+  ardAssert(m_lock != 0, "Mutex not initialized.");
+  xSemaphoreTake(m_lock, portMAX_DELAY);
 }
 
-void Signal::set() {
-	configASSERT(sem != 0);
-	xSemaphoreGive(sem);
+void
+Mutex::release ()
+{
+  ardAssert(m_lock != 0, "Mutex not initialized.");
+  xSemaphoreGive(m_lock);
 }
 
-void Signal::setFromIsr() {
-	configASSERT(sem != 0);
-	portBASE_TYPE xHigherPriorityTaskWoken = 0;
-	xSemaphoreGiveFromISR(sem, &xHigherPriorityTaskWoken);
+//-------------------------------------------------------------------------------
+
+Signal::Signal ()
+{
+  sem = 0;
+}
+
+bool
+Signal::init ()
+{
+  sem = xSemaphoreCreateBinary();
+  xSemaphoreTake(sem, 0);
+  return sem != 0;
+}
+
+void
+Signal::wait ()
+{
+  ardAssert(sem != 0, "Signal not initialized.");
+  xSemaphoreTake(sem, portMAX_DELAY);
+}
+
+void
+Signal::set ()
+{
+  ardAssert(sem != 0, "Signal not initialized.");
+  xSemaphoreGive(sem);
+}
+
+void
+Signal::setFromIsr ()
+{
+  ardAssert(sem != 0, "Signal not initialized.");
+  portBASE_TYPE xHigherPriorityTaskWoken = 0;
+  xSemaphoreGiveFromISR(sem, &xHigherPriorityTaskWoken);
 }

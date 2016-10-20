@@ -10,140 +10,197 @@
 
 #include <stdint.h>
 #include <FreeRTOS_ARM.h>
+
+#include "ArdUtils.h"
 #include "K_thread_config.h"
-#include "ardUtils.h"
 
-namespace ard {
+#define ardAssert(x,text) if( ( x ) == 0 ){Serial.println(text); delay(1000);}
 
-typedef uint32_t TimeMs;
-typedef uint32_t DelayMs;
+namespace ard
+{
+
+  typedef uint32_t TimeMs;
+  typedef uint32_t DelayMs;
+
+  /**
+   * Use this interface to declare you are a thread class
+   */
+  class IThread
+  {
+  public:
+    virtual void run() = 0;
+  };
+
 
 //alias to get ArdOs singleton instance
 #define g_ArdOs ArdOs::getInstance()
-/**
- * Manage all threads and scheduler so that :
- * - all created threads are referenced so that statistics are available
- * - provide an heartbeat system on led RX (pin 72) : lowest priority task increment a counter and toggle the led,
- *   highest priority task checks the counter is incremented
- * This class is NOT thread safe, so you are supposed to access it in only one thread
- * Its static class (=static singleton).
- */
-class ArdOs {
-public:
-	//
-	static ArdOs& getInstance(){return instance;};
+  /**
+   * Manage all threads and scheduler so that :
+   * - all created threads are referenced so that statistics are available
+   * - provide an heartbeat system on led RX (pin 72) : lowest priority task increment a counter and toggle the led,
+   *   highest priority task checks the counter is incremented
+   * This class is NOT thread safe, so you are supposed to access it in only one thread
+   * Its static class (=static singleton).
+   */
+  class ArdOs
+  {
+  public:
+    typedef void
+    (*ThreadRunFct) (void);
 
-	//to be called before any action on this class
-	void init();
+    //struct to gather parameters to pass to ArdOs_genericRun
+    typedef struct
+    {
+      IThread* pClass;
+      ThreadRunFct method;
+    } genericRunParams;
 
-	//start the scheduler, call this after having build your application object instances
-	void start();
+    //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
+    static ArdOs&
+    getInstance ()
+    {
+      return instance;
+    }
+    ;
 
-	//signal the SW is alive. Call this in the lowest priority task (loop())
-	void kickHeartbeat();
+    //to be called before any action on this class
+    void
+    init ();
 
-	//Do not call this function before OS is initialized
-	//Create a new thread
-	void createThread(const char * const name,
-			TaskFunction_t runFunction, uint16_t stack, uint16_t priority);
+    //start the scheduler, call this after having build your application object instances
+    void
+    start ();
 
-	//TODO static reportStackSizes
-	//TODO static reportCpuConsumption
+    //signal the SW is alive. Call this in the lowest priority task (loop())
+    void
+    kickHeartbeat ();
 
-private:
-	//singleton instance
-	static ArdOs instance;
+    //Do not call this function before OS is initialized
+    //Create a new thread pointing on a function (C style)
+    void
+    createThread_C (const char * const name, ThreadRunFct runFunction,
+		  uint16_t stack, uint16_t priority);
 
-	//table of all threads handlers
-	TaskHandle_t* threads[configMAX_PRIORITIES];
+    //Do not call this function before OS is initialized
+    //Create a new thread pointing on a class method (C++ style)
+    void
+    createThread_Cpp (const char * const name, IThread& pClass,
+    		     uint16_t stack, uint16_t priority);
 
-	//next rank in the table
-	uint8_t nextThreadRank;
+    //TODO static reportStackSizes
+    //TODO static reportCpuConsumption
 
-	//strictly incrementing counter
-	uint32_t heartbeatCounter;
+  private:
 
-	//last value sent to the heartbeat LED;
-	uint8_t heartbeatPinValue;
+    //singleton instance
+    static ArdOs instance;
 
-	//private constructor as its a singleton class
-	ArdOs();
-	COPY_CONSTRUCTORS (ArdOs);
-};
+    //table of all threads handlers
+    TaskHandle_t* threads[configMAX_PRIORITIES];
 
-/**
- * Use this class to create timeout or fire an action after a delay
- * It's a passive class, based on system clock memorisation
- * The comparaison is done when isFired() is called
- */
-class SwTimer {
-public:
-	SwTimer();
+    //table of all params (because they have to be static)
+    genericRunParams params[configMAX_PRIORITIES];
 
-	//Start the timer and load a delay in milliseconds
-	void arm(DelayMs delayInMs);
+    //next rank in the table
+    uint8_t nextThreadRank;
 
-	//Cancel the timer execution
-	void cancel();
+    //strictly incrementing counter
+    uint32_t heartbeatCounter;
 
-	//Test is the timer is fired
-	bool isFired() const;
+    //last value sent to the heartbeat LED;
+    uint8_t heartbeatPinValue;
 
-private:
-	TimeMs m_entryDate;
-	DelayMs m_delay;
-	bool m_started;
-};
+    //private constructor as its a singleton class
+    ArdOs ();COPY_CONSTRUCTORS (ArdOs)
+    ;
+  };
 
-/**
- * Use this class to lock a critical memory
- * so that several thread can access it without
- * corrupting the data.
- */
-class Mutex {
-public:
-	Mutex();
+  /**
+   * Use this class to create timeout or fire an action after a delay
+   * It's a passive class, based on system clock memorisation
+   * The comparaison is done when isFired() is called
+   */
+  class SwTimer
+  {
+  public:
+    SwTimer ();
 
-	//as constructors may be called outside of the runtime (before main), init() is used for runtime init
-	//they could be called before the OS is initialize as
-	//it's forbidden to call any OS API before init, this function is used to
-	//create OS objects
-	bool init();
+    //Start the timer and load a delay in milliseconds
+    void
+    arm (DelayMs delayInMs);
 
-	//Lock the mutex, so that other threads are blocked if they acquire() after
-	void acquire();
+    //Cancel the timer execution
+    void
+    cancel ();
 
-	//Release the mutex lock so that blocked thread on acquire() can have their turns
-	void release();
+    //Test is the timer is fired
+    bool
+    isFired () const;
 
-private:
-	SemaphoreHandle_t m_lock;
-	COPY_CONSTRUCTORS (Mutex);
-};
+  private:
+    TimeMs m_entryDate;
+    DelayMs m_delay;
+    bool m_started;
+  };
 
-/**
- * Use this class to synchronize 2 threads
- * One is waiting the other, the other gives the go
- * Typically used to signal an event (ex : new data in a queue).
- */
-class Signal {
-public:
-	Signal();
+  /**
+   * Use this class to lock a critical memory
+   * so that several thread can access it without
+   * corrupting the data.
+   */
+  class Mutex
+  {
+  public:
+    Mutex ();
 
-	//Call this after the OS is initialized but before using the semaphore
-	bool init();
-	void wait();
+    //as constructors may be called outside of the runtime (before main), init() is used for runtime init
+    //they could be called before the OS is initialize as
+    //it's forbidden to call any OS API before init, this function is used to
+    //create OS objects
+    bool
+    init ();
 
-	//Don't call this from interrupt
-	void set();
+    //Lock the mutex, so that other threads are blocked if they acquire() after
+    void
+    acquire ();
 
-	//Call this from interrupt
-	void setFromIsr();
+    //Release the mutex lock so that blocked thread on acquire() can have their turns
+    void
+    release ();
 
-private:
-	SemaphoreHandle_t sem;
-	COPY_CONSTRUCTORS (Signal);
-};
+  private:
+    SemaphoreHandle_t m_lock;COPY_CONSTRUCTORS (Mutex)
+    ;
+  };
+
+  /**
+   * Use this class to synchronize 2 threads
+   * One is waiting the other, the other gives the go
+   * Typically used to signal an event (ex : new data in a queue).
+   */
+  class Signal
+  {
+  public:
+    Signal ();
+
+    //Call this after the OS is initialized but before using the semaphore
+    bool
+    init ();
+    void
+    wait ();
+
+    //Don't call this from interrupt
+    void
+    set ();
+
+    //Call this from interrupt
+    void
+    setFromIsr ();
+
+  private:
+    SemaphoreHandle_t sem;COPY_CONSTRUCTORS (Signal)
+    ;
+  };
 
 }	//end namespace
 
