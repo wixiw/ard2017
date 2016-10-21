@@ -1,6 +1,8 @@
 #ifndef PINOUT_H
 #define PINOUT_H
 
+#include <variant.h>
+
 #define MOSFET1         2
 #define MOSFET2         3
 #define SERVO1          4
@@ -12,10 +14,11 @@
 #define SERVO7          10
 #define SERVO8          11
 #define BUZZER          12
+#define LED_DUE_L       13
 #define BUTTON_START    22
 #define BUTTON_COLOR    23
-#define BUTTON_STRAT1   24
-#define BUTTON_STRAT2   25
+#define BUTTON_USER1    24
+#define BUTTON_USER2    25
 #define OMRON1          31
 #define OMRON2          26
 #define OMRON3          27
@@ -38,6 +41,8 @@
 #define LED_RGB_R       51
 #define LED_RGB_G       52
 #define LED_RGB_B       53
+#define LED_DUE_RX	72
+#define LED_DUE_TX	73
 
 #define ANA0_VBAT       A0
 

@@ -8,10 +8,13 @@
 #ifndef ROBOTS_RSP_H_
 #define ROBOTS_RSP_H_
 
+#include "K_thread_config.h"
 #include "ArdOs.h"
 #include "ArdUtils.h"
+#include "HmiThread.h"
 #include "LogThread.h"
-#include "K_thread_config.h"
+#include "TeleopThread.h"
+
 
 
 #endif /* ROBOTS_RSP_H_ */

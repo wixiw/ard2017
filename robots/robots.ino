@@ -2,32 +2,18 @@
  * This file is the main file of the operationnal embedded robot code.
  */
 #include "RSP.h"
+#include "Robot2017.h"
 
 using namespace ard;
 
-void
-Task1 ()
-{
-  while (1)
-    {
-      while (Serial.available())
-	{
-	  Serial.read();
-	  g_Log.log(INFO, "8=>");
-	}
+Robot2017 robot;
 
-      vTaskDelay(1);
-    }
-}
 
 //------------------------------------------------------------------------------
 void
 setup ()
 {
-  g_ArdOs.init();
-  g_ArdOs.createThread_C("Task1", Task1, 200, 2);
-  g_Log.init();
-  g_ArdOs.start();
+  robot.boot();
 }
 
 //------------------------------------------------------------------------------

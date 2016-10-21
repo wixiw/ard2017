@@ -28,91 +28,10 @@ namespace ard
   class IThread
   {
   public:
-    virtual void run() = 0;
-  };
+    virtual void
+    run () = 0;
 
-
-//alias to get ArdOs singleton instance
-#define g_ArdOs ArdOs::getInstance()
-  /**
-   * Manage all threads and scheduler so that :
-   * - all created threads are referenced so that statistics are available
-   * - provide an heartbeat system on led RX (pin 72) : lowest priority task increment a counter and toggle the led,
-   *   highest priority task checks the counter is incremented
-   * This class is NOT thread safe, so you are supposed to access it in only one thread
-   * Its static class (=static singleton).
-   */
-  class ArdOs
-  {
-  public:
-    typedef void
-    (*ThreadRunFct) (void);
-
-    //struct to gather parameters to pass to ArdOs_genericRun
-    typedef struct
-    {
-      IThread* pClass;
-      ThreadRunFct method;
-    } genericRunParams;
-
-    //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
-    static ArdOs&
-    getInstance ()
-    {
-      return instance;
-    }
-    ;
-
-    //to be called before any action on this class
-    void
-    init ();
-
-    //start the scheduler, call this after having build your application object instances
-    void
-    start ();
-
-    //signal the SW is alive. Call this in the lowest priority task (loop())
-    void
-    kickHeartbeat ();
-
-    //Do not call this function before OS is initialized
-    //Create a new thread pointing on a function (C style)
-    void
-    createThread_C (const char * const name, ThreadRunFct runFunction,
-		  uint16_t stack, uint16_t priority);
-
-    //Do not call this function before OS is initialized
-    //Create a new thread pointing on a class method (C++ style)
-    void
-    createThread_Cpp (const char * const name, IThread& pClass,
-    		     uint16_t stack, uint16_t priority);
-
-    //TODO static reportStackSizes
-    //TODO static reportCpuConsumption
-
-  private:
-
-    //singleton instance
-    static ArdOs instance;
-
-    //table of all threads handlers
-    TaskHandle_t* threads[configMAX_PRIORITIES];
-
-    //table of all params (because they have to be static)
-    genericRunParams params[configMAX_PRIORITIES];
-
-    //next rank in the table
-    uint8_t nextThreadRank;
-
-    //strictly incrementing counter
-    uint32_t heartbeatCounter;
-
-    //last value sent to the heartbeat LED;
-    uint8_t heartbeatPinValue;
-
-    //private constructor as its a singleton class
-    ArdOs ();COPY_CONSTRUCTORS (ArdOs)
-    ;
+    virtual ~IThread(){};
   };
 
   /**
@@ -122,6 +41,7 @@ namespace ard
    */
   class SwTimer
   {
+    ;
   public:
     SwTimer ();
 
@@ -143,62 +63,197 @@ namespace ard
     bool m_started;
   };
 
+  //FreeRtos is usgin the same type for all the following concepts, so we redefine them :
+  typedef SemaphoreHandle_t Signal;
+  typedef SemaphoreHandle_t Semaphore;
+  typedef SemaphoreHandle_t Mutex;
+
+  //alias to get ArdOs singleton instance
+#define g_ArdOs ArdOs::getInstance()
   /**
-   * Use this class to lock a critical memory
-   * so that several thread can access it without
-   * corrupting the data.
+   * Manage all threads and scheduler so that :
+   * - all created threads are referenced so that statistics are available
+   * - provide an heartbeat system on led RX (pin 72) : lowest priority task increment a counter and toggle the led,
+   *   highest priority task checks the counter is incremented
+   * This class is NOT thread safe, so you are supposed to access it in only one thread
+   * Its static class (=static singleton).
    */
-  class Mutex
+  class ArdOs
   {
   public:
-    Mutex ();
+    typedef void
+    (*ThreadRunFct) (void);
 
-    //as constructors may be called outside of the runtime (before main), init() is used for runtime init
-    //they could be called before the OS is initialize as
-    //it's forbidden to call any OS API before init, this function is used to
-    //create OS objects
-    bool
-    init ();
+    //struct to gather parameters to pass to ArdOs_genericRun
+    typedef struct
+    {
+      IThread* pClass;
+      ThreadRunFct method;
+      uint16_t period;
+    } genericRunParams;
 
-    //Lock the mutex, so that other threads are blocked if they acquire() after
-    void
-    acquire ();
+    typedef enum
+    {
+      UNINIT, INITIALIZED, RUNNING
+    } eOsState;
 
-    //Release the mutex lock so that blocked thread on acquire() can have their turns
-    void
-    release ();
-
-  private:
-    SemaphoreHandle_t m_lock;COPY_CONSTRUCTORS (Mutex)
+    //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
+    static ArdOs&
+    getInstance ()
+    {
+      return instance;
+    }
     ;
-  };
 
-  /**
-   * Use this class to synchronize 2 threads
-   * One is waiting the other, the other gives the go
-   * Typically used to signal an event (ex : new data in a queue).
-   */
-  class Signal
-  {
-  public:
-    Signal ();
+    //to be called before any action on this class
+    //configure the debug serial with baudrate in parameter
+    void
+    init (const uint32_t baudrate);
 
-    //Call this after the OS is initialized but before using the semaphore
+    //start the scheduler, call this after having build your application object instances
+    void
+    start ();
+
+    //signal the SW is alive. Call this in the lowest priority task (loop())
+    void
+    kickHeartbeat ();
+
+    //Get the OS initialization state
+    eOsState
+    getState () const;
+
+    //Debug only : send statistics to the debug serial link
+    void
+    displayStats ();
+
+    /** ------------------
+     *  THREADS
+     * --------------------- */
+
+    //Do not call this function before OS is initialized
+    //Create a new thread pointing on a function (C style)
+    void
+    createThread_C (const char * const name, ThreadRunFct runFunction,
+		    uint16_t stack, uint16_t priority);
+
+    //Do not call this function before OS is initialized
+    //Create a new thread pointing on a class method (C++ style)
+    void
+    createThread_Cpp (const char * const name, IThread& pClass, uint16_t stack,
+		      uint16_t priority);
+
+    //Do not call this function before OS is initialized
+    //Create a new thread pointing on a class method (C++ style)
+    //The run method will be called periodically
+    void
+    createPeriodicThread_Cpp (const char * const name, IThread& pClass, uint16_t stack,
+		      uint16_t priority, uint16_t periodMs);
+
+    /** ------------------
+     *  SIGNAL
+     * --------------------- */
+
+    //Create a Signal instance, and update statistics
+    Signal
+    Signal_create ();
+
+    //Signal to the signal listener that he can awake
+    //Don't put a fucking NULL pointer, it's not checked
+    //Only available when ArdOs is running (else it assets)
+    void
+    Signal_set (Signal s);
+
+    //Wait until the signal is set. Usually only one thread
+    //should wait at a time. Note that if several wait are called
+    //in a raw, the next set will only awake one waiter
+    //Don't put a fucking NULL pointer, it's not checked
+    //Only available when ArdOs is running (else it assets)
+    void
+    Signal_wait (Signal s);
+
+    /** ------------------
+     *  MUTEX
+     * --------------------- */
+
+    //Create a Mutex instance, and update statistics it should be used to
+    //protect shared memories. Do not use this for thread
+    //synchronization, prefer a Signal for that use.
+    Mutex
+    Mutex_create ();
+
+    //Take a critical section.
+    //Only available when ArdOs is running (else it assets)
+    //Don't put a fucking NULL pointer, it's not checked
+    void
+    Mutex_lock (Mutex m);
+
+    //Release a critical section. It should be used to
+    //protect shared memories. Do not use this for thread
+    //synchronization, prefer a Signal for that use.
+    //Only available when ArdOs is running (else it assets)
+    //Don't put a fucking NULL pointer, it's not checked
+    void
+    Mutex_unlock (Mutex m);
+
+    /** ------------------
+     *  SEMAPHORE
+     * --------------------- */
+
+    //Create a Semaphore instance, register it for statistics
+    //@param maxCount : maximal number of items in the semaphore
+    //@param initCount : number of items "gived" to the semaphore at initialization
+    Semaphore
+    Semaphore_create (const UBaseType_t maxCount, const UBaseType_t initCount);
+
+    //Put a new resource in the semaphore
+    //Only available when ArdOs is running (else it assets)
+    void
+    Semaphore_give (Semaphore s);
+
+    //Get a new resource in the semaphore
+    //Only available when ArdOs is running (else it assets)
+    void
+    Semaphore_take (Semaphore s);
+
+    //Try to get new resource in the semaphore, don't block on failure
+    //@return true when taken, false when semaphore is empty
+    //Only available when ArdOs is running (else it assets)
     bool
-    init ();
-    void
-    wait ();
-
-    //Don't call this from interrupt
-    void
-    set ();
-
-    //Call this from interrupt
-    void
-    setFromIsr ();
+    Semaphore_tryTake (Semaphore s);
 
   private:
-    SemaphoreHandle_t sem;COPY_CONSTRUCTORS (Signal)
+
+    //singleton instance
+    static ArdOs instance;
+
+    //table of all threads handlers
+    TaskHandle_t* threads[configMAX_PRIORITIES];
+
+    //statistic counter for signals
+    uint16_t signalCount;
+
+    //statistic counter for mutex
+    uint16_t mutexCount;
+
+    //table of all params (because they have to be static)
+    genericRunParams params[configMAX_PRIORITIES];
+
+    //next rank in the table
+    uint8_t nextThreadRank;
+
+    //strictly incrementing counter
+    uint32_t heartbeatCounter;
+
+    //last value sent to the heartbeat LED;
+    uint8_t heartbeatPinValue;
+
+    eOsState state;
+
+    //Date of boot (ie time at which the scheduler is started)
+    TimeMs bootDuration;
+
+    //private constructor as its a singleton class
+    ArdOs ();COPY_CONSTRUCTORS (ArdOs)
     ;
   };
 

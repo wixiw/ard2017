@@ -10,9 +10,6 @@
 
 using namespace ard;
 
-//Singleton instanciation
-LogThread LogThread::instance = LogThread ();
-
 LogThread::LogThread () :
     configSerialLog (true), configSdCardLog (true), semDataPresent (NULL), semFreeSpace (
     NULL), fifoHead (0), fifoTail (0), missedLogs (0)
@@ -27,12 +24,10 @@ LogThread::init ()
   g_ArdOs.createThread_Cpp("Log", *this, STACK_LOG, PRIO_LOG);
 
   // initialize fifoData semaphore to no data available
-  semDataPresent = xSemaphoreCreateCounting(FIFO_SIZE, 0);
-  ardAssert(semDataPresent!=NULL, "Log fifo sem creation problem.");
+  semDataPresent = g_ArdOs.Semaphore_create(FIFO_SIZE, 0);
 
   // initialize fifoSpace semaphore to FIFO_SIZE free records
-  semFreeSpace = xSemaphoreCreateCounting(FIFO_SIZE, FIFO_SIZE);
-  ardAssert(semFreeSpace!=NULL, "Log fifo sem creation problem.");
+  semFreeSpace = g_ArdOs.Semaphore_create(FIFO_SIZE, FIFO_SIZE);
 }
 
 void
@@ -41,7 +36,7 @@ LogThread::run ()
   while (1)
     {
       //If the logger is disabled, wait until it is enable again
-      if (!g_Log.configSerialLog && !g_Log.configSerialLog )
+      if (!configSerialLog && !configSerialLog )
 	{
 	  vTaskDelay(1000);
 	}
@@ -60,7 +55,7 @@ LogThread::log (eLogLevel logLevel, String const& log)
   TimeMs now = millis ();
 
   // get a buffer in the fifo to fill the message
-  if (xSemaphoreTake(semFreeSpace, 0) != pdTRUE)
+  if (!g_ArdOs.Semaphore_tryTake(semFreeSpace))
     {
       // fifo full - indicate missed point (unless there already many missed logs)
       if (missedLogs < 255)
@@ -75,7 +70,7 @@ LogThread::log (eLogLevel logLevel, String const& log)
   fifoArray[fifoHead].text = log;
 
   // signal a new data is in the fifo
-  xSemaphoreGive(semDataPresent);
+  g_ArdOs.Semaphore_give(semDataPresent);
 
   // advance FIFO index
   fifoHead = fifoHead < (FIFO_SIZE - 1) ? fifoHead + 1 : 0;
@@ -95,7 +90,7 @@ LogThread::unpileFifo ()
     }
 
   // wait for next data record
-  xSemaphoreTake(semDataPresent, portMAX_DELAY);
+  g_ArdOs.Semaphore_take(semDataPresent);
 
   if (configSerialLog)
     {
@@ -108,7 +103,7 @@ LogThread::unpileFifo ()
     }
 
   // release record
-  xSemaphoreGive(semFreeSpace);
+  g_ArdOs.Semaphore_give(semFreeSpace);
 
   // advance FIFO index
   fifoTail = fifoTail < (FIFO_SIZE - 1) ? fifoTail + 1 : 0;

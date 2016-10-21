@@ -33,6 +33,10 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/FreeRTOS_ARM/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/MockStd}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/cores/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/variants/arduino_due_x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/Servo/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/system/libsam/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\wix\AppData\Local\Arduino15\packages\arduino\tools\arm-none-eabi-gcc\4.8.3-2014q1\arm-none-eabi\include&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.901879017" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
@@ -45,6 +49,10 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/FreeRTOS_ARM/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/MockStd}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/cores/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/variants/arduino_due_x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/Servo/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/system/libsam/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\wix\AppData\Local\Arduino15\packages\arduino\tools\arm-none-eabi-gcc\4.8.3-2014q1\arm-none-eabi\include&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.412119373" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
@@ -95,6 +103,10 @@
 									<listOptionValue builtIn="false" value="&quot;C:\Users\wix\AppData\Local\Arduino15\packages\arduino\tools\arm-none-eabi-gcc\4.8.3-2014q1\lib\gcc\arm-none-eabi\4.8.3\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/MockStd}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/cores/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/variants/arduino_due_x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/Servo/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/system/libsam/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\wix\AppData\Local\Arduino15\packages\arduino\tools\arm-none-eabi-gcc\4.8.3-2014q1\arm-none-eabi\include&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.388087960" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
@@ -110,6 +122,10 @@
 									<listOptionValue builtIn="false" value="&quot;C:\Users\wix\AppData\Local\Arduino15\packages\arduino\tools\arm-none-eabi-gcc\4.8.3-2014q1\lib\gcc\arm-none-eabi\4.8.3\include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/MockStd}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/cores/arduino}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/variants/arduino_due_x}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/Servo/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/system/libsam/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\wix\AppData\Local\Arduino15\packages\arduino\tools\arm-none-eabi-gcc\4.8.3-2014q1\arm-none-eabi\include&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.620732522" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>

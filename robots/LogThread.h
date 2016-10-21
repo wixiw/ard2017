@@ -19,6 +19,19 @@ namespace ard
     DEBUG = 0, INFO = 1, ERROR = 2,
   } eLogLevel;
 
+  /**
+   * Functionnal interface to ease unit tests
+   */
+  class ILogger
+  {
+  public:
+    virtual ~ILogger(){};
+
+    //push a log to the RAM buffer, the log will only be effective when the LogThread will have read the buffer
+    virtual void
+    log (eLogLevel logLevel, String const& log) = 0;
+  };
+
 //alias to get ArdOs singleton instance
 #define g_Log LogThread::getInstance()
   /**
@@ -30,22 +43,14 @@ namespace ard
    * This class sends logs to the serial line and to an spi sd card.
    * It's highly adviced that the thread has the lowest priority in the system.
    *
-   * Its a static singleton
    */
-  class LogThread : public IThread
+  class LogThread : public IThread, public ILogger
   {
-    friend void
-    LogThread_run (void);
-
   public:
-    virtual ~LogThread()
-      {};
-
-    //retrieve the singleton instance (you should prefer the use of the g_Log maccro)
-    static LogThread&
-    getInstance ()
+    LogThread ();
+    virtual
+    ~LogThread ()
     {
-      return instance;
     }
     ;
 
@@ -57,7 +62,7 @@ namespace ard
     void
     run ();
 
-    //push a log to the RAM buffer, the log will only be effective when the LogThread will have read the buffer
+    //Implements ILogger
     void
     log (eLogLevel logLevel, String const& log);
 
@@ -79,14 +84,11 @@ namespace ard
     //fifo index
     typedef uint16_t FifoIndex;
 
-    //singleton instance
-    static LogThread instance;
-
     // count of data records in fifo
-    SemaphoreHandle_t semDataPresent;
+    Semaphore semDataPresent;
 
     // count of free buffers in fifo
-    SemaphoreHandle_t semFreeSpace;
+    Semaphore semFreeSpace;
 
     // size of fifo in records
     static const FifoIndex FIFO_SIZE = 20;
@@ -110,10 +112,6 @@ namespace ard
     //use to format a serial log
     String
     formatLogMsg (LogMsg const& msg);
-
-    //private as it's a singleton
-    LogThread ();COPY_CONSTRUCTORS (LogThread)
-    ;
   };
 
 //TODO faire une fonction a parametres variables pour mettre des variables

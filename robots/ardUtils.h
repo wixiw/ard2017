@@ -19,12 +19,15 @@
 // to do unexpected thing.
 #define COPY_CONSTRUCTORS(className) \
 	className& operator= (const className&){return *this;};\
-	className (const className&){}\
+	className (const className&){};
 
 // Utilities to initialize arrays
 #define INIT_TABLE_TO_ZERO(x) memset(x, 0, sizeof(x))
 #define INIT_STRUCT_TO_ZERO(x) memset(&x, 0, sizeof(x))
 #define ARRAY_SIZE(a)               (sizeof(a)/sizeof(a[0]))
+
+//Uses to disable "unsused param" warnings
+#define UNUSED(x) ((void)(x))
 
 
 #endif /* ROBOTS_ARDUTILS_H_ */
