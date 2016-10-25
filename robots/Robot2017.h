@@ -10,6 +10,7 @@
 
 #include "BSP.h"
 #include "RSP.h"
+#include "StrategyThread.h"
 
 namespace ard
 {
@@ -37,8 +38,9 @@ namespace ard
     void dieMotherFucher();
 
     //Threads
-    LogThread 			log;
+    LogThread& 			log;
     TeleopThread 		teleop;
+    StrategyThread		strategy;
 
     //Hardware peripherals
     HmiThread			hmi;

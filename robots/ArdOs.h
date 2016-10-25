@@ -106,9 +106,8 @@ namespace ard
     ;
 
     //to be called before any action on this class
-    //configure the debug serial with baudrate in parameter
     void
-    init (const uint32_t baudrate);
+    init ();
 
     //start the scheduler, call this after having build your application object instances
     void

@@ -112,10 +112,9 @@ ArdOs::ArdOs ()
 }
 
 void
-ArdOs::init (const uint32_t baudrate)
+ArdOs::init ()
 {
   ardAssert(state == UNINIT, "ArdOs is not in the right state to do an init");
-  Serial.begin (baudrate);
   infinite = Signal_create ();
   pinMode (13, OUTPUT);
   pinMode (HEARTBEAT_PIN, OUTPUT);

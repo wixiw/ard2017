@@ -11,6 +11,7 @@
 using namespace ard;
 
 Robot2017::Robot2017 () :
+    log(LogThread::getInstance()),
     hmi (50 /* ms */),
     stepperG(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
     stepperD(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR)
@@ -21,16 +22,19 @@ Robot2017::Robot2017 () :
 void
 Robot2017::boot ()
 {
+  //Init debug serial link
+  Serial.begin (/*baurate = */250000);
+
   //Threads init
   log.init ();
   teleop.init ();
+  strategy.init();
 
   //Peripheral initialization
   hmi.init();
   hmi.ledDue_Tx.slowBlink();
   pinMode(PAP_ENABLE, OUTPUT);
 
-
-  g_ArdOs.init(/*debug link baurate = */250000);
-  g_ArdOs.start();
+  g_ArdOs.init();
+  g_ArdOs.start(); //this function never ends
 }

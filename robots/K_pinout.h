@@ -25,6 +25,7 @@
 #define OMRON4          28
 #define BORDURE_G       29
 #define BORDURE_D       30
+#define CS_SDCARD	31  //not mapped to child card
 #define PAPG_DIR        34  // Gauche = PAP1
 #define PAPG_STEP       35
 #define PAPD_DIR        36  // Droite = PAP2

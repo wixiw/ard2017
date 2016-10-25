@@ -14,11 +14,13 @@
 #define PRIO_TELEOP			(tskIDLE_PRIORITY + 1)
 #define PRIO_LOG			(tskIDLE_PRIORITY + 2)
 #define PRIO_HMI			(tskIDLE_PRIORITY + 3)
+#define PRIO_STRATEGY			(tskIDLE_PRIORITY + 4)
 
 //TODO value to be adjusted
 #define STACK_TELEOP		 500
 #define STACK_LOG		 500
 #define STACK_HMI		 500
+#define STACK_STRATEGY		 500
 
 //Periods in ms
 #define PERIOD_HMI		  50
