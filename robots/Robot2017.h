@@ -17,7 +17,8 @@ namespace ard
 
   /**
    * This class assemble all the robot SW elements into a system
-   * It aims at being the unique global var.
+   * It aims at being the unique global var so that var creation order is managed
+   * by this class constructor.
    *
    * Most members are public as this class aims at gathering all object references
    * It would be a pain (and stupid) to catch all them with non-const getter

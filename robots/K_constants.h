@@ -8,10 +8,10 @@
 #define DELAY_RESTART_DETECTION_MS 500
 
 
-#define V_MAX 6000 //80000
 #define ACC_MAX 15000.0
 #define SPEED_RECAL 1800.0
-#define SPEED_VIR 2000.0
+#define SPEED_MAX_VIR 2000.0
+#define SPEED_MAX 6000 //80000
 
 #define DURATION_MATCH_MS 90000
 
@@ -24,13 +24,6 @@
 #define Y_GAUCHE 60.0
 
 #define OSCILATOR 50 //ms
-
-typedef enum{
-	COLOR_UNDEF,
-	PREF,
-	SYM
-} color_t;
-
 
 #define MARCHE_AR -1
 #endif

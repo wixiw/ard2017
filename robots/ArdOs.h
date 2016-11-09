@@ -29,9 +29,27 @@ namespace ard
   {
   public:
     virtual void
+    init () = 0;
+
+    virtual void
     run () = 0;
 
     virtual ~IThread(){};
+  };
+
+  /**
+   * Use IMiniThread when you aggregate several components in one periodic thread
+   */
+  class IMiniPeriodicThread
+  {
+  public:
+    virtual void
+    init () = 0;
+
+    virtual void
+    update (TimeMs sinceLastCall) = 0;
+
+    virtual ~IMiniPeriodicThread(){};
   };
 
   /**

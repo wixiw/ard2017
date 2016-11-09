@@ -29,5 +29,16 @@
 //Uses to disable "unsused param" warnings
 #define UNUSED(x) ((void)(x))
 
+typedef enum{
+	COLOR_UNDEF,
+	PREF,
+	SYM
+} color_t;
+
+//Use this function in "enumToString" functions so that we don't miss copy the label which could fool us in debug
+#define ENUM2STR(myenum) \
+    case myenum: \
+      return "myenum"; \
+      break
 
 #endif /* ROBOTS_ARDUTILS_H_ */

@@ -18,7 +18,7 @@ void
 StrategyThread::init ()
 {
   //create the thread
-  g_ArdOs.createPeriodicThread_Cpp("Teleop", *this, STACK_STRATEGY, PRIO_STRATEGY, 1000 /* period in ms*/);
+  g_ArdOs.createThread_Cpp("Strategy", *this, STACK_STRATEGY, PRIO_STRATEGY);
 }
 
 void
