@@ -31,14 +31,14 @@
 
 typedef enum{
 	COLOR_UNDEF,
-	PREF,
-	SYM
+	COLOR_PREF,
+	COLOR_SYM
 } color_t;
 
 //Use this function in "enumToString" functions so that we don't miss copy the label which could fool us in debug
 #define ENUM2STR(myenum) \
     case myenum: \
-      return "myenum"; \
+      return #myenum; \
       break
 
 #endif /* ROBOTS_ARDUTILS_H_ */

@@ -7,10 +7,12 @@
 
 #include "StrategyThread.h"
 #include "LogThread.h"
+#include "Robot2017.h"
 
 using namespace ard;
 
-StrategyThread::StrategyThread ()
+StrategyThread::StrategyThread (Robot2017& robot):
+     r(robot)
 {
 }
 
@@ -24,5 +26,12 @@ StrategyThread::init ()
 void
 StrategyThread::run ()
 {
-  LOG(INFO,"Fake strategy running.");
+  LOG(INFO,"STRAT : Fake strategy.");
+  r.nav.setColor(COLOR_PREF);
+  r.nav.setPosition(0,0,0);
+  r.nav.goTo(20,00, SENS_AV);
+
+  LOG(INFO,"STRAT :Move order sent, waiting...");
+  r.nav.wait();
+  LOG(INFO,"STRAT :Finished.");
 }

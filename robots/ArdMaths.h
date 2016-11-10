@@ -9,10 +9,10 @@
 #define ROBOTS_ARDMATHS_H_
 
 #include "ArdUtils.h"
+#include <math.h>
 
 namespace ard
 {
-
   float
   moduloPiPi (float a);
 
@@ -25,9 +25,10 @@ namespace ard
 
     virtual ~Point(){};
     Point ();
+    Point (float x, float y);
 
     //return the symetric from the x axis
-    virtual Point
+    Point
     toAmbiPose (color_t c);
 
     //return the angle from the x-axis to the target point
@@ -48,6 +49,7 @@ namespace ard
 
     PointCap ();
     PointCap (Point p);
+    PointCap (float x, float y, float h);
 
     //return the symetric from the x axis
     PointCap

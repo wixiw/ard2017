@@ -29,7 +29,7 @@ namespace ard
     }
     ;
 
-    //create the thread
+    //Implements IThreads :create the thread
     void init();
 
     //Implements IThreads : reads the serial inputs

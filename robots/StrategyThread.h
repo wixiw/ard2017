@@ -12,23 +12,27 @@
 
 namespace ard
 {
+  class Robot2017;
 
   class StrategyThread : public IThread
   {
   public:
-    StrategyThread ();
+    StrategyThread (Robot2017& robot);
     virtual
     ~StrategyThread ()
     {
     }
     ;
 
-    //create the thread
+    //Implements IThreads : create the thread
     void init();
 
     //Implements IThreads : ...
     void
     run ();
+
+  private:
+    Robot2017& r;
   };
 
 } /* namespace ard */

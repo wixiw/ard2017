@@ -11,7 +11,7 @@
 using namespace ard;
 
 float
-moduloPiPi (float a)
+ard::moduloPiPi (float a)
 {
   if (a <= -M_PI)
     return a + 2 * M_PI;
@@ -27,12 +27,18 @@ Point::Point () :
 }
 ;
 
+Point::Point (float _x, float _y):
+  x (_x), y (_y)
+{
+}
+;
+
 Point
 Point::toAmbiPose (color_t c)
 {
   Point res;
   ardAssert (c != COLOR_UNDEF, "Color should not be undefined");
-  if (c == SYM)
+  if (c == COLOR_SYM)
     {
       res.x = -x;
       res.y = y;
@@ -59,20 +65,26 @@ float Point::distanceTo(Point p)
 String
 Point::toString ()
 {
-  return "(" + x + ", " + y + ")";
+  return String("(") + x + ", " + y + ")";
 }
 
 
 
 
 PointCap::PointCap () :
-    x (0), y (0), h (0)
+    Point(), h (0)
 {
 }
 ;
 
 PointCap::PointCap (Point p) :
-    x (p.x), y (p.y), h (0)
+    Point(p.x, p.y), h (0)
+{
+}
+;
+
+PointCap::PointCap (float x, float y, float h) :
+    Point(x, y), h (h)
 {
 }
 ;
@@ -81,7 +93,7 @@ PointCap
 PointCap::toAmbiPose (color_t c)
 {
   PointCap res = Point::toAmbiPose(c);
-  if (c == SYM)
+  if (c == COLOR_SYM)
       res.h = M_PI - h;
   else
       res.h = h;
@@ -91,5 +103,5 @@ PointCap::toAmbiPose (color_t c)
 String
 PointCap::toString ()
 {
-  return "(" + x + ", " + y + ", " + h + ")";
+  return String("(") + x + ", " + y + ", " + h + ")";
 }

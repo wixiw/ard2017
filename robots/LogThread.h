@@ -68,7 +68,7 @@ namespace ard
     }
     ;
 
-    //Create threads, configures the serial line and open the file
+    //Implements IThreads : Create threads, configures the serial line and open the file
     void
     init ();
 
@@ -104,8 +104,8 @@ namespace ard
     // count of data records in fifo
     Semaphore semDataPresent;
 
-    // count of free buffers in fifo
-    Semaphore semFreeSpace;
+    // ensure only one log is pile at a time
+    Mutex mutex;
 
     // size of fifo in records
     static const FifoIndex FIFO_SIZE = 20;

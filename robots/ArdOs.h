@@ -14,7 +14,14 @@
 #include "ArdUtils.h"
 #include "K_thread_config.h"
 
-#define ardAssert(x,text) if( ( x ) == 0 ){Serial.println(text); delay(1000);}
+//comment in match, uncomment for debug
+#define ARD_DEBUG
+
+#ifdef ARD_DEBUG
+#define ardAssert(x,text) if( ( x ) == 0 ){g_ArdOs.dprintln(String("  *ASSERT* : ") + text); delay(1000);}
+#else
+#define ardAssert(x,text) configASSERT(x)
+#endif
 
 namespace ard
 {
@@ -143,6 +150,14 @@ namespace ard
     void
     displayStats ();
 
+    //Send a message on the serial link
+    void
+    dprintln(String s);
+
+    //die
+    void
+    die();
+
     /** ------------------
      *  THREADS
      * --------------------- */
@@ -268,6 +283,9 @@ namespace ard
 
     //Date of boot (ie time at which the scheduler is started)
     TimeMs bootDuration;
+
+    //mutex to protect the debug serial link
+    Mutex debugSerialMutex;
 
     //private constructor as its a singleton class
     ArdOs ();COPY_CONSTRUCTORS (ArdOs)

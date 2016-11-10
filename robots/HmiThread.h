@@ -166,9 +166,11 @@ namespace ard
   public:
     HmiThread (uint16_t period /*ms*/);
 
+    //Implements IThreads : creates the thread and all HW pins
     void
     init ();
 
+    //Implements IThreads : makes LED blinking
     void
     run ();
 

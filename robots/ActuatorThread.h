@@ -21,15 +21,21 @@ namespace ard
     virtual
     ~ActuatorThread (){};
 
-    //create the thread
+    //Implements IThreads : create the thread
     void init();
 
-    //Implements IThreads : ...
+    //Implements IThreads : run all mini threads (nav, actuator systems)
     void
     run ();
 
+    //Add a mini thread to the list, shall be called before calling init()
+    void
+    addMiniThread(IMiniPeriodicThread* threadlet );
+
   private:
-    Navigation nav;
+    static const uint8_t NB_MAX_MINI_THREADS = 1;
+    IMiniPeriodicThread* threadlets[NB_MAX_MINI_THREADS];
+    uint8_t nextRank;
   };
 
 } /* namespace ard */

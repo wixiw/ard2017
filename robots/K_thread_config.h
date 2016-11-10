@@ -16,6 +16,7 @@
 #define PRIO_HMI			(tskIDLE_PRIORITY + 3)
 #define PRIO_STRATEGY			(tskIDLE_PRIORITY + 4)
 #define PRIO_ACTUATORS			(tskIDLE_PRIORITY + 5)
+#define PRIO_RESERVED_OS		(tskIDLE_PRIORITY + 6)
 
 //TODO value to be adjusted
 #define STACK_TELEOP		 500

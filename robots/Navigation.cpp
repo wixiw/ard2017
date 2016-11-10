@@ -1,26 +1,14 @@
 #include <Arduino.h>
-#include <math.h>
+#include "LogThread.h"
 #include "Navigation.h"
 #include "K_constants.h"
-#include "LogThread.h"
+#include "K_pinout.h"
 
 using namespace ard;
 
-Navigation::Navigation (AccelStepper* sG, AccelStepper* sD)
-{
-  init ();
-  stepperG = sG;
-  stepperD = sD;
-  m_mutex = g_ArdOs.Mutex_create();
-  m_targetReached = g_ArdOs.Signal_create();
-}
-
-/**---------------------------------
- * Container thread interface
- ---------------------------------*/
-
-void
-Navigation::init ()
+Navigation::Navigation () :
+    stepperG (AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR), stepperD (
+	AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR)
 {
   m_pose = PointCap ();
   m_target = PointCap ();
@@ -32,13 +20,28 @@ Navigation::init ()
   m_order = NOTHING;
   m_angleToTarget = 0;
   //TODO check completeness
+
+  //TODO init des pins pinMode(PAP_ENABLE, OUTPUT);
 }
+
+void
+Navigation::init ()
+{
+  m_mutex = g_ArdOs.Mutex_create();
+  m_targetReached = g_ArdOs.Signal_create();
+}
+
+/**---------------------------------
+ * Container thread interface
+ ---------------------------------*/
 
 void
 Navigation::update (TimeMs sinceLastCall)
 {
-  stepperG->run ();
-  stepperD->run ();
+//  LOG(INFO, "update");
+
+  stepperG.run ();
+  stepperD.run ();
   //TODO compute_odom ?
 
   //Take a mutex to prevent localisation and target to be changed during a cycle
@@ -131,6 +134,7 @@ Navigation::update (TimeMs sinceLastCall)
 	break;
       }
 
+    //TODO attention si on s'arrete avec ca, on ne compte pas le deplacement car c'est normalement fait a la fin
     case INTERRUPTING_ORDER:
       {
 	if (subOrderFinished ())
@@ -153,24 +157,24 @@ void
 Navigation::setPosition (PointCap newPose)
 {
   m_pose = newPose.toAmbiPose (m_color);
+  LOG(INFO, "NAV : position set to :" + newPose.toString ());
 }
 
 void
 Navigation::goTo (Point target, sens_t sens)
 {
   g_ArdOs.Mutex_lock(m_mutex);
-
-  //If an order is present, kill it (ie reset nav).
-  if(m_state != IDLE)
+  //If an order is present, wait
+  if (m_state != IDLE)
     {
-      LOG(INFO, "NAV : current order is interrupted.");
-      m_state = INTERRUPTING_ORDER;
-      stepperG->stop();
-      stepperD->stop();
+      LOG(INFO, "NAV : new order pending until current order is finished");
+      g_ArdOs.Mutex_unlock(m_mutex);
+      wait ();
+      g_ArdOs.Mutex_lock(m_mutex);
     }
 
   m_order = GOTO;
-  m_target = target.toAmbiPose(m_color);
+  m_target = target.toAmbiPose (m_color);
   m_sensTarget = sens;
 
   g_ArdOs.Mutex_unlock(m_mutex);
@@ -181,14 +185,17 @@ Navigation::goToCap (PointCap target, sens_t sens)
 {
   g_ArdOs.Mutex_lock(m_mutex);
 
-  //If an order is present, kill it (ie reset nav).
-  if(m_state != IDLE)
+  //If an order is present, wait
+  if (m_state != IDLE)
     {
-      interrupt();
+      LOG(INFO, "NAV : new order pending until current order is finished");
+      g_ArdOs.Mutex_unlock(m_mutex);
+      wait ();
+      g_ArdOs.Mutex_lock(m_mutex);
     }
 
   m_order = GOTO_CAP;
-  m_target = target.toAmbiPose(m_color);
+  m_target = target.toAmbiPose (m_color);
   m_sensTarget = sens;
 
   g_ArdOs.Mutex_unlock(m_mutex);
@@ -197,12 +204,16 @@ Navigation::goToCap (PointCap target, sens_t sens)
 void
 Navigation::goForward (float distanceMm)
 {
+  ardAssert(false, "not implemented");
   g_ArdOs.Mutex_lock(m_mutex);
 
-  //If an order is present, kill it (ie reset nav).
-  if(m_state != IDLE)
+  //If an order is present, wait
+  if (m_state != IDLE)
     {
-      interrupt();
+      LOG(INFO, "NAV : new order pending until current order is finished");
+      g_ArdOs.Mutex_unlock(m_mutex);
+      wait ();
+      g_ArdOs.Mutex_lock(m_mutex);
     }
 
   //TODO
@@ -216,12 +227,16 @@ Navigation::goForward (float distanceMm)
 void
 Navigation::turnTo (float angle)
 {
+  ardAssert(false, "not implemented");
   g_ArdOs.Mutex_lock(m_mutex);
 
-  //If an order is present, kill it (ie reset nav).
-  if(m_state != IDLE)
+  //If an order is present, wait
+  if (m_state != IDLE)
     {
-      interrupt();
+      LOG(INFO, "NAV : new order pending until current order is finished");
+      g_ArdOs.Mutex_unlock(m_mutex);
+      wait ();
+      g_ArdOs.Mutex_lock(m_mutex);
     }
 
   //TODO
@@ -235,12 +250,16 @@ Navigation::turnTo (float angle)
 void
 Navigation::faceTo (Point p)
 {
+  ardAssert(false, "not implemented");
   g_ArdOs.Mutex_lock(m_mutex);
 
-  //If an order is present, kill it (ie reset nav).
-  if(m_state != IDLE)
+  //If an order is present, wait
+  if (m_state != IDLE)
     {
-      interrupt();
+      LOG(INFO, "NAV : new order pending until current order is finished");
+      g_ArdOs.Mutex_unlock(m_mutex);
+      wait ();
+      g_ArdOs.Mutex_lock(m_mutex);
     }
 
   //TODO
@@ -250,19 +269,21 @@ Navigation::faceTo (Point p)
 
   g_ArdOs.Mutex_unlock(m_mutex);
 }
-}
 
 void
 Navigation::wait ()
 {
- //obvisouly don't put a mutex, it's a blocking call ... !
-g_ArdOs.Signal_wait(m_targetReached);
+  //obvisouly don't put a mutex, it's a blocking call ... !
+  g_ArdOs.Signal_wait(m_targetReached);
 }
 
 bool
 Navigation::targetReached ()
 {
-  return m_state == IDLE;
+  g_ArdOs.Mutex_lock(m_mutex);
+  bool res = m_state == IDLE;
+  g_ArdOs.Mutex_unlock(m_mutex);
+  return res;
 }
 
 /**---------------------------------
@@ -270,25 +291,41 @@ Navigation::targetReached ()
  ---------------------------------*/
 
 void
+Navigation::setColor (color_t c)
+{
+  ardAssert(c != COLOR_UNDEF, "NAV : color should not be set to undefined.");
+  g_ArdOs.Mutex_lock(m_mutex);
+  m_color = c;
+  g_ArdOs.Mutex_unlock(m_mutex);
+  if (c == COLOR_PREF)
+    LOG(INFO, "NAV : Color set to : PREF");
+  else
+    LOG(INFO, "NAV : Color set to : SYM");
+}
+
+void
 Navigation::setSpeed (float s)
 {
+  g_ArdOs.Mutex_lock(m_mutex);
   if (s > 0)
     {
-      stepperG->setMaxSpeed (s);
-      stepperD->setMaxSpeed (s);
+      stepperG.setMaxSpeed (s);
+      stepperD.setMaxSpeed (s);
       m_speed = s;
     }
   else
     {
-      stepperG->setMaxSpeed (SPEED_MAX);
-      stepperD->setMaxSpeed (SPEED_MAX);
+      stepperG.setMaxSpeed (SPEED_MAX);
+      stepperD.setMaxSpeed (SPEED_MAX);
       m_speed = SPEED_MAX;
     }
+  g_ArdOs.Mutex_unlock(m_mutex);
 }
 
 void
 Navigation::setSpeedVir (float s)
 {
+  g_ArdOs.Mutex_lock(m_mutex);
   if (s > 0)
     {
       m_speed_virage = s;
@@ -297,6 +334,7 @@ Navigation::setSpeedVir (float s)
     {
       m_speed_virage = SPEED_MAX_VIR;
     }
+  g_ArdOs.Mutex_unlock(m_mutex);
 }
 
 /**---------------------------------
@@ -329,20 +367,20 @@ void
 Navigation::straight (float mm)
 {
   startTraj ();
-  stepperG->setMaxSpeed (m_speed);
-  stepperD->setMaxSpeed (m_speed);
-  stepperG->moveTo (-mm * GAIN_STEP_MM);
-  stepperD->moveTo (mm * GAIN_STEP_MM);
+  stepperG.setMaxSpeed (m_speed);
+  stepperD.setMaxSpeed (m_speed);
+  stepperG.moveTo (-mm * GAIN_STEP_MM);
+  stepperD.moveTo (mm * GAIN_STEP_MM);
 }
 
 void
 Navigation::turn (float angle)
 {
   startTraj ();
-  stepperG->setMaxSpeed (m_speed_virage);
-  stepperD->setMaxSpeed (m_speed_virage);
-  stepperG->moveTo (angle * VOIE / 2 * GAIN_STEP_MM);
-  stepperD->moveTo (angle * VOIE / 2 * GAIN_STEP_MM);
+  stepperG.setMaxSpeed (m_speed_virage);
+  stepperD.setMaxSpeed (m_speed_virage);
+  stepperG.moveTo (angle * VOIE / 2 * GAIN_STEP_MM);
+  stepperD.moveTo (angle * VOIE / 2 * GAIN_STEP_MM);
 }
 
 void
@@ -350,8 +388,8 @@ Navigation::interrupt ()
 {
   LOG(INFO, "NAV : current order is interrupted.");
   m_state = INTERRUPTING_ORDER;
-  stepperG->stop ();
-  stepperD->stop ();
+  stepperG.stop ();
+  stepperD.stop ();
 }
 
 /**
@@ -360,14 +398,14 @@ Navigation::interrupt ()
 bool
 Navigation::subOrderFinished ()
 {
-  return (stepperG->distanceToGo () == 0 || stepperD->distanceToGo () == 0);
+  return (stepperG.distanceToGo () == 0 || stepperD.distanceToGo () == 0);
 }
 
 void
 Navigation::startTraj ()
 {
-  stepperG->setCurrentPosition (0);
-  stepperD->setCurrentPosition (0);
+  stepperG.setCurrentPosition (0);
+  stepperD.setCurrentPosition (0);
   setSpeed (0);
 }
 

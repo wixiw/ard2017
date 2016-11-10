@@ -4,6 +4,7 @@
 
 #include <AccelStepper.h>
 #include "ArdOs.h"
+#include "ArdMaths.h"
 
 namespace ard
 {
@@ -22,15 +23,15 @@ namespace ard
   class Navigation : public IMiniPeriodicThread
   {
   public:
-    Navigation (AccelStepper* sG, AccelStepper* sD);
+    Navigation ();
 
     /**---------------------------------
      * Container thread interface
      ---------------------------------*/
 
-    //Implements IMiniThread : method to be called by the container thread
+    //Implements IMiniThread
     void
-    init ();
+    init();
 
     //Implements IMiniThread : method to be called by the container thread
     //                         it's expected to be called periodically
@@ -48,6 +49,8 @@ namespace ard
      */
     void
     setPosition (PointCap newPose);
+    void
+    setPosition(float x, float y, float h){setPosition(PointCap(x,y,h));};
 
     /**
      * Get the current robot position
@@ -61,7 +64,7 @@ namespace ard
     /**
      Send a Goto (x,y) request, the robot will turn to face the target
      and use a straight line to go to it.
-     If an order is already present it is interrupted.
+     If an order is already present the call is blocking as if a wait() where done.
 
      Note that the target is automatically symetrized depending
      on the color configured with setColor()
@@ -70,12 +73,14 @@ namespace ard
      */
     void
     goTo (Point target, sens_t sens = SENS_AV);
+    void
+    goTo (float x, float y, sens_t sens = SENS_AV){goTo(Point(x,y), sens);};
 
     /**
      Send a Goto (x,y) request, the robot will turn to face the target
      and use a straight line to go to it. Then it will turn to reach the
      target heading/
-     If an order is already present it is interrupted.
+     If an order is already present the call is blocking as if a wait() where done.
 
      Note that the target is automatically symetrized depending
      on the color configured with setColor()
@@ -84,10 +89,14 @@ namespace ard
      */
     void
     goToCap (PointCap target, sens_t sens = SENS_AV);
+    void
+    goToCap(float x, float y, float h, sens_t sens = SENS_AV){goToCap(PointCap(x,y,h), sens);};
 
     /**
      * The robot will go ahead of the distance in parameter
      * note : the distance may be negative to go rear-way
+     *
+     * If an order is already present the call is blocking as if a wait() where done.
      */
     void
     goForward (float distanceMm);
@@ -95,6 +104,8 @@ namespace ard
     /**
      * The robot will turn of the angle in parameter
      * note : the angle may be negative to go clockwise
+     *
+     * If an order is already present the call is blocking as if a wait() where done.
      */
     void
     turnTo (float angle);
@@ -103,6 +114,8 @@ namespace ard
      * The robot will turn to face the point in parameter
      * Note that the target is automatically symetrized depending
      * on the color configured with setColor()
+     *
+     * If an order is already present the call is blocking as if a wait() where done.
      */
     void
     faceTo (Point p);
@@ -124,10 +137,7 @@ namespace ard
      ---------------------------------*/
 
     void
-    setColor (color_t c)
-    {
-      m_color = c;
-    }
+    setColor (color_t c);
     void
     setSpeed (float speed);
     void
@@ -189,8 +199,8 @@ namespace ard
     float m_distanceToTarget;
 
     //HW interface
-    AccelStepper* stepperG;
-    AccelStepper* stepperD;
+    AccelStepper stepperG;
+    AccelStepper stepperD;
 
     //match color
     color_t m_color;

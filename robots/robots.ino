@@ -24,7 +24,7 @@ loop ()
   static bool once = false;
   if( !once )
     {
-      robot.log.log(INFO, "Robot boot completed sucessfully.");
+      //TODO robot.log.log(INFO, "Robot boot completed sucessfully.");
       once = true;
     }
 

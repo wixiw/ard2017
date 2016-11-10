@@ -10,7 +10,8 @@
 
 using namespace ard;
 
-ActuatorThread::ActuatorThread ()
+ActuatorThread::ActuatorThread ():
+    nextRank(0)
 {
 }
 
@@ -19,13 +20,26 @@ ActuatorThread::init ()
 {
   //create the thread
   g_ArdOs.createPeriodicThread_Cpp("Actuators", *this, STACK_ACTUATORS, PRIO_ACTUATORS, PERIOD_ACTUATORS);
+
+  for(int i = 0 ; i < nextRank ; ++i)
+    {
+      threadlets[i]->init();
+    }
 }
 
 void
 ActuatorThread::run ()
 {
-  //Nav update
-  nav.update();
-  //Actuators update
-  //Strat signals update
+  for(int i = 0 ; i < nextRank ; ++i)
+    {
+      threadlets[i]->update(PERIOD_ACTUATORS);
+    }
+}
+
+void
+ActuatorThread::addMiniThread(IMiniPeriodicThread* threadlet )
+{
+  ardAssert(nextRank < NB_MAX_MINI_THREADS, "Actuators : too many mini threads");
+  threadlets[nextRank] = threadlet;
+  nextRank++;
 }

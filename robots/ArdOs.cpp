@@ -15,6 +15,11 @@ using namespace ard;
 //infinite wait signal
 Signal infinite;
 
+void ArdOs::die()
+{
+ Signal_wait(infinite);
+}
+
 //-------------------------------------------------------------------------------
 
 SwTimer::SwTimer () :
@@ -64,7 +69,7 @@ ArdOs_genericRun (void* pvParameters)
   //Informs that the task is started
   char taskName[configMAX_TASK_NAME_LEN];
   ard_getTaskName (taskName);
-  Serial.println (String ("[ArdOs] ") + taskName + " is running.");
+  g_ArdOs.dprintln (String ("[ArdOs] ") + taskName + " is running.");
 
   //The thread is periodic
   if (params->period)
@@ -92,7 +97,7 @@ ArdOs_genericRun (void* pvParameters)
 	params->method ();
 
       //Wait infinitly so that the thread context is never exited (else FreeRtos would asserts)
-      Serial.println (String ("[ArdOs] ") + taskName + " is finished.");
+      g_ArdOs.dprintln (String ("[ArdOs] ") + taskName + " is finished.");
       g_ArdOs.Signal_wait(infinite);
     }
 
@@ -107,6 +112,7 @@ ArdOs::ArdOs ()
   mutexCount = 0;
   state = UNINIT;
   bootDuration = 0;
+  debugSerialMutex = NULL;
   INIT_TABLE_TO_ZERO(threads);
   INIT_TABLE_TO_ZERO(params);
 }
@@ -116,6 +122,7 @@ ArdOs::init ()
 {
   ardAssert(state == UNINIT, "ArdOs is not in the right state to do an init");
   infinite = Signal_create ();
+  debugSerialMutex = Mutex_create();
   pinMode (13, OUTPUT);
   pinMode (HEARTBEAT_PIN, OUTPUT);
   state = INITIALIZED;
@@ -133,13 +140,13 @@ ArdOs::start ()
   // start FreeRTOS
   state = RUNNING;
   bootDuration = millis ();
-  Serial.println (
+  dprintln (
       String ("[ArdOs] ") + "Robot is booted, it took " + bootDuration
 	  + " ms.");
   vTaskStartScheduler ();
 
   // should never reach this as the vTaskStartScheduler never ends
-  Serial.println ("ERROR : Scheduler exited !");
+  dprintln ("ERROR : Scheduler exited !");
   while (1)
     {
     };
@@ -153,7 +160,10 @@ ArdOs::kickHeartbeat ()
   ++heartbeatCounter;
   if (0 == heartbeatCounter % 100000)
     {
-      //Serial.println("Hearbeat toggle");
+#ifdef ARD_DEBUG
+      static int zob = 0;
+      dprintln(String("Hearbeat toggle ") + zob++);
+#endif
       digitalWrite (HEARTBEAT_PIN, 1 - heartbeatPinValue);
       heartbeatPinValue = 1 - heartbeatPinValue;
     }
@@ -164,24 +174,43 @@ ArdOs::displayStats ()
 {
   char text[40 * configMAX_PRIORITIES];
   vTaskList (text);
-  Serial.println ("--------------- ArdOs Stats  ------------------");
-  Serial.println ("|   Thread   | State | Prio | Free stack | ID |");
-  Serial.println ("-----------------------------------------------");
-  Serial.print (text);
-  Serial.println (
+  dprintln ("--------------- ArdOs Stats  ------------------");
+  dprintln ("|   Thread   | State | Prio | Free stack | ID |");
+  dprintln ("-----------------------------------------------");
+  dprintln (text);
+  dprintln (
       " * States : blocked ('B'), ready ('R'), deleted ('D') or suspended ('S').");
-  Serial.println (" * Priority : higher number, higher priority");
-  Serial.println ("-----------------------------------------------");
-  Serial.println (
+  dprintln (" * Priority : higher number, higher priority");
+  dprintln ("-----------------------------------------------");
+  dprintln (
       String ("Nb Threads : ") + String (nextThreadRank + 2) + " / "
-	  + String(configMAX_PRIORITIES + 2));
-  Serial.println (String ("Nb Mutexes : ") + mutexCount);
-  Serial.println (String ("Nb Signals : ") + signalCount);
-  Serial.println (String ("Booted in ") + bootDuration + " ms.");
-  Serial.println ("-----------------------------------------------");
+	  + String(configMAX_PRIORITIES + 1));
+  dprintln (String ("Nb Mutexes : ") + mutexCount);
+  dprintln (String ("Nb Signals : ") + signalCount);
+  dprintln (String ("Booted in ") + bootDuration + " ms.");
+  dprintln ("-----------------------------------------------");
 
   //TODO static reportStackSizes
   //TODO static reportCpuConsumption
+}
+
+void
+ArdOs::dprintln(String s)
+{
+  //it's not possible to protect the link until the OS is setup (then the mutex pointer is no more NULL
+  //but when set, use the mutex.
+  if(debugSerialMutex)
+    {
+      xSemaphoreGive(debugSerialMutex);
+      Serial.println(s);
+      Serial.flush();
+      xSemaphoreGive(debugSerialMutex);
+    }
+  else
+    {
+      Serial.println(s);
+      Serial.flush();
+    }
 }
 
 void
@@ -192,9 +221,10 @@ ArdOs::createThread_C (const char * const name, ThreadRunFct runFunction,
 	    "ArdOs is not in the right state to do a thread creation");
 
   //Check inputs
-  ardAssert(nextThreadRank < configMAX_PRIORITIES, "Too many threads.");
-  ardAssert(priority < 100,
-	    "priority is too high, check for stack/priority order.");
+  ardAssert(nextThreadRank <= configMAX_PRIORITIES - 1, "Too many threads."); //there is configMAX_PRIORITIES + 1 threads, but 2 are reserved for IDLE task, and Arduino OS task so +1-2 = -1
+  ardAssert(priority <= configMAX_PRIORITIES - 1,
+	    String(name) + " priority ("+priority+") is too high (max is "+String(configMAX_PRIORITIES - 1)+"), check for stack/priority order or increase max value in FreeRtosConfig.h."); // configMAX_PRIORITIES is reserved for OS thread
+
 
   //fill the params
   params[nextThreadRank].pClass = NULL;
@@ -225,9 +255,10 @@ ArdOs::createPeriodicThread_Cpp (const char * const name, IThread& pClass,
 	    "ArdOs is not in the right state to do a thread creation");
 
   //Check inputs
-  ardAssert(nextThreadRank < configMAX_PRIORITIES, "Too many threads.");
-  ardAssert(priority < 100,
-	    "priority is too high, check for stack/priority order.");
+  ardAssert(nextThreadRank <= configMAX_PRIORITIES - 1, "Too many threads."); //there is configMAX_PRIORITIES + 1 threads, but 2 are reserved for IDLE task, and Arduino OS task so +1-2 = -1
+  ardAssert(priority <= configMAX_PRIORITIES - 1,
+	    String(name) + " priority ("+priority+") is too high (max is "+String(configMAX_PRIORITIES - 1)+"), check for stack/priority order or increase max value in FreeRtosConfig.h."); // configMAX_PRIORITIES is reserved for OS thread
+
 
   //fill the params
   params[nextThreadRank].pClass = &pClass;
@@ -293,7 +324,7 @@ void
 ArdOs::Mutex_lock (Mutex s)
 {
   ardAssert(state == RUNNING, "ArdOs is not in the right state to lock a mutex");
-  xSemaphoreGive(s);
+  xSemaphoreTake(s, portMAX_DELAY);
 }
 
 void
@@ -301,7 +332,7 @@ ArdOs::Mutex_unlock (Mutex s)
 {
   ardAssert(state == RUNNING,
 	    "ArdOs is not in the right state to unlock a mutex");
-  xSemaphoreTake(s, portMAX_DELAY);
+  xSemaphoreGive(s);
 }
 
 Semaphore

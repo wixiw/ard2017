@@ -10,6 +10,7 @@
 
 #include "BSP.h"
 #include "RSP.h"
+#include "ActuatorThread.h"
 #include "StrategyThread.h"
 
 namespace ard
@@ -39,14 +40,14 @@ namespace ard
     void dieMotherFucher();
 
     //Threads
+    HmiThread			hmi;
     LogThread& 			log;
     TeleopThread 		teleop;
+    ActuatorThread		actuators;
     StrategyThread		strategy;
 
-    //Hardware peripherals
-    HmiThread			hmi;
-    AccelStepper		stepperG;
-    AccelStepper		stepperD;
+    //Components
+    Navigation                  nav;
 
   };
 
