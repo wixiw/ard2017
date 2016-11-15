@@ -6,9 +6,11 @@
  */
 
 #include "ArdOs.h"
+#include "BSP.h"
+
 using namespace ard;
 
-#define HEARTBEAT_PIN 72
+#define HEARTBEAT_PIN LED_DUE_RX
 
 //-------------------------------------------------------------------------------
 
@@ -110,7 +112,7 @@ ArdOs::ArdOs ()
   heartbeatPinValue = 0;
   signalCount = 0;
   mutexCount = 0;
-  state = UNINIT;
+  state = eOsState::UNINIT;
   bootDuration = 0;
   debugSerialMutex = NULL;
   INIT_TABLE_TO_ZERO(threads);
@@ -120,25 +122,23 @@ ArdOs::ArdOs ()
 void
 ArdOs::init ()
 {
-  ardAssert(state == UNINIT, "ArdOs is not in the right state to do an init");
+  ardAssert(state == eOsState::UNINIT, "ArdOs is not in the right state to do an init");
   infinite = Signal_create ();
   debugSerialMutex = Mutex_create();
-  pinMode (13, OUTPUT);
-  pinMode (HEARTBEAT_PIN, OUTPUT);
-  state = INITIALIZED;
+  state = eOsState::INITIALIZED;
 }
 
 void
 ArdOs::start ()
 {
-  ardAssert(state == INITIALIZED,
+  ardAssert(state == eOsState::INITIALIZED,
 	    "ArdOs is not in the right state to do a start");
 
-  digitalWrite (13, LOW);
+  digitalWrite (LED_DUE_L, LOW);
   digitalWrite (HEARTBEAT_PIN, heartbeatPinValue);
 
   // start FreeRTOS
-  state = RUNNING;
+  state = eOsState::RUNNING;
   bootDuration = millis ();
   dprintln (
       String ("[ArdOs] ") + "Robot is booted, it took " + bootDuration
@@ -155,7 +155,7 @@ ArdOs::start ()
 void
 ArdOs::kickHeartbeat ()
 {
-  ardAssert(state == RUNNING, "ArdOs shall be running to kickHeartbeat");
+  ardAssert(state == eOsState::RUNNING, "ArdOs shall be running to kickHeartbeat");
 
   ++heartbeatCounter;
   if (0 == heartbeatCounter % 100000)
@@ -217,7 +217,7 @@ void
 ArdOs::createThread_C (const char * const name, ThreadRunFct runFunction,
 		       uint16_t stack, uint16_t priority)
 {
-  ardAssert(state == UNINIT,
+  ardAssert(state == eOsState::UNINIT,
 	    "ArdOs is not in the right state to do a thread creation");
 
   //Check inputs
@@ -251,7 +251,7 @@ ArdOs::createPeriodicThread_Cpp (const char * const name, IThread& pClass,
 				 uint16_t stack, uint16_t priority,
 				 uint16_t periodMs)
 {
-  ardAssert(state == UNINIT,
+  ardAssert(state == eOsState::UNINIT,
 	    "ArdOs is not in the right state to do a thread creation");
 
   //Check inputs
@@ -277,7 +277,7 @@ ArdOs::createPeriodicThread_Cpp (const char * const name, IThread& pClass,
 Signal
 ArdOs::Signal_create ()
 {
-  ardAssert(state == UNINIT,
+  ardAssert(state == eOsState::UNINIT,
 	    "ArdOs is not in the right state to do a signal creation");
   Signal s = xSemaphoreCreateBinary();
   ardAssert(s != NULL, "No more heap");
@@ -288,7 +288,7 @@ ArdOs::Signal_create ()
 void
 ArdOs::Signal_set (Signal s)
 {
-  ardAssert(state == RUNNING,
+  ardAssert(state == eOsState::RUNNING,
 	    "ArdOs is not in the right state to set a signal.");
   xSemaphoreGive(s);
 }
@@ -304,7 +304,7 @@ ArdOs::Signal_set (Signal s)
 void
 ArdOs::Signal_wait (Signal s)
 {
-  ardAssert(state == RUNNING,
+  ardAssert(state == eOsState::RUNNING,
 	    "ArdOs is not in the right state to wait for a signal.");
   xSemaphoreTake(s, portMAX_DELAY);
 }
@@ -312,7 +312,7 @@ ArdOs::Signal_wait (Signal s)
 Mutex
 ArdOs::Mutex_create ()
 {
-  ardAssert(state == UNINIT,
+  ardAssert(state == eOsState::UNINIT,
 	    "ArdOs is not in the right state to do a mutex creation");
   Mutex m = xSemaphoreCreateMutex();
   ardAssert(m != NULL, "No more heap");
@@ -323,14 +323,14 @@ ArdOs::Mutex_create ()
 void
 ArdOs::Mutex_lock (Mutex s)
 {
-  ardAssert(state == RUNNING, "ArdOs is not in the right state to lock a mutex");
+  ardAssert(state == eOsState::RUNNING, "ArdOs is not in the right state to lock a mutex");
   xSemaphoreTake(s, portMAX_DELAY);
 }
 
 void
 ArdOs::Mutex_unlock (Mutex s)
 {
-  ardAssert(state == RUNNING,
+  ardAssert(state == eOsState::RUNNING,
 	    "ArdOs is not in the right state to unlock a mutex");
   xSemaphoreGive(s);
 }
@@ -339,7 +339,7 @@ Semaphore
 ArdOs::Semaphore_create (const UBaseType_t maxCount,
 			 const UBaseType_t initCount)
 {
-  ardAssert(state == UNINIT,
+  ardAssert(state == eOsState::UNINIT,
 	    "ArdOs is not in the right state to do a semaphore creation");
   Semaphore s = xSemaphoreCreateCounting(maxCount, initCount);
   ardAssert(s != NULL, "No more heap");
@@ -350,7 +350,7 @@ ArdOs::Semaphore_create (const UBaseType_t maxCount,
 void
 ArdOs::Semaphore_give (Semaphore s)
 {
-  ardAssert(state == RUNNING,
+  ardAssert(state == eOsState::RUNNING,
 	    "ArdOs is not in the right state to give a semaphore");
   xSemaphoreGive(s);
 }
@@ -358,7 +358,7 @@ ArdOs::Semaphore_give (Semaphore s)
 void
 ArdOs::Semaphore_take (Semaphore s)
 {
-  ardAssert(state == RUNNING,
+  ardAssert(state == eOsState::RUNNING,
 	    "ArdOs is not in the right state to take a semaphore");
   xSemaphoreTake(s, portMAX_DELAY);
 }
@@ -366,7 +366,7 @@ ArdOs::Semaphore_take (Semaphore s)
 bool
 ArdOs::Semaphore_tryTake (Semaphore s)
 {
-  ardAssert(state == RUNNING,
+  ardAssert(state == eOsState::RUNNING,
 	    "ArdOs is not in the right state to take a semaphore");
   return pdTRUE == xSemaphoreTake(s, 0);
 }

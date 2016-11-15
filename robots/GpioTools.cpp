@@ -1,25 +1,24 @@
-/*
- * FilteredGpio.cpp
- *
- *  Created on: Apr 17, 2016
- *      Author: willy
+#include "GpioTools.h"
+#include "ArdOs.h"
+
+using namespace ard;
+
+/**
+ * Configure the maximal number of gpio to check
  */
+#define FIO_MANAGER_MAX_IO 10
 
-#include "os/error_hook.h"
-#include "FilteredInput.hpp"
-
-#define FIO_MANAGER_MAX_IO 20
 FilteredInput* fio_manager_table[FIO_MANAGER_MAX_IO];
 uint8_t fio_manager_nbIo = 0;
 
 void fio_manager_registerIn(FilteredInput* io)
 {
-    ardAssert(0 != io);
-    ardAssert(fio_manager_nbIo < FIO_MANAGER_MAX_IO);
+    ardAssert(NULL != io, "fio_manager_registerIn received a null pointer");
+    ardAssert(fio_manager_nbIo < FIO_MANAGER_MAX_IO, "fio_manager is full, can't add a new pin");
     fio_manager_table[fio_manager_nbIo++] = io;
 }
 
-long ioManagerIsrCallback(uint32_t period_us)
+long ard::gpioToolsIsrCallback(uint32_t period_us)
 {
     for( int i = 0 ; i < fio_manager_nbIo ; i++)
     {
@@ -28,10 +27,10 @@ long ioManagerIsrCallback(uint32_t period_us)
     return 0;
 }
 
-FilteredInput::FilteredInput(GpioIn& _pin,
+FilteredInput::FilteredInput(uint8_t pinId,
         uint32_t debounceHigh,
         uint32_t debounceLow)
-    : pin(_pin)
+    : pin(pinId)
     , rising_CB(0)
     , falling_CB(0)
 {
@@ -71,7 +70,7 @@ void FilteredInput::reset()
 void FilteredInput::update(uint32_t period_us)
 {
     //Pin rising edge
-    if( pin.read() == GPIO_HIGH && filteredLevel == GPIO_LOW)
+    if( digitalRead(pin) == GPIO_HIGH && filteredLevel == GPIO_LOW)
     {
         debounceHighCount += period_us;
 
@@ -83,7 +82,7 @@ void FilteredInput::update(uint32_t period_us)
                 rising_CB();
         }
     }
-    else if( pin.read() == GPIO_LOW && filteredLevel == GPIO_HIGH )
+    else if( digitalRead(pin) == GPIO_LOW && filteredLevel == GPIO_HIGH )
     {
         debounceLowCount += period_us;
 

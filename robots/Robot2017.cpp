@@ -6,7 +6,7 @@
  */
 
 #include "Robot2017.h"
-#include "K_pinout.h"
+#include "BSP.h"
 
 using namespace ard;
 
@@ -14,8 +14,9 @@ Robot2017::Robot2017 () :
     hmi (50 /* ms */),
     log(LogThread::getInstance()),
     teleop(),
-    actuators(),
-    strategy(*this)
+    actuators(*this),
+    strategy(*this),
+    nav()
 {
   actuators.addMiniThread(&nav);
 }
@@ -23,6 +24,8 @@ Robot2017::Robot2017 () :
 void
 Robot2017::boot ()
 {
+  init_bsp();
+
   //Init debug serial link
   Serial.begin (/*baurate = */250000);
 

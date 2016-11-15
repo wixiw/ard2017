@@ -2,9 +2,8 @@
 #ifndef NAVIGATION_H
 #define NAVIGATION_H
 
-#include <AccelStepper.h>
-#include "ArdOs.h"
-#include "ArdMaths.h"
+#include "BSP.h"
+#include "RSP.h"
 
 namespace ard
 {
@@ -31,12 +30,16 @@ namespace ard
 
     //Implements IMiniThread
     void
-    init();
+    init() override;
 
     //Implements IMiniThread : method to be called by the container thread
     //                         it's expected to be called periodically
     void
-    update (TimeMs sinceLastCall);
+    update (TimeMs sinceLastCall) override;
+
+    //As the motor lib needs to be called
+    void
+    updateFromInterrupt();
 
     /**---------------------------------
      * User (= strategy) interface
@@ -137,19 +140,24 @@ namespace ard
      ---------------------------------*/
 
     void
-    setColor (color_t c);
+    setColor (eColor c);
     void
     setSpeed (float speed);
     void
     setSpeedVir (float s);
 
+    eGpioLevel getOmronState_FL(){return omronFrontLeft.readRaw();};
+    eGpioLevel getOmronState_FR(){return omronFrontRight.readRaw();};
+    eGpioLevel getOmronState_RL(){return omronRearLeft.readRaw();};
+    eGpioLevel getOmronState_RR(){return omronRearRight.readRaw();};
+
   private:
-    typedef enum
+    typedef enum class eNavState
     {
       IDLE, FACING_DEST, GOING_TO_TARGET, TURNING_AT_TARGET, INTERRUPTING_ORDER
     } eNavState;
 
-    typedef enum
+    typedef enum class eNavOrder
     {
       NOTHING, GOTO, GOTO_CAP
     } eNavOrder;
@@ -167,7 +175,7 @@ namespace ard
     turn (float angle);
 
     //interrupt the current movement
-    void interrupt();
+    void interruptCurrentMove();
 
     //used internally after a straight/turn/face order to check completeness
     bool
@@ -201,9 +209,13 @@ namespace ard
     //HW interface
     AccelStepper stepperG;
     AccelStepper stepperD;
+    FilteredInput omronFrontLeft;
+    FilteredInput omronFrontRight;
+    FilteredInput omronRearLeft;
+    FilteredInput omronRearRight;
 
     //match color
-    color_t m_color;
+    eColor m_color;
 
     //speed is reduced in turns to prevent drifting
     //hence we need 2 vars to switch from one to the other
@@ -212,7 +224,6 @@ namespace ard
 
     Mutex m_mutex;
     Signal m_targetReached;
-
   };
 }    //end namespace
 

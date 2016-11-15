@@ -15,7 +15,7 @@
 #include "K_thread_config.h"
 
 //comment in match, uncomment for debug
-#define ARD_DEBUG
+//#define ARD_DEBUG
 
 #ifdef ARD_DEBUG
 #define ardAssert(x,text) if( ( x ) == 0 ){g_ArdOs.dprintln(String("  *ASSERT* : ") + text); delay(1000);}
@@ -40,6 +40,12 @@ namespace ard
 
     virtual void
     run () = 0;
+
+    //Put thread in sleep mode during delay ms.
+    void delay(DelayMs delay)
+    {
+      vTaskDelay(delay);
+    }
 
     virtual ~IThread(){};
   };
@@ -117,7 +123,7 @@ namespace ard
       uint16_t period;
     } genericRunParams;
 
-    typedef enum
+    typedef enum class eOsState
     {
       UNINIT, INITIALIZED, RUNNING
     } eOsState;

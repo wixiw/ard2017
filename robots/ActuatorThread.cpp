@@ -7,11 +7,13 @@
 
 #include "ActuatorThread.h"
 #include "LogThread.h"
+#include "Robot2017.h"
 
 using namespace ard;
 
-ActuatorThread::ActuatorThread ():
-    nextRank(0)
+ActuatorThread::ActuatorThread (Robot2017& robot):
+    nextRank(0),
+    r(robot)
 {
 }
 

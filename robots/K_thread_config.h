@@ -26,7 +26,10 @@
 #define STACK_ACTUATORS		 500
 
 //Periods in ms
-#define PERIOD_ACTUATORS	  10
+#define PERIOD_ACTUATORS	 100
 #define PERIOD_HMI		  50
+//Periods in us
+#define PERIOD_FAST_IT_US	1000
+#define PERIOD_VERY_FAST_IT_US    50
 
 #endif /* ROBOTS_K_THREAD_CONFIG_H_ */

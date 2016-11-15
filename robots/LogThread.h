@@ -70,15 +70,15 @@ namespace ard
 
     //Implements IThreads : Create threads, configures the serial line and open the file
     void
-    init ();
+    init () override;
 
     //Implements IThreads : unpile the fifo
     void
-    run ();
+    run () override;
 
     //Implements ILogger
     void
-    log (eLogLevel logLevel, String const& log);
+    log (eLogLevel logLevel, String const& log) override;
 
     //configure if logs are sent to the serial bus (activated by default)
     bool configSerialLog;

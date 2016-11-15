@@ -34,11 +34,11 @@ Point::Point (float _x, float _y):
 ;
 
 Point
-Point::toAmbiPose (color_t c)
+Point::toAmbiPose (eColor c)
 {
   Point res;
-  ardAssert (c != COLOR_UNDEF, "Color should not be undefined");
-  if (c == COLOR_SYM)
+  ardAssert (c != eColor::UNDEF, "Color should not be undefined");
+  if (c == eColor::SYM)
     {
       res.x = -x;
       res.y = y;
@@ -90,10 +90,10 @@ PointCap::PointCap (float x, float y, float h) :
 ;
 
 PointCap
-PointCap::toAmbiPose (color_t c)
+PointCap::toAmbiPose (eColor c)
 {
   PointCap res = Point::toAmbiPose(c);
-  if (c == COLOR_SYM)
+  if (c == eColor::SYM)
       res.h = M_PI - h;
   else
       res.h = h;

@@ -2,26 +2,30 @@
 #include "LogThread.h"
 #include "Navigation.h"
 #include "K_constants.h"
-#include "K_pinout.h"
+#include "BSP.h"
 
 using namespace ard;
 
 Navigation::Navigation () :
-    stepperG (AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR), stepperD (
-	AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR)
+    m_pose(),
+    m_state(eNavState::IDLE),
+    m_target(),
+    m_sensTarget(SENS_UNDEFINED),
+    m_order(eNavOrder::NOTHING),
+    m_angleToTarget(0),
+    m_distanceToTarget(0),
+    stepperG (AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
+    stepperD (AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
+    omronFrontLeft(OMRON1, 50, 50),
+    omronFrontRight(OMRON2, 50, 50),
+    omronRearLeft(OMRON3, 50, 50),
+    omronRearRight(OMRON4, 50, 50),
+    m_color(eColor::UNDEF),
+    m_speed(SPEED_MAX),
+    m_speed_virage(SPEED_MAX_VIR),
+    m_mutex(NULL),
+    m_targetReached(NULL)
 {
-  m_pose = PointCap ();
-  m_target = PointCap ();
-  m_sensTarget = SENS_UNDEFINED;
-  m_color = COLOR_UNDEF;
-  m_speed = SPEED_MAX;
-  m_speed_virage = SPEED_MAX_VIR;
-  m_state = IDLE;
-  m_order = NOTHING;
-  m_angleToTarget = 0;
-  //TODO check completeness
-
-  //TODO init des pins pinMode(PAP_ENABLE, OUTPUT);
 }
 
 void
@@ -38,11 +42,9 @@ Navigation::init ()
 void
 Navigation::update (TimeMs sinceLastCall)
 {
-//  LOG(INFO, "update");
-
-  stepperG.run ();
-  stepperD.run ();
-  //TODO compute_odom ?
+  LOG(DEBUG,
+      "NAV : update " + stateToString (m_state) + " G="
+	  + stepperG.distanceToGo () + " D=" + stepperD.distanceToGo ());
 
   //Take a mutex to prevent localisation and target to be changed during a cycle
   g_ArdOs.Mutex_lock(m_mutex);
@@ -50,32 +52,32 @@ Navigation::update (TimeMs sinceLastCall)
   switch (m_state)
     {
     default:
-    case IDLE:
+    case eNavState::IDLE:
       {
 	switch (m_order)
 	  {
 	  default:
-	  case NOTHING:
-
+	  case eNavOrder::NOTHING:
+	    g_ArdOs.Signal_set(m_targetReached);
 	    break;
-	  case GOTO:
-	  case GOTO_CAP:
+	    case eNavOrder::GOTO:
+	    case eNavOrder::GOTO_CAP:
 	    LOG(INFO,
 		"NAV : new order " + orderToString (m_order) + "(" + m_target.x
-		    + ", " + m_target.y + ", " + m_target.h + ") "
-		    + sensToString (m_sensTarget) + ".");
+		+ ", " + m_target.y + ", " + m_target.h + ") "
+		+ sensToString (m_sensTarget) + ".");
 	    if (m_sensTarget == SENS_AR)
-	      m_angleToTarget = moduloPiPi (m_pose.angleTo (m_target) + M_PI);
+	    m_angleToTarget = moduloPiPi (m_pose.angleTo (m_target) + M_PI);
 	    else
-	      m_angleToTarget = m_pose.angleTo (m_target);
+	    m_angleToTarget = m_pose.angleTo (m_target);
 	    turn (m_angleToTarget);
-	    m_state = FACING_DEST;
+	    m_state = eNavState::FACING_DEST;
 	    break;
 	  }
 	break;
       }
 
-    case FACING_DEST:
+    case eNavState::FACING_DEST:
       {
 	if (subOrderFinished ())
 	  {
@@ -89,13 +91,13 @@ Navigation::update (TimeMs sinceLastCall)
 
 	    //Change state
 	    m_angleToTarget = 0;
-	    m_state = GOING_TO_TARGET;
+	    m_state = eNavState::GOING_TO_TARGET;
 	    LOG(DEBUG, "NAV : facing destination, beginning line.");
 	  }
 	break;
       }
 
-    case GOING_TO_TARGET:
+    case eNavState::GOING_TO_TARGET:
       {
 	if (subOrderFinished ())
 	  {
@@ -104,42 +106,41 @@ Navigation::update (TimeMs sinceLastCall)
 	    m_pose.y += m_distanceToTarget * sin (m_pose.h);
 
 	    //Request rotation to final heading
-	    if (m_order == GOTO_CAP)
+	    if (m_order == eNavOrder::GOTO_CAP)
 	      {
 		if (m_target.h - m_pose.h < -M_PI)
-		  m_angleToTarget = m_target.h - m_pose.h + 2 * M_PI;
+		m_angleToTarget = m_target.h - m_pose.h + 2 * M_PI;
 		else if (m_target.h - m_pose.h > M_PI)
-		  m_angleToTarget = m_target.h - m_pose.h - 2 * M_PI;
+		m_angleToTarget = m_target.h - m_pose.h - 2 * M_PI;
 		else
-		  m_angleToTarget = m_target.h - m_pose.h;
+		m_angleToTarget = m_target.h - m_pose.h;
 		turn (m_angleToTarget);
 	      }
 
 	    //Change state
 	    m_distanceToTarget = 0;
-	    m_state = TURNING_AT_TARGET;
+	    m_state = eNavState::TURNING_AT_TARGET;
 	  }
 	break;
       }
 
-    case TURNING_AT_TARGET:
+    case eNavState::TURNING_AT_TARGET:
       {
 	if (subOrderFinished ())
 	  {
 	    m_angleToTarget = 0;
-	    m_state = IDLE;
+	    m_state = eNavState::IDLE;
 	    LOG(INFO, "NAV : order finished.");
-	    g_ArdOs.Signal_set(m_targetReached);
 	  }
 	break;
       }
 
     //TODO attention si on s'arrete avec ca, on ne compte pas le deplacement car c'est normalement fait a la fin
-    case INTERRUPTING_ORDER:
+    case eNavState::INTERRUPTING_ORDER:
       {
 	if (subOrderFinished ())
 	  {
-	    m_state = IDLE;
+	    m_state = eNavState::IDLE;
 	    LOG(INFO, "NAV : order interrupted.");
 	  }
 	break;
@@ -147,6 +148,14 @@ Navigation::update (TimeMs sinceLastCall)
   }
 
   g_ArdOs.Mutex_unlock(m_mutex);
+}
+
+void
+Navigation::updateFromInterrupt ()
+{
+  stepperG.run ();
+  stepperD.run ();
+  //TODO compute_odom ?
 }
 
 /**---------------------------------
@@ -165,7 +174,7 @@ Navigation::goTo (Point target, sens_t sens)
 {
   g_ArdOs.Mutex_lock(m_mutex);
   //If an order is present, wait
-  if (m_state != IDLE)
+  if (m_state != eNavState::IDLE)
     {
       LOG(INFO, "NAV : new order pending until current order is finished");
       g_ArdOs.Mutex_unlock(m_mutex);
@@ -173,7 +182,7 @@ Navigation::goTo (Point target, sens_t sens)
       g_ArdOs.Mutex_lock(m_mutex);
     }
 
-  m_order = GOTO;
+  m_order = eNavOrder::GOTO;
   m_target = target.toAmbiPose (m_color);
   m_sensTarget = sens;
 
@@ -186,7 +195,7 @@ Navigation::goToCap (PointCap target, sens_t sens)
   g_ArdOs.Mutex_lock(m_mutex);
 
   //If an order is present, wait
-  if (m_state != IDLE)
+  if (m_state != eNavState::IDLE)
     {
       LOG(INFO, "NAV : new order pending until current order is finished");
       g_ArdOs.Mutex_unlock(m_mutex);
@@ -194,7 +203,7 @@ Navigation::goToCap (PointCap target, sens_t sens)
       g_ArdOs.Mutex_lock(m_mutex);
     }
 
-  m_order = GOTO_CAP;
+  m_order = eNavOrder::GOTO_CAP;
   m_target = target.toAmbiPose (m_color);
   m_sensTarget = sens;
 
@@ -208,7 +217,7 @@ Navigation::goForward (float distanceMm)
   g_ArdOs.Mutex_lock(m_mutex);
 
   //If an order is present, wait
-  if (m_state != IDLE)
+  if (m_state != eNavState::IDLE)
     {
       LOG(INFO, "NAV : new order pending until current order is finished");
       g_ArdOs.Mutex_unlock(m_mutex);
@@ -231,7 +240,7 @@ Navigation::turnTo (float angle)
   g_ArdOs.Mutex_lock(m_mutex);
 
   //If an order is present, wait
-  if (m_state != IDLE)
+  if (m_state != eNavState::IDLE)
     {
       LOG(INFO, "NAV : new order pending until current order is finished");
       g_ArdOs.Mutex_unlock(m_mutex);
@@ -254,7 +263,7 @@ Navigation::faceTo (Point p)
   g_ArdOs.Mutex_lock(m_mutex);
 
   //If an order is present, wait
-  if (m_state != IDLE)
+  if (m_state != eNavState::IDLE)
     {
       LOG(INFO, "NAV : new order pending until current order is finished");
       g_ArdOs.Mutex_unlock(m_mutex);
@@ -281,7 +290,7 @@ bool
 Navigation::targetReached ()
 {
   g_ArdOs.Mutex_lock(m_mutex);
-  bool res = m_state == IDLE;
+  bool res = m_state == eNavState::IDLE;
   g_ArdOs.Mutex_unlock(m_mutex);
   return res;
 }
@@ -291,13 +300,13 @@ Navigation::targetReached ()
  ---------------------------------*/
 
 void
-Navigation::setColor (color_t c)
+Navigation::setColor (eColor c)
 {
-  ardAssert(c != COLOR_UNDEF, "NAV : color should not be set to undefined.");
+  ardAssert(c != eColor::UNDEF, "NAV : color should not be set to undefined.");
   g_ArdOs.Mutex_lock(m_mutex);
   m_color = c;
   g_ArdOs.Mutex_unlock(m_mutex);
-  if (c == COLOR_PREF)
+  if (c == eColor::PREF)
     LOG(INFO, "NAV : Color set to : PREF");
   else
     LOG(INFO, "NAV : Color set to : SYM");
@@ -384,10 +393,10 @@ Navigation::turn (float angle)
 }
 
 void
-Navigation::interrupt ()
+Navigation::interruptCurrentMove ()
 {
   LOG(INFO, "NAV : current order is interrupted.");
-  m_state = INTERRUPTING_ORDER;
+  m_state = eNavState::INTERRUPTING_ORDER;
   stepperG.stop ();
   stepperD.stop ();
 }
@@ -406,7 +415,10 @@ Navigation::startTraj ()
 {
   stepperG.setCurrentPosition (0);
   stepperD.setCurrentPosition (0);
-  setSpeed (0);
+//TODO pourquoi c'était là ?
+  //  stepperG.setMaxSpeed (0);
+//  stepperD.setMaxSpeed (0);
+//  m_speed = 0;
 }
 
 String
@@ -427,9 +439,9 @@ Navigation::orderToString (eNavOrder order)
   switch (order)
     {
     default:
-    ENUM2STR(NOTHING)
-;      ENUM2STR(GOTO);
-      ENUM2STR(GOTO_CAP);
+    ENUM2STR(eNavOrder::NOTHING)
+;      ENUM2STR(eNavOrder::GOTO);
+      ENUM2STR(eNavOrder::GOTO_CAP);
     }
 }
 
@@ -439,10 +451,10 @@ Navigation::stateToString (eNavState state)
   switch (state)
     {
     default:
-    ENUM2STR(IDLE)
-;      ENUM2STR(FACING_DEST);
-      ENUM2STR(GOING_TO_TARGET);
-      ENUM2STR(TURNING_AT_TARGET);
-      ENUM2STR(INTERRUPTING_ORDER);
+    ENUM2STR(eNavState::IDLE)
+;      ENUM2STR(eNavState::FACING_DEST);
+      ENUM2STR(eNavState::GOING_TO_TARGET);
+      ENUM2STR(eNavState::TURNING_AT_TARGET);
+      ENUM2STR(eNavState::INTERRUPTING_ORDER);
     }
 }

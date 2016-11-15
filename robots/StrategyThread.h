@@ -25,13 +25,20 @@ namespace ard
     ;
 
     //Implements IThreads : create the thread
-    void init();
+    void init() override;
 
-    //Implements IThreads : ...
+    //Implements IThreads : executes the stategy
     void
-    run ();
+    run () override;
 
   private:
+    //for debug only : light a led for each activated user switch
+    void Strategy_ButtonTest();
+    //for debug only : light a led for each activated omron
+    void Strategy_OmronTest();
+    //for debug only : make all leds blinking to check they are working
+    void Strategy_LedTest();
+
     Robot2017& r;
   };
 

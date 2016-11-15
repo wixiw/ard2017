@@ -30,11 +30,11 @@ namespace ard
     ;
 
     //Implements IThreads :create the thread
-    void init();
+    void init() override;
 
     //Implements IThreads : reads the serial inputs
     void
-    run ();
+    run () override;
   };
 
 } /* namespace ard */

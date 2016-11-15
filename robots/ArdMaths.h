@@ -29,7 +29,7 @@ namespace ard
 
     //return the symetric from the x axis
     Point
-    toAmbiPose (color_t c);
+    toAmbiPose (eColor c);
 
     //return the angle from the x-axis to the target point
     float angleTo(Point p);
@@ -53,10 +53,10 @@ namespace ard
 
     //return the symetric from the x axis
     PointCap
-    toAmbiPose (color_t c);
+    toAmbiPose (eColor c);
 
     String
-    toString ();
+    toString () override;
   };
 
 } /* namespace ard */

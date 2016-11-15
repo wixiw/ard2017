@@ -10,6 +10,7 @@
 
 #include "BSP.h"
 #include "RSP.h"
+#include "Navigation.h"
 #include "ActuatorThread.h"
 #include "StrategyThread.h"
 

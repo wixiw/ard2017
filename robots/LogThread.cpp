@@ -7,7 +7,7 @@
 
 #include "LogThread.h"
 #include "K_thread_config.h"
-#include "K_pinout.h"
+#include "BSP.h"
 
 using namespace ard;
 
@@ -15,8 +15,8 @@ using namespace ard;
 LogThread LogThread::instance = LogThread ();
 
 LogThread::LogThread () :
-    configSerialLog (true), configSdCardLog (true), semDataPresent (NULL), mutex (
-	NULL), fifoHead (0), fifoTail (0), fifoCount (0), missedLogs (0), sdCardPresent (
+    configSerialLog (true), configSdCardLog (false), semDataPresent (NULL), mutex (
+    NULL), fifoHead (0), fifoTail (0), fifoCount (0), missedLogs (0), sdCardPresent (
     false)
 {
   INIT_TABLE_TO_ZERO(fifoArray);
@@ -34,8 +34,11 @@ LogThread::init ()
   //create the mutex
   mutex = g_ArdOs.Mutex_create();
 
-  //setup the SDcard driver and open the log file
-  initSDcard ();
+  if( configSdCardLog )
+    {
+      //setup the SDcard driver and open the log file
+      initSDcard ();
+    }
 }
 
 void
@@ -174,7 +177,7 @@ LogThread::unpileFifo ()
     // advance FIFO index
     fifoTail = fifoTail < (FIFO_SIZE - 1) ? fifoTail + 1 : 0;
     g_ArdOs.Mutex_unlock(mutex);
-}
+  }
 
 String
 LogThread::formatLogMsg (LogMsg const& msg)
