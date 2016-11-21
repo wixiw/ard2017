@@ -11,11 +11,6 @@
 
 using namespace ard;
 
-StrategyThread::StrategyThread (Robot2017& robot) :
-    r (robot)
-{
-}
-
 void
 StrategyThread::init ()
 {
@@ -26,60 +21,91 @@ StrategyThread::init ()
 void
 StrategyThread::run ()
 {
-  LOG(INFO, "STRAT : Fake strategy.");
-  r.nav.setColor (eColor::PREF);
 
 //  Strategy_LedTest();
 //  Strategy_ButtonTest ();
-  Strategy_OmronTest();
+//  Strategy_OmronTest();
 
-//  r.nav.setPosition(0,0,0);
-//  r.nav.goTo(20,00, SENS_AV);
-//
-//  LOG(INFO,"STRAT : Move order sent, waiting...");
-//  r.nav.wait();
-//  LOG(INFO,"STRAT : Finished.");
+  LOG(INFO, "STRAT : Fake strategy.");
+  ROBOT.nav.setColor (eColor::PREF);
+  ROBOT.nav.setPosition(0,0,0);
+  ROBOT.nav.goTo(300, 0, SENS_AV);
+  LOG(INFO,"STRAT : Move order sent, waiting...");
+  ROBOT.nav.wait();
+  LOG(INFO,"STRAT : Return to start pos, waiting...");
+  ROBOT.nav.goTo(0, 0, SENS_AV);
+  ROBOT.nav.wait();
+  LOG(INFO,"STRAT : Finished.");
 }
+
+void
+StrategyThread::Strategy_LedTest ()
+{
+  int WAIT = 200;
+  LOG(INFO, "STRAT : Strategy_LedTest.");
+
+  while (1)
+    {
+      ROBOT.hmi.ledRGB.set (RED, ON);
+      ROBOT.hmi.led4.off ();
+      ROBOT.hmi.led1.on ();
+      delay (WAIT);
+      ROBOT.hmi.ledRGB.set (GREEN, ON);
+      ROBOT.hmi.led1.off ();
+      ROBOT.hmi.led2.on ();
+      delay (WAIT);
+      ROBOT.hmi.ledRGB.set (BLUE, ON);
+      ROBOT.hmi.led2.off ();
+      ROBOT.hmi.led3.on ();
+      delay (WAIT);
+      ROBOT.hmi.ledRGB.set (WHITE, ON);
+      ROBOT.hmi.led3.off ();
+      ROBOT.hmi.led4.on ();
+      delay (WAIT);
+    }
+}
+
 
 void
 StrategyThread::Strategy_ButtonTest ()
 {
+  LOG(INFO, "STRAT : Strategy_ButtonTest.");
   while (1)
     {
-      if (r.hmi.matchColor.readRaw ())
+      if (ROBOT.hmi.matchColor.read ())
 	{
-	  r.hmi.led1.on ();
+	  ROBOT.hmi.led1.on ();
 	}
       else
 	{
-	  r.hmi.led1.off ();
+	  ROBOT.hmi.led1.off ();
 	}
 
-      if (r.hmi.user1.readRaw ())
+      if (ROBOT.hmi.user1.read ())
 	{
-	  r.hmi.led2.on ();
+	  ROBOT.hmi.led2.on ();
 	}
       else
 	{
-	  r.hmi.led2.off ();
+	  ROBOT.hmi.led2.off ();
 	}
 
-      if (r.hmi.user2.readRaw ())
+      if (ROBOT.hmi.user2.read ())
 	{
-	  r.hmi.led3.on ();
+	  ROBOT.hmi.led3.on ();
 	}
       else
 	{
-	  r.hmi.led3.off ();
+	  ROBOT.hmi.led3.off ();
 	}
 
-      if (r.hmi.start.readRaw ())
+      if (ROBOT.hmi.start.read ())
 	{
-	  r.hmi.led4.on ();
+	  ROBOT.hmi.led4.on ();
 	}
       else
 	{
-	  r.hmi.led4.off ();
+	  ROBOT.hmi.led4.off ();
 	}
 
       delay (50);
@@ -89,55 +115,32 @@ StrategyThread::Strategy_ButtonTest ()
 void
 StrategyThread::Strategy_OmronTest ()
 {
+  LOG(INFO, "STRAT : Strategy_OmronTest.");
+
   while (1)
     {
-      if (r.nav.getOmronState_FL ())
-	r.hmi.led1.on ();
+      if (ROBOT.nav.getOmronState_FL ())
+	ROBOT.hmi.led1.on ();
       else
-	r.hmi.led1.off ();
+	ROBOT.hmi.led1.off ();
 
-      if (r.nav.getOmronState_FR ())
-	r.hmi.led2.on ();
+      if (ROBOT.nav.getOmronState_FR ())
+	ROBOT.hmi.led2.on ();
       else
-	r.hmi.led2.off ();
+	ROBOT.hmi.led2.off ();
 
-      if (r.nav.getOmronState_RL ())
-	r.hmi.led3.on ();
+      if (ROBOT.nav.getOmronState_RL ())
+	ROBOT.hmi.led3.on ();
       else
-	r.hmi.led3.off ();
+	ROBOT.hmi.led3.off ();
 
-      if (r.nav.getOmronState_RR ())
-	r.hmi.led4.on ();
+      if (ROBOT.nav.getOmronState_RR ())
+	ROBOT.hmi.led4.on ();
       else
-	r.hmi.led4.off ();
+	ROBOT.hmi.led4.off ();
 
       delay (50);
     }
 }
 
-void
-StrategyThread::Strategy_LedTest ()
-{
-  int WAIT = 200;
-
-  while (1)
-    {
-      r.hmi.ledRGB.set (RED, ON);
-      r.hmi.led4.off ();
-      r.hmi.led1.on ();
-      delay (WAIT);
-      r.hmi.ledRGB.set (GREEN, ON);
-      r.hmi.led1.off ();
-      r.hmi.led2.on ();
-      delay (WAIT);
-      r.hmi.ledRGB.set (BLUE, ON);
-      r.hmi.led2.off ();
-      r.hmi.led3.on ();
-      delay (WAIT);
-      r.hmi.ledRGB.set (WHITE, ON);
-      r.hmi.led3.off ();
-      r.hmi.led4.on ();
-      delay (WAIT);
-    }
-}
 

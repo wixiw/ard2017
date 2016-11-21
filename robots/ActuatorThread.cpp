@@ -11,12 +11,6 @@
 
 using namespace ard;
 
-ActuatorThread::ActuatorThread (Robot2017& robot):
-    nextRank(0),
-    r(robot)
-{
-}
-
 void
 ActuatorThread::init ()
 {
@@ -32,6 +26,11 @@ ActuatorThread::init ()
 void
 ActuatorThread::run ()
 {
+// Uncomment for oscilloscope debug and tests
+//    static int8_t toggle = 0;
+//    toggle = 1 - toggle;
+//    digitalWrite(DEBUG_2, toggle);
+
   for(int i = 0 ; i < nextRank ; ++i)
     {
       threadlets[i]->update(PERIOD_ACTUATORS);

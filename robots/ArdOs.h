@@ -283,7 +283,7 @@ namespace ard
     uint32_t heartbeatCounter;
 
     //last value sent to the heartbeat LED;
-    uint8_t heartbeatPinValue;
+    int8_t heartbeatPinValue;
 
     eOsState state;
 

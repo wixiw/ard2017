@@ -181,13 +181,6 @@ namespace ard
     bool
     subOrderFinished ();
 
-    /**
-     * RAZ position of steppers in order to begin new trajectory
-     * this also update variables for the odometry
-     */
-    void
-    startTraj ();
-
     String
     sensToString (sens_t sens);
     String

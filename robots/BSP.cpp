@@ -3,8 +3,8 @@
 void
 init_bsp ()
 {
-  //TODO pinMode(MOSFET1, ?);
-  //TODO pinMode(MOSFET2, ?);
+  //pinMode(MOSFET1, OUTPUT);
+  //pinMode(MOSFET2, OUTPUT);
   pinMode (SERVO1, 		OUTPUT);
   pinMode (SERVO2, 		OUTPUT);
   pinMode (SERVO3,		OUTPUT);
@@ -23,17 +23,19 @@ init_bsp ()
   pinMode (OMRON2, 		INPUT_PULLUP);
   pinMode (OMRON3, 		INPUT_PULLUP);
   pinMode (OMRON4, 		INPUT_PULLUP);
-  //TODO pinMode (BORDURE_G, ?);
-  //TODO pinMode (BORDURE_D, ?);
+  pinMode (BORDURE_G, 		INPUT);
+  pinMode (BORDURE_D, 		INPUT);
   pinMode (CS_SDCARD, 		OUTPUT);
   pinMode (PAPG_DIR, 		OUTPUT);
   pinMode (PAPG_STEP, 		OUTPUT);
   pinMode (PAPD_DIR, 		OUTPUT);
   pinMode (PAPD_STEP, 		OUTPUT);
-  //TODO pinMode (US_TRIG_1, 		?);
-  //TODO pinMode (US_ECHO_1, 		?);
-  //TODO pinMode (US_TRIG_2, 		?);
-  //TODO pinMode (US_ECHO_2, 		?);
+  pinMode (DEBUG_1,     	OUTPUT);
+  pinMode (DEBUG_2,     	OUTPUT);
+  //pinMode (US_TRIG_1, 	OUTPUT);
+  //pinMode (US_ECHO_1, 	INPUT);
+  //pinMode (US_TRIG_2, 	OUTPUT);
+  //pinMode (US_ECHO_2, 	INPUT);
   pinMode (PAP_ENABLE,		OUTPUT);
   pinMode (LED1, 		OUTPUT);
   pinMode (LED2, 		OUTPUT);

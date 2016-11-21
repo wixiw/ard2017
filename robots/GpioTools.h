@@ -23,7 +23,7 @@ namespace ard
   /**
    * This function has to be registered somewhere in a thread or an IT
    */
-  long
+  void
   gpioToolsIsrCallback (uint32_t period_us);
 
   /**

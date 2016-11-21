@@ -7,24 +7,16 @@
 using namespace ard;
 
 Navigation::Navigation () :
-    m_pose(),
-    m_state(eNavState::IDLE),
-    m_target(),
-    m_sensTarget(SENS_UNDEFINED),
-    m_order(eNavOrder::NOTHING),
-    m_angleToTarget(0),
-    m_distanceToTarget(0),
-    stepperG (AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
-    stepperD (AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
-    omronFrontLeft(OMRON1, 50, 50),
-    omronFrontRight(OMRON2, 50, 50),
-    omronRearLeft(OMRON3, 50, 50),
-    omronRearRight(OMRON4, 50, 50),
-    m_color(eColor::UNDEF),
-    m_speed(SPEED_MAX),
-    m_speed_virage(SPEED_MAX_VIR),
-    m_mutex(NULL),
-    m_targetReached(NULL)
+    m_pose (), m_state (eNavState::IDLE), m_target (), m_sensTarget (
+	SENS_UNDEFINED), m_order (eNavOrder::NOTHING), m_angleToTarget (0), m_distanceToTarget (
+	0), stepperG (AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR), stepperD (
+	AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR), omronFrontLeft (OMRON1, 50,
+								    50), omronFrontRight (
+	OMRON2, 50, 50), omronRearLeft (OMRON3, 50, 50), omronRearRight (OMRON4,
+									 50,
+									 50), m_color (
+	eColor::UNDEF), m_speed (SPEED_MAX), m_speed_virage (SPEED_MAX_VIR), m_mutex (
+    NULL), m_targetReached (NULL)
 {
 }
 
@@ -33,6 +25,8 @@ Navigation::init ()
 {
   m_mutex = g_ArdOs.Mutex_create();
   m_targetReached = g_ArdOs.Signal_create();
+  stepperG.setAcceleration(ACC_MAX);
+  stepperD.setAcceleration(ACC_MAX);
 }
 
 /**---------------------------------
@@ -58,94 +52,100 @@ Navigation::update (TimeMs sinceLastCall)
 	  {
 	  default:
 	  case eNavOrder::NOTHING:
-	    g_ArdOs.Signal_set(m_targetReached);
-	    break;
-	    case eNavOrder::GOTO:
-	    case eNavOrder::GOTO_CAP:
-	    LOG(INFO,
-		"NAV : new order " + orderToString (m_order) + "(" + m_target.x
-		+ ", " + m_target.y + ", " + m_target.h + ") "
-		+ sensToString (m_sensTarget) + ".");
-	    if (m_sensTarget == SENS_AR)
-	    m_angleToTarget = moduloPiPi (m_pose.angleTo (m_target) + M_PI);
-	    else
-	    m_angleToTarget = m_pose.angleTo (m_target);
-	    turn (m_angleToTarget);
-	    m_state = eNavState::FACING_DEST;
-	    break;
-	  }
-	break;
-      }
+	    {
+	      break;
+	    }
 
-    case eNavState::FACING_DEST:
-      {
-	if (subOrderFinished ())
-	  {
-	    // Update odom
-	    m_pose.h += m_angleToTarget;
-	    m_pose.h = moduloPiPi (m_pose.h);
+	  case eNavOrder::GOTO:
+	  case eNavOrder::GOTO_CAP:
+	    {
+	      LOG(INFO,
+		  "NAV : new order " + orderToString (m_order) + "(" + m_target.x
+		  + ", " + m_target.y + ", " + m_target.h + ") "
+		  + sensToString (m_sensTarget) + ".");
+	      if (m_sensTarget == SENS_AR)
+	      m_angleToTarget = moduloPiPi (m_pose.angleTo (m_target) + M_PI);
+	      else
+	      m_angleToTarget = m_pose.angleTo (m_target);
+	      turn (m_angleToTarget);
+	      m_state = eNavState::FACING_DEST;
+	      break;
+	    }
+	}
+      break;
+    }
 
-	    //Request straight line
-	    m_distanceToTarget = m_sensTarget * m_pose.distanceTo (m_target);
-	    straight (m_distanceToTarget);
+  case eNavState::FACING_DEST:
+    {
+      if (subOrderFinished ())
+	{
+	  // Update odom
+	  m_pose.h += m_angleToTarget;
+	  m_pose.h = moduloPiPi (m_pose.h);
 
-	    //Change state
-	    m_angleToTarget = 0;
-	    m_state = eNavState::GOING_TO_TARGET;
-	    LOG(DEBUG, "NAV : facing destination, beginning line.");
-	  }
-	break;
-      }
+	  //Request straight line
+	  m_distanceToTarget = m_sensTarget * m_pose.distanceTo (m_target);
+	  straight (m_distanceToTarget);
 
-    case eNavState::GOING_TO_TARGET:
-      {
-	if (subOrderFinished ())
-	  {
-	    //Update odom
-	    m_pose.x += m_distanceToTarget * cos (m_pose.h);
-	    m_pose.y += m_distanceToTarget * sin (m_pose.h);
+	  //Change state
+	  m_angleToTarget = 0;
+	  m_state = eNavState::GOING_TO_TARGET;
+	  LOG(DEBUG, "NAV : facing destination, beginning line.");
+	}
+      break;
+    }
 
-	    //Request rotation to final heading
-	    if (m_order == eNavOrder::GOTO_CAP)
-	      {
-		if (m_target.h - m_pose.h < -M_PI)
-		m_angleToTarget = m_target.h - m_pose.h + 2 * M_PI;
-		else if (m_target.h - m_pose.h > M_PI)
-		m_angleToTarget = m_target.h - m_pose.h - 2 * M_PI;
-		else
-		m_angleToTarget = m_target.h - m_pose.h;
-		turn (m_angleToTarget);
-	      }
+  case eNavState::GOING_TO_TARGET:
+    {
+      if (subOrderFinished ())
+	{
+	  //Update odom
+	  m_pose.x += m_distanceToTarget * cos (m_pose.h);
+	  m_pose.y += m_distanceToTarget * sin (m_pose.h);
 
-	    //Change state
-	    m_distanceToTarget = 0;
-	    m_state = eNavState::TURNING_AT_TARGET;
-	  }
-	break;
-      }
+	  //Request rotation to final heading
+	  if (m_order == eNavOrder::GOTO_CAP)
+	    {
+	      if (m_target.h - m_pose.h < -M_PI)
+	      m_angleToTarget = m_target.h - m_pose.h + 2 * M_PI;
+	      else if (m_target.h - m_pose.h > M_PI)
+	      m_angleToTarget = m_target.h - m_pose.h - 2 * M_PI;
+	      else
+	      m_angleToTarget = m_target.h - m_pose.h;
+	      turn (m_angleToTarget);
+	    }
 
-    case eNavState::TURNING_AT_TARGET:
-      {
-	if (subOrderFinished ())
-	  {
-	    m_angleToTarget = 0;
-	    m_state = eNavState::IDLE;
-	    LOG(INFO, "NAV : order finished.");
-	  }
-	break;
-      }
+	  //Change state
+	  m_distanceToTarget = 0;
+	  m_state = eNavState::TURNING_AT_TARGET;
+	}
+      break;
+    }
 
-    //TODO attention si on s'arrete avec ca, on ne compte pas le deplacement car c'est normalement fait a la fin
-    case eNavState::INTERRUPTING_ORDER:
-      {
-	if (subOrderFinished ())
-	  {
-	    m_state = eNavState::IDLE;
-	    LOG(INFO, "NAV : order interrupted.");
-	  }
-	break;
-      }
-  }
+  case eNavState::TURNING_AT_TARGET:
+    {
+      if (subOrderFinished ())
+	{
+	  m_angleToTarget = 0;
+	  m_state = eNavState::IDLE;
+	  m_order = eNavOrder::NOTHING;
+	  g_ArdOs.Signal_set(m_targetReached);
+	  LOG(INFO, "NAV : order finished.");
+	}
+      break;
+    }
+
+  //TODO attention si on s'arrete avec ca, on ne compte pas le deplacement car c'est normalement fait a la fin
+  case eNavState::INTERRUPTING_ORDER:
+    {
+      if (subOrderFinished ())
+	{
+	  m_state = eNavState::IDLE;
+	  LOG(INFO, "NAV : order interrupted.");
+	}
+      break;
+    }
+}
 
   g_ArdOs.Mutex_unlock(m_mutex);
 }
@@ -375,7 +375,8 @@ Navigation::compute_odom (float dxG, float dxD)
 void
 Navigation::straight (float mm)
 {
-  startTraj ();
+  stepperG.setCurrentPosition (0);
+  stepperD.setCurrentPosition (0);
   stepperG.setMaxSpeed (m_speed);
   stepperD.setMaxSpeed (m_speed);
   stepperG.moveTo (-mm * GAIN_STEP_MM);
@@ -385,7 +386,8 @@ Navigation::straight (float mm)
 void
 Navigation::turn (float angle)
 {
-  startTraj ();
+  stepperG.setCurrentPosition (0);
+  stepperD.setCurrentPosition (0);
   stepperG.setMaxSpeed (m_speed_virage);
   stepperD.setMaxSpeed (m_speed_virage);
   stepperG.moveTo (angle * VOIE / 2 * GAIN_STEP_MM);
@@ -408,17 +410,6 @@ bool
 Navigation::subOrderFinished ()
 {
   return (stepperG.distanceToGo () == 0 || stepperD.distanceToGo () == 0);
-}
-
-void
-Navigation::startTraj ()
-{
-  stepperG.setCurrentPosition (0);
-  stepperD.setCurrentPosition (0);
-//TODO pourquoi c'était là ?
-  //  stepperG.setMaxSpeed (0);
-//  stepperD.setMaxSpeed (0);
-//  m_speed = 0;
 }
 
 String

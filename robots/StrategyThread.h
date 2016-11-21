@@ -17,12 +17,9 @@ namespace ard
   class StrategyThread : public IThread
   {
   public:
-    StrategyThread (Robot2017& robot);
+    StrategyThread () = default;
     virtual
-    ~StrategyThread ()
-    {
-    }
-    ;
+    ~StrategyThread () = default;
 
     //Implements IThreads : create the thread
     void init() override;
@@ -38,8 +35,6 @@ namespace ard
     void Strategy_OmronTest();
     //for debug only : make all leds blinking to check they are working
     void Strategy_LedTest();
-
-    Robot2017& r;
   };
 
 } /* namespace ard */

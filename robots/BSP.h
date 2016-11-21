@@ -14,8 +14,9 @@
 #include <Servo.h>
 #include <DueTimer.h>
 
-#define MOSFET1         2
-#define MOSFET2         3
+//0/1 : RX/TX 0
+//#define MOSFET1         2
+//#define MOSFET2         3
 #define SERVO1          4
 #define SERVO2          5
 #define SERVO3          6
@@ -26,26 +27,36 @@
 #define SERVO8          11
 #define BUZZER          12
 #define LED_DUE_L       13
+//14/15 : TX/RX 3
+//16/17 : TX/RX 2
+//18/19 : TX/RX 1
+//20/21 : SDA/SCL
 #define BUTTON_START    22
 #define BUTTON_COLOR    23
 #define BUTTON_USER1    24
 #define BUTTON_USER2    25
-#define OMRON1          31
+#define OMRON1          31 //HW routing error : IN25 was forgetten, then mapped on 31 after production
 #define OMRON2          26
 #define OMRON3          27
 #define OMRON4          28
 #define BORDURE_G       29
 #define BORDURE_D       30
-#define CS_SDCARD	31  //not mapped to child card
+//Note : See above for  31 (Omron1)
+#define CS_SDCARD	32  //not mapped to child card
+//33 : free IO, not mapped on childboard
 #define PAPG_DIR        34  // Gauche = PAP1
 #define PAPG_STEP       35
 #define PAPD_DIR        36  // Droite = PAP2
 #define PAPD_STEP       37
-#define US_TRIG_1       40
-#define US_ECHO_1       41
-#define US_TRIG_2       42
-#define US_ECHO_2       43
+#define DEBUG_1         38  //pin reserved for oscilloscope analysis
+#define DEBUG_2         39  //pin reserved for oscilloscope analysis
+//38/39 : free IO, not mapped on childboard
+//#define US_TRIG_1       40
+//#define US_ECHO_1       41
+//#define US_TRIG_2       42
+//#define US_ECHO_2       43
 #define PAP_ENABLE      44
+//45/46 : free IO, not mapped on childboard
 #define LED1            47
 #define LED2            48
 #define LED3            49

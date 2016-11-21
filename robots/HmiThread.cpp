@@ -13,7 +13,7 @@ using namespace ard;
 /**
  * Configure the HMI buttons debounce time in ms.
  */
-#define HMI_DEBOUNCE 100
+#define HMI_DEBOUNCE 50
 
 /*--------------------------------------------------------------------- */
 /*   OUTPUT                                                             */

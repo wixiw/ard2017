@@ -14,12 +14,11 @@
 	#define NULL 0
 #endif
 
-// Declare the copy construtors with a default implementation
-// Tipically used to declare copy construtors as private to prevent the user
-// to do unexpected thing.
+// Tell the compilator to NOT declare the copy construtors with a default implementation
+// Tipically used to prevent the user to do unexpected thing (ex : in a singleton)
 #define COPY_CONSTRUCTORS(className) \
-	className& operator= (const className&){return *this;};\
-	className (const className&){};
+	className& operator= (const className&) = default;\
+	className (const className&) = default;
 
 // Utilities to initialize arrays
 #define INIT_TABLE_TO_ZERO(x) memset(x, 0, sizeof(x))

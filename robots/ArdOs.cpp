@@ -160,10 +160,10 @@ ArdOs::kickHeartbeat ()
   ++heartbeatCounter;
   if (0 == heartbeatCounter % 100000)
     {
-#ifdef ARD_DEBUG
-      static int zob = 0;
-      dprintln(String("Hearbeat toggle ") + zob++);
-#endif
+//#ifdef ARD_DEBUG
+//      static int zob = 0;
+//      dprintln(String("Hearbeat toggle ") + zob++);
+//#endif
       digitalWrite (HEARTBEAT_PIN, 1 - heartbeatPinValue);
       heartbeatPinValue = 1 - heartbeatPinValue;
     }

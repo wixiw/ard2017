@@ -17,9 +17,9 @@ namespace ard
   class ActuatorThread : public IThread
   {
   public:
-    ActuatorThread (Robot2017& robot);
+    ActuatorThread () = default;
     virtual
-    ~ActuatorThread (){};
+    ~ActuatorThread () = default;
 
     //Implements IThreads : create the thread
     void init() override;
@@ -36,7 +36,6 @@ namespace ard
     static const uint8_t NB_MAX_MINI_THREADS = 1;
     IMiniPeriodicThread* threadlets[NB_MAX_MINI_THREADS];
     uint8_t nextRank;
-    Robot2017& r;
   };
 
 } /* namespace ard */

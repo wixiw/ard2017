@@ -18,13 +18,12 @@ void fio_manager_registerIn(FilteredInput* io)
     fio_manager_table[fio_manager_nbIo++] = io;
 }
 
-long ard::gpioToolsIsrCallback(uint32_t period_us)
+void ard::gpioToolsIsrCallback(uint32_t period_us)
 {
     for( int i = 0 ; i < fio_manager_nbIo ; i++)
     {
         fio_manager_table[i]->update(period_us);
     }
-    return 0;
 }
 
 FilteredInput::FilteredInput(uint8_t pinId,

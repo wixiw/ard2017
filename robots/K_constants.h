@@ -11,7 +11,7 @@
 #define ACC_MAX 15000.0
 #define SPEED_RECAL 1800.0
 #define SPEED_MAX_VIR 2000.0
-#define SPEED_MAX 6000 //80000
+#define SPEED_MAX 6000.0
 
 #define DURATION_MATCH_MS 90000
 
@@ -23,7 +23,4 @@
 #define X_AR 34.0
 #define Y_GAUCHE 60.0
 
-#define OSCILATOR 50 //ms
-
-#define MARCHE_AR -1
 #endif

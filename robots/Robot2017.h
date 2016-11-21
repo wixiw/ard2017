@@ -14,6 +14,8 @@
 #include "ActuatorThread.h"
 #include "StrategyThread.h"
 
+#define ROBOT Robot2017::getInstance()
+
 namespace ard
 {
 
@@ -28,8 +30,13 @@ namespace ard
   class Robot2017
   {
   public:
-    //Assemble all object instances
-    Robot2017();
+    //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
+    static Robot2017&
+    getInstance ()
+    {
+      return instance;
+    }
+    ;
 
     //Initialize instances and start the robot
     //This function never ends
@@ -49,6 +56,14 @@ namespace ard
 
     //Components
     Navigation                  nav;
+
+  private:
+    //singleton instance
+    static Robot2017 instance;
+
+    //Assemble all object instances
+    //private constructor as its a singleton class
+    Robot2017 ();COPY_CONSTRUCTORS (Robot2017)
 
   };
 
