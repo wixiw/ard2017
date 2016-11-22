@@ -22,6 +22,16 @@ void ArdOs::die()
  Signal_wait(infinite);
 }
 
+void enterIdleCB()
+{
+  digitalWrite (HEARTBEAT_PIN, LOW);
+}
+
+void exitIdleCB()
+{
+  digitalWrite (HEARTBEAT_PIN, HIGH);
+}
+
 //-------------------------------------------------------------------------------
 
 SwTimer::SwTimer () :
@@ -125,14 +135,6 @@ ArdOs::init ()
   ardAssert(state == eOsState::UNINIT, "ArdOs is not in the right state to do an init");
   infinite = Signal_create ();
   debugSerialMutex = Mutex_create();
-  state = eOsState::INITIALIZED;
-}
-
-void
-ArdOs::start ()
-{
-  ardAssert(state == eOsState::INITIALIZED,
-	    "ArdOs is not in the right state to do a start");
 
   digitalWrite (LED_DUE_L, LOW);
   digitalWrite (HEARTBEAT_PIN, heartbeatPinValue);
@@ -141,7 +143,7 @@ ArdOs::start ()
   state = eOsState::RUNNING;
   bootDuration = millis ();
   dprintln (
-      String ("[ArdOs] ") + "Robot is booted, it took " + bootDuration
+      String ("[ArdOs] ") + "Robot is booted successfully, it took " + bootDuration
 	  + " ms.");
   vTaskStartScheduler ();
 
@@ -150,23 +152,6 @@ ArdOs::start ()
   while (1)
     {
     };
-}
-
-void
-ArdOs::kickHeartbeat ()
-{
-  ardAssert(state == eOsState::RUNNING, "ArdOs shall be running to kickHeartbeat");
-
-  ++heartbeatCounter;
-  if (0 == heartbeatCounter % 100000)
-    {
-//#ifdef ARD_DEBUG
-//      static int zob = 0;
-//      dprintln(String("Hearbeat toggle ") + zob++);
-//#endif
-      digitalWrite (HEARTBEAT_PIN, 1 - heartbeatPinValue);
-      heartbeatPinValue = 1 - heartbeatPinValue;
-    }
 }
 
 void

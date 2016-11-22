@@ -15,13 +15,18 @@
 #include "K_thread_config.h"
 
 //comment in match, uncomment for debug
-//#define ARD_DEBUG
+#define ARD_DEBUG
 
 #ifdef ARD_DEBUG
 #define ardAssert(x,text) if( ( x ) == 0 ){g_ArdOs.dprintln(String("  *ASSERT* : ") + text); delay(1000);}
 #else
 #define ardAssert(x,text) configASSERT(x)
 #endif
+
+//Callback called when entering the idle task
+void enterIdleCB();
+//Callback called when exiting the idle task
+void exitIdleCB();
 
 namespace ard
 {
@@ -125,7 +130,7 @@ namespace ard
 
     typedef enum class eOsState
     {
-      UNINIT, INITIALIZED, RUNNING
+      UNINIT, RUNNING
     } eOsState;
 
     //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
@@ -137,16 +142,9 @@ namespace ard
     ;
 
     //to be called before any action on this class
-    void
-    init ();
-
     //start the scheduler, call this after having build your application object instances
     void
-    start ();
-
-    //signal the SW is alive. Call this in the lowest priority task (loop())
-    void
-    kickHeartbeat ();
+    init ();
 
     //Get the OS initialization state
     eOsState

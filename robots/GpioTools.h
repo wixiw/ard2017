@@ -2,11 +2,11 @@
 #define GPIOTOOLS_HPP_
 
 #include <Arduino.h>
+#include "ArdOs.h"
 
 #define ARD_SET_BIT(field, bit, value) (field) ^= (-(value) ^ (field)) & (1 << (bit))
 #define ARD_IS_BIT_SET(field, bit) (((field) >> (bit)) & 1)
-#define ARD_BIT_TOGGLE(field, bit) (field) ^= 1 << (bit)
-
+#define ARD_BIT_TOGGLE(field, bit) (field) ^= 1 << (bit)z
 namespace ard
 {
 
@@ -17,7 +17,7 @@ namespace ard
 
   typedef enum
   {
-    FALLING_EDGE = 0x01, RISING_EDGE = 0x02, EVERY_EDGE = 0x03,
+    FALLING_EDGE = 0x01, RISING_EDGE = 0x02, ANY_EDGE = 0x03,
   } eGpioEdge;
 
   /**
@@ -27,6 +27,12 @@ namespace ard
   gpioToolsIsrCallback (uint32_t period_us);
 
   /**
+   * Call this before any use
+   */
+  void
+  gpioInit ();
+  
+  /**
    * This class is used to introduce filters on an input gpio.
    * You may instanciate several FilteredGpio for a unique io
    * without any problem
@@ -34,9 +40,6 @@ namespace ard
   class FilteredInput
   {
   public:
-    typedef void
-    (*FilteredInput_CB) (void);
-
     /**
      * @param pin : the gpio on which the filter is attached
      * @param debounceHigh : see setDebounceHigh
@@ -64,20 +67,10 @@ namespace ard
     setDebounceLow (uint32_t debounce);
 
     /**
-     * Register a function that will be called
-     * when the filtered output goes from low to high
-     * a NULL value mean : cancel the current Callback
+     * Wait until an edge happen on the filtered value
      */
     void
-    registerRisingEdge_CB (FilteredInput_CB callback);
-
-    /**
-     * Register a function that will be called
-     * when the filtered output goes from high to low
-     * a NULL value mean : cancel the current Callback
-     */
-    void
-    registerFallingEdge_CB (FilteredInput_CB callback);
+    wait (eGpioEdge edge);
 
     /**
      * Reset the filter
@@ -127,6 +120,12 @@ namespace ard
     void
     update (uint32_t period_us);
 
+    /**
+     * reserved for FilteredInputManager, do not call
+     */
+    void
+    init();
+
   private:
     uint8_t pin;
     eGpioLevel filteredLevel;
@@ -134,9 +133,11 @@ namespace ard
     volatile uint32_t debounceHighCount;
     uint32_t debounceLowDuration;
     volatile uint32_t debounceLowCount;
-    FilteredInput_CB rising_CB;
-    FilteredInput_CB falling_CB;
+    Signal signalAny;
+    Signal signalFalling;
+    Signal signalRising;
   };
+
 } //end namespace
 
 #endif /* GPIOTOOLS_HPP_ */

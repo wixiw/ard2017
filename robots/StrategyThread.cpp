@@ -21,13 +21,34 @@ StrategyThread::init ()
 void
 StrategyThread::run ()
 {
+  LOG(INFO, "STRAT : Waiting start withdraw.");
+//  ROBOT.hmi.start.wait(FALLING_EDGE);
+  readUserInputs();
 
-//  Strategy_LedTest();
-//  Strategy_ButtonTest ();
-//  Strategy_OmronTest();
+  switch (strategyId) {
+    case 0:
+      Strategy_Alpha();
+      break;
+    case 1:
+      Strategy_LedTest();
+      break;
+    case 2:
+      Strategy_ButtonTest();
+      break;
+    case 3:
+      Strategy_OmronTest();
+      break;
+    default:
+      break;
+  }
+}
 
-  LOG(INFO, "STRAT : Fake strategy.");
-  ROBOT.nav.setColor (eColor::PREF);
+void
+StrategyThread::Strategy_Alpha ()
+{
+  LOG(INFO, "STRAT : Strategy_Alpha.");
+
+  //Set robot to default position
   ROBOT.nav.setPosition(0,0,0);
   ROBOT.nav.goTo(300, 0, SENS_AV);
   LOG(INFO,"STRAT : Move order sent, waiting...");
@@ -36,6 +57,7 @@ StrategyThread::run ()
   ROBOT.nav.goTo(0, 0, SENS_AV);
   ROBOT.nav.wait();
   LOG(INFO,"STRAT : Finished.");
+  while(1);
 }
 
 void
@@ -143,4 +165,24 @@ StrategyThread::Strategy_OmronTest ()
     }
 }
 
+void StrategyThread::readUserInputs()
+{
+  //Read color input
+  if( ROBOT.hmi.start.read() == GPIO_HIGH )
+    {
+    ROBOT.nav.setColor (eColor::PREF);
+    ROBOT.hmi.ledRGB.set(YELLOW, ON);
+    LOG(INFO, "User has selected PREF (Yellow) color");
+    }
+  else
+    {
+    ROBOT.nav.setColor (eColor::SYM);
+    ROBOT.hmi.ledRGB.set(BLUE, ON);
+    LOG(INFO, "User has selected SYM (Blue) color");
+    }
 
+  //Read strat config
+  strategyId = ROBOT.hmi.user1.read() + (ROBOT.hmi.user2.read() << 1);
+  LOG(INFO, "User has selected strategy " + String(strategyId));
+
+}

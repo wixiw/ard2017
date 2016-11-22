@@ -47,6 +47,8 @@ Robot2017::boot ()
 {
   init_bsp();
 
+  gpioInit();
+
   //Map fast periodic functions to timers interrupts
   Timer6.attachInterrupt(veryFast_interrupt);
   Timer7.attachInterrupt(fast_interrupt);
@@ -63,10 +65,10 @@ Robot2017::boot ()
   actuators.init ();
   strategy.init();
 
-  //Configure and start periodic timers
+  //Start everything
   Timer6.start(PERIOD_VERY_FAST_IT_US);
   Timer7.start(PERIOD_FAST_IT_US);
 
-  g_ArdOs.init();
-  g_ArdOs.start(); //this function never ends
+  //init OS
+  g_ArdOs.init();//this function never ends
 }

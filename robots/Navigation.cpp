@@ -36,9 +36,12 @@ Navigation::init ()
 void
 Navigation::update (TimeMs sinceLastCall)
 {
-  LOG(DEBUG,
-      "NAV : update " + stateToString (m_state) + " G="
-	  + stepperG.distanceToGo () + " D=" + stepperD.distanceToGo ());
+  static eNavState lastState = m_state;
+  if( m_state != lastState )
+    {
+        LOG(DEBUG, "NAV : state changed from  " + stateToString (lastState) + " to " + stateToString (m_state));
+        lastState = m_state;
+    }
 
   //Take a mutex to prevent localisation and target to be changed during a cycle
   g_ArdOs.Mutex_lock(m_mutex);
