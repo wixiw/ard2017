@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Atmel Studio Solution File, Format Version 11.00
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "0_Common", "Common\0_Common.cppproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
+EndProject
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "1_RobotA", "RobotA\1_RobotA.cppproj", "{B6A9CF4B-977F-4B0A-8CA7-57339A23C55E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897} = {DCE6C7E3-EE26-4D79-826B-08594B9AD897}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{4882D765-C074-4496-8554-AA11518A9088}"
+EndProject
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_AccelStepper", "UT_AccelStepper\UT_AccelStepper.cppproj", "{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0_BSP", "0_BSP", "{29608B57-A43B-4D31-B10D-7A2FA3C4DFB3}"
+EndProject
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_FreeRtos", "UT_FreeRtos\UT_FreeRtos.cppproj", "{A5BD9A14-FF73-4E04-9D65-863A12A76EEA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897} = {DCE6C7E3-EE26-4D79-826B-08594B9AD897}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Release|ARM = Release|ARM
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|ARM.ActiveCfg = Debug|ARM
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Debug|ARM.Build.0 = Debug|ARM
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|ARM.ActiveCfg = Release|ARM
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897}.Release|ARM.Build.0 = Release|ARM
+		{B6A9CF4B-977F-4B0A-8CA7-57339A23C55E}.Debug|ARM.ActiveCfg = Debug|ARM
+		{B6A9CF4B-977F-4B0A-8CA7-57339A23C55E}.Debug|ARM.Build.0 = Debug|ARM
+		{B6A9CF4B-977F-4B0A-8CA7-57339A23C55E}.Release|ARM.ActiveCfg = Release|ARM
+		{B6A9CF4B-977F-4B0A-8CA7-57339A23C55E}.Release|ARM.Build.0 = Release|ARM
+		{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}.Debug|ARM.ActiveCfg = Debug|ARM
+		{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}.Debug|ARM.Build.0 = Debug|ARM
+		{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}.Release|ARM.ActiveCfg = Release|ARM
+		{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}.Release|ARM.Build.0 = Release|ARM
+		{A5BD9A14-FF73-4E04-9D65-863A12A76EEA}.Debug|ARM.ActiveCfg = Debug|ARM
+		{A5BD9A14-FF73-4E04-9D65-863A12A76EEA}.Debug|ARM.Build.0 = Debug|ARM
+		{A5BD9A14-FF73-4E04-9D65-863A12A76EEA}.Release|ARM.ActiveCfg = Release|ARM
+		{A5BD9A14-FF73-4E04-9D65-863A12A76EEA}.Release|ARM.Build.0 = Release|ARM
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3940C6FF-C6D6-443E-A0C5-F379C38B95AB} = {29608B57-A43B-4D31-B10D-7A2FA3C4DFB3}
+		{29608B57-A43B-4D31-B10D-7A2FA3C4DFB3} = {4882D765-C074-4496-8554-AA11518A9088}
+		{A5BD9A14-FF73-4E04-9D65-863A12A76EEA} = {29608B57-A43B-4D31-B10D-7A2FA3C4DFB3}
+	EndGlobalSection
+EndGlobal
