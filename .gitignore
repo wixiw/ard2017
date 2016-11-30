@@ -52,3 +52,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.b##
+robot/RobotA/jlink.log
+.vs
+Debug
