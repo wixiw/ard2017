@@ -278,13 +278,14 @@ ArdOs::Signal_set (Signal s)
   xSemaphoreGive(s);
 }
 
-//void
-//Signal::setFromIsr ()
-//{
-//  ardAssert(sem != 0, "Signal not initialized.");
-//  portBASE_TYPE xHigherPriorityTaskWoken = 0;
-//  xSemaphoreGiveFromISR(sem, &xHigherPriorityTaskWoken);
-//}
+void
+ArdOs::Signal_setFromIsr (Signal s)
+{
+  ardAssert(state == eOsState::RUNNING,
+	    "ArdOs is not in the right state to set a signal.");
+  portBASE_TYPE xHigherPriorityTaskWoken = 0;
+  xSemaphoreGiveFromISR(s, &xHigherPriorityTaskWoken);
+}
 
 void
 ArdOs::Signal_wait (Signal s)

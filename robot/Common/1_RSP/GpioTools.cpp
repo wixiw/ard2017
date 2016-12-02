@@ -100,8 +100,8 @@ FilteredInput::update (uint32_t period_us)
 	{
 	  debounceLowCount = 0;
 	  filteredLevel = GPIO_HIGH;
-	  g_ArdOs.Signal_set(signalAny);
-	  g_ArdOs.Signal_set(signalRising);
+	  g_ArdOs.Signal_setFromIsr(signalAny);
+	  g_ArdOs.Signal_setFromIsr(signalRising);
 	}
     }
   else if( digitalRead(pin) == GPIO_LOW && filteredLevel == GPIO_HIGH )
@@ -112,8 +112,8 @@ FilteredInput::update (uint32_t period_us)
 	{
 	  debounceHighCount = 0;
 	  filteredLevel = GPIO_LOW;
-	  g_ArdOs.Signal_set(signalAny);
-	  g_ArdOs.Signal_set(signalFalling);
+	  g_ArdOs.Signal_setFromIsr(signalAny);
+	  g_ArdOs.Signal_setFromIsr(signalFalling);
 	}
     }
   else
@@ -128,6 +128,6 @@ FilteredInput::init ()
 {
   signalAny = g_ArdOs.Signal_create();
   signalFalling = g_ArdOs.Signal_create();
-  signalAny = g_ArdOs.Signal_create();
+  signalRising = g_ArdOs.Signal_create();
 }
 

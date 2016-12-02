@@ -38,6 +38,32 @@
         </dependencies>
       </framework-data>
     </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.samice</avrtool>
+    <avrtoolserialnumber>158006664</avrtoolserialnumber>
+    <avrdeviceexpectedsignature>0x285E0A60</avrdeviceexpectedsignature>
+    <com_atmel_avrdbg_tool_samice>
+      <ToolOptions>
+        <InterfaceProperties>
+          <JtagDbgClock>4000000</JtagDbgClock>
+          <JtagEnableExtResetOnStartSession>true</JtagEnableExtResetOnStartSession>
+          <JtagInChain>false</JtagInChain>
+          <JtagDevicesBefore>0</JtagDevicesBefore>
+          <JtagDevicesAfter>0</JtagDevicesAfter>
+          <JtagInstrBitsBefore>0</JtagInstrBitsBefore>
+          <JtagInstrBitsAfter>0</JtagInstrBitsAfter>
+          <JtagSelectedDeviceIndexInChain>
+          </JtagSelectedDeviceIndexInChain>
+          <JtagDaisyChainDevices>
+          </JtagDaisyChainDevices>
+        </InterfaceProperties>
+        <InterfaceName>JTAG</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.samice</ToolType>
+      <ToolNumber>158006664</ToolNumber>
+      <ToolName>J-Link</ToolName>
+    </com_atmel_avrdbg_tool_samice>
+    <avrtoolinterface>JTAG</avrtoolinterface>
+    <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -112,17 +138,19 @@
   <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
   <armgcc.compiler.symbols.DefSymbols>
     <ListValues>
-      <Value>DEBUG</Value>
       <Value>F_CPU=84000000L</Value>
       <Value>ARDUINO=10612</Value>
       <Value>ARDUINO_SAM_DUE</Value>
       <Value>ARDUINO_ARCH_SAM</Value>
+      <Value>USBCON</Value>
     </ListValues>
   </armgcc.compiler.symbols.DefSymbols>
   <armgcc.compiler.directories.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\SAM3X_DFP\1.0.50\include</Value>
-      <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
+      <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
+      <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
+      <Value>../../Common/0_BSP/ArduinoCore/include</Value>
       <Value>..\..\Common\0_BSP\ArduinoCore</Value>
       <Value>..\..\Common\0_BSP\FreeRtos</Value>
       <Value>..\..\Common\0_BSP</Value>
@@ -130,61 +158,60 @@
       <Value>..\..\Common\2_AL</Value>
     </ListValues>
   </armgcc.compiler.directories.IncludePaths>
-  <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
+  <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
   <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
+  <armgcc.compiler.optimization.PrepareDataForGarbageCollection>True</armgcc.compiler.optimization.PrepareDataForGarbageCollection>
   <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
   <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
-  <armgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 --specs=nosys.specs</armgcc.compiler.miscellaneous.OtherFlags>
   <armgcccpp.compiler.symbols.DefSymbols>
     <ListValues>
-      <Value>DEBUG</Value>
       <Value>F_CPU=84000000L</Value>
       <Value>ARDUINO=10612</Value>
       <Value>ARDUINO_SAM_DUE</Value>
       <Value>ARDUINO_ARCH_SAM</Value>
+      <Value>USBCON</Value>
     </ListValues>
   </armgcccpp.compiler.symbols.DefSymbols>
   <armgcccpp.compiler.directories.IncludePaths>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\SAM3X_DFP\1.0.50\include</Value>
-      <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
+      <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
+      <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
+      <Value>../../Common/0_BSP/ArduinoCore/include</Value>
       <Value>..\..\Common\0_BSP\ArduinoCore</Value>
       <Value>..\..\Common\0_BSP\FreeRtos</Value>
-      <Value>..\..\Common\0_BSP</Value>
+      <Value>../../Common/0_BSP</Value>
       <Value>..\..\Common\1_RSP</Value>
       <Value>..\..\Common\2_AL</Value>
+      <Value>..\..\Common</Value>
     </ListValues>
   </armgcccpp.compiler.directories.IncludePaths>
-  <armgcccpp.compiler.optimization.level>Optimize (-O1)</armgcccpp.compiler.optimization.level>
   <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>
+  <armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>
   <armgcccpp.compiler.optimization.DebugLevel>Maximum (-g3)</armgcccpp.compiler.optimization.DebugLevel>
   <armgcccpp.compiler.warnings.AllWarnings>True</armgcccpp.compiler.warnings.AllWarnings>
-  <armgcccpp.compiler.miscellaneous.OtherFlags>--specs=nosys.specs</armgcccpp.compiler.miscellaneous.OtherFlags>
+  <armgcccpp.compiler.miscellaneous.OtherFlags>-nostdlib -fno-threadsafe-statics -std=gnu++11</armgcccpp.compiler.miscellaneous.OtherFlags>
+  <armgcccpp.linker.general.NoSharedLibraries>True</armgcccpp.linker.general.NoSharedLibraries>
   <armgcccpp.linker.libraries.Libraries>
     <ListValues>
       <Value>libm</Value>
       <Value>libARD</Value>
-      <Value>libArduino</Value>
-      <Value>libsam_sam3x8e_gcc_rel</Value>
-      <Value>libarm_cortexM3l_math</Value>
     </ListValues>
   </armgcccpp.linker.libraries.Libraries>
   <armgcccpp.linker.libraries.LibrarySearchPaths>
     <ListValues>
-      <Value>%24(ProjectDir)\Device_Startup</Value>
       <Value>../../Common/Debug</Value>
-      <Value>../../Common/0_BSP/ArduinoCore</Value>
+      <Value>../../Common/0_BSP/ArduinoCore/linker_scripts</Value>
     </ListValues>
   </armgcccpp.linker.libraries.LibrarySearchPaths>
   <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
   <armgcccpp.linker.memorysettings.ExternalRAM />
-  <armgcccpp.linker.miscellaneous.LinkerFlags>-Tsam3x8e_flash.ld</armgcccpp.linker.miscellaneous.LinkerFlags>
-  <armgcccpp.assembler.general.IncludePaths>
+  <armgcccpp.linker.miscellaneous.LinkerFlags>-Tflash.ld</armgcccpp.linker.miscellaneous.LinkerFlags>
+  <armgcccpp.linker.miscellaneous.OtherObjects>
     <ListValues>
-      <Value>%24(PackRepoDir)\atmel\SAM3X_DFP\1.0.50\include</Value>
-      <Value>%24(PackRepoDir)\arm\cmsis\4.2.0\CMSIS\Include\</Value>
+      <Value>-Wl,--cref -Wl,--check-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid</Value>
     </ListValues>
-  </armgcccpp.assembler.general.IncludePaths>
+  </armgcccpp.linker.miscellaneous.OtherObjects>
   <armgcccpp.assembler.debugging.DebugLevel>Default (-g)</armgcccpp.assembler.debugging.DebugLevel>
   <armgcccpp.preprocessingassembler.general.IncludePaths>
     <ListValues>
@@ -197,32 +224,9 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Device_Startup\startup_sam3xa.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Device_Startup\system_sam3xa.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Device_Startup\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Device_Startup\sam3x8e_flash.ld">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="Device_Startup\sam3x8e_sram.ld">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="Device_Startup\sam3xa_flash.ld">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="Device_Startup\sam3xa_sram.ld">
-      <SubType>compile</SubType>
-    </None>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

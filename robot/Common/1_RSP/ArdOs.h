@@ -198,6 +198,10 @@ namespace ard
     //Only available when ArdOs is running (else it assets)
     void
     Signal_set (Signal s);
+    void
+
+    //Same as Signal_set, but from an intteruption context
+    Signal_setFromIsr (Signal s);
 
     //Wait until the signal is set. Usually only one thread
     //should wait at a time. Note that if several wait are called

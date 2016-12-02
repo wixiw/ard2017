@@ -55,3 +55,9 @@ Temporary Items
 robot/RobotA/jlink.log
 .vs
 Debug
+robot/UT_FreeRtos/jlink.config
+*.log
+robot/UT_FreeRtos/UT_FreeRtos.componentinfo.xml
+robot/UT_AccelStepper/UT_AccelStepper.componentinfo.xml
+robot/RobotA/1_RobotA.componentinfo.xml
+robot/Common/0_Common.componentinfo.xml
