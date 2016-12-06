@@ -15,7 +15,7 @@ using namespace ard;
 LogThread LogThread::instance = LogThread ();
 
 LogThread::LogThread () :
-    configSerialLog (true), configSdCardLog (false), semDataPresent (NULL), mutex (
+    configSerialLog (true), configSdCardLog (true), semDataPresent (NULL), mutex (
     NULL), fifoHead (0), fifoTail (0), fifoCount (0), missedLogs (0), sdCardPresent (
     false)
 {
@@ -33,12 +33,6 @@ LogThread::init ()
 
   //create the mutex
   mutex = g_ArdOs.Mutex_create();
-
-  if( configSdCardLog )
-    {
-      //setup the SDcard driver and open the log file
-      initSDcard ();
-    }
 }
 
 void
@@ -66,6 +60,13 @@ LogThread::run ()
 #else
   g_ArdOs.dprintln ("Tips : In order to see debug logs, define ARD_DEBUG in ArdOs.h.");
 #endif
+
+  if( configSdCardLog )
+    {
+      //setup the SDcard driver and open the log file
+	  //shall not be done in the init section (...) because it relies on millis() calls to check timeout which only works when the OS is started.
+      initSDcard ();
+    }
 
   while (1)
     {

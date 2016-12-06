@@ -22,7 +22,7 @@ void
 StrategyThread::run ()
 {
   LOG(INFO, "STRAT : Waiting start withdraw.");
-//  ROBOT.hmi.start.wait(FALLING_EDGE);
+  ROBOT.hmi.start.wait(FALLING_EDGE);
   readUserInputs();
 
   switch (strategyId) {
