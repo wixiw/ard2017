@@ -19,20 +19,21 @@ static void delayMS(uint32_t millis) {
 }
 
 //ARD
+#define UNUSED(x) ((void)(x))
 void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
 {
-/* These are volatile to try and prevent the compiler/linker optimising them
-away as the variables never actually get used.  If the debugger won't show the
-values of the variables, make them global my moving their declaration outside
-of this function. */
-volatile uint32_t r0;
-volatile uint32_t r1;
-volatile uint32_t r2;
-volatile uint32_t r3;
-volatile uint32_t r12;
-volatile uint32_t lr; /* Link register. */
-volatile uint32_t pc; /* Program counter. */
-volatile uint32_t psr;/* Program status register. */
+	/* These are volatile to try and prevent the compiler/linker optimising them
+	away as the variables never actually get used.  If the debugger won't show the
+	values of the variables, make them global my moving their declaration outside
+	of this function. */
+	volatile uint32_t r0;
+	volatile uint32_t r1;
+	volatile uint32_t r2;
+	volatile uint32_t r3;
+	volatile uint32_t r12;
+	volatile uint32_t lr; /* Link register. */
+	volatile uint32_t pc; /* Program counter. */
+	volatile uint32_t psr;/* Program status register. */
 
     r0 = pulFaultStackAddress[ 0 ];
     r1 = pulFaultStackAddress[ 1 ];
@@ -43,6 +44,16 @@ volatile uint32_t psr;/* Program status register. */
     lr = pulFaultStackAddress[ 5 ];
     pc = pulFaultStackAddress[ 6 ];
     psr = pulFaultStackAddress[ 7 ];
+	
+	//prevent compiler warnings as variables are never used (except by the debugger)
+	UNUSED(r0);
+	UNUSED(r1);
+	UNUSED(r2);
+	UNUSED(r3);
+	UNUSED(r12);
+	UNUSED(lr);
+	UNUSED(pc);
+	UNUSED(psr);
 }
 
 //------------------------------------------------------------------------------

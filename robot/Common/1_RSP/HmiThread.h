@@ -130,8 +130,8 @@ namespace ard
 
     FilteredInput start;
     FilteredInput matchColor;
-    FilteredInput user1;
-    FilteredInput user2;
+    FilteredInput user1; //user1 is on the left (1/2 choice)
+    FilteredInput user2; //user2 is on the right (test/master choice)
 
   private:
     uint16_t m_period; //in ms

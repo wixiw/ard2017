@@ -309,10 +309,6 @@ Navigation::setColor (eColor c)
   g_ArdOs.Mutex_lock(m_mutex);
   m_color = c;
   g_ArdOs.Mutex_unlock(m_mutex);
-  if (c == eColor::PREF)
-    LOG(INFO, "NAV : Color set to : PREF");
-  else
-    LOG(INFO, "NAV : Color set to : SYM");
 }
 
 void

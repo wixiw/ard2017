@@ -10,14 +10,22 @@
 
 #include "ArdOs.h"
 
+#define NB_MAX_STRATEGIES 4
+
 namespace ard
 {
   class Robot2017;
+	typedef void (*StrategyFunctor)(void);
+	//Used to display the list of existing strategies
+	struct StrategyDescriptor{
+		String name;
+		StrategyFunctor functor;
+	};
 
   class StrategyThread : public IThread
   {
   public:
-    StrategyThread () = default;
+    StrategyThread ();
     virtual
     ~StrategyThread () = default;
 
@@ -27,22 +35,20 @@ namespace ard
     //Implements IThreads : executes the stategy
     void
     run () override;
+	
+	//register new strategy in the list
+	void 
+	registerStrategy(String name, StrategyFunctor functor);
 
   private:
-    //awaiting a real strategy ...
-    void Strategy_Alpha();
-    //for debug only : light a led for each activated user switch
-    void Strategy_ButtonTest();
-    //for debug only : light a led for each activated omron
-    void Strategy_OmronTest();
-    //for debug only : make all leds blinking to check they are working
-    void Strategy_LedTest();
-
     //read user config (color and strat selection)
     void readUserInputs();
 
     //a value identifying the strategy choosed by the user
     uint8_t strategyId;
+	
+	//list of strategies
+	StrategyDescriptor strategies[NB_MAX_STRATEGIES];
   };
 
 } /* namespace ard */
