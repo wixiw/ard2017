@@ -66,6 +66,8 @@ namespace ard
     //Assemble all object instances
     //private constructor as its a singleton class
     Robot2017 ();
+	Robot2017& operator= (const Robot2017& p);
+	Robot2017 (const Robot2017& p);
 
   };
 

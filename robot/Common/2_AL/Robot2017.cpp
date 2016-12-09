@@ -13,7 +13,7 @@
 using namespace ard;
 
 //singleton instanciation
-Robot2017 Robot2017::instance = Robot2017 ();
+Robot2017 Robot2017::instance = Robot2017();
 
 //Use this interrupt to execute periodic stuff that shall run at a very high frequency (typically steppers)
 //Obviously at such a frequence a Thread is too heavy as the context-switch duration would be higher than the period
@@ -39,9 +39,11 @@ Robot2017::Robot2017 () :
     teleop(),
     actuators(),
     strategy(),
-    nav()
+    nav(),
+	claws()
 {
   actuators.addMiniThread(&nav);
+  actuators.addMiniThread(&claws);
   strategy.registerStrategy("Alpha",			Strategy_Alpha);
   strategy.registerStrategy("Led Test",			Strategy_LedTest);
   strategy.registerStrategy("Button Test",		Strategy_ButtonTest);
@@ -77,4 +79,23 @@ Robot2017::boot ()
 
   //init OS
   g_ArdOs.init();//this function never ends
+}
+
+void
+Robot2017::dieMotherFucher()
+{
+    nav.stop();
+    nav.wait();
+    g_ArdOs.die();
+}
+
+Robot2017& Robot2017::operator= (const Robot2017& p)
+{
+	*this = Robot2017(p);
+	return *this;
+}
+	
+Robot2017::Robot2017(const Robot2017& p):
+	Robot2017()
+{
 }
