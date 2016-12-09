@@ -33,7 +33,7 @@ namespace ard
     addMiniThread(IMiniPeriodicThread* threadlet );
 
   private:
-    static const uint8_t NB_MAX_MINI_THREADS = 1;
+    static const uint8_t NB_MAX_MINI_THREADS = 5;
     IMiniPeriodicThread* threadlets[NB_MAX_MINI_THREADS];
     uint8_t nextRank;
   };

@@ -1214,6 +1214,12 @@
     <Compile Include="2_AL\ActuatorThread.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\ActuatorX.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\ActuatorX.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\Robot2017.cpp">
       <SubType>compile</SubType>
     </Compile>

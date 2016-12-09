@@ -13,6 +13,7 @@
 #include "Navigation.h"
 #include "ActuatorThread.h"
 #include "StrategyThread.h"
+#include "ActuatorX.h"
 
 #define ROBOT Robot2017::getInstance()
 
@@ -55,7 +56,8 @@ namespace ard
     StrategyThread		strategy;
 
     //Components
-    Navigation                  nav;
+    Navigation          nav;
+	ActuatorX			claws;
 
   private:
     //singleton instance
@@ -63,7 +65,7 @@ namespace ard
 
     //Assemble all object instances
     //private constructor as its a singleton class
-    Robot2017 ();COPY_CONSTRUCTORS (Robot2017)
+    Robot2017 ();
 
   };
 

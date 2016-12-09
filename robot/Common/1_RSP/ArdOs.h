@@ -47,7 +47,7 @@ namespace ard
     run () = 0;
 
     //Put thread in sleep mode during delay ms.
-    void delay(DelayMs delay)
+    void sleepMs(DelayMs delay)
     {
       vTaskDelay(delay);
     }
@@ -158,7 +158,11 @@ namespace ard
     void
     dprintln(String s);
 
-    //die
+    //Make the calling thread sleeping for a duration
+    void
+    sleep_ms(uint16_t durationMs);
+
+    //wait indefinitely on a signal that will never be set
     void
     die();
 

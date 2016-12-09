@@ -20,6 +20,11 @@ Navigation::Navigation () :
 {
 }
 
+
+/**---------------------------------
+ * Container thread interface
+ ---------------------------------*/
+
 void
 Navigation::init ()
 {
@@ -28,10 +33,6 @@ Navigation::init ()
   stepperG.setAcceleration(ACC_MAX);
   stepperD.setAcceleration(ACC_MAX);
 }
-
-/**---------------------------------
- * Container thread interface
- ---------------------------------*/
 
 void
 Navigation::update (TimeMs sinceLastCall)
@@ -139,13 +140,13 @@ Navigation::update (TimeMs sinceLastCall)
     }
 
   //TODO attention si on s'arrete avec ca, on ne compte pas le deplacement car c'est normalement fait a la fin
-  case eNavState::INTERRUPTING_ORDER:
+  case eNavState::STOPPING:
     {
       if (subOrderFinished ())
-	{
-	  m_state = eNavState::IDLE;
-	  LOG(INFO, "NAV : order interrupted.");
-	}
+	    {
+    	    m_state = eNavState::IDLE;
+    	    LOG(INFO, "NAV : stopped.");
+	    }
       break;
     }
 }
@@ -283,6 +284,22 @@ Navigation::faceTo (Point p)
 }
 
 void
+Navigation::stop ()
+{
+    LOG(INFO, "NAV : stop requested");
+    g_ArdOs.Mutex_lock(m_mutex);
+
+    stepperG.stop();
+    stepperD.stop();
+
+    //The state is directly changed to interrupting
+    m_state = eNavState::STOPPING;
+    m_order = Navigation::eNavOrder::NOTHING;
+
+    g_ArdOs.Mutex_unlock(m_mutex);
+}
+
+void
 Navigation::wait ()
 {
   //obvisouly don't put a mutex, it's a blocking call ... !
@@ -397,7 +414,7 @@ void
 Navigation::interruptCurrentMove ()
 {
   LOG(INFO, "NAV : current order is interrupted.");
-  m_state = eNavState::INTERRUPTING_ORDER;
+  m_state = eNavState::STOPPING;
   stepperG.stop ();
   stepperD.stop ();
 }
@@ -445,6 +462,6 @@ Navigation::stateToString (eNavState state)
 ;      ENUM2STR(eNavState::FACING_DEST);
       ENUM2STR(eNavState::GOING_TO_TARGET);
       ENUM2STR(eNavState::TURNING_AT_TARGET);
-      ENUM2STR(eNavState::INTERRUPTING_ORDER);
+      ENUM2STR(eNavState::STOPPING);
     }
 }

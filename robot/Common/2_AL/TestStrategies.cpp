@@ -21,19 +21,19 @@ ard::Strategy_LedTest ()
 		ROBOT.hmi.ledRGB.set (RED, ON);
 		ROBOT.hmi.led4.off ();
 		ROBOT.hmi.led1.on ();
-		delay (WAIT);
+		g_ArdOs.sleep_ms (WAIT);
 		ROBOT.hmi.ledRGB.set (GREEN, ON);
 		ROBOT.hmi.led1.off ();
 		ROBOT.hmi.led2.on ();
-		delay (WAIT);
+		g_ArdOs.sleep_ms (WAIT);
 		ROBOT.hmi.ledRGB.set (BLUE, ON);
 		ROBOT.hmi.led2.off ();
 		ROBOT.hmi.led3.on ();
-		delay (WAIT);
+		g_ArdOs.sleep_ms (WAIT);
 		ROBOT.hmi.ledRGB.set (WHITE, ON);
 		ROBOT.hmi.led3.off ();
 		ROBOT.hmi.led4.on ();
-		delay (WAIT);
+		g_ArdOs.sleep_ms (WAIT);
 	}
 }
 
@@ -47,19 +47,23 @@ ard::Strategy_ButtonTest ()
 		if (ROBOT.hmi.matchColor.read ())
 		{
 			ROBOT.hmi.led1.on ();
+			ROBOT.claws.arm();
 		}
 		else
 		{
 			ROBOT.hmi.led1.off ();
+			ROBOT.claws.release();
 		}
 
 		if (ROBOT.hmi.user1.read ())
 		{
 			ROBOT.hmi.led2.on ();
+			ROBOT.claws.open();
 		}
 		else
 		{
 			ROBOT.hmi.led2.off ();
+			ROBOT.claws.close();
 		}
 
 		if (ROBOT.hmi.user2.read ())
@@ -80,7 +84,7 @@ ard::Strategy_ButtonTest ()
 			ROBOT.hmi.led4.off ();
 		}
 
-		delay (50);
+		g_ArdOs.sleep_ms (50);
 	}
 }
 
@@ -111,6 +115,6 @@ ard::Strategy_OmronTest ()
 		else
 		ROBOT.hmi.led4.off ();
 
-		delay (50);
+		g_ArdOs.sleep_ms (50);
 	}
 }

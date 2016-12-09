@@ -357,3 +357,8 @@ ArdOs::Semaphore_tryTake (Semaphore s)
   return pdTRUE == xSemaphoreTake(s, 0);
 }
 
+void ArdOs::sleep_ms(uint16_t durationMs)
+{
+    vTaskDelay(durationMs);
+}
+

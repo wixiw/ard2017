@@ -36,9 +36,10 @@ StrategyThread::run ()
   
   readUserInputs();
   
-  LOG(INFO, "STRAT : Waiting start withdraw.");
+  LOG(INFO, "STRAT : Waiting start withdraw to begin strategy.");
   ROBOT.hmi.start.wait(FALLING_EDGE);
   
+  //Execute selected strategy
   strategies[strategyId].functor();
 }
 

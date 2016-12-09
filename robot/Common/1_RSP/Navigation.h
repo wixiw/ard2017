@@ -124,6 +124,12 @@ namespace ard
     faceTo (Point p);
 
     /**
+     * Stops the robot. It interrupts current order.
+     */
+    void 
+    stop();
+
+    /**
      * This is a blocking call until the current order is finished
      */
     void
@@ -154,12 +160,12 @@ namespace ard
   private:
     typedef enum class eNavState
     {
-      IDLE, FACING_DEST, GOING_TO_TARGET, TURNING_AT_TARGET, INTERRUPTING_ORDER
+      IDLE, FACING_DEST, GOING_TO_TARGET, TURNING_AT_TARGET, STOPPING
     } eNavState;
 
     typedef enum class eNavOrder
     {
-      NOTHING, GOTO, GOTO_CAP
+      NOTHING, GOTO, GOTO_CAP, STOP
     } eNavOrder;
 
     //Integrates the new displacement mesures with current position
