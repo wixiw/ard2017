@@ -25,5 +25,5 @@ ard::Strategy_Alpha ()
 	ROBOT.nav.goTo(0, 0, SENS_AV);
 	ROBOT.nav.wait();
 	LOG(INFO,"STRAT : Finished.");
-	ROBOT.dieMotherFucher();
+	ROBOT.dieMotherFucker();
 }

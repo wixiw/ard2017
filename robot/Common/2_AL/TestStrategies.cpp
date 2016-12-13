@@ -18,21 +18,21 @@ ard::Strategy_LedTest ()
 
 	while (1)
 	{
-		ROBOT.hmi.ledRGB.set (RED, ON);
-		ROBOT.hmi.led4.off ();
-		ROBOT.hmi.led1.on ();
+		ROBOT.setRGBled(RED, ON);
+		ROBOT.setLed(LED4, eLedState::OFF);
+		ROBOT.setLed(LED1, eLedState::ON);
 		g_ArdOs.sleep_ms (WAIT);
-		ROBOT.hmi.ledRGB.set (GREEN, ON);
-		ROBOT.hmi.led1.off ();
-		ROBOT.hmi.led2.on ();
+		ROBOT.setRGBled(GREEN, ON);
+		ROBOT.setLed(LED1, eLedState::OFF);
+		ROBOT.setLed(LED2, eLedState::ON);
 		g_ArdOs.sleep_ms (WAIT);
-		ROBOT.hmi.ledRGB.set (BLUE, ON);
-		ROBOT.hmi.led2.off ();
-		ROBOT.hmi.led3.on ();
+		ROBOT.setRGBled(BLUE, ON);
+		ROBOT.setLed(LED2, eLedState::OFF);
+		ROBOT.setLed(LED3, eLedState::ON);
 		g_ArdOs.sleep_ms (WAIT);
-		ROBOT.hmi.ledRGB.set (WHITE, ON);
-		ROBOT.hmi.led3.off ();
-		ROBOT.hmi.led4.on ();
+		ROBOT.setRGBled(WHITE, ON);
+		ROBOT.setLed(LED3, eLedState::OFF);
+		ROBOT.setLed(LED4, eLedState::ON);
 		g_ArdOs.sleep_ms (WAIT);
 	}
 }
@@ -44,44 +44,44 @@ ard::Strategy_ButtonTest ()
 	LOG(INFO, "STRAT : Strategy_ButtonTest.");
 	while (1)
 	{
-		if (ROBOT.hmi.matchColor.read ())
+		if (ROBOT.isPreferedColor())
 		{
-			ROBOT.hmi.led1.on ();
+			ROBOT.setLed(LED1, eLedState::ON);
 			ROBOT.claws.arm();
 		}
 		else
 		{
-			ROBOT.hmi.led1.off ();
+			ROBOT.setLed(LED1, eLedState::OFF);
 			ROBOT.claws.release();
 		}
 
-		if (ROBOT.hmi.user1.read ())
+		if (ROBOT.getStrategyId() & 0x02)
 		{
-			ROBOT.hmi.led2.on ();
+			ROBOT.setLed(LED2, eLedState::ON);
 			ROBOT.claws.open();
 		}
 		else
 		{
-			ROBOT.hmi.led2.off ();
+			ROBOT.setLed(LED2, eLedState::OFF);
 			ROBOT.claws.close();
 		}
 
-		if (ROBOT.hmi.user2.read ())
+		if (ROBOT.getStrategyId() & 0x02)
 		{
-			ROBOT.hmi.led3.on ();
+			ROBOT.setLed(LED3, eLedState::ON);
 		}
 		else
 		{
-			ROBOT.hmi.led3.off ();
+			ROBOT.setLed(LED3, eLedState::OFF);
 		}
 
-		if (ROBOT.hmi.start.read ())
+		if (ROBOT.isStartPlugged())
 		{
-			ROBOT.hmi.led4.on ();
+			ROBOT.setLed(LED4, eLedState::ON);
 		}
 		else
 		{
-			ROBOT.hmi.led4.off ();
+			ROBOT.setLed(LED4, eLedState::OFF);
 		}
 
 		g_ArdOs.sleep_ms (50);
@@ -96,24 +96,24 @@ ard::Strategy_OmronTest ()
 	while (1)
 	{
 		if (ROBOT.nav.getOmronState_FL ())
-		ROBOT.hmi.led1.on ();
+		ROBOT.setLed(LED1, eLedState::ON);
 		else
-		ROBOT.hmi.led1.off ();
+		ROBOT.setLed(LED1, eLedState::OFF);
 
 		if (ROBOT.nav.getOmronState_FR ())
-		ROBOT.hmi.led2.on ();
+		ROBOT.setLed(LED2, eLedState::ON);
 		else
-		ROBOT.hmi.led2.off ();
+		ROBOT.setLed(LED2, eLedState::OFF);
 
 		if (ROBOT.nav.getOmronState_RL ())
-		ROBOT.hmi.led3.on ();
+		ROBOT.setLed(LED3, eLedState::ON);
 		else
-		ROBOT.hmi.led3.off ();
+		ROBOT.setLed(LED3, eLedState::OFF);
 
 		if (ROBOT.nav.getOmronState_RR ())
-		ROBOT.hmi.led4.on ();
+		ROBOT.setLed(LED4, eLedState::ON);
 		else
-		ROBOT.hmi.led4.off ();
+		ROBOT.setLed(LED4, eLedState::OFF);
 
 		g_ArdOs.sleep_ms (50);
 	}

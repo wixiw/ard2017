@@ -126,6 +126,13 @@ namespace ard
     void
     init();
 
+     /**
+     * debug or test use only : simulate a front in order to unblock 
+     * a client waiting in wait(edge)
+     */
+    void 
+    fakeEdge(eGpioEdge lvl);
+
   private:
     uint8_t pin;
     eGpioLevel filteredLevel;

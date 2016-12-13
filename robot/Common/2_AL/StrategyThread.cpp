@@ -32,12 +32,12 @@ StrategyThread::run ()
   }
 	
   LOG(INFO, "STRAT : Waiting strategy/color configuration and start insertion.");
-  ROBOT.hmi.start.wait(RISING_EDGE);
+  ROBOT.waitStartPlugged();
   
   readUserInputs();
   
   LOG(INFO, "STRAT : Waiting start withdraw to begin strategy.");
-  ROBOT.hmi.start.wait(FALLING_EDGE);
+  ROBOT.waitStartWithdraw();
   
   //Execute selected strategy
   strategies[strategyId].functor();
@@ -56,22 +56,23 @@ StrategyThread::registerStrategy(String name, StrategyFunctor functor)
 void StrategyThread::readUserInputs()
 {
   //Read color input
-  if( ROBOT.hmi.matchColor.read() == GPIO_HIGH )
+  if( ROBOT.isPreferedColor() )
     {
     ROBOT.nav.setColor (eColor::PREF);
-    ROBOT.hmi.ledRGB.set(YELLOW, ON);
+    ROBOT.setRGBled(YELLOW, ON);
     LOG(INFO, "User has selected PREF (Yellow) color");
     }
   else
     {
     ROBOT.nav.setColor (eColor::SYM);
-    ROBOT.hmi.ledRGB.set(BLUE, ON);
+    ROBOT.setRGBled(BLUE, ON);
     LOG(INFO, "User has selected SYM (Blue) color");
     }
 
   //Read strat config
-  strategyId = (ROBOT.hmi.user1.read() << 1) + (ROBOT.hmi.user2.read() );
+  strategyId = ROBOT.getStrategyId();
   ardAssert(strategies[strategyId].functor != 0, "Selected strategy functor is null.");
   LOG(INFO, "User has selected strategy " + strategies[strategyId].name);
 
 }
+

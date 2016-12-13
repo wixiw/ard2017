@@ -169,8 +169,10 @@ namespace ard
     } eNavOrder;
 
     //Integrates the new displacement mesures with current position
+    //This function modifies critical section variables with no protection
+    //It's the caller responsibility to protect the call with portENTER_CRITICAL/portEXIT_CRITICAL from a thread, or call it in an interrupt context
     void
-    compute_odom (float dxG, float dxD);
+    compute_odom ();
 
     //used to send a straight line trajectory to the motors
     void
@@ -185,7 +187,7 @@ namespace ard
 
     //used internally after a straight/turn/face order to check completeness
     bool
-    subOrderFinished ();
+    subOrderFinished();
 
     String
     sensToString (sens_t sens);
@@ -223,6 +225,9 @@ namespace ard
 
     Mutex m_mutex;
     Signal m_targetReached;
+    
+    long oldStepG;
+    long oldStepD;
   };
 }    //end namespace
 

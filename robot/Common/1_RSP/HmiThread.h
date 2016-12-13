@@ -86,6 +86,8 @@ namespace ard
     //Expected to be called periodically
     void
     run ();
+    
+    void set(eLedState state);
 
   private:
     eLedState m_blink;

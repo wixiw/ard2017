@@ -34,13 +34,13 @@ void fast_interrupt()
 }
 
 Robot2017::Robot2017 () :
-    hmi (50 /* ms */),
-    log(LogThread::getInstance()),
-    teleop(),
     actuators(),
     strategy(),
+    claws(),
     nav(),
-	claws()
+    hmi (50 /* ms */),
+    log(LogThread::getInstance()),
+    teleop()
 {
   actuators.addMiniThread(&nav);
   actuators.addMiniThread(&claws);
@@ -82,7 +82,7 @@ Robot2017::boot ()
 }
 
 void
-Robot2017::dieMotherFucher()
+Robot2017::dieMotherFucker()
 {
     nav.stop();
     nav.wait();
@@ -98,4 +98,64 @@ Robot2017& Robot2017::operator= (const Robot2017& p)
 Robot2017::Robot2017(const Robot2017& p):
 	Robot2017()
 {
+}
+
+bool Robot2017::isStartPlugged()
+{
+    return hmi.start.read();
+}
+
+void Robot2017::waitStartPlugged()
+{
+    hmi.start.wait(RISING_EDGE);
+}
+
+void Robot2017::waitStartWithdraw()
+{
+    hmi.start.wait(FALLING_EDGE);
+}
+
+bool Robot2017::isPreferedColor()
+{
+    return hmi.matchColor.read();
+}
+
+uint8_t Robot2017::getStrategyId()
+{
+    return (hmi.user1.read() << 1) + (hmi.user2.read() );
+}
+
+void Robot2017::setRGBled(eRgb color, eLedState blink)
+{
+    hmi.ledRGB.set(color,blink);
+}
+
+void Robot2017::setLed(uint8_t led, eLedState blink)
+{
+    switch(led)
+    {
+        case LED1:
+            hmi.led1.set(blink);
+            break;
+        
+        case LED2:
+            hmi.led2.set(blink);
+            break;
+        
+        case LED3:
+            hmi.led3.set(blink);
+            break;
+            
+        case LED4:
+            hmi.led4.set(blink);
+            break;
+        default:
+            ardAssert(false, "Unexpected value in setLed()");
+            break;
+    }
+}
+
+void Robot2017::fakeStart(eGpioEdge edge)
+{
+    hmi.start.fakeEdge(edge);
 }

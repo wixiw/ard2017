@@ -131,3 +131,20 @@ FilteredInput::init ()
   signalRising = g_ArdOs.Signal_create();
 }
 
+void FilteredInput::fakeEdge(eGpioEdge edge)
+{
+    if(edge == RISING_EDGE)
+    {
+        g_ArdOs.Signal_set(signalAny);
+        g_ArdOs.Signal_set(signalRising);
+        return;
+    }
+    if(edge == FALLING_EDGE)
+    {
+        g_ArdOs.Signal_set(signalAny);
+        g_ArdOs.Signal_set(signalFalling);
+        return;
+    }
+    ardAssert(false, "Unexpected edge in FilteredInput::fakeEdge.");
+}
+

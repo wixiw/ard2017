@@ -1199,13 +1199,28 @@
     <Compile Include="1_RSP\Navigation.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\protobuf\pb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\protobuf\pb_common.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\protobuf\pb_common.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\protobuf\pb_decode.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\protobuf\pb_decode.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\protobuf\pb_encode.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\protobuf\pb_encode.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\RSP.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\TeleopThread.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\TeleopThread.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\ActuatorThread.cpp">
@@ -1236,6 +1251,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\StrategyThread.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\TeleopThread.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\TeleopThread.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\TestStrategies.cpp">
@@ -1279,6 +1300,7 @@
     <Folder Include="0_BSP\Drivers\utility\" />
     <Folder Include="0_BSP\FreeRTOS" />
     <Folder Include="1_RSP" />
+    <Folder Include="1_RSP\protobuf" />
     <Folder Include="2_AL" />
   </ItemGroup>
   <ItemGroup>

@@ -10,16 +10,15 @@
 
 #include "BSP.h"
 #include "RSP.h"
-#include "Navigation.h"
 #include "ActuatorThread.h"
-#include "StrategyThread.h"
 #include "ActuatorX.h"
+#include "StrategyThread.h"
+#include "TeleopThread.h"
 
 #define ROBOT Robot2017::getInstance()
 
 namespace ard
-{
-
+{    
   /**
    * This class assemble all the robot SW elements into a system
    * It aims at being the unique global var so that var creation order is managed
@@ -31,11 +30,49 @@ namespace ard
   class Robot2017
   {
   public:
+    //-------------------------------------------------------------------
+    // start of Strategy API
+    //-------------------------------------------------------------------
+    
+      //Freeze the robot so we are sure it doesn't do
+      //anything until the end of the match
+      //Note : it will still do the funny action
+      void dieMotherFucker();
+      
+      //answer true if the start is plugged
+      bool isStartPlugged();
+      
+      //Blocks until the start is plugged
+      void waitStartPlugged();
+      
+      //Blocks until the start is withdrawn
+      void waitStartWithdraw();
+      
+      //answer true when color switch is on the preferred color
+      bool isPreferedColor();
+      
+      //Combines strategy switch to creates an integer. Left switch represent highest bit, Right one lowest one.
+      uint8_t getStrategyId();
+      
+      //Drive the RGB LED
+      void setRGBled(eRgb color, eLedState blink);
+      
+      //Drive the 4 green leds
+      //for param led see BSH.h : LED1, LED2, LED3, LED4
+      void setLed(uint8_t led, eLedState blink);
+      
+  //-------------------------------------------------------------------
+  // End of Strategy API
+  //-------------------------------------------------------------------
+      
+      //called by teleoperation to simulate a start insertion;
+      void fakeStart(eGpioEdge edge);
+  
     //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
     static Robot2017&
     getInstance ()
     {
-      return instance;
+        return instance;
     }
     ;
 
@@ -43,23 +80,21 @@ namespace ard
     //This function never ends
     void boot();
 
-    //Freeze the robot so we are sure it doesn't do
-    //anything until the end of the match
-    //Note : it will still do the funny action
-    void dieMotherFucher();
-
-    //Threads
-    HmiThread			hmi;
-    LogThread& 			log;
-    TeleopThread 		teleop;
+    //Applicative layer
     ActuatorThread		actuators;
     StrategyThread		strategy;
-
-    //Components
+    ActuatorX			claws;
+    
+    //Public RSP interface : because i'm too lazy to hide it
     Navigation          nav;
-	ActuatorX			claws;
+	
 
   private:
+    //RSP implementation
+    HmiThread			hmi;
+    LogThread& 		    log;
+    TeleopThread 		teleop;
+  
     //singleton instance
     static Robot2017 instance;
 
