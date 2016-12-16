@@ -13,51 +13,54 @@
 
 namespace ard
 {
-  float
-  moduloPiPi (float a);
+    float
+    moduloPiPi(float a);
 
-  //Represent a geometric point in a 2D space
-  class Point
-  {
-  public:
-    float x;
-    float y;
+    //Represent a geometric point in a 2D space
+    class Point
+    {
+    public:
+        float x;
+        float y;
 
-    virtual ~Point(){};
-    Point ();
-    Point (float x, float y);
+        virtual ~Point()
+        {
+        }
+        ;
+        Point();
+        Point(float x, float y);
 
-    //return the symetric from the x axis
-    Point
-    toAmbiPose (eColor c);
+        //return the symetric from the x axis
+        Point
+        toAmbiPose(eColor c);
 
-    //return the angle from the x-axis to the target point
-    float angleTo(Point p);
+        //return the angle from the x-axis to the target point
+        float angleTo(Point p);
 
-    //return the distance to the other point
-    float distanceTo(Point p);
+        //return the distance to the other point
+        float distanceTo(Point p);
 
-    String
-    virtual toString ();
-  };
+        String
+        virtual toString();
+    };
 
-  //Represent a pose in a 2D space : Point + heading
-  class PointCap : public Point
-  {
-  public:
-    float h;
+    //Represent a pose in a 2D space : Point + heading
+    class PointCap: public Point
+    {
+    public:
+        float h;
 
-    PointCap ();
-    PointCap (Point p);
-    PointCap (float x, float y, float h);
+        PointCap();
+        PointCap(Point p);
+        PointCap(float x, float y, float h);
 
-    //return the symetric from the x axis
-    PointCap
-    toAmbiPose (eColor c);
+        //return the symetric from the x axis
+        PointCap
+        toAmbiPose(eColor c);
 
-    String
-    toString () override;
-  };
+        String
+        toString() override;
+    };
 
 } /* namespace ard */
 

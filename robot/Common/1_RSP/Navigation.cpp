@@ -6,277 +6,276 @@
 
 using namespace ard;
 
-Navigation::Navigation () :
-    m_pose (), m_state (eNavState::IDLE), m_target (), m_sensTarget (
-	SENS_UNDEFINED), m_order (eNavOrder::NOTHING), m_angleToTarget (0), m_distanceToTarget (
-	0), stepperG (AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR), stepperD (
-	AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR), omronFrontLeft (OMRON1, 50,
-								    50), omronFrontRight (
-	OMRON2, 50, 50), omronRearLeft (OMRON3, 50, 50), omronRearRight (OMRON4,
-									 50,
-									 50), m_color (
-	eColor::UNDEF), m_speed (SPEED_MAX), m_speed_virage (SPEED_MAX_VIR), m_mutex (
-    NULL), m_targetReached (NULL),oldStepG(0), oldStepD(0)
+Navigation::Navigation()
+        :
+                m_pose(),
+                m_state(eNavState::IDLE),
+                m_target(),
+                m_sensTarget(SENS_UNDEFINED),
+                m_order(eNavOrder::NOTHING),
+                m_angleToTarget(0),
+                m_distanceToTarget(0),
+                stepperG(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
+                stepperD(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
+                omronFrontLeft(OMRON1, 50, 50),
+                omronFrontRight(OMRON2, 50, 50),
+                omronRearLeft(OMRON3, 50, 50),
+                omronRearRight(OMRON4, 50, 50),
+                m_color(eColor::UNKOWN),
+                m_speed(SPEED_MAX),
+                m_speed_virage(SPEED_MAX_VIR),
+                m_mutex(NULL),
+                m_targetReached(NULL),
+                oldStepG(0),
+                oldStepD(0)
 {
 }
-
 
 /**---------------------------------
  * Container thread interface
  ---------------------------------*/
 
-void
-Navigation::init ()
+void Navigation::init()
 {
-  m_mutex = g_ArdOs.Mutex_create();
-  m_targetReached = g_ArdOs.Signal_create();
-  stepperG.setAcceleration(ACC_MAX);
-  stepperD.setAcceleration(ACC_MAX);
+    m_mutex = g_ArdOs.Mutex_create();
+    m_targetReached = g_ArdOs.Signal_create();
+    stepperG.setAcceleration(ACC_MAX);
+    stepperD.setAcceleration(ACC_MAX);
 }
 
-void
-Navigation::update (TimeMs sinceLastCall)
+void Navigation::update(TimeMs sinceLastCall)
 {
-  static eNavState lastState = m_state;
-  if( m_state != lastState )
+    static auto lastState = m_state;
+    if (m_state != lastState)
     {
-        LOG(DEBUG, "NAV : state changed from  " + stateToString (lastState) + " to " + stateToString (m_state));
+        LOG(DEBUG, "NAV : state changed from  " + stateToString(lastState) + " to " + stateToString(m_state));
         lastState = m_state;
     }
 
-  //Take a mutex to prevent localisation and target to be changed during a cycle
-  g_ArdOs.Mutex_lock(m_mutex);
+    //Take a mutex to prevent localisation and target to be changed during a cycle
+    g_ArdOs.Mutex_lock(m_mutex);
 
-  switch (m_state)
+    switch (m_state)
     {
     default:
     case eNavState::IDLE:
-      {
-	switch (m_order)
-	  {
-	  default:
-	  case eNavOrder::NOTHING:
-	    {
-	      break;
-	    }
-
-	  case eNavOrder::GOTO:
-	  case eNavOrder::GOTO_CAP:
-	    {
-	      LOG(INFO,
-		  "NAV : new order " + orderToString (m_order) + "(" + m_target.x
-		  + ", " + m_target.y + ", " + m_target.h + ") "
-		  + sensToString (m_sensTarget) + ".");
-	      turn (m_angleToTarget);
-	      m_state = eNavState::FACING_DEST;
-	      break;
-	    }
-	}
-      break;
-    }
-
-  case eNavState::FACING_DEST:
     {
-      if (subOrderFinished ())
-	{
-	  //Request straight line
-	  m_distanceToTarget = m_sensTarget * m_pose.distanceTo (m_target);
-	  straight (m_distanceToTarget);
+        switch (m_order)
+        {
+        default:
+        case eNavOrder::NOTHING:
+        {
+            break;
+        }
 
-	  //Change state
-	  m_angleToTarget = 0;
-	  m_state = eNavState::GOING_TO_TARGET;
-	  LOG(DEBUG, "NAV : facing destination, beginning line.");
-	}
-      break;
+        case eNavOrder::GOTO:
+        case eNavOrder::GOTO_CAP:
+        {
+            LOG(INFO,
+                    "NAV : new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget)
+                            + ".");
+            turn(m_angleToTarget);
+            m_state = eNavState::FACING_DEST;
+            break;
+        }
+        }
+        break;
     }
 
-  case eNavState::GOING_TO_TARGET:
+    case eNavState::FACING_DEST:
     {
-      if (subOrderFinished ())
-	{
-	  //Request rotation to final heading
-	  if (m_order == eNavOrder::GOTO_CAP)
-	    {
-	      if (m_target.h - m_pose.h < -M_PI)
-	        m_angleToTarget = m_target.h - m_pose.h + 2 * M_PI;
-	      else if (m_target.h - m_pose.h > M_PI)
-	        m_angleToTarget = m_target.h - m_pose.h - 2 * M_PI;
-	      else
-	        m_angleToTarget = m_target.h - m_pose.h;
-	      turn (m_angleToTarget);
-	    }
+        if (subOrderFinished())
+        {
+            //Request straight line
+            m_distanceToTarget = m_sensTarget * m_pose.distanceTo(m_target);
+            straight(m_distanceToTarget);
 
-	  //Change state
-	  m_distanceToTarget = 0;
-	  m_state = eNavState::TURNING_AT_TARGET;
-	}
-      break;
+            //Change state
+            m_angleToTarget = 0;
+            m_state = eNavState::GOING_TO_TARGET;
+            LOG(DEBUG, "NAV : facing destination, beginning line.");
+        }
+        break;
     }
 
-  case eNavState::TURNING_AT_TARGET:
+    case eNavState::GOING_TO_TARGET:
     {
-      if (subOrderFinished ())
-	{
-	  m_angleToTarget = 0;
-	  m_state = eNavState::IDLE;
-	  m_order = eNavOrder::NOTHING;
-	  g_ArdOs.Signal_set(m_targetReached);
-	  LOG(INFO, "NAV : order finished.");
-	}
-      break;
+        if (subOrderFinished())
+        {
+            //Request rotation to final heading
+            if (m_order == eNavOrder::GOTO_CAP)
+            {
+                if (m_target.h - m_pose.h < -M_PI)
+                    m_angleToTarget = m_target.h - m_pose.h + 2 * M_PI;
+                else if (m_target.h - m_pose.h > M_PI)
+                    m_angleToTarget = m_target.h - m_pose.h - 2 * M_PI;
+                else
+                    m_angleToTarget = m_target.h - m_pose.h;
+                turn(m_angleToTarget);
+            }
+
+            //Change state
+            m_distanceToTarget = 0;
+            m_state = eNavState::TURNING_AT_TARGET;
+        }
+        break;
     }
 
-  //TODO attention si on s'arrete avec ca, on ne compte pas le deplacement car c'est normalement fait a la fin
-  case eNavState::STOPPING:
+    case eNavState::TURNING_AT_TARGET:
     {
-      if (subOrderFinished ())
-	    {
-    	    m_state = eNavState::IDLE;
-    	    LOG(INFO, "NAV : stopped.");
-	    }
-      break;
+        if (subOrderFinished())
+        {
+            m_angleToTarget = 0;
+            m_state = eNavState::IDLE;
+            m_order = eNavOrder::NOTHING;
+            g_ArdOs.Signal_set(m_targetReached);
+            LOG(INFO, "NAV : order finished.");
+        }
+        break;
     }
+
+    //TODO attention si on s'arrete avec ca, on ne compte pas le deplacement car c'est normalement fait a la fin
+    case eNavState::STOPPING:
+    {
+        if (subOrderFinished())
+        {
+            m_state = eNavState::IDLE;
+            LOG(INFO, "NAV : stopped.");
+        }
+        break;
+    }
+    }
+
+    g_ArdOs.Mutex_unlock(m_mutex);
 }
 
-  g_ArdOs.Mutex_unlock(m_mutex);
-}
-
-void
-Navigation::updateFromInterrupt ()
+void Navigation::updateFromInterrupt()
 {
-  stepperG.run ();
-  stepperD.run ();
-  compute_odom();
+    stepperG.run();
+    stepperD.run();
+    compute_odom();
 }
 
 /**---------------------------------
  * User (= strategy) interface
  ---------------------------------*/
 
-void
-Navigation::setPosition (PointCap newPose)
+void Navigation::setPosition(PointCap newPose)
 {
     //prevent any interrupt from occurring between any configuration of a left/right motor
     portENTER_CRITICAL();
-    m_pose = newPose.toAmbiPose (m_color);
+    m_pose = newPose.toAmbiPose(m_color);
     portEXIT_CRITICAL();
-  
-    LOG(INFO, "NAV : position set to :" + newPose.toString ());
+
+    LOG(INFO, "NAV : position set to :" + newPose.toString());
 }
 
-void
-Navigation::goTo (Point target, sens_t sens)
+void Navigation::goTo(Point target, sens_t sens)
 {
-  g_ArdOs.Mutex_lock(m_mutex);
-  //If an order is present, wait
-  if (m_state != eNavState::IDLE)
+    g_ArdOs.Mutex_lock(m_mutex);
+    //If an order is present, wait
+    if (m_state != eNavState::IDLE)
     {
-      LOG(INFO, "NAV : new order pending until current order is finished");
-      g_ArdOs.Mutex_unlock(m_mutex);
-      wait ();
-      g_ArdOs.Mutex_lock(m_mutex);
+        LOG(INFO, "NAV : new order pending until current order is finished");
+        g_ArdOs.Mutex_unlock(m_mutex);
+        wait ();
+        g_ArdOs.Mutex_lock(m_mutex);
     }
 
-  m_order = eNavOrder::GOTO;
-  m_target = target.toAmbiPose (m_color);
-  m_sensTarget = sens;
+    m_order = eNavOrder::GOTO;
+    m_target = target.toAmbiPose (m_color);
+    m_sensTarget = sens;
 
-  g_ArdOs.Mutex_unlock(m_mutex);
+    g_ArdOs.Mutex_unlock(m_mutex);
 }
 
-void
-Navigation::goToCap (PointCap target, sens_t sens)
+void Navigation::goToCap(PointCap target, sens_t sens)
 {
-  g_ArdOs.Mutex_lock(m_mutex);
+    g_ArdOs.Mutex_lock(m_mutex);
 
-  //If an order is present, wait
-  if (m_state != eNavState::IDLE)
+    //If an order is present, wait
+    if (m_state != eNavState::IDLE)
     {
-      LOG(INFO, "NAV : new order pending until current order is finished");
-      g_ArdOs.Mutex_unlock(m_mutex);
-      wait ();
-      g_ArdOs.Mutex_lock(m_mutex);
+        LOG(INFO, "NAV : new order pending until current order is finished");
+        g_ArdOs.Mutex_unlock(m_mutex);
+        wait ();
+        g_ArdOs.Mutex_lock(m_mutex);
     }
 
-  m_order = eNavOrder::GOTO_CAP;
-  m_target = target.toAmbiPose (m_color);
-  m_sensTarget = sens;
+    m_order = eNavOrder::GOTO_CAP;
+    m_target = target.toAmbiPose (m_color);
+    m_sensTarget = sens;
 
-  g_ArdOs.Mutex_unlock(m_mutex);
+    g_ArdOs.Mutex_unlock(m_mutex);
 }
 
-void
-Navigation::goForward (float distanceMm)
+void Navigation::goForward(float distanceMm)
 {
-  ardAssert(false, "not implemented");
-  g_ArdOs.Mutex_lock(m_mutex);
+    ardAssert(false, "not implemented");
+    g_ArdOs.Mutex_lock(m_mutex);
 
-  //If an order is present, wait
-  if (m_state != eNavState::IDLE)
+    //If an order is present, wait
+    if (m_state != eNavState::IDLE)
     {
-      LOG(INFO, "NAV : new order pending until current order is finished");
-      g_ArdOs.Mutex_unlock(m_mutex);
-      wait ();
-      g_ArdOs.Mutex_lock(m_mutex);
+        LOG(INFO, "NAV : new order pending until current order is finished");
+        g_ArdOs.Mutex_unlock(m_mutex);
+        wait();
+        g_ArdOs.Mutex_lock(m_mutex);
     }
 
-  //TODO
+    //TODO
 //  m_order = XXX;
 //  m_target = target.toAmbiPose(m_color);
 //  m_sensTarget = sens;
 
-  g_ArdOs.Mutex_unlock(m_mutex);
+    g_ArdOs.Mutex_unlock(m_mutex);
 }
 
-void
-Navigation::turnTo (float angle)
+void Navigation::turnTo(float angle)
 {
-  ardAssert(false, "not implemented");
-  g_ArdOs.Mutex_lock(m_mutex);
+    ardAssert(false, "not implemented");
+    g_ArdOs.Mutex_lock(m_mutex);
 
-  //If an order is present, wait
-  if (m_state != eNavState::IDLE)
+    //If an order is present, wait
+    if (m_state != eNavState::IDLE)
     {
-      LOG(INFO, "NAV : new order pending until current order is finished");
-      g_ArdOs.Mutex_unlock(m_mutex);
-      wait ();
-      g_ArdOs.Mutex_lock(m_mutex);
+        LOG(INFO, "NAV : new order pending until current order is finished");
+        g_ArdOs.Mutex_unlock(m_mutex);
+        wait();
+        g_ArdOs.Mutex_lock(m_mutex);
     }
 
-  //TODO
+    //TODO
 //  m_order = XXX;
 //  m_target = target.toAmbiPose(m_color);
 //  m_sensTarget = sens;
 
-  g_ArdOs.Mutex_unlock(m_mutex);
+    g_ArdOs.Mutex_unlock(m_mutex);
 }
 
-void
-Navigation::faceTo (Point p)
+void Navigation::faceTo(Point p)
 {
-  ardAssert(false, "not implemented");
-  g_ArdOs.Mutex_lock(m_mutex);
+    ardAssert(false, "not implemented");
+    g_ArdOs.Mutex_lock(m_mutex);
 
-  //If an order is present, wait
-  if (m_state != eNavState::IDLE)
+    //If an order is present, wait
+    if (m_state != eNavState::IDLE)
     {
-      LOG(INFO, "NAV : new order pending until current order is finished");
-      g_ArdOs.Mutex_unlock(m_mutex);
-      wait ();
-      g_ArdOs.Mutex_lock(m_mutex);
+        LOG(INFO, "NAV : new order pending until current order is finished");
+        g_ArdOs.Mutex_unlock(m_mutex);
+        wait();
+        g_ArdOs.Mutex_lock(m_mutex);
     }
 
-  //TODO
+    //TODO
 //  m_order = XXX;
 //  m_target = target.toAmbiPose(m_color);
 //  m_sensTarget = sens;
 
-  g_ArdOs.Mutex_unlock(m_mutex);
+    g_ArdOs.Mutex_unlock(m_mutex);
 }
 
-void
-Navigation::stop ()
+void Navigation::stop()
 {
     LOG(INFO, "NAV : stop requested");
     g_ArdOs.Mutex_lock(m_mutex);
@@ -294,176 +293,163 @@ Navigation::stop ()
     g_ArdOs.Mutex_unlock(m_mutex);
 }
 
-void
-Navigation::wait ()
+void Navigation::wait()
 {
-  //obviously don't put a mutex, it's a blocking call ... !
-  g_ArdOs.Signal_wait(m_targetReached);
+    //obviously don't put a mutex, it's a blocking call ... !
+    g_ArdOs.Signal_wait(m_targetReached);
 }
 
-bool
-Navigation::targetReached ()
+bool Navigation::targetReached()
 {
-  g_ArdOs.Mutex_lock(m_mutex);
-  bool res = m_state == eNavState::IDLE;
-  g_ArdOs.Mutex_unlock(m_mutex);
-  return res;
+    g_ArdOs.Mutex_lock(m_mutex);
+    bool res = m_state == eNavState::IDLE;
+    g_ArdOs.Mutex_unlock(m_mutex);
+    return res;
 }
 
 /**---------------------------------
  * Nav configuration
  ---------------------------------*/
 
-void
-Navigation::setColor (eColor c)
+void Navigation::setColor(eColor c)
 {
-  ardAssert(c != eColor::UNDEF, "NAV : color should not be set to undefined.");
-  g_ArdOs.Mutex_lock(m_mutex);
-  m_color = c;
-  g_ArdOs.Mutex_unlock(m_mutex);
+    ardAssert(c != eColor::UNKOWN, "NAV : color should not be set to undefined.");
+    g_ArdOs.Mutex_lock(m_mutex);
+    m_color = c;
+    g_ArdOs.Mutex_unlock(m_mutex);
 }
 
-void
-Navigation::setSpeed (float s)
+void Navigation::setSpeed(float s)
 {
-  //prevent any interrupt from occurring between any configuration of a left/right motor
-  portENTER_CRITICAL();
-  if (s > 0)
+    //prevent any interrupt from occurring between any configuration of a left/right motor
+    portENTER_CRITICAL();
+    if (s > 0)
     {
-      stepperG.setMaxSpeed (s);
-      stepperD.setMaxSpeed (s);
-      m_speed = s;
+        stepperG.setMaxSpeed(s);
+        stepperD.setMaxSpeed(s);
+        m_speed = s;
     }
-  else
+    else
     {
-      stepperG.setMaxSpeed (SPEED_MAX);
-      stepperD.setMaxSpeed (SPEED_MAX);
-      m_speed = SPEED_MAX;
+        stepperG.setMaxSpeed(SPEED_MAX);
+        stepperD.setMaxSpeed(SPEED_MAX);
+        m_speed = SPEED_MAX;
     }
-  portEXIT_CRITICAL();
+    portEXIT_CRITICAL();
 }
 
-void
-Navigation::setSpeedVir (float s)
+void Navigation::setSpeedVir(float s)
 {
-  g_ArdOs.Mutex_lock(m_mutex);
-  if (s > 0)
+    g_ArdOs.Mutex_lock(m_mutex);
+    if (s > 0)
     {
-      m_speed_virage = s;
+        m_speed_virage = s;
     }
-  else
+    else
     {
-      m_speed_virage = SPEED_MAX_VIR;
+        m_speed_virage = SPEED_MAX_VIR;
     }
-  g_ArdOs.Mutex_unlock(m_mutex);
+    g_ArdOs.Mutex_unlock(m_mutex);
 }
 
 /**---------------------------------
  * Private functions
  ---------------------------------*/
 
-void
-Navigation::compute_odom ()
+void Navigation::compute_odom()
 {
-    long newStepG = stepperG.currentPosition();
-    long newStepD = stepperD.currentPosition();
-    
+    auto newStepG = stepperG.currentPosition();
+    auto newStepD = stepperD.currentPosition();
+
     float dxG = newStepG - oldStepG;
     float dxD = newStepD - oldStepD;
     oldStepG = newStepG;
     oldStepD = newStepD;
-        
-    float ds = (dxG + dxD) / 2;
-    float dtheta = (dxD - dxG) / (2 * VOIE);
 
-    m_pose.x += ds * cos (m_pose.h + dtheta);
-    m_pose.y += ds * sin (m_pose.h + dtheta);
+    float ds = (dxG + dxD) / 2.;
+    float dtheta = (dxD - dxG) / (2. * VOIE);
+
+    m_pose.x += ds * cos(m_pose.h + dtheta);
+    m_pose.y += ds * sin(m_pose.h + dtheta);
     m_pose.h = moduloPiPi(m_pose.h + dtheta);
 }
 
-void
-Navigation::straight (float mm)
+void Navigation::straight(float mm)
 {
     //prevent any interrupt from occurring between any configuration of a left/right motor
-  portENTER_CRITICAL();
-  stepperG.setMaxSpeed (m_speed);
-  stepperD.setMaxSpeed (m_speed);
-  stepperG.move(- mm * GAIN_STEP_MM);
-  stepperD.move(+ mm * GAIN_STEP_MM);
-  portEXIT_CRITICAL();
+    portENTER_CRITICAL();
+    stepperG.setMaxSpeed(m_speed);
+    stepperD.setMaxSpeed(m_speed);
+    stepperG.move(-mm * GAIN_STEP_MM);
+    stepperD.move(+mm * GAIN_STEP_MM);
+    portEXIT_CRITICAL();
 }
 
-void
-Navigation::turn (float angle)
+void Navigation::turn(float angle)
 {
     //prevent any interrupt from occurring between any configuration of a left/right motor
-  portENTER_CRITICAL();
-  stepperG.setMaxSpeed (m_speed_virage);
-  stepperD.setMaxSpeed (m_speed_virage);
-  stepperG.move(- (-angle * VOIE / 2 * GAIN_STEP_MM));
-  stepperD.move(+ angle * VOIE / 2 * GAIN_STEP_MM);
-  portEXIT_CRITICAL();
+    portENTER_CRITICAL();
+    stepperG.setMaxSpeed(m_speed_virage);
+    stepperD.setMaxSpeed(m_speed_virage);
+    stepperG.move(-(-angle * VOIE / 2 * GAIN_STEP_MM));
+    stepperD.move(+angle * VOIE / 2 * GAIN_STEP_MM);
+    portEXIT_CRITICAL();
 }
 
-void
-Navigation::interruptCurrentMove ()
+void Navigation::interruptCurrentMove()
 {
-  LOG(INFO, "NAV : current order is interrupted.");
-  m_state = eNavState::STOPPING;
-      //prevent any interrupt from occurring between any configuration of a left/right motor
-  portENTER_CRITICAL();
-  stepperG.stop ();
-  stepperD.stop ();
-  portEXIT_CRITICAL();
+    LOG(INFO, "NAV : current order is interrupted.");
+    m_state = eNavState::STOPPING;
+    //prevent any interrupt from occurring between any configuration of a left/right motor
+    portENTER_CRITICAL();
+    stepperG.stop();
+    stepperD.stop();
+    portEXIT_CRITICAL();
 }
 
 /**
  * return true if the trajectory is finished
  */
-bool
-Navigation::subOrderFinished()
+bool Navigation::subOrderFinished()
 {
     //prevent any interrupt from occurring between any configuration of a left/right motor
-  portENTER_CRITICAL();
-  bool res = stepperG.distanceToGo () == 0 || stepperD.distanceToGo () == 0;
-  portEXIT_CRITICAL();
-  return res;
+    portENTER_CRITICAL();
+    bool res = stepperG.distanceToGo() == 0 || stepperD.distanceToGo() == 0;
+    portEXIT_CRITICAL();
+    return res;
 }
 
-String
-Navigation::sensToString (sens_t sens)
+String Navigation::sensToString(sens_t sens)
 {
-  switch (sens)
+    switch (sens)
     {
     default:
     ENUM2STR(SENS_UNDEFINED)
-;      ENUM2STR(SENS_AV);
-      ENUM2STR(SENS_AR);
+;        ENUM2STR(SENS_AV);
+        ENUM2STR(SENS_AR);
     }
 }
 
-String
-Navigation::orderToString (eNavOrder order)
+String Navigation::orderToString(eNavOrder order)
 {
-  switch (order)
+    switch (order)
     {
     default:
     ENUM2STR(eNavOrder::NOTHING)
-;      ENUM2STR(eNavOrder::GOTO);
-      ENUM2STR(eNavOrder::GOTO_CAP);
+;        ENUM2STR(eNavOrder::GOTO);
+        ENUM2STR(eNavOrder::GOTO_CAP);
     }
 }
 
-String
-Navigation::stateToString (eNavState state)
+String Navigation::stateToString(eNavState state)
 {
-  switch (state)
+    switch (state)
     {
     default:
     ENUM2STR(eNavState::IDLE)
-;      ENUM2STR(eNavState::FACING_DEST);
-      ENUM2STR(eNavState::GOING_TO_TARGET);
-      ENUM2STR(eNavState::TURNING_AT_TARGET);
-      ENUM2STR(eNavState::STOPPING);
+;        ENUM2STR(eNavState::FACING_DEST);
+        ENUM2STR(eNavState::GOING_TO_TARGET);
+        ENUM2STR(eNavState::TURNING_AT_TARGET);
+        ENUM2STR(eNavState::STOPPING);
     }
 }

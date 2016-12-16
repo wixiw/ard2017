@@ -6,73 +6,98 @@
  */
 
 #include "StrategyThread.h"
-#include "LogThread.h"
 #include "Robot2017.h"
 
 using namespace ard;
 
 StrategyThread::StrategyThread()
+        : strategyId(0)
 {
-	INIT_TABLE_TO_ZERO(strategies);
+    INIT_TABLE_TO_ZERO(strategies);
 }
 
-void
-StrategyThread::init ()
+void StrategyThread::init()
 {
-  //create the thread
-  g_ArdOs.createThread_Cpp("Strategy", *this, STACK_STRATEGY, PRIO_STRATEGY);
+    //create the thread
+    g_ArdOs.createThread_Cpp("Strategy", *this, STACK_STRATEGY, PRIO_STRATEGY);
+
+    //init the event mailbox
+    EventListener::init<1>();
 }
 
-void
-StrategyThread::run ()
+void StrategyThread::run()
 {
-  for(int i = 0; i < NB_MAX_STRATEGIES ; ++i)
-  {
-	LOG(INFO, "Strategy[" + String(i) + "]: " + strategies[i].name);  
-  }
-	
-  LOG(INFO, "STRAT : Waiting strategy/color configuration and start insertion.");
-  ROBOT.waitStartPlugged();
-  
-  readUserInputs();
-  
-  LOG(INFO, "STRAT : Waiting start withdraw to begin strategy.");
-  ROBOT.waitStartWithdraw();
-  
-  //Execute selected strategy
-  strategies[strategyId].functor();
+    auto evt_startIn = ROBOT.getStartInEvt();
+    auto evt_startOut = ROBOT.getStartOutEvt();
+    auto evt_teleopConfigure = ROBOT.getTeleopEvt(EVT_CONFIGURE);
+    auto evt_teleopStart = ROBOT.getTeleopEvt(EVT_START_MATCH);
+
+    for (int i = 0; i < NB_MAX_STRATEGIES; ++i)
+    {
+        LOG(INFO, "Strategy[" + String(i) + "]: " + strategies[i].name);
+    }
+
+    //wait for start insertion or teleop command
+    {
+        LOG(INFO, "STRAT : Waiting strategy/color configuration and start insertion.");
+        IEvent* evts[] =
+        {   evt_startIn, evt_teleopConfigure};
+        auto triggeredEvent = waitEvents(evts, 2);
+
+        //In case the start is inserted, read the HMI switches to configure the strat
+        if( triggeredEvent == evt_startIn )
+        {
+            readUserInputs();
+        }
+        //else : if the teleop command is received, there is nothing to do as Teleop has already configured ourself with configureMatch
+    }
+
+    //wait for start withdraw or a teleop command to start the match
+    {
+        LOG(INFO, "STRAT : Waiting start withdraw to begin strategy.");
+        IEvent* evts[] =
+        {   evt_startOut, evt_teleopStart};
+        waitEvents(evts, 2); //returned event is not read as we don't care, result will be the same
+
+        //Execute selected strategy
+        strategies[strategyId].functor();
+    }
 }
 
-void
-StrategyThread::registerStrategy(String name, StrategyFunctor functor)
+void StrategyThread::registerStrategy(String name, StrategyFunctor functor)
 {
-	static uint8_t nbRegisteredStrats = 0;
-	ardAssert(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many strategies registered.");
-	strategies[nbRegisteredStrats].name = name;
-	strategies[nbRegisteredStrats].functor = functor;
-	nbRegisteredStrats++;
+    static uint8_t nbRegisteredStrats = 0;
+    ardAssert(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many strategies registered.");
+    strategies[nbRegisteredStrats].name = name;
+    strategies[nbRegisteredStrats].functor = functor;
+    nbRegisteredStrats++;
 }
 
 void StrategyThread::readUserInputs()
 {
-  //Read color input
-  if( ROBOT.isPreferedColor() )
+    //Read color input
+    if ( ROBOT.isPreferedColor() )
     {
-    ROBOT.nav.setColor (eColor::PREF);
-    ROBOT.setRGBled(YELLOW, ON);
-    LOG(INFO, "User has selected PREF (Yellow) color");
+        ROBOT.nav.setColor (eColor::PREF);
+        ROBOT.setRGBled(YELLOW, ON);
+        LOG(INFO, "User has selected PREF (Yellow) color");
     }
-  else
+    else
     {
-    ROBOT.nav.setColor (eColor::SYM);
-    ROBOT.setRGBled(BLUE, ON);
-    LOG(INFO, "User has selected SYM (Blue) color");
+        ROBOT.nav.setColor (eColor::SYM);
+        ROBOT.setRGBled(BLUE, ON);
+        LOG(INFO, "User has selected SYM (Blue) color");
     }
 
-  //Read strat config
-  strategyId = ROBOT.getStrategyId();
-  ardAssert(strategies[strategyId].functor != 0, "Selected strategy functor is null.");
-  LOG(INFO, "User has selected strategy " + strategies[strategyId].name);
+    //Read strat config
+    strategyId = ROBOT.getStrategyId();
+    ardAssert(strategies[strategyId].functor != 0, "Selected strategy functor is null.");
+    LOG(INFO, "User has selected strategy " + strategies[strategyId].name);
 
+}
+
+void StrategyThread::configureMatch(uint8_t strategyId, eColor matchColor)
+{
+    ardAssert(false, "Not implemented.");
 }
 

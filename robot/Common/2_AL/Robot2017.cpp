@@ -55,8 +55,6 @@ Robot2017::boot ()
 {
   init_bsp();
 
-  gpioInit();
-
   //Map fast periodic functions to timers interrupts
   Timer6.attachInterrupt(veryFast_interrupt);
   Timer7.attachInterrupt(fast_interrupt);
@@ -94,7 +92,12 @@ Robot2017& Robot2017::operator= (const Robot2017& p)
 	*this = Robot2017(p);
 	return *this;
 }
-	
+
+IEvent* ard::Robot2017::getTeleopEvt(eTeleopEvtId id)
+{
+    return teleop.getEvent(id);
+}
+
 Robot2017::Robot2017(const Robot2017& p):
 	Robot2017()
 {
@@ -105,14 +108,14 @@ bool Robot2017::isStartPlugged()
     return hmi.start.read();
 }
 
-void Robot2017::waitStartPlugged()
+IEvent* Robot2017::getStartInEvt()
 {
-    hmi.start.wait(RISING_EDGE);
+    return hmi.start.getEvent(RISING_EDGE);
 }
 
-void Robot2017::waitStartWithdraw()
+IEvent* Robot2017::getStartOutEvt()
 {
-    hmi.start.wait(FALLING_EDGE);
+    return hmi.start.getEvent(FALLING_EDGE);
 }
 
 bool Robot2017::isPreferedColor()
@@ -153,9 +156,4 @@ void Robot2017::setLed(uint8_t led, eLedState blink)
             ardAssert(false, "Unexpected value in setLed()");
             break;
     }
-}
-
-void Robot2017::fakeStart(eGpioEdge edge)
-{
-    hmi.start.fakeEdge(edge);
 }

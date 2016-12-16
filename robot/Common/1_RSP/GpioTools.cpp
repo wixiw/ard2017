@@ -11,140 +11,104 @@ using namespace ard;
 FilteredInput* fio_manager_table[FIO_MANAGER_MAX_IO];
 uint8_t fio_manager_nbIo = 0;
 
-void
-fio_manager_registerIn (FilteredInput* io)
+void fio_manager_registerIn(FilteredInput* io)
 {
-  ardAssert(NULL != io, "fio_manager_registerIn received a null pointer");
-  ardAssert(fio_manager_nbIo < FIO_MANAGER_MAX_IO,
-	    "fio_manager is full, can't add a new pin");
-  fio_manager_table[fio_manager_nbIo++] = io;
+    ardAssert(NULL != io, "fio_manager_registerIn received a null pointer");
+    ardAssert(fio_manager_nbIo < FIO_MANAGER_MAX_IO, "fio_manager is full, can't add a new pin");
+    fio_manager_table[fio_manager_nbIo++] = io;
 }
 
-void
-ard::gpioToolsIsrCallback (uint32_t period_us)
+void ard::gpioToolsIsrCallback(uint32_t period_us)
 {
-  for (int i = 0; i < fio_manager_nbIo; i++)
+    for (int i = 0; i < fio_manager_nbIo; i++)
     {
-      fio_manager_table[i]->update (period_us);
+        fio_manager_table[i]->update(period_us);
     }
 }
 
-void
-ard::gpioInit ()
+FilteredInput::FilteredInput(uint8_t pinId, uint32_t debounceHigh, uint32_t debounceLow)
+        : pin(pinId)
 {
-  for (int i = 0; i < fio_manager_nbIo; i++)
-    {
-      fio_manager_table[i]->init ();
-    }
+    reset();
+    fio_manager_registerIn(this);
+    setDebounceHigh(debounceHigh);
+    setDebounceLow(debounceLow);
 }
 
-FilteredInput::FilteredInput (uint8_t pinId, uint32_t debounceHigh,
-			      uint32_t debounceLow) :
-    pin (pinId), signalAny (NULL), signalFalling (NULL), signalRising (NULL)
+void FilteredInput::setDebounceHigh(uint32_t debounce)
 {
-  reset ();
-  fio_manager_registerIn (this);
-  setDebounceHigh (debounceHigh);
-  setDebounceLow (debounceLow);
+    debounceHighDuration = debounce * 1E3; //millis to us
 }
 
-void
-FilteredInput::setDebounceHigh (uint32_t debounce)
+void FilteredInput::setDebounceLow(uint32_t debounce)
 {
-  debounceHighDuration = debounce * 1E3; //millis to us
+    debounceLowDuration = debounce * 1E3; //millis to us
 }
 
-void
-FilteredInput::setDebounceLow (uint32_t debounce)
+IEvent*
+FilteredInput::getEvent(eGpioEdge edge)
 {
-  debounceLowDuration = debounce * 1E3; //millis to us
-}
-
-void
-FilteredInput::wait (eGpioEdge edge)
-{
-  switch (edge)
+    switch (edge)
     {
     default:
+        ardAssert(false, "FilteredInput::getEvent : unexpected value.")
+        ;
+        break;
+
     case ANY_EDGE:
-      g_ArdOs.Signal_wait(signalAny);
-      break;
+        return &eventAny;
+        break;
 
-      case FALLING_EDGE:
-      g_ArdOs.Signal_wait(signalFalling);
-      break;
+    case FALLING_EDGE:
+        return &eventFalling;
+        break;
 
-      case RISING_EDGE:
-      g_ArdOs.Signal_wait(signalRising);
-      break;
+    case RISING_EDGE:
+        return &eventRising;
+        break;
     }
+
+    ardAssert(false, "FilteredInput::getEvent : unreachable.");
+    return NULL;
 }
 
-void
-FilteredInput::reset ()
+void FilteredInput::reset()
 {
-  debounceHighCount = 0;
-  debounceLowCount = 0;
-  filteredLevel = GPIO_LOW;
+    debounceHighCount = 0;
+    debounceLowCount = 0;
+    filteredLevel = GPIO_LOW;
 }
 
-void
-FilteredInput::update (uint32_t period_us)
+void FilteredInput::update(uint32_t period_us)
 {
-  //Pin rising edge
-  if (digitalRead (pin) == GPIO_HIGH && filteredLevel == GPIO_LOW)
+    //Pin rising edge
+    if (digitalRead(pin) == GPIO_HIGH && filteredLevel == GPIO_LOW)
     {
-      debounceHighCount += period_us;
+        debounceHighCount += period_us;
 
-      if (debounceHighDuration <= debounceHighCount)
-	{
-	  debounceLowCount = 0;
-	  filteredLevel = GPIO_HIGH;
-	  g_ArdOs.Signal_setFromIsr(signalAny);
-	  g_ArdOs.Signal_setFromIsr(signalRising);
-	}
+        if (debounceHighDuration <= debounceHighCount)
+        {
+            debounceLowCount = 0;
+            filteredLevel = GPIO_HIGH;
+            eventAny.publish();
+            eventRising.publish();
+        }
     }
-  else if( digitalRead(pin) == GPIO_LOW && filteredLevel == GPIO_HIGH )
+    else if (digitalRead(pin) == GPIO_LOW && filteredLevel == GPIO_HIGH)
     {
-      debounceLowCount += period_us;
+        debounceLowCount += period_us;
 
-      if( debounceLowDuration <= debounceLowCount )
-	{
-	  debounceHighCount = 0;
-	  filteredLevel = GPIO_LOW;
-	  g_ArdOs.Signal_setFromIsr(signalAny);
-	  g_ArdOs.Signal_setFromIsr(signalFalling);
-	}
+        if (debounceLowDuration <= debounceLowCount)
+        {
+            debounceHighCount = 0;
+            filteredLevel = GPIO_LOW;
+            eventAny.publish();
+            eventFalling.publish();
+        }
     }
-  else
+    else
     {
-      debounceLowCount = 0;
-      debounceHighCount = 0;
+        debounceLowCount = 0;
+        debounceHighCount = 0;
     }
 }
-
-void
-FilteredInput::init ()
-{
-  signalAny = g_ArdOs.Signal_create();
-  signalFalling = g_ArdOs.Signal_create();
-  signalRising = g_ArdOs.Signal_create();
-}
-
-void FilteredInput::fakeEdge(eGpioEdge edge)
-{
-    if(edge == RISING_EDGE)
-    {
-        g_ArdOs.Signal_set(signalAny);
-        g_ArdOs.Signal_set(signalRising);
-        return;
-    }
-    if(edge == FALLING_EDGE)
-    {
-        g_ArdOs.Signal_set(signalAny);
-        g_ArdOs.Signal_set(signalFalling);
-        return;
-    }
-    ardAssert(false, "Unexpected edge in FilteredInput::fakeEdge.");
-}
-

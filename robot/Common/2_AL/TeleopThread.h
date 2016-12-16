@@ -8,34 +8,42 @@
 #ifndef ROBOTS_TELEOPTHREAD_H_
 #define ROBOTS_TELEOPTHREAD_H_
 
-#include "ArdOs.h"
+#include "RSP.h"
 
 namespace ard
 {
-  /**
-   * This class is used to rwait and receive commands from debug serial link
-   * The aim of those commands are :
-   * - simulate an HW event
-   * - teleoperate the robot for tests
-   */
-
-  class TeleopThread : public IThread
-  {
-  public:
-    TeleopThread ();
-    virtual
-    ~TeleopThread ()
+    typedef enum
     {
-    }
-    ;
+        EVT_CONFIGURE = 0,
+        EVT_START_MATCH,
+        EVT_MAX
+    } eTeleopEvtId;
 
-    //Implements IThreads :create the thread
-    void init() override;
+    /**
+     * This class is used to rwait and receive commands from debug serial link
+     * The aim of those commands are :
+     * - simulate an HW event
+     * - teleoperate the robot for tests
+     */
+    class TeleopThread: public IThread
+    {
+    public:
+        TeleopThread() = default;
+        virtual ~TeleopThread() = default;
 
-    //Implements IThreads : reads the serial inputs
-    void
-    run () override;
-  };
+        //Implements IThreads :create the thread
+        void init() override;
+
+        //Implements IThreads : reads the serial inputs
+        void run() override;
+
+        //Get any teleop event
+        IEvent* getEvent(eTeleopEvtId id);
+
+    private:
+        Event<1> events[EVT_MAX];
+
+    };
 
 } /* namespace ard */
 

@@ -8,7 +8,7 @@
 #ifndef ROBOTS_STRATEGYTHREAD_H_
 #define ROBOTS_STRATEGYTHREAD_H_
 
-#include "ArdOs.h"
+#include "RSP.h"
 
 #define NB_MAX_STRATEGIES 4
 
@@ -22,7 +22,7 @@ namespace ard
 		StrategyFunctor functor;
 	};
 
-  class StrategyThread : public IThread
+  class StrategyThread : public IThread, public EventListener
   {
   public:
     StrategyThread ();
@@ -39,6 +39,9 @@ namespace ard
 	//register new strategy in the list
 	void 
 	registerStrategy(String name, StrategyFunctor functor);
+
+	//force the match configuration without using the HMI
+	void configureMatch(uint8_t strategyId, eColor matchColor);
 
   private:
     //read user config (color and strat selection)

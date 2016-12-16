@@ -10,98 +10,89 @@
 
 using namespace ard;
 
-float
-ard::moduloPiPi (float a)
+float ard::moduloPiPi(float a)
 {
-  if (a <= -M_PI)
-    return a + 2 * M_PI;
-  else if (a > M_PI)
-    return a - 2 * M_PI;
-  else
-    return a;
+    if (a <= -M_PI)
+        return a + 2 * M_PI;
+    else if (a > M_PI)
+        return a - 2 * M_PI;
+    else
+        return a;
 }
 
-Point::Point () :
-    x (0), y (0)
-{
-}
-;
-
-Point::Point (float _x, float _y):
-  x (_x), y (_y)
+Point::Point()
+        : x(0), y(0)
 {
 }
 ;
 
-Point
-Point::toAmbiPose (eColor c)
+Point::Point(float _x, float _y)
+        : x(_x), y(_y)
 {
-  Point res;
-  ardAssert (c != eColor::UNDEF, "Color should not be undefined");
-  if (c == eColor::SYM)
+}
+;
+
+Point Point::toAmbiPose(eColor c)
+{
+    Point res;
+    ardAssert(c != eColor::UNKOWN, "Color should not be undefined");
+    if (c == eColor::SYM)
     {
-      res.x = -x;
-      res.y = y;
+        res.x = -x;
+        res.y = y;
     }
-  else
+    else
     {
-      res.x = x;
-      res.y = y;
+        res.x = x;
+        res.y = y;
     }
-  return res;
+    return res;
 }
 
 float Point::angleTo(Point p)
 {
-  return atan2 (p.y - y, p.x - x);
+    return atan2(p.y - y, p.x - x);
 }
 
 float Point::distanceTo(Point p)
 {
-  return sqrt( (p.y - y)*(p.y - y) + (p.x - x)*(p.x - x) );
+    return sqrt((p.y - y) * (p.y - y) + (p.x - x) * (p.x - x));
 }
 
-
-String
-Point::toString ()
+String Point::toString()
 {
-  return String("(") + x + ", " + y + ")";
+    return String("(") + x + ", " + y + ")";
 }
 
-
-
-
-PointCap::PointCap () :
-    Point(), h (0)
+PointCap::PointCap()
+        : Point(), h(0)
 {
 }
 ;
 
-PointCap::PointCap (Point p) :
-    Point(p.x, p.y), h (0)
+PointCap::PointCap(Point p)
+        : Point(p.x, p.y), h(0)
 {
 }
 ;
 
-PointCap::PointCap (float x, float y, float h) :
-    Point(x, y), h (h)
+PointCap::PointCap(float x, float y, float h)
+        : Point(x, y), h(h)
 {
 }
 ;
 
-PointCap
-PointCap::toAmbiPose (eColor c)
+PointCap PointCap::toAmbiPose(eColor c)
 {
-  PointCap res = Point::toAmbiPose(c);
-  if (c == eColor::SYM)
-      res.h = M_PI - h;
-  else
-      res.h = h;
-  return res;
+    PointCap res = Point::toAmbiPose(c);
+    if (c == eColor::SYM)
+        res.h = M_PI - h;
+    else
+        res.h = h;
+    return res;
 }
 
-String
-PointCap::toString ()
+String PointCap::toString()
 {
-  return String("(") + x + ", " + y + ", " + h + ")";
+    return String("(") + x + ", " + y + ", " + h + ")";
 }

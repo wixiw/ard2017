@@ -11,7 +11,7 @@
 #include <Arduino.h>
 
 #ifndef NULL
-	#define NULL 0
+#define NULL 0
 #endif
 
 // Tell the compilator to NOT declare the copy construtors with a default implementation
@@ -28,10 +28,9 @@
 //Uses to disable "unsused param" warnings
 #define UNUSED(x) ((void)(x))
 
-typedef enum class eColor {
-	UNDEF,
-	PREF,
-	SYM
+typedef enum class eColor
+{
+    UNKOWN, PREF, SYM
 } eColor;
 
 //Use this function in "enumToString" functions so that we don't miss copy the label which could fool us in debug

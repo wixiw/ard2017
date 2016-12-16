@@ -13,7 +13,7 @@ using namespace ard;
 void
 ard::Strategy_LedTest ()
 {
-	int WAIT = 200;
+	auto WAIT = 200;
 	LOG(INFO, "STRAT : Strategy_LedTest.");
 
 	while (1)
