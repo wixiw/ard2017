@@ -74,30 +74,42 @@ void StrategyThread::registerStrategy(String name, StrategyFunctor functor)
 }
 
 void StrategyThread::readUserInputs()
-{
+{   
     //Read color input
+    eColor selectedColor = eColor::UNKOWN;
     if ( ROBOT.isPreferedColor() )
+        selectedColor = eColor::PREF;
+    else
+        selectedColor = eColor::SYM;
+
+    //Read strat config
+    configureMatch(ROBOT.getStrategyId(), selectedColor);
+}
+
+void StrategyThread::configureMatch(uint8_t strategyId_, eColor matchColor)
+{
+    ROBOT.nav.setColor (matchColor);
+    
+    //Configure color
+    if ( matchColor == eColor::PREF )
     {
-        ROBOT.nav.setColor (eColor::PREF);
         ROBOT.setRGBled(YELLOW, ON);
         LOG(INFO, "User has selected PREF (Yellow) color");
     }
-    else
+    else if ( matchColor == eColor::SYM )
     {
         ROBOT.nav.setColor (eColor::SYM);
         ROBOT.setRGBled(BLUE, ON);
         LOG(INFO, "User has selected SYM (Blue) color");
     }
+    else
+    {
+        ardAssert(false, "StrategyThread::configureMatch : color should not be unknown");
+    }
 
-    //Read strat config
-    strategyId = ROBOT.getStrategyId();
+    //Check selected strategy
+    strategyId = strategyId_;
     ardAssert(strategies[strategyId].functor != 0, "Selected strategy functor is null.");
     LOG(INFO, "User has selected strategy " + strategies[strategyId].name);
-
-}
-
-void StrategyThread::configureMatch(uint8_t strategyId, eColor matchColor)
-{
-    ardAssert(false, "Not implemented.");
 }
 

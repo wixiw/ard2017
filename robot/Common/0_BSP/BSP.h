@@ -16,6 +16,7 @@
 #include "Drivers/SPIArduino.h" //SPI shall be imported before SD
 #include "Drivers/SD.h"
 #include "Drivers/Servo.h"
+#include "K_constants.h"
 
 
 //0/1 : RX/TX 0

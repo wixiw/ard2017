@@ -92,8 +92,9 @@ namespace ard
         //RSP implementation
         HmiThread hmi;
         LogThread& log;
+#ifdef BUILD_TELEOP
         TeleopThread teleop;
-
+#endif
         //singleton instance
         static Robot2017 instance;
 

@@ -9,17 +9,22 @@ using namespace ard;
 TaskHandle_t xIdleHandle = NULL;
 
 //------------------------------------------------------------------------------
-void
-setup ()
+void setup()
 {
-  ROBOT.boot();
+    ROBOT.boot();
 }
 
 //------------------------------------------------------------------------------
-void
-loop ()
+void loop()
 {
-  // idle loop has a very small, configMINIMAL_STACK_SIZE, stack
-  // loop must never block
-  while(1);
+    static bool once = false;
+    if (!once)
+    {
+        once = true;
+        g_ArdOs.dprintln(String("[ main ] ") + "Build : " + __DATE__ + " " + __TIME__ );
+    }
+
+    // idle loop has a very small, configMINIMAL_STACK_SIZE, stack
+    // loop must never block
+    while (2);
 }

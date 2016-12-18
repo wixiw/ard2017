@@ -134,7 +134,6 @@ void Navigation::update(TimeMs sinceLastCall)
         break;
     }
 
-    //TODO attention si on s'arrete avec ca, on ne compte pas le deplacement car c'est normalement fait a la fin
     case eNavState::STOPPING:
     {
         if (subOrderFinished())
@@ -358,6 +357,10 @@ void Navigation::setSpeedVir(float s)
 
 void Navigation::compute_odom()
 {
+    //
+    //WARNING : interrupt context !!
+    //
+
     auto newStepG = stepperG.currentPosition();
     auto newStepD = stepperD.currentPosition();
 

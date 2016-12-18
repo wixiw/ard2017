@@ -199,7 +199,7 @@ void ArdOs::createThread_C(const char * const name, ThreadRunFct runFunction, ui
     params[nextThreadRank].method = runFunction;
 
     //create the thread
-    ardAssert(pdPASS == xTaskCreate(ArdOs_genericRun, name, stack, reinterpret_cast<void*>(&params[nextThreadRank]), priority, threads[nextThreadRank]),
+    ardAssert(pdPASS == xTaskCreate(ArdOs_genericRun, name, stack, reinterpret_cast<void*>(&params[nextThreadRank]), priority, &threads[nextThreadRank]),
             "Task creation failed.");
 
     //increment the table index
@@ -226,7 +226,7 @@ void ArdOs::createPeriodicThread_Cpp(const char * const name, IThread& pClass, u
     params[nextThreadRank].period = periodMs;
 
     //create the thread
-    ardAssert(pdPASS == xTaskCreate(ArdOs_genericRun, name, stack, reinterpret_cast<void*>(&params[nextThreadRank]), priority, threads[nextThreadRank]),
+    ardAssert(pdPASS == xTaskCreate(ArdOs_genericRun, name, stack, &params[nextThreadRank], priority, &threads[nextThreadRank]),
             "Task creation failed.");
 
     //increment the table index
@@ -318,9 +318,12 @@ void ArdOs::sleep_ms(uint16_t durationMs)
 
 IEvent* EventListener::waitEvents(IEvent* listenedEvts[], int nbEvents)
 {
+    ardAssert(listenedEvts != NULL, "EventListener::waitEvents : null pointer to table.");
+    
     //subsribe to the event list
     for( int i = 0 ; i < nbEvents ; ++i )
     {
+        ardAssert(listenedEvts[i] != NULL, "EventListener::waitEvents : null pointer to event.");
         listenedEvts[i]->subscribe(this);
     }
 
@@ -342,9 +345,18 @@ IEvent* EventListener::waitEvents(IEvent* listenedEvts[], int nbEvents)
 
 void EventListener::privateSend(IEvent* publisher)
 {
-    ardAssert(publisher != NULL, "EventListener::signal don't expect an invalid signal.");
+    ardAssert(publisher != NULL, "EventListener::privateSend don't expect an invalid event.");
     if (!xQueueSendToBack(queue, &publisher, 0))
     {
-        ardAssert(false, "EventListener::signal : queue is full");
+        ardAssert(false, "EventListener::privateSend : queue is full");
+    }
+}
+
+void EventListener::privateSendFromISR(IEvent* publisher)
+{
+    configASSERT(publisher != NULL); //ardAssert is not accessible from interrupt
+    if (!xQueueSendToBackFromISR(queue, &publisher, 0))
+    {
+        configASSERT(false);//ardAssert is not accessible from interrupt
     }
 }

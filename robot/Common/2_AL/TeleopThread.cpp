@@ -34,6 +34,7 @@ void TeleopThread::run()
 
                 case 'c': //configure
                 {
+                    LOG(INFO, "configure match request received.");
                     ROBOT.strategy.configureMatch(0, eColor::PREF);
                     events[EVT_CONFIGURE].publish();
                     break;
@@ -41,6 +42,7 @@ void TeleopThread::run()
 
                 case 'g': //go
                 {
+                    LOG(INFO, "start match request received.");
                     events[EVT_START_MATCH].publish();
                     break;
                 }

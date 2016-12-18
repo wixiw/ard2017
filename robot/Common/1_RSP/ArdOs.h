@@ -14,9 +14,8 @@
 #include "ArdUtils.h"
 #include "K_thread_config.h"
 
-//comment in match, uncomment for debug
-#define ARD_DEBUG
 
+//WARNING : ardAssert shal NOT be using inside an interrutpion, use configASSERT instead
 #ifdef ARD_DEBUG
 #define ardAssert(x,text) if( ( x ) == 0 ){g_ArdOs.dprintln(String("  *ASSERT* : ") + text); delay(1000); configASSERT(x);}
 #else
@@ -281,7 +280,7 @@ namespace ard
         static ArdOs instance;
 
         //table of all threads handlers
-        TaskHandle_t* threads[configMAX_PRIORITIES];
+        TaskHandle_t threads[configMAX_PRIORITIES];
 
         //statistic counter for signals
         uint16_t signalCount;
@@ -330,6 +329,7 @@ namespace ard
         friend class IEvent;
         template<int nbListeners> friend class Event;
         virtual void privateSend(IEvent* publisher);
+        virtual void privateSendFromISR(IEvent* publisher);
     };
 
     //Interface used to absract the template parameter
@@ -338,8 +338,11 @@ namespace ard
     public:
         virtual ~IEvent() = default;
 
-        //to be called by the class who wants to publish the event
+        //to be called by the class who wants to publish the event from a thread
         virtual void publish();
+
+        //to be called by the class who wants to publish the event from an interrupt
+        virtual void publishFromISR();
 
         //register to the publication
         virtual void subscribe(IEventListener* listener);
@@ -378,6 +381,9 @@ namespace ard
         //override IEventListener
         void privateSend(IEvent* publisher) override;
 
+        //override IEventListener
+        void privateSendFromISR(IEvent* publisher) override;
+
         //Event mailbox
         QueueHandle_t queue;
     };
@@ -400,7 +406,18 @@ namespace ard
         {
             for (int i = 0; i < nbListeners; ++i)
             {
-                listeners[i]->privateSend(this);
+                if(listeners[i] != NULL)
+                    listeners[i]->privateSend(this);
+            }
+        }
+
+        //implements IEvent
+        void publishFromISR() override
+        {
+            for (int i = 0; i < nbListeners; ++i)
+            {
+                if(listeners[i] != NULL)
+                    listeners[i]->privateSendFromISR(this);
             }
         }
 
@@ -428,6 +445,7 @@ namespace ard
                 if (listeners[i] == listener)
                 {
                     listeners[i] = NULL;
+                    return;
                 }
             }
             ardAssert(false, "Event::unsubscribe : listener is not in the list");

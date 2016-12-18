@@ -90,8 +90,8 @@ void FilteredInput::update(uint32_t period_us)
         {
             debounceLowCount = 0;
             filteredLevel = GPIO_HIGH;
-            eventAny.publish();
-            eventRising.publish();
+            eventAny.publishFromISR();
+            eventRising.publishFromISR();
         }
     }
     else if (digitalRead(pin) == GPIO_LOW && filteredLevel == GPIO_HIGH)
@@ -102,8 +102,8 @@ void FilteredInput::update(uint32_t period_us)
         {
             debounceHighCount = 0;
             filteredLevel = GPIO_LOW;
-            eventAny.publish();
-            eventFalling.publish();
+            eventAny.publishFromISR();
+            eventFalling.publishFromISR();
         }
     }
     else

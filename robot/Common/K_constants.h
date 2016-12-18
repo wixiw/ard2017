@@ -1,6 +1,10 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+//Configure build
+#define BUILD_TELEOP
+//#define ARD_DEBUG
+
 #define ENABLE_DETECTION 1
 
 #define GAIN_ANALOG_TENSION_BATTERIE 0.024
