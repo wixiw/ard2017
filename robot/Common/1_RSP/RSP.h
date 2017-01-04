@@ -13,7 +13,9 @@
 #include "ArdMaths.h"
 #include "ArdUtils.h"
 #include "GpioTools.h"
+#include "Hdlc.h"
 #include "HmiThread.h"
+#include "lib_crc.h"
 #include "LogThread.h"
 #include "Navigation.h"
 

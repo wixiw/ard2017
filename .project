@@ -7,6 +7,16 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
+			<name>org.python.pydev.PyDevBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
 			<name>org.eclipse.cdt.autotools.core.genmakebuilderV2</name>
 			<arguments>
 			</arguments>
@@ -30,6 +40,8 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 		<nature>org.eclipse.cdt.autotools.core.autotoolsNatureV2</nature>
+		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
+		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
 	<filteredResources>
 		<filter>

@@ -25,13 +25,13 @@ namespace ard
      * - simulate an HW event
      * - teleoperate the robot for tests
      */
-    class TeleopThread: public IThread
+    class TeleopThread: public IThread, public Hdlc
     {
     public:
         TeleopThread() = default;
         virtual ~TeleopThread() = default;
 
-        //Implements IThreads :create the thread
+        //Implements IThreads : creates the thread
         void init() override;
 
         //Implements IThreads : reads the serial inputs
@@ -42,6 +42,17 @@ namespace ard
 
     private:
         Event<1> events[EVT_MAX];
+
+        //Implements Hdlc: send byte on serial link
+        void sendByte(uint8_t data) override;
+
+        //Implements Hdlc: decode received frame
+        void handleFrame(const uint8_t *framebuffer, uint16_t framelength) override;
+
+        //This method is not used, it is just keept as a reminder on how to quickly use a serial com with the Arduino libs.
+        //today we prefer the use of google protobuf but they requires a "partner" program to tchat with it, whereas the
+        //simple serial interface may be used withy any serial terminal.
+        void simpleSerialRun();
 
     };
 

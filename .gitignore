@@ -63,3 +63,5 @@ robot/RobotA/1_RobotA.componentinfo.xml
 robot/Common/0_Common.componentinfo.xml
 robot/upload_robotA.bat
 robot/RobotA/jlink.log
+robot/Common/2_AL/com/Teleop.pb.c
+robot/Common/2_AL/com/Teleop.pb.h
