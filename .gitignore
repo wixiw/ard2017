@@ -65,3 +65,5 @@ robot/upload_robotA.bat
 robot/RobotA/jlink.log
 robot/Common/2_AL/com/Teleop.pb.c
 robot/Common/2_AL/com/Teleop.pb.h
+.settings/org.eclipse.core.resources.prefs
+__pycache__
