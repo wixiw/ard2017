@@ -10,8 +10,6 @@
 
 using namespace ard;
 
-#define HEARTBEAT_PIN LED_DUE_RX
-
 //-------------------------------------------------------------------------------
 
 //infinite wait signal
@@ -24,12 +22,12 @@ void ArdOs::die()
 
 void enterIdleCB()
 {
-    digitalWrite(HEARTBEAT_PIN, LOW);
+    digitalWrite(g_ArdOs.HEARTBEAT_PIN, LOW);
 }
 
 void exitIdleCB()
 {
-    digitalWrite(HEARTBEAT_PIN, HIGH);
+    digitalWrite(g_ArdOs.HEARTBEAT_PIN, HIGH);
 }
 
 //-------------------------------------------------------------------------------
@@ -122,6 +120,7 @@ ArdOs::ArdOs()
     debugSerialMutex = NULL;
     INIT_TABLE_TO_ZERO(threads);
     INIT_TABLE_TO_ZERO(params);
+    stdout = NULL;
 }
 
 void ArdOs::init()
@@ -169,19 +168,23 @@ void ArdOs::displayStats()
 
 void ArdOs::dprintln(String s)
 {
+    //If stdout is left to NULL, the user requested that no debug text are sent
+    if(STDOUT == NULL)
+        return;
+
     //it's not possible to protect the link until the OS is setup (then the mutex pointer is no more NULL
     //but when set, use the mutex.
     if (debugSerialMutex)
     {
         xSemaphoreGive(debugSerialMutex);
-        Serial.println(s);
-        Serial.flush();
+        STDOUT->println(s);
+        STDOUT->flush();
         xSemaphoreGive(debugSerialMutex);
     }
     else
     {
-        Serial.println(s);
-        Serial.flush();
+        STDOUT->println(s);
+        STDOUT->flush();
     }
 }
 

@@ -31,7 +31,7 @@ class TabLog(QWidget):
     # append a log at the end of the display
     # if the number of log is more than the one configured with
     # setNbLogs(), the oldest log (the one at the top) is deleted.
-    # @param QByteArray (but str is ok too)
+    # @param str: the data to log
     def appendLog(self, data):
         assert isinstance(data, str), "appendLog expects to receive a string" 
         self.text_logs.insertPlainText(data)

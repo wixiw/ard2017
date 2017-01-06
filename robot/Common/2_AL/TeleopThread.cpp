@@ -21,27 +21,37 @@ void TeleopThread::run()
     //use this function to shortcut the google protobuf layer in case you want a simple way of commanding the robot.
     //simpleSerialRun();
 
+    //hldc local vars
+    yahdlc_control_t control;
+    char serial_framebuffer[200];
+    unsigned int serial_index = 0;
+    char hdlc_framebuffer[200];
+    unsigned int hdlc_length = 0;
+    INIT_TABLE_TO_ZERO(serial_framebuffer);
+    INIT_TABLE_TO_ZERO(hdlc_framebuffer);
     while (2)
     {
         while (Serial.available())
         {
             // get the new byte:
-            char inChar = (char)Serial.read();
-            // Pass all incoming data to hdlc char receiver
-            Hdlc::receiveNextByte(inChar);
+            serial_framebuffer[serial_index] = (char)Serial.read();
+            serial_index++;
+            ardAssert(serial_index <= 200, "Serial framebuffer overshoot");
+
+            //as a simple solution we filter char by char, for performance improvments we could modify the Arduino UARTClass
+            //and add a ReadAll function to get a longer buffer. As long as only non-operational action is
+            //done here, there is no need for performance
+            if( 0 < yahdlc_get_data(&control, serial_framebuffer, serial_index , hdlc_framebuffer, &hdlc_length) )
+            {
+                //TODO frame received : treat it and reset buffer
+                LOG(INFO, "HDLC frame received size=" + String(hdlc_length) + " msg=[" + String(hdlc_framebuffer) + "]");
+                INIT_TABLE_TO_ZERO(serial_framebuffer);
+                INIT_TABLE_TO_ZERO(hdlc_framebuffer);
+                serial_index = 0;
+            }
         } //end while serial available
         vTaskDelay(1);
     } //end while(2)
-}
-
-void TeleopThread::sendByte(uint8_t data)
-{
-    Serial.print(data);
-}
-
-void TeleopThread::handleFrame(const uint8_t *framebuffer, uint16_t framelength)
-{
-    LOG(INFO, "Command protobuf received. size=" + framelength);
 }
 
 void TeleopThread::simpleSerialRun()

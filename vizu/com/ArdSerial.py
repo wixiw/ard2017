@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtSerialPort import *
+import unicodedata
 
 #
 # This class manage a serial connection
@@ -50,9 +51,16 @@ class ArdSerial():
     def disconnect(self): 
         self._serial.close()
         
-    # Read all data available
+    # Read all available data
+    # @return QByteArray
     def readAll(self):
-        return self._serial.readAll()
+        return bytes(self._serial.readAll())
+    
+    # Write a bunch of data
+    # @param str : the data to send on the serial line
+    # @return int : nb bytes written
+    def write(self, data):
+        return self._serial.writeData(data)
             
 if __name__ == '__main__':
     import sys

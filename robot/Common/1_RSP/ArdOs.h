@@ -274,6 +274,13 @@ namespace ard
         bool
         Semaphore_tryTake(Semaphore s);
 
+        //This is a public property to set on the serial line to be use to send debug text data
+        //Let it to NULL in order to disable debug texts
+        Stream* STDOUT;
+
+        //The pin on which hearbeat is generated, is may be use for oscilloscop check of idle task execution
+        int HEARTBEAT_PIN;
+
     private:
 
         //singleton instance

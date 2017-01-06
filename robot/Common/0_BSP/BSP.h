@@ -9,6 +9,8 @@
 #define BSP_H_
 
 #include "ArduinoCore/Arduino.h"
+#include "ArduinoCore/USB/USBAPI.h"
+#include "ArduinoCore/Stream.h"
 #include "ArduinoCore/variant.h"
 #include "FreeRtos/FreeRTOS_ARM.h"
 #include "Drivers/AccelStepper.h"

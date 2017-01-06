@@ -57,7 +57,10 @@ void Robot2017::boot()
 
     //Init debug serial link
     Serial.begin(/*baurate = */250000);
-    g_ArdOs.dprintln(String("[libARD] ") + "Build : " + __DATE__ + " " + __TIME__ );
+
+    //Configure OS
+    g_ArdOs.STDOUT = &Serial;
+    g_ArdOs.HEARTBEAT_PIN = LED_DUE_RX;
 
     //Threads init
     hmi.init();
@@ -75,6 +78,7 @@ void Robot2017::boot()
     Timer7.start(PERIOD_FAST_IT_US);
 
     //init OS
+    g_ArdOs.dprintln(String("[libARD] ") + "Build : " + __DATE__ + " " + __TIME__ );
     g_ArdOs.init(); //this function never ends
 }
 

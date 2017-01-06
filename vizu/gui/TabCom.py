@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import *
 
 class TabCom(QWidget):
     serialConnected = pyqtSignal()
+    sendMsg = pyqtSignal(bytes)
     
     #@param ArdSerial : a reference on the object managing the serial line
     def __init__(self, serialManager):
@@ -55,8 +56,7 @@ class TabCom(QWidget):
     @pyqtSlot(bool)
     def _getStats(self, pressed): 
        print("Stats request")
-       self.serial.putChar("s")
-       self.serial.flush()
+       self.sendMsg.emit(b"Coucou")
         
     def _connect(self):
         port = self.combo_COM.currentText()
@@ -71,7 +71,7 @@ class TabCom(QWidget):
             self.btn_getStats.show()
             self.serialConnected.emit()
         else:
-            disconnect()
+            self.disconnect()
             
     def _disconnect(self):
         self.com.disconnect()
