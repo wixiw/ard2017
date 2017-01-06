@@ -44,7 +44,7 @@ class ConnectScreen(QWidget):
     
     @pyqtSlot()
     def _connectionEstablished(self):
-        self.tab_Log.appendLog(("-----------connected-------------"))
+        self.tab_Log.appendLog(("-----------connected-------------\n"))
         #---DEBUG---
         #self.tabs.setCurrentWidget(self.tab_Log)
         #self.tab_Com._getStats(True)
