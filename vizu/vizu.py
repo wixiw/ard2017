@@ -2,13 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import signal
-
+from gui import *
+from yahdlc import *
 from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-
-from com import *
-from gui import *
 
 class ConnectScreen(QWidget):
     
@@ -17,72 +15,51 @@ class ConnectScreen(QWidget):
         self.resize(640, 480)
         self.move(300, 300)
         self.setWindowTitle('8=> Vizu')  
+              
+        self.com = ArdSerial()
+        self.com.registerListener(self._dataAvailable)
         
-        self.teleop = Teleop()
-        
-        self.tab = dict()
-        self.tab["Com"]   = TabCom(self.teleop.com)
-        self.tab["Table"] = self.buildTabTable()
-        self.tab["Robot"] = self.buildTabRobot()
-        self.tab["Log"]   = TabLog()
+        self.tab_Com = TabCom(self.com)
+        self.tab_Table = self.buildTabTable()
+        self.tab_Robot = self.buildTabRobot()
+        self.tab_Log = TabLog()
         
         self.tabs = QTabWidget(self)
         self.tabs.setTabShape(QTabWidget.Rounded)
-        self.tabs.addTab(self.tab["Com"],   "Com")
-        self.tabs.addTab(self.tab["Log"],   "Logs")
-        self.tabs.addTab(self.tab["Table"], "Table")
-        self.tabs.addTab(self.tab["Robot"], "Robot")
+        self.tabs.addTab(self.tab_Com,   "Com")
+        self.tabs.addTab(self.tab_Log,   "Logs")
+        self.tabs.addTab(self.tab_Table, "Table")
+        self.tabs.addTab(self.tab_Robot, "Robot")
         
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
         
-        self.teleop.log[str].connect(self.log)
-        self.tab["Com"].serialConnected     .connect(self._connectionEstablished)
-        self.tab["Com"].getOsStats          .connect(self.teleop.getOsStats)
-        self.tab["Com"].configureMatch      .connect(self.teleop.configureMatch)
-        self.tab["Com"].startMatch          .connect(self.teleop.startMatch)
+        self.tab_Com.serialConnected.connect(self._connectionEstablished)
+        self.tab_Com.sendMsg.connect(self._msgToSend)
         
-        
-        #add shortcut to quit the app with ESC
-        self.shortcuts = dict()
-        self.shortcuts["ESC"] = QShortcut(QKeySequence(Qt.Key_Escape), self)
-        self.shortcuts["ESC"].activated.connect(QCoreApplication.quit)
-        
-        #add F1 to F4 shortcuts for each tab
-        self.tabShortcutMap = QSignalMapper()
-        self.tabShortcutMap.mapped.connect(self.selectTab)
-            #F1 for Com tab
-        self.shortcuts["F1"] = QShortcut(QKeySequence(Qt.Key_F1), self)
-        self.shortcuts["F1"].activated.connect(self.tabShortcutMap.map)
-        self.tabShortcutMap.setMapping(self.shortcuts["F1"], 0)
-            #F2 for Log tab
-        self.shortcuts["F2"] = QShortcut(QKeySequence(Qt.Key_F2), self)
-        self.shortcuts["F2"].activated.connect(self.tabShortcutMap.map)
-        self.tabShortcutMap.setMapping(self.shortcuts["F2"], 1)
-            #F3 for Table tab
-        self.shortcuts["F3"] = QShortcut(QKeySequence(Qt.Key_F3), self)
-        self.shortcuts["F3"].activated.connect(self.tabShortcutMap.map)
-        self.tabShortcutMap.setMapping(self.shortcuts["F3"], 2)
-            #F4 for Log tab
-        self.shortcuts["F4"] = QShortcut(QKeySequence(Qt.Key_F4), self)
-        self.shortcuts["F4"].activated.connect(self.tabShortcutMap.map)
-        self.tabShortcutMap.setMapping(self.shortcuts["F4"], 3)
-
+    @pyqtSlot()
+    def _dataAvailable(self):
+        data = self.com.readAll()
+        self.tab_Log.appendLog(data.decode())
     
     @pyqtSlot()
     def _connectionEstablished(self):
-        self.tab["Log"].appendLog(("-----------connected-------------\n"))
+        self.tab_Log.appendLog(("-----------connected-------------\n"))
         #---DEBUG---
-        #self.tabs.setCurrentWidget(self.tab["Log"])
-        #self.tab["Com"]._getStats(True)
-    
-    @pyqtSlot(str)
-    def log(self, logMsg):
-        self.tab["Log"].appendLog(logMsg)
-    
-    @pyqtSlot(int)
-    def selectTab(self, tabId):
-        self.tabs.setCurrentIndex(tabId)
+        #self.tabs.setCurrentWidget(self.tab_Log)
+        #self.tab_Com._getStats(True)
+        
+    @pyqtSlot(bytes)
+    def _msgToSend(self, msg):
+        print("Msg send request : [%s]" % msg)
+        # sequence id is not used yet, as Teleop doesn't require any robustness, 
+        # in order to use this com with a robot to robot com, it'll be required
+        frame = frame_data(msg, FRAME_DATA, 1)
+        print("HLDC frame : [%s]" % frame)
+        if self.com.write(frame) == len(frame):
+            print("Frame sent successfully.")
+        else:
+            print("Frame send error.")
     
     def buildTabTable(self):
         tab_Table = QWidget(self)        
@@ -94,11 +71,6 @@ class ConnectScreen(QWidget):
             
 if __name__ == '__main__':
     import sys
-    import os
-    
-    #re-generate proto (not optimal, but as they will change a lot at project beginning...)
-    os.system("..\generate.bat ..\\")
-    
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     app = QApplication(sys.argv)
     screen = ConnectScreen()

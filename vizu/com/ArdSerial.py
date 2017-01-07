@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtSerialPort import *
+import unicodedata
 
 #
 # This class manage a serial connection

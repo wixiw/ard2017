@@ -362,7 +362,7 @@
     </ToolchainSettings>
     <OutputFileName>libARD</OutputFileName>
     <OutputFileExtension>.a</OutputFileExtension>
-    <PreBuildEvent>$(SolutionDir)..\generate.bat $(SolutionDir)..\</PreBuildEvent>
+    <PreBuildEvent>$(SolutionDir)Common\2_AL\com\generate.bat $(SolutionDir)Common\2_AL\com\</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="0_BSP\ArduinoCore\abi.cpp">
@@ -1250,10 +1250,10 @@
     <Compile Include="2_AL\ActuatorX.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\proto\Teleop.pb.c">
+    <Compile Include="2_AL\com\Teleop.pb.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\proto\Teleop.pb.h">
+    <Compile Include="2_AL\com\Teleop.pb.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Robot2017.cpp">
@@ -1323,7 +1323,7 @@
     <Folder Include="1_RSP" />
     <Folder Include="1_RSP\protobuf" />
     <Folder Include="2_AL" />
-    <Folder Include="2_AL\proto\" />
+    <Folder Include="2_AL\com\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="0_BSP\ArduinoCore\desktop.ini">
@@ -1357,6 +1357,15 @@
       <SubType>compile</SubType>
     </None>
     <None Include="0_BSP\FreeRTOS\stdint.readme">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="2_AL\com\generate.bat">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="2_AL\com\Teleop.options">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="2_AL\com\Teleop.proto">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>
