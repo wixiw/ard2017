@@ -48,6 +48,9 @@ namespace ard
         //simple serial interface may be used withy any serial terminal.
         void simpleSerialRun();
 
+        //Decode the message
+        void handleMsg(unsigned char const * msg, size_t msgLength);
+
     };
 
 } /* namespace ard */

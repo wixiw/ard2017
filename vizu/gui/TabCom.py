@@ -1,13 +1,16 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from com import *
 from PyQt5.Qt import *
 from PyQt5.QtWidgets import *
 
 class TabCom(QWidget):
+    
+    #QT emitted signals :
     serialConnected = pyqtSignal()
-    sendMsg = pyqtSignal(bytes)
+    getOsStats = pyqtSignal()
+    configureMatch = pyqtSignal(int, int)
+    startMatch = pyqtSignal()
     
     #@param ArdSerial : a reference on the object managing the serial line
     def __init__(self, serialManager):
@@ -27,13 +30,22 @@ class TabCom(QWidget):
         self.btn_connect.setCheckable(True)
         self.btn_connect.clicked[bool].connect(self._connectRequest)
         
-        self.btn_getStats = QPushButton('Get Stats', self)
-        self.btn_getStats.hide()
-        self.btn_getStats.clicked[bool].connect(self._getStats) 
+        self.connected_btn = dict()
+        self.connected_btn["getOsStats"] = QPushButton('Get Stats', self)
+        self.connected_btn["getOsStats"].hide()
+        self.connected_btn["getOsStats"].clicked[bool].connect(self._getOsStats) 
+        
+        self.connected_btn["configureMatch"] = QPushButton('Configure Match', self)
+        self.connected_btn["configureMatch"].hide()
+        self.connected_btn["configureMatch"].clicked[bool].connect(self._configureMatch) 
+        
+        self.connected_btn["startMatch"] = QPushButton('Start Match', self)
+        self.connected_btn["startMatch"].hide()
+        self.connected_btn["startMatch"].clicked[bool].connect(self._startMatch) 
         
         layout = QVBoxLayout(self)
         layoutH1 = QHBoxLayout()
-        layoutH2 = QHBoxLayout()
+        layoutH2 = QVBoxLayout()
         layout.addLayout(layoutH1)
         layout.addLayout(layoutH2)
         layout.addStretch()
@@ -43,8 +55,13 @@ class TabCom(QWidget):
         layoutH1.addWidget(self.btn_connect)      
         layoutH1.addStretch()
         
-        layoutH2.addWidget(self.btn_getStats)
+        for button in self.connected_btn:    
+            layoutH2.addWidget(self.connected_btn[button])
         layoutH2.addStretch()
+        
+        #keyboard shortcuts
+        QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connect)
+        QShortcut(QKeySequence(Qt.Key_D), self).activated.connect(self._disconnect)
 
     @pyqtSlot(bool)
     def _connectRequest(self, pressed):
@@ -54,9 +71,19 @@ class TabCom(QWidget):
             self._disconnect()
         
     @pyqtSlot(bool)
-    def _getStats(self, pressed): 
+    def _getOsStats(self, pressed): 
        print("Stats request")
-       self.sendMsg.emit(b"Coucou")
+       self.getOsStats.emit()
+       
+    @pyqtSlot(bool)
+    def _configureMatch(self, pressed): 
+       print("Configure match request")
+       self.configureMatch.emit(1, 2)
+       
+    @pyqtSlot(bool)
+    def _startMatch(self, pressed): 
+       print("Start match request")
+       self.startMatch.emit()
         
     def _connect(self):
         port = self.combo_COM.currentText()
@@ -68,7 +95,8 @@ class TabCom(QWidget):
         
         if self.com.connect(port, baudrate):
             print("Connected")
-            self.btn_getStats.show()
+            for button in self.connected_btn:
+                self.connected_btn[button].show()
             self.serialConnected.emit()
         else:
             self.disconnect()
@@ -79,7 +107,8 @@ class TabCom(QWidget):
         self.btn_connect.setChecked(False)
         self.combo_COM.setEnabled(True)
         self.combo_Baudrate.setEnabled(True)
-        self.btn_getStats.hide()
+        for button in self.connected_btn:
+            self.connected_btn[button].hide()
         print("Disconnected")
             
 if __name__ == '__main__':
