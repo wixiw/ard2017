@@ -1,4 +1,4 @@
-#print("Importing com package")
+#print("Importing proto package")
 __all__ = []
 
 import pkgutil

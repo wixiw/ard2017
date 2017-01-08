@@ -11,7 +11,7 @@ Navigation::Navigation()
                 m_pose(),
                 m_state(eNavState::IDLE),
                 m_target(),
-                m_sensTarget(SENS_UNDEFINED),
+                m_sensTarget(eDir_UNDEFINED),
                 m_order(eNavOrder::NOTHING),
                 m_angleToTarget(0),
                 m_distanceToTarget(0),
@@ -21,7 +21,7 @@ Navigation::Navigation()
                 omronFrontRight(OMRON2, 50, 50),
                 omronRearLeft(OMRON3, 50, 50),
                 omronRearRight(OMRON4, 50, 50),
-                m_color(eColor::UNKOWN),
+                m_color(eColor_PREF),
                 m_speed(SPEED_MAX),
                 m_speed_virage(SPEED_MAX_VIR),
                 m_mutex(NULL),
@@ -152,7 +152,7 @@ void Navigation::updateFromInterrupt()
 {
     stepperG.run();
     stepperD.run();
-    compute_odom();
+    //TODO compute_odom();
 }
 
 /**---------------------------------
@@ -162,14 +162,14 @@ void Navigation::updateFromInterrupt()
 void Navigation::setPosition(PointCap newPose)
 {
     //prevent any interrupt from occurring between any configuration of a left/right motor
-    portENTER_CRITICAL();
+    //TODO portDISABLE_INTERRUPTS();
     m_pose = newPose.toAmbiPose(m_color);
-    portEXIT_CRITICAL();
+    //TODO portENABLE_INTERRUPTS();
 
     LOG(INFO, "NAV : position set to :" + newPose.toString());
 }
 
-void Navigation::goTo(Point target, sens_t sens)
+void Navigation::goTo(Point target, eDir sens)
 {
     g_ArdOs.Mutex_lock(m_mutex);
     //If an order is present, wait
@@ -188,7 +188,7 @@ void Navigation::goTo(Point target, sens_t sens)
     g_ArdOs.Mutex_unlock(m_mutex);
 }
 
-void Navigation::goToCap(PointCap target, sens_t sens)
+void Navigation::goToCap(PointCap target, eDir sens)
 {
     g_ArdOs.Mutex_lock(m_mutex);
 
@@ -280,10 +280,10 @@ void Navigation::stop()
     g_ArdOs.Mutex_lock(m_mutex);
 
     //prevent any interrupt from occurring between any configuration of a left/right motor
-    portENTER_CRITICAL();
+    //TODO portDISABLE_INTERRUPTS();
     stepperG.stop();
     stepperD.stop();
-    portEXIT_CRITICAL();
+    //TODO portENABLE_INTERRUPTS();
 
     //The state is directly changed to interrupting
     m_state = eNavState::STOPPING;
@@ -312,7 +312,7 @@ bool Navigation::targetReached()
 
 void Navigation::setColor(eColor c)
 {
-    ardAssert(c != eColor::UNKOWN, "NAV : color should not be set to undefined.");
+    ardAssert(c != eColor_UNKNOWN, "NAV : color should not be set to undefined.");
     g_ArdOs.Mutex_lock(m_mutex);
     m_color = c;
     g_ArdOs.Mutex_unlock(m_mutex);
@@ -321,7 +321,7 @@ void Navigation::setColor(eColor c)
 void Navigation::setSpeed(float s)
 {
     //prevent any interrupt from occurring between any configuration of a left/right motor
-    portENTER_CRITICAL();
+    //TODO portDISABLE_INTERRUPTS();
     if (s > 0)
     {
         stepperG.setMaxSpeed(s);
@@ -334,7 +334,7 @@ void Navigation::setSpeed(float s)
         stepperD.setMaxSpeed(SPEED_MAX);
         m_speed = SPEED_MAX;
     }
-    portEXIT_CRITICAL();
+    //TODO portENABLE_INTERRUPTS();
 }
 
 void Navigation::setSpeedVir(float s)
@@ -380,23 +380,23 @@ void Navigation::compute_odom()
 void Navigation::straight(float mm)
 {
     //prevent any interrupt from occurring between any configuration of a left/right motor
-    portENTER_CRITICAL();
+    //TODO portDISABLE_INTERRUPTS();
     stepperG.setMaxSpeed(m_speed);
     stepperD.setMaxSpeed(m_speed);
     stepperG.move(-mm * GAIN_STEP_MM);
     stepperD.move(+mm * GAIN_STEP_MM);
-    portEXIT_CRITICAL();
+    //TODO portENABLE_INTERRUPTS();
 }
 
 void Navigation::turn(float angle)
 {
     //prevent any interrupt from occurring between any configuration of a left/right motor
-    portENTER_CRITICAL();
+    //TODO portDISABLE_INTERRUPTS();
     stepperG.setMaxSpeed(m_speed_virage);
     stepperD.setMaxSpeed(m_speed_virage);
     stepperG.move(-(-angle * VOIE / 2 * GAIN_STEP_MM));
     stepperD.move(+angle * VOIE / 2 * GAIN_STEP_MM);
-    portEXIT_CRITICAL();
+    //TODO portENABLE_INTERRUPTS();
 }
 
 void Navigation::interruptCurrentMove()
@@ -404,10 +404,10 @@ void Navigation::interruptCurrentMove()
     LOG(INFO, "NAV : current order is interrupted.");
     m_state = eNavState::STOPPING;
     //prevent any interrupt from occurring between any configuration of a left/right motor
-    portENTER_CRITICAL();
+    //TODO portDISABLE_INTERRUPTS();
     stepperG.stop();
     stepperD.stop();
-    portEXIT_CRITICAL();
+    //TODO portENABLE_INTERRUPTS();
 }
 
 /**
@@ -416,20 +416,20 @@ void Navigation::interruptCurrentMove()
 bool Navigation::subOrderFinished()
 {
     //prevent any interrupt from occurring between any configuration of a left/right motor
-    portENTER_CRITICAL();
+    //TODO portDISABLE_INTERRUPTS();
     bool res = stepperG.distanceToGo() == 0 || stepperD.distanceToGo() == 0;
-    portEXIT_CRITICAL();
+    //TODO portENABLE_INTERRUPTS();
     return res;
 }
 
-String Navigation::sensToString(sens_t sens)
+String Navigation::sensToString(eDir sens)
 {
     switch (sens)
     {
     default:
-    ENUM2STR(SENS_UNDEFINED)
-;        ENUM2STR(SENS_AV);
-        ENUM2STR(SENS_AR);
+    ENUM2STR(eDir_UNDEFINED)
+;        ENUM2STR(eDir_FORWARD);
+        ENUM2STR(eDir_BACKWARD);
     }
 }
 

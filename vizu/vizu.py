@@ -1,6 +1,12 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+#expand path to find modules :
+import sys
+sys.path.append("com")
+sys.path.append("gui")
+sys.path.append("proto")
+
 import signal
 
 from PyQt5.Qt import *
@@ -22,26 +28,29 @@ class ConnectScreen(QWidget):
         
         self.tab = dict()
         self.tab["Com"]   = TabCom(self.teleop.com)
-        self.tab["Table"] = self.buildTabTable()
-        self.tab["Robot"] = self.buildTabRobot()
         self.tab["Log"]   = TabLog()
+        self.tab["Strat"] = self.buildTabTable()
+        self.tab["Robot"] = TabRobot()
+        
         
         self.tabs = QTabWidget(self)
         self.tabs.setTabShape(QTabWidget.Rounded)
-        self.tabs.addTab(self.tab["Com"],   "Com")
-        self.tabs.addTab(self.tab["Log"],   "Logs")
-        self.tabs.addTab(self.tab["Table"], "Table")
-        self.tabs.addTab(self.tab["Robot"], "Robot")
+        for tabName, tab in self.tab.items():
+            self.tabs.addTab(tab, tabName)
         
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
         
-        self.teleop.log[str].connect(self.log)
+        #connect Com tab
         self.tab["Com"].serialConnected     .connect(self._connectionEstablished)
         self.tab["Com"].getOsStats          .connect(self.teleop.getOsStats)
         self.tab["Com"].configureMatch      .connect(self.teleop.configureMatch)
         self.tab["Com"].startMatch          .connect(self.teleop.startMatch)
-        
+        #connect Log tab
+        self.teleop.log[str].connect(self.log)
+        #conenct Robot tab
+        for cmd, widget in self.tab["Robot"].navTab.items():
+            widget.execute.connect(getattr(self.teleop, cmd))  #getattr is used to get a method reference from name, hence automatically binding signals ;p
         
         #add shortcut to quit the app with ESC
         self.shortcuts = dict()
@@ -83,21 +92,17 @@ class ConnectScreen(QWidget):
     @pyqtSlot(int)
     def selectTab(self, tabId):
         self.tabs.setCurrentIndex(tabId)
-    
+        
     def buildTabTable(self):
         tab_Table = QWidget(self)        
         return tab_Table
-   
-    def buildTabRobot(self):
-        tab_Table = QWidget(self)        
-        return tab_Table            
             
 if __name__ == '__main__':
     import sys
     import os
     
     #re-generate proto (not optimal, but as they will change a lot at project beginning...)
-    os.system("..\generate.bat ..\\")
+    os.system("..\generateCom.bat ..\\ off")
     
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     app = QApplication(sys.argv)

@@ -9,6 +9,7 @@
 #define ROBOTS_TELEOPTHREAD_H_
 
 #include "RSP.h"
+#include "proto/Teleop.pb.h"
 
 namespace ard
 {
@@ -50,6 +51,16 @@ namespace ard
 
         //Decode the message
         void handleMsg(unsigned char const * msg, size_t msgLength);
+
+        /**
+         * Receive COM API
+         */
+        void getOsStats             (apb_TeleopRequest const & request);
+        void configureMatch         (apb_TeleopRequest const & request);
+        void startMatch             (apb_TeleopRequest const & request);
+        void setPosition            (apb_TeleopRequest const & request);
+        void requestGoto            (apb_TeleopRequest const & request);
+        void requestGotoCap         (apb_TeleopRequest const & request);
 
     };
 

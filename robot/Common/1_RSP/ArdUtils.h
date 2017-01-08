@@ -28,11 +28,6 @@
 //Uses to disable "unsused param" warnings
 #define UNUSED(x) ((void)(x))
 
-typedef enum class eColor
-{
-    UNKOWN, PREF, SYM
-} eColor;
-
 //Use this function in "enumToString" functions so that we don't miss copy the label which could fool us in debug
 #define ENUM2STR(myenum) \
     case myenum: \

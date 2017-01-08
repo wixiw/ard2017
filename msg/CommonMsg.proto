@@ -1,0 +1,22 @@
+syntax = "proto2";
+package apb;
+
+//import "Types.proto";
+
+
+//This is a generic message when you have no parameters to set
+message EmptyMsg {
+}
+
+message Point
+{
+	required float x = 1; //mm
+	required float y = 2; //mm
+}
+
+message PointCap
+{
+	required float x = 1; //mm
+	required float y = 2; //mm
+	required float h = 3; //°
+}

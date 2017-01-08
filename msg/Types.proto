@@ -1,0 +1,32 @@
+syntax = "proto2";
+
+// there is no package on purpose as we wish to use the generated types for
+// the robot code in order to avoid having to synchronize internal types
+// with communication types. It's an architectureal coupling done on purpose
+
+enum eDir{
+    UNDEFINED 	= 0;
+    FORWARD		= 1;
+    BACKWARD	= -1;
+}
+
+enum eColor {
+	UNKNOWN 		= 0;
+	PREF 			= 1;
+	SYM 			= 2;
+}
+
+enum eNavState {
+	IDLE 			= 0;
+	FACING_DEST 	= 1;
+	GOING_TO_TARGET = 2;
+	TURNING_AT_TARGET = 3;
+	STOPPING 		= 4;
+}
+
+enum eNavOrder {
+	NOTHING 		= 0;
+	GOTO 			= 1;
+	GOTO_CAP 		= 2;
+	STOP 			= 3;
+}

@@ -143,8 +143,6 @@ namespace ard
     //private constructor as its a singleton class
     LogThread ();COPY_CONSTRUCTORS (LogThread)
   };
-
-//TODO faire une fonction a parametres variables pour mettre des variables
 }
 
 #endif /* ROBOTS_LOGTHREAD_H_ */

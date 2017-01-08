@@ -1,15 +1,8 @@
 syntax = "proto2";
 package apb;
 
-enum eColor
-{
-	UNKNOWN = 0;
-	PREF = 1;
-	SYM = 2;
-}
-
-//This is a generic message when you have no parameters to set
-message EmptyMsg{}
+import "Types.proto";
+import "CommonMsg.proto";
 
 //Configure the robot match paramters
 message ConfigureMatch
@@ -18,13 +11,47 @@ message ConfigureMatch
 	required eColor matchColor = 2;
 }
 
+//request the robot to turn to head to destination, then go ahead
+message RequestGoto {
+	required Point			target				= 1;
+	required eDir			direction			= 2;
+}
+
+//relative motion order to go in straight line
+message RequestGotoCap {
+	required PointCap		target				= 1;
+	required eDir			direction			= 2;
+}
+
+//feedback on Robot low level states
+message RSPState
+{
+	required eNavState 		navState 			= 10; //current motion state
+	required eNavOrder		navOrder			= 11; //current motion order
+	required PointCap		position			= 12; //robot position
+}
+
+//----------------------------------------------------------------------
+// Multiplexer : this message is used to encapsulate all the other
+//               so that several messages can be sent on the same
+//               communication link.
+//----------------------------------------------------------------------
+
 message TeleopRequest
 {
 	oneof type
 	{
+		//messages from 0 to 99 are general purpose messages
 		EmptyMsg 			getOsStats 			= 1;
-		ConfigureMatch 		configureMatch 		= 2;
-		EmptyMsg 			startMatch 			= 3;
+
+		//messages from 100 to 199 are reserved fo strategy
+		ConfigureMatch 		configureMatch 		= 100;
+		EmptyMsg 			startMatch 			= 101;
+
+		//messages from 200 to 299 are reserved fo navigation
+		PointCap			setPosition			= 200;
+		RequestGoto        	requestGoto			= 210;
+		RequestGotoCap      requestGotoCap		= 211;
 	}
 }
 
@@ -32,6 +59,8 @@ message TeleopResponse
 {
 	oneof type
 	{
-		EmptyMsg osStats = 1;
+		EmptyMsg 			osStats 			= 1;
+		RSPState			rspState			= 200;
+
 	}
 }

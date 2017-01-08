@@ -3,16 +3,12 @@
 #define NAVIGATION_H
 
 #include "BSP.h"
-#include "RSP.h"
+#include "ArdMaths.h"
+#include "GpioTools.h"
+#include "Types.pb.h"
 
 namespace ard
 {
-
-  typedef enum
-  {
-    SENS_UNDEFINED = 0, SENS_AV = 1, SENS_AR = -1
-  } sens_t;
-
   /**
    * This class manage the robot position and movements.
    * It is expected to be embedded in a periodic thread
@@ -53,7 +49,7 @@ namespace ard
     void
     setPosition (PointCap newPose);
     void
-    setPosition(float x, float y, float h){setPosition(PointCap(x,y,h));};
+    setPosition(float x/*mm*/, float y/*mm*/, float h/*°*/){setPosition(PointCap(x,y,h));};
 
     /**
      * Get the current robot position
@@ -73,14 +69,17 @@ namespace ard
      on the color configured with setColor()
 
      In order to wait until the order is complete, use the wait()/targetReached() functions
+
+     x,y in mm
+
      */
     void
-    goTo (Point target, sens_t sens = SENS_AV);
+    goTo (Point target, eDir sens = eDir_FORWARD);
     void
-    goTo (float x, float y, sens_t sens = SENS_AV){goTo(Point(x,y), sens);};
+    goTo (float x /*mm*/, float y/*mm*/, eDir sens = eDir_FORWARD){goTo(Point(x,y), sens);};
 
     /**
-     Send a Goto (x,y) request, the robot will turn to face the target
+     Send a Goto (x,y,heading) request, the robot will turn to face the target
      and use a straight line to go to it. Then it will turn to reach the
      target heading/
      If an order is already present the call is blocking as if a wait() where done.
@@ -89,11 +88,15 @@ namespace ard
      on the color configured with setColor()
 
      In order to wait until the order is complete, use the wait()/targetReached() functions
+
+     x,y in mm
+     heading in degrees
+
      */
     void
-    goToCap (PointCap target, sens_t sens = SENS_AV);
+    goToCap (PointCap target, eDir sens = eDir_FORWARD);
     void
-    goToCap(float x, float y, float h, sens_t sens = SENS_AV){goToCap(PointCap(x,y,h), sens);};
+    goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD){goToCap(PointCap(x,y,h), sens);};
 
     /**
      * The robot will go ahead of the distance in parameter
@@ -105,11 +108,13 @@ namespace ard
     goForward (float distanceMm);
 
     /**
-     * The robot will turn of the angle in parameter
+     * The robot will turn of the angle in parameter (absolute or relative)
      * note : the angle may be negative to go clockwise
      *
      * If an order is already present the call is blocking as if a wait() where done.
      */
+    void
+    turnDelta(float angle);
     void
     turnTo (float angle);
 
@@ -190,7 +195,7 @@ namespace ard
     subOrderFinished();
 
     String
-    sensToString (sens_t sens);
+    sensToString (eDir sens);
     String
     orderToString (eNavOrder order);
     String
@@ -202,7 +207,7 @@ namespace ard
 
     //target definition
     PointCap m_target;
-    sens_t m_sensTarget;
+    eDir m_sensTarget;
     eNavOrder m_order;
     float m_angleToTarget;
     float m_distanceToTarget;

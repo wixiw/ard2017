@@ -362,7 +362,7 @@
     </ToolchainSettings>
     <OutputFileName>libARD</OutputFileName>
     <OutputFileExtension>.a</OutputFileExtension>
-    <PreBuildEvent>$(SolutionDir)..\generate.bat $(SolutionDir)..\</PreBuildEvent>
+    <PreBuildEvent>$(SolutionDir)..\generateCom.bat $(SolutionDir)..\ on</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="0_BSP\ArduinoCore\abi.cpp">
@@ -1232,6 +1232,12 @@
     <Compile Include="1_RSP\RSP.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\Types.pb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Types.pb.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\yahdlc.c">
       <SubType>compile</SubType>
     </Compile>
@@ -1248,6 +1254,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\ActuatorX.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\proto\CommonMsg.pb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\proto\CommonMsg.pb.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\proto\Teleop.pb.c">

@@ -76,11 +76,11 @@ void StrategyThread::registerStrategy(String name, StrategyFunctor functor)
 void StrategyThread::readUserInputs()
 {   
     //Read color input
-    eColor selectedColor = eColor::UNKOWN;
+    eColor selectedColor = eColor_UNKNOWN;
     if ( ROBOT.isPreferedColor() )
-        selectedColor = eColor::PREF;
+        selectedColor = eColor_PREF;
     else
-        selectedColor = eColor::SYM;
+        selectedColor = eColor_SYM;
 
     //Read strat config
     configureMatch(ROBOT.getStrategyId(), selectedColor);
@@ -91,14 +91,14 @@ void StrategyThread::configureMatch(uint8_t strategyId_, eColor matchColor)
     ROBOT.nav.setColor (matchColor);
     
     //Configure color
-    if ( matchColor == eColor::PREF )
+    if ( matchColor == eColor_PREF )
     {
         ROBOT.setRGBled(YELLOW, ON);
         LOG(INFO, "User has selected PREF (Yellow) color");
     }
-    else if ( matchColor == eColor::SYM )
+    else if ( matchColor == eColor_SYM )
     {
-        ROBOT.nav.setColor (eColor::SYM);
+        ROBOT.nav.setColor (eColor_SYM);
         ROBOT.setRGBled(BLUE, ON);
         LOG(INFO, "User has selected SYM (Blue) color");
     }

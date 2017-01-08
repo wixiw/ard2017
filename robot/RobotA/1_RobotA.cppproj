@@ -143,11 +143,15 @@
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
             <Value>../../Common/0_BSP/ArduinoCore/include</Value>
-            <Value>..\..\Common\0_BSP\ArduinoCore</Value>
-            <Value>..\..\Common\0_BSP\FreeRtos</Value>
-            <Value>..\..\Common\0_BSP</Value>
-            <Value>..\..\Common\1_RSP</Value>
-            <Value>..\..\Common\2_AL</Value>
+            <Value>../../Common/0_BSP/ArduinoCore</Value>
+            <Value>../../Common/0_BSP/FreeRtos</Value>
+            <Value>../../Common/0_BSP</Value>
+            <Value>../../Common/0_BSP/Drivers</Value>
+            <Value>../../Common/1_RSP</Value>
+            <Value>../../Common</Value>
+            <Value>../../Common/1_RSP</Value>
+            <Value>../../Common/1_RSP/protobuf</Value>
+            <Value>../../Common/2_AL</Value>
           </ListValues>
         </armgcc.compiler.directories.IncludePaths>
         <armgcc.compiler.optimization.level>Optimize (-O1)</armgcc.compiler.optimization.level>
@@ -170,12 +174,15 @@
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
             <Value>../../Common/0_BSP/ArduinoCore/include</Value>
-            <Value>..\..\Common\0_BSP\ArduinoCore</Value>
-            <Value>..\..\Common\0_BSP\FreeRtos</Value>
+            <Value>../../Common/0_BSP/ArduinoCore</Value>
+            <Value>../../Common/0_BSP/FreeRtos</Value>
             <Value>../../Common/0_BSP</Value>
-            <Value>..\..\Common\1_RSP</Value>
-            <Value>..\..\Common\2_AL</Value>
-            <Value>..\..\Common</Value>
+            <Value>../../Common/0_BSP/Drivers</Value>
+            <Value>../../Common/1_RSP</Value>
+            <Value>../../Common</Value>
+            <Value>../../Common/1_RSP</Value>
+            <Value>../../Common/1_RSP/protobuf</Value>
+            <Value>../../Common/2_AL</Value>
           </ListValues>
         </armgcccpp.compiler.directories.IncludePaths>
         <armgcccpp.compiler.optimization.level>Optimize (-O1)</armgcccpp.compiler.optimization.level>

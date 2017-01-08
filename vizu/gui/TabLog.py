@@ -5,6 +5,7 @@ from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+import threading
 
 #
 # This class is a pre-built widget which is designed to display 
@@ -20,13 +21,15 @@ class TabLog(QWidget):
         self.text_logs.setMaximumBlockCount(200);
         self.text_logs.setReadOnly(True)
         
-        p = QPalette()
-        p.setColor(QPalette.Base, Qt.black)
-        p.setColor(QPalette.Text, Qt.green)
-        self.text_logs.setPalette(p)
+#         p = QPalette()
+#         p.setColor(QPalette.Base, Qt.black)
+#         p.setColor(QPalette.Text, Qt.green)
+#         self.text_logs.setPalette(p)
         
         layout_Log = QHBoxLayout(self)
         layout_Log.addWidget(self.text_logs)
+
+        self.lock = threading.Lock()
 
     # append a log at the end of the display
     # if the number of log is more than the one configured with
@@ -34,9 +37,12 @@ class TabLog(QWidget):
     # @param str: the data to log
     def appendLog(self, data):
         assert isinstance(data, str), "appendLog expects to receive a string" 
+        self.lock.acquire()
+        print(data)
         self.text_logs.insertPlainText(data)
         bar = self.text_logs.verticalScrollBar()
         bar.setValue(bar.maximum())
+        self.lock.release()
         
     # configure the number of logs displayed
     # @param int

@@ -18,11 +18,11 @@ ard::Strategy_Alpha ()
 
 	//Set robot to default position
 	ROBOT.nav.setPosition(0,0,0);
-	ROBOT.nav.goTo(300, 0, SENS_AV);
+	ROBOT.nav.goTo(300, 0, eDir_FORWARD);
 	LOG(INFO,"STRAT : Move order sent, waiting...");
 	ROBOT.nav.wait();
 	LOG(INFO,"STRAT : Return to start pos, waiting...");
-	ROBOT.nav.goTo(0, 0, SENS_AV);
+	ROBOT.nav.goTo(0, 0, eDir_FORWARD);
 	ROBOT.nav.wait();
 	LOG(INFO,"STRAT : Finished.");
 	ROBOT.dieMotherFucker();
