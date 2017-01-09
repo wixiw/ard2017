@@ -30,3 +30,9 @@ enum eNavOrder {
 	GOTO_CAP 		= 2;
 	STOP 			= 3;
 }
+
+enum eLogLevel {
+	DEBUG 			= 0;
+	INFO 			= 1;
+	ERROR 			= 2;
+}

@@ -11,6 +11,10 @@
 #include "RSP.h"
 #include "proto/Teleop.pb.h"
 
+//Note that Python yahdlc binding can't go over 8 (header) + 512
+#define SERIAL_BUF_SIZE 200
+#define HDLC_BUF_SIZE 200
+
 namespace ard
 {
     typedef enum
@@ -26,7 +30,7 @@ namespace ard
      * - simulate an HW event
      * - teleoperate the robot for tests
      */
-    class TeleopThread: public IThread
+    class TeleopThread: public IThread, public ILogChannel
     {
     public:
         TeleopThread() = default;
@@ -41,6 +45,9 @@ namespace ard
         //Get any teleop event
         IEvent* getEvent(eTeleopEvtId id);
 
+        //push a log on the serial link
+        virtual void log(LogMsg const & log) override;
+
     private:
         Event<1> events[EVT_MAX];
         
@@ -50,7 +57,24 @@ namespace ard
         void simpleSerialRun();
 
         //Decode the message
-        void handleMsg(unsigned char const * msg, size_t msgLength);
+        void handleMsg(char const * msg, size_t msgLength);
+
+        //reception buffers
+        unsigned int serial_index = 0;
+        char serial_recv_buffer[SERIAL_BUF_SIZE];
+        char hdlc_recv_framebuffer[HDLC_BUF_SIZE];
+
+        //emission buffers. hdlc buffer are flat buffers
+        //because yahdlc is not able to read from ring buffers
+        char msg_send_buffer[SERIAL_BUF_SIZE];
+        char hdlc_send_framebuffer[HDLC_BUF_SIZE];
+
+        //create an hdlc frame from msg buffer and send it byte by bytes
+        void writeMsg(unsigned int byteToWrite);
+
+        //read bytes one by one on the serial link and store them in the serial buffer
+        //@return bytes read
+        unsigned int feedReadBuffer();
 
         /**
          * Receive COM API

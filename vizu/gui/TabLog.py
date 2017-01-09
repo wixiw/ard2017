@@ -5,6 +5,7 @@ from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from proto import *
 import threading
 
 #
@@ -48,6 +49,11 @@ class TabLog(QWidget):
     # @param int
     def setNbLogs(self, nb):
         self.text_logs.document().setMaximumBlockCount(nb);
+
+    @pyqtSlot(Teleop_pb2.Log)
+    def log(self, logMsg):
+        header = str(logMsg.date).zfill(5) + " [" + Types_pb2.eLogLevel.Name(logMsg.level) + "] "
+        self.tab["Log"].appendLog(header + logMsg.text)
 
 if __name__ == '__main__':
     import sys

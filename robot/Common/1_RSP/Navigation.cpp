@@ -48,7 +48,7 @@ void Navigation::update(TimeMs sinceLastCall)
     static auto lastState = m_state;
     if (m_state != lastState)
     {
-        LOG(DEBUG, "NAV : state changed from  " + stateToString(lastState) + " to " + stateToString(m_state));
+        LOG_DEBUG("NAV : state changed from  " + stateToString(lastState) + " to " + stateToString(m_state));
         lastState = m_state;
     }
 
@@ -71,7 +71,7 @@ void Navigation::update(TimeMs sinceLastCall)
         case eNavOrder::GOTO:
         case eNavOrder::GOTO_CAP:
         {
-            LOG(INFO,
+            LOG_INFO(
                     "NAV : new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget)
                             + ".");
             turn(m_angleToTarget);
@@ -93,7 +93,7 @@ void Navigation::update(TimeMs sinceLastCall)
             //Change state
             m_angleToTarget = 0;
             m_state = eNavState::GOING_TO_TARGET;
-            LOG(DEBUG, "NAV : facing destination, beginning line.");
+            LOG_DEBUG("NAV : facing destination, beginning line.");
         }
         break;
     }
@@ -129,7 +129,7 @@ void Navigation::update(TimeMs sinceLastCall)
             m_state = eNavState::IDLE;
             m_order = eNavOrder::NOTHING;
             g_ArdOs.Signal_set(m_targetReached);
-            LOG(INFO, "NAV : order finished.");
+            LOG_INFO("NAV : order finished.");
         }
         break;
     }
@@ -139,7 +139,7 @@ void Navigation::update(TimeMs sinceLastCall)
         if (subOrderFinished())
         {
             m_state = eNavState::IDLE;
-            LOG(INFO, "NAV : stopped.");
+            LOG_INFO("NAV : stopped.");
         }
         break;
     }
@@ -166,7 +166,7 @@ void Navigation::setPosition(PointCap newPose)
     m_pose = newPose.toAmbiPose(m_color);
     //TODO portENABLE_INTERRUPTS();
 
-    LOG(INFO, "NAV : position set to :" + newPose.toString());
+    LOG_INFO("NAV : position set to :" + newPose.toString());
 }
 
 void Navigation::goTo(Point target, eDir sens)
@@ -175,7 +175,7 @@ void Navigation::goTo(Point target, eDir sens)
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
-        LOG(INFO, "NAV : new order pending until current order is finished");
+        LOG_INFO("NAV : new order pending until current order is finished");
         g_ArdOs.Mutex_unlock(m_mutex);
         wait ();
         g_ArdOs.Mutex_lock(m_mutex);
@@ -195,7 +195,7 @@ void Navigation::goToCap(PointCap target, eDir sens)
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
-        LOG(INFO, "NAV : new order pending until current order is finished");
+        LOG_INFO("NAV : new order pending until current order is finished");
         g_ArdOs.Mutex_unlock(m_mutex);
         wait ();
         g_ArdOs.Mutex_lock(m_mutex);
@@ -216,7 +216,7 @@ void Navigation::goForward(float distanceMm)
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
-        LOG(INFO, "NAV : new order pending until current order is finished");
+        LOG_INFO("NAV : new order pending until current order is finished");
         g_ArdOs.Mutex_unlock(m_mutex);
         wait();
         g_ArdOs.Mutex_lock(m_mutex);
@@ -238,7 +238,7 @@ void Navigation::turnTo(float angle)
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
-        LOG(INFO, "NAV : new order pending until current order is finished");
+        LOG_INFO("NAV : new order pending until current order is finished");
         g_ArdOs.Mutex_unlock(m_mutex);
         wait();
         g_ArdOs.Mutex_lock(m_mutex);
@@ -260,7 +260,7 @@ void Navigation::faceTo(Point p)
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
-        LOG(INFO, "NAV : new order pending until current order is finished");
+        LOG_INFO("NAV : new order pending until current order is finished");
         g_ArdOs.Mutex_unlock(m_mutex);
         wait();
         g_ArdOs.Mutex_lock(m_mutex);
@@ -276,7 +276,7 @@ void Navigation::faceTo(Point p)
 
 void Navigation::stop()
 {
-    LOG(INFO, "NAV : stop requested");
+    LOG_INFO("NAV : stop requested");
     g_ArdOs.Mutex_lock(m_mutex);
 
     //prevent any interrupt from occurring between any configuration of a left/right motor
@@ -401,7 +401,7 @@ void Navigation::turn(float angle)
 
 void Navigation::interruptCurrentMove()
 {
-    LOG(INFO, "NAV : current order is interrupted.");
+    LOG_INFO("NAV : current order is interrupted.");
     m_state = eNavState::STOPPING;
     //prevent any interrupt from occurring between any configuration of a left/right motor
     //TODO portDISABLE_INTERRUPTS();

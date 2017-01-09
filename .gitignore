@@ -66,4 +66,5 @@ robot/RobotA/jlink.log
 robot/Common/2_AL/proto/*
 .settings/org.eclipse.core.resources.prefs
 __pycache__
-vizu/proto/*
+*.pb.*
+*_pb2.*

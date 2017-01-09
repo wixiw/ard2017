@@ -13,6 +13,7 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
+import nanopb_pb2 as nanopb__pb2
 import Types_pb2 as Types__pb2
 import CommonMsg_pb2 as CommonMsg__pb2
 
@@ -21,9 +22,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='Teleop.proto',
   package='apb',
   syntax='proto2',
-  serialized_pb=_b('\n\x0cTeleop.proto\x12\x03\x61pb\x1a\x0bTypes.proto\x1a\x0f\x43ommonMsg.proto\"?\n\x0e\x43onfigureMatch\x12\x10\n\x08strategy\x18\x01 \x02(\r\x12\x1b\n\nmatchColor\x18\x02 \x02(\x0e\x32\x07.eColor\"C\n\x0bRequestGoto\x12\x1a\n\x06target\x18\x01 \x02(\x0b\x32\n.apb.Point\x12\x18\n\tdirection\x18\x02 \x02(\x0e\x32\x05.eDir\"I\n\x0eRequestGotoCap\x12\x1d\n\x06target\x18\x01 \x02(\x0b\x32\r.apb.PointCap\x12\x18\n\tdirection\x18\x02 \x02(\x0e\x32\x05.eDir\"g\n\x08RSPState\x12\x1c\n\x08navState\x18\n \x02(\x0e\x32\n.eNavState\x12\x1c\n\x08navOrder\x18\x0b \x02(\x0e\x32\n.eNavOrder\x12\x1f\n\x08position\x18\x0c \x02(\x0b\x32\r.apb.PointCap\"\x91\x02\n\rTeleopRequest\x12#\n\ngetOsStats\x18\x01 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12-\n\x0e\x63onfigureMatch\x18\x64 \x01(\x0b\x32\x13.apb.ConfigureMatchH\x00\x12#\n\nstartMatch\x18\x65 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12%\n\x0bsetPosition\x18\xc8\x01 \x01(\x0b\x32\r.apb.PointCapH\x00\x12(\n\x0brequestGoto\x18\xd2\x01 \x01(\x0b\x32\x10.apb.RequestGotoH\x00\x12.\n\x0erequestGotoCap\x18\xd3\x01 \x01(\x0b\x32\x13.apb.RequestGotoCapH\x00\x42\x06\n\x04type\"^\n\x0eTeleopResponse\x12 \n\x07osStats\x18\x01 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12\"\n\x08rspState\x18\xc8\x01 \x01(\x0b\x32\r.apb.RSPStateH\x00\x42\x06\n\x04type')
+  serialized_pb=_b('\n\x0cTeleop.proto\x12\x03\x61pb\x1a\x0cnanopb.proto\x1a\x0bTypes.proto\x1a\x0f\x43ommonMsg.proto\"?\n\x0e\x43onfigureMatch\x12\x10\n\x08strategy\x18\x01 \x02(\r\x12\x1b\n\nmatchColor\x18\x02 \x02(\x0e\x32\x07.eColor\"C\n\x0bRequestGoto\x12\x1a\n\x06target\x18\x01 \x02(\x0b\x32\n.apb.Point\x12\x18\n\tdirection\x18\x02 \x02(\x0e\x32\x05.eDir\"I\n\x0eRequestGotoCap\x12\x1d\n\x06target\x18\x01 \x02(\x0b\x32\r.apb.PointCap\x12\x18\n\tdirection\x18\x02 \x02(\x0e\x32\x05.eDir\"D\n\x03Log\x12\x0c\n\x04\x64\x61te\x18\x01 \x02(\r\x12\x19\n\x05level\x18\x02 \x02(\x0e\x32\n.eLogLevel\x12\x14\n\x04text\x18\x03 \x02(\tB\x06\x92?\x03\x08\xc8\x01\"g\n\x08RSPState\x12\x1c\n\x08navState\x18\n \x02(\x0e\x32\n.eNavState\x12\x1c\n\x08navOrder\x18\x0b \x02(\x0e\x32\n.eNavOrder\x12\x1f\n\x08position\x18\x0c \x02(\x0b\x32\r.apb.PointCap\"\x91\x02\n\rTeleopRequest\x12#\n\ngetOsStats\x18\x01 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12-\n\x0e\x63onfigureMatch\x18\x64 \x01(\x0b\x32\x13.apb.ConfigureMatchH\x00\x12#\n\nstartMatch\x18\x65 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12%\n\x0bsetPosition\x18\xc8\x01 \x01(\x0b\x32\r.apb.PointCapH\x00\x12(\n\x0brequestGoto\x18\xd2\x01 \x01(\x0b\x32\x10.apb.RequestGotoH\x00\x12.\n\x0erequestGotoCap\x18\xd3\x01 \x01(\x0b\x32\x13.apb.RequestGotoCapH\x00\x42\x06\n\x04type\"w\n\x0eTeleopResponse\x12\x17\n\x03log\x18\x01 \x01(\x0b\x32\x08.apb.LogH\x00\x12 \n\x07osStats\x18\x02 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12\"\n\x08rspState\x18\xc8\x01 \x01(\x0b\x32\r.apb.RSPStateH\x00\x42\x06\n\x04type')
   ,
-  dependencies=[Types__pb2.DESCRIPTOR,CommonMsg__pb2.DESCRIPTOR,])
+  dependencies=[nanopb__pb2.DESCRIPTOR,Types__pb2.DESCRIPTOR,CommonMsg__pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 
@@ -62,8 +63,8 @@ _CONFIGUREMATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=51,
-  serialized_end=114,
+  serialized_start=65,
+  serialized_end=128,
 )
 
 
@@ -100,8 +101,8 @@ _REQUESTGOTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=116,
-  serialized_end=183,
+  serialized_start=130,
+  serialized_end=197,
 )
 
 
@@ -138,8 +139,53 @@ _REQUESTGOTOCAP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=185,
-  serialized_end=258,
+  serialized_start=199,
+  serialized_end=272,
+)
+
+
+_LOG = _descriptor.Descriptor(
+  name='Log',
+  full_name='apb.Log',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='date', full_name='apb.Log.date', index=0,
+      number=1, type=13, cpp_type=3, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='level', full_name='apb.Log.level', index=1,
+      number=2, type=14, cpp_type=8, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='text', full_name='apb.Log.text', index=2,
+      number=3, type=9, cpp_type=9, label=2,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\222?\003\010\310\001'))),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=274,
+  serialized_end=342,
 )
 
 
@@ -183,8 +229,8 @@ _RSPSTATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=260,
-  serialized_end=363,
+  serialized_start=344,
+  serialized_end=447,
 )
 
 
@@ -252,8 +298,8 @@ _TELEOPREQUEST = _descriptor.Descriptor(
       name='type', full_name='apb.TeleopRequest.type',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=366,
-  serialized_end=639,
+  serialized_start=450,
+  serialized_end=723,
 )
 
 
@@ -265,14 +311,21 @@ _TELEOPRESPONSE = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='osStats', full_name='apb.TeleopResponse.osStats', index=0,
+      name='log', full_name='apb.TeleopResponse.log', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rspState', full_name='apb.TeleopResponse.rspState', index=1,
+      name='osStats', full_name='apb.TeleopResponse.osStats', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='rspState', full_name='apb.TeleopResponse.rspState', index=2,
       number=200, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -293,8 +346,8 @@ _TELEOPRESPONSE = _descriptor.Descriptor(
       name='type', full_name='apb.TeleopResponse.type',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=641,
-  serialized_end=735,
+  serialized_start=725,
+  serialized_end=844,
 )
 
 _CONFIGUREMATCH.fields_by_name['matchColor'].enum_type = Types__pb2._ECOLOR
@@ -302,6 +355,7 @@ _REQUESTGOTO.fields_by_name['target'].message_type = CommonMsg__pb2._POINT
 _REQUESTGOTO.fields_by_name['direction'].enum_type = Types__pb2._EDIR
 _REQUESTGOTOCAP.fields_by_name['target'].message_type = CommonMsg__pb2._POINTCAP
 _REQUESTGOTOCAP.fields_by_name['direction'].enum_type = Types__pb2._EDIR
+_LOG.fields_by_name['level'].enum_type = Types__pb2._ELOGLEVEL
 _RSPSTATE.fields_by_name['navState'].enum_type = Types__pb2._ENAVSTATE
 _RSPSTATE.fields_by_name['navOrder'].enum_type = Types__pb2._ENAVORDER
 _RSPSTATE.fields_by_name['position'].message_type = CommonMsg__pb2._POINTCAP
@@ -329,8 +383,12 @@ _TELEOPREQUEST.fields_by_name['requestGoto'].containing_oneof = _TELEOPREQUEST.o
 _TELEOPREQUEST.oneofs_by_name['type'].fields.append(
   _TELEOPREQUEST.fields_by_name['requestGotoCap'])
 _TELEOPREQUEST.fields_by_name['requestGotoCap'].containing_oneof = _TELEOPREQUEST.oneofs_by_name['type']
+_TELEOPRESPONSE.fields_by_name['log'].message_type = _LOG
 _TELEOPRESPONSE.fields_by_name['osStats'].message_type = CommonMsg__pb2._EMPTYMSG
 _TELEOPRESPONSE.fields_by_name['rspState'].message_type = _RSPSTATE
+_TELEOPRESPONSE.oneofs_by_name['type'].fields.append(
+  _TELEOPRESPONSE.fields_by_name['log'])
+_TELEOPRESPONSE.fields_by_name['log'].containing_oneof = _TELEOPRESPONSE.oneofs_by_name['type']
 _TELEOPRESPONSE.oneofs_by_name['type'].fields.append(
   _TELEOPRESPONSE.fields_by_name['osStats'])
 _TELEOPRESPONSE.fields_by_name['osStats'].containing_oneof = _TELEOPRESPONSE.oneofs_by_name['type']
@@ -340,6 +398,7 @@ _TELEOPRESPONSE.fields_by_name['rspState'].containing_oneof = _TELEOPRESPONSE.on
 DESCRIPTOR.message_types_by_name['ConfigureMatch'] = _CONFIGUREMATCH
 DESCRIPTOR.message_types_by_name['RequestGoto'] = _REQUESTGOTO
 DESCRIPTOR.message_types_by_name['RequestGotoCap'] = _REQUESTGOTOCAP
+DESCRIPTOR.message_types_by_name['Log'] = _LOG
 DESCRIPTOR.message_types_by_name['RSPState'] = _RSPSTATE
 DESCRIPTOR.message_types_by_name['TeleopRequest'] = _TELEOPREQUEST
 DESCRIPTOR.message_types_by_name['TeleopResponse'] = _TELEOPRESPONSE
@@ -365,6 +424,13 @@ RequestGotoCap = _reflection.GeneratedProtocolMessageType('RequestGotoCap', (_me
   ))
 _sym_db.RegisterMessage(RequestGotoCap)
 
+Log = _reflection.GeneratedProtocolMessageType('Log', (_message.Message,), dict(
+  DESCRIPTOR = _LOG,
+  __module__ = 'Teleop_pb2'
+  # @@protoc_insertion_point(class_scope:apb.Log)
+  ))
+_sym_db.RegisterMessage(Log)
+
 RSPState = _reflection.GeneratedProtocolMessageType('RSPState', (_message.Message,), dict(
   DESCRIPTOR = _RSPSTATE,
   __module__ = 'Teleop_pb2'
@@ -387,4 +453,6 @@ TeleopResponse = _reflection.GeneratedProtocolMessageType('TeleopResponse', (_me
 _sym_db.RegisterMessage(TeleopResponse)
 
 
+_LOG.fields_by_name['text'].has_options = True
+_LOG.fields_by_name['text']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\222?\003\010\310\001'))
 # @@protoc_insertion_point(module_scope)

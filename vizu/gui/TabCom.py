@@ -7,28 +7,29 @@ from PyQt5.QtWidgets import *
 class TabCom(QWidget):
     
     #QT emitted signals :
-    serialConnected = pyqtSignal()
+    networkStatus = pyqtSignal(bool)
     getOsStats = pyqtSignal()
     configureMatch = pyqtSignal(int, int)
     startMatch = pyqtSignal()
     
     #@param ArdSerial : a reference on the object managing the serial line
-    def __init__(self, serialManager):
+    def __init__(self, comMdw):
         super().__init__()
-        self.com = serialManager
-                     
+        self.com = comMdw
+        ports, baudrates = self.com.getSerialPortInfo()
+        
+        #Serial port configuration
         self.combo_COM = QComboBox(self)
-        self.combo_COM.addItems(self.com.getAvailablePorts())
+        self.combo_COM.addItems(ports)
         #---DEBUG ---- pour simplifier la vie a cette feignasse de Lambert
         self.combo_COM.setCurrentIndex(1)
-
         self.combo_Baudrate = QComboBox(self)
-        for baudrate in self.com.getAvailableBaudrates():
+        for baudrate in baudrates:
             self.combo_Baudrate.addItem(str(baudrate), baudrate)
         
         self.btn_connect = QPushButton('Connect', self)
         self.btn_connect.setCheckable(True)
-        self.btn_connect.clicked[bool].connect(self._connectRequest)
+        self.btn_connect.toggled[bool].connect(self._connectRequest)
         
         self.connected_btn = dict()
         self.connected_btn["getOsStats"] = QPushButton('Get Stats', self)
@@ -97,9 +98,15 @@ class TabCom(QWidget):
             print("Connected")
             for button in self.connected_btn:
                 self.connected_btn[button].show()
-            self.serialConnected.emit()
+            self.networkStatus.emit(True)
         else:
-            self.disconnect()
+            print("Connection error")
+            self.btn_connect.setText("Connect")
+            self.btn_connect.setChecked(False)
+            self.combo_COM.setEnabled(True)
+            self.combo_Baudrate.setEnabled(True)
+            for button in self.connected_btn:
+                self.connected_btn[button].hide()
             
     def _disconnect(self):
         self.com.disconnect()
@@ -109,6 +116,7 @@ class TabCom(QWidget):
         self.combo_Baudrate.setEnabled(True)
         for button in self.connected_btn:
             self.connected_btn[button].hide()
+        self.networkStatus.emit(False)
         print("Disconnected")
             
 if __name__ == '__main__':

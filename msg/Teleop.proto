@@ -1,6 +1,7 @@
 syntax = "proto2";
 package apb;
 
+import "nanopb.proto";
 import "Types.proto";
 import "CommonMsg.proto";
 
@@ -21,6 +22,12 @@ message RequestGoto {
 message RequestGotoCap {
 	required PointCap		target				= 1;
 	required eDir			direction			= 2;
+}
+
+message Log {
+	required uint32			date				= 1;
+	required eLogLevel		level				= 2;
+	required string			text				= 3 [(nanopb).max_size = 200];
 }
 
 //feedback on Robot low level states
@@ -59,7 +66,8 @@ message TeleopResponse
 {
 	oneof type
 	{
-		EmptyMsg 			osStats 			= 1;
+		Log					log					= 1;
+		EmptyMsg 			osStats 			= 2;
 		RSPState			rspState			= 200;
 
 	}

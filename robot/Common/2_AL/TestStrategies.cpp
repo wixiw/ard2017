@@ -14,7 +14,7 @@ void
 ard::Strategy_LedTest ()
 {
 	auto WAIT = 200;
-	LOG(INFO, "STRAT : Strategy_LedTest.");
+	LOG_INFO("STRAT : Strategy_LedTest.");
 
 	while (1)
 	{
@@ -41,7 +41,7 @@ ard::Strategy_LedTest ()
 void
 ard::Strategy_ButtonTest ()
 {
-	LOG(INFO, "STRAT : Strategy_ButtonTest.");
+	LOG_INFO("STRAT : Strategy_ButtonTest.");
 	while (1)
 	{
 		if (ROBOT.isPreferedColor())
@@ -91,7 +91,7 @@ ard::Strategy_ButtonTest ()
 void
 ard::Strategy_OmronTest ()
 {
-	LOG(INFO, "STRAT : Strategy_OmronTest.");
+	LOG_INFO("STRAT : Strategy_OmronTest.");
 
 	while (1)
 	{

@@ -49,6 +49,9 @@ Robot2017::Robot2017()
 
 void Robot2017::boot()
 {
+    //the listener registration is lost if it is done in the constructor,
+    //I don't know why ... So it's done here because it works
+    log.setComLogger(&teleop);
     init_bsp();
 
     //Map fast periodic functions to timers interrupts

@@ -6,6 +6,7 @@ import math
 from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+from proto import *
 
 #
 # This widget is a restricted text field usable to select an integer value in a range
@@ -84,9 +85,9 @@ class HeadingInput(FloatInput):
 class DirectionInput(QComboBox):
     def __init__(self, parent):
         super().__init__(parent)
-        self.addItem("Forward", 1)
-        self.addItem("Backward", -1)
-        self.addItem("Undefined", 0)
+        self.addItem("Forward", Types_pb2.FORWARD)
+        self.addItem("Backward", Types_pb2.BACKWARD)
+        self.addItem("Undefined", Types_pb2.UNDEFINED)
         self.setEditable(True)
         self.lineEdit().setReadOnly(True)
         self.lineEdit().setAlignment(Qt.AlignHCenter)

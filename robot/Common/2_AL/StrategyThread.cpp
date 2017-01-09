@@ -34,12 +34,12 @@ void StrategyThread::run()
 
     for (int i = 0; i < NB_MAX_STRATEGIES; ++i)
     {
-        LOG(INFO, "Strategy[" + String(i) + "]: " + strategies[i].name);
+        LOG_INFO("Strategy[" + String(i) + "]: " + strategies[i].name);
     }
 
     //wait for start insertion or teleop command
     {
-        LOG(INFO, "STRAT : Waiting strategy/color configuration and start insertion.");
+        LOG_INFO("STRAT : Waiting strategy/color configuration and start insertion.");
         IEvent* evts[] =
         {   evt_startIn, evt_teleopConfigure};
         auto triggeredEvent = waitEvents(evts, 2);
@@ -54,7 +54,7 @@ void StrategyThread::run()
 
     //wait for start withdraw or a teleop command to start the match
     {
-        LOG(INFO, "STRAT : Waiting start withdraw to begin strategy.");
+        LOG_INFO("STRAT : Waiting start withdraw to begin strategy.");
         IEvent* evts[] =
         {   evt_startOut, evt_teleopStart};
         waitEvents(evts, 2); //returned event is not read as we don't care, result will be the same
@@ -94,13 +94,13 @@ void StrategyThread::configureMatch(uint8_t strategyId_, eColor matchColor)
     if ( matchColor == eColor_PREF )
     {
         ROBOT.setRGBled(YELLOW, ON);
-        LOG(INFO, "User has selected PREF (Yellow) color");
+        LOG_INFO("User has selected PREF (Yellow) color");
     }
     else if ( matchColor == eColor_SYM )
     {
         ROBOT.nav.setColor (eColor_SYM);
         ROBOT.setRGBled(BLUE, ON);
-        LOG(INFO, "User has selected SYM (Blue) color");
+        LOG_INFO("User has selected SYM (Blue) color");
     }
     else
     {
@@ -110,6 +110,6 @@ void StrategyThread::configureMatch(uint8_t strategyId_, eColor matchColor)
     //Check selected strategy
     strategyId = strategyId_;
     ardAssert(strategies[strategyId].functor != 0, "Selected strategy functor is null.");
-    LOG(INFO, "User has selected strategy " + strategies[strategyId].name);
+    LOG_INFO("User has selected strategy " + strategies[strategyId].name);
 }
 

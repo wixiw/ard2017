@@ -10,13 +10,10 @@
 
 using namespace ard;
 
-#define SERIAL_BUF_SIZE 200
-#define HDLC_BUF_SIZE 200
-
 #define HANDLE_MSG(msg)                 \
 case apb_TeleopRequest_##msg##_tag:     \
 {                                       \
-    LOG(INFO, #msg " request received."); \
+    LOG_INFO(#msg " request received."); \
     msg(request);                        \
     break;                              \
 }
@@ -25,6 +22,50 @@ void TeleopThread::init()
 {
     //create the thread
     g_ArdOs.createThread_Cpp("Teleop", *this, STACK_LOG, PRIO_LOG);
+
+    INIT_TABLE_TO_ZERO(serial_recv_buffer);
+    INIT_TABLE_TO_ZERO(hdlc_recv_framebuffer);
+    INIT_TABLE_TO_ZERO(msg_send_buffer);
+    INIT_TABLE_TO_ZERO(hdlc_send_framebuffer);
+}
+
+IEvent* TeleopThread::getEvent(eTeleopEvtId id)
+{
+    return &events[id];
+}
+
+void TeleopThread::writeMsg(unsigned int byteToWrite)
+{
+    ardAssert(byteToWrite <= 200, "Too many bytes in encoded messages, send buffer overshoot.");
+    unsigned int hdlcByteToWrite = 0;
+
+    yahdlc_control_t control;
+    control.frame = YAHDLC_FRAME_DATA;
+    control.seq_no = 0;
+
+    ardAssert( 0 == 
+            yahdlc_frame_data(&control, msg_send_buffer, byteToWrite, hdlc_send_framebuffer, &hdlcByteToWrite),
+            "Failed to encode hdlc frame.");
+
+    ardAssert(hdlcByteToWrite <= 200, "Too many bytes in encoded hldc buffer, send buffer overshoot.");
+    for(unsigned int i = 0 ; i < hdlcByteToWrite ; i++)
+    {
+        Serial.write(hdlc_send_framebuffer[i]);
+    }
+    INIT_TABLE_TO_ZERO(hdlc_send_framebuffer);
+}
+
+unsigned int TeleopThread::feedReadBuffer()
+{
+    while (Serial.available())
+    {
+        //As the yahdlc layer requires a flat buffer we "un-ring" the driver ring buffer
+        serial_recv_buffer[serial_index] = (char) Serial.read();
+        serial_index++;
+        ardAssert(serial_index <= SERIAL_BUF_SIZE, "Serial framebuffer overshoot");
+    }
+
+    return serial_index;
 }
 
 void TeleopThread::run()
@@ -35,73 +76,59 @@ void TeleopThread::run()
     //hldc local vars
     yahdlc_control_t control;
 
-    char serial_framebuffer[SERIAL_BUF_SIZE];
-    unsigned int serial_index = 0;
-    size_t nbSerialBytes = 0;
-    char hdlc_framebuffer[HDLC_BUF_SIZE];
+    size_t nbBytesRead = 0;//nb bytes in the receive buffer
+    size_t nbHdlcBytes = 0;//nb bytes parsed by yahdlc that can be thrown away
     size_t hdlc_length = 0;
-    INIT_TABLE_TO_ZERO(serial_framebuffer);
 
     while (2)
     {
-        //There are a lot of overflow and performance issues in the following algorithm, but it's a starting point
-
-        while (Serial.available())
-        {
-            //As the yahdlc layer requires a flat buffer we "un-ring" the driver ring buffer
-            serial_framebuffer[serial_index] = (char) Serial.read();
-            serial_index++;
-            ardAssert(serial_index <= SERIAL_BUF_SIZE, "Serial framebuffer overshoot");
-        }
-
+        //There are a lot of overflow and performance issues in the following algorithm, but it's a starting point (anyway the Arduino buffer is worse ...)
+        nbBytesRead = feedReadBuffer();
         //if no bytes is present wait a bit and read again
-        if (serial_index == 0)
+        if ( nbBytesRead == 0)
         {
-            vTaskDelay(10);
+            vTaskDelay(50);
             continue;
         }
 
         do
         {
-            //for clarity of code, this variable is renamed
-            nbSerialBytes = serial_index;
-
             //clean the buffer that will receive the future frame
             hdlc_length = 0;
-            INIT_TABLE_TO_ZERO(hdlc_framebuffer);
+            INIT_TABLE_TO_ZERO(hdlc_recv_framebuffer);
             INIT_STRUCT_TO_ZERO(control);
 
             //as a simple solution we filter char by char, for performance improvments we could modify the Arduino UARTClass
             //and add a ReadAll function to get a longer buffer. As long as only non-operational action is
             //done here, there is no need for performance
-            int res = yahdlc_get_data(&control, serial_framebuffer, nbSerialBytes, hdlc_framebuffer, &hdlc_length);
+            int res = yahdlc_get_data(&control, serial_recv_buffer, nbBytesRead, hdlc_recv_framebuffer, &hdlc_length);
             if (0 < res)
             {
                 //clean input buffer : unused data at the front and decoded frame are deleted
-                int nbBytesRead = res + 1; //the result is the index of the last read element in the buffer
-                if (nbBytesRead == SERIAL_BUF_SIZE)
+                nbHdlcBytes = res + 1; //the result is the index of the last read element in the buffer
+                if (nbHdlcBytes == SERIAL_BUF_SIZE)
                 {
-                    INIT_TABLE_TO_ZERO(serial_framebuffer);
+                    INIT_TABLE_TO_ZERO(serial_recv_buffer);
                     serial_index = 0;
                 }
                 else
                 {
                     //it's possible that some bytes are present after the decoded frame (ex : several received frames)
-                    size_t remainingBytesNb = nbSerialBytes - nbBytesRead;
-                    char* startOfRemainingBytes = serial_framebuffer + nbBytesRead; //no overflow as full buffer case is treated before
-                    memcpy(serial_framebuffer, startOfRemainingBytes, remainingBytesNb);
+                    size_t remainingBytesNb = nbBytesRead - nbHdlcBytes;
+                    char* startOfRemainingBytes = serial_recv_buffer + nbHdlcBytes; //no overflow as full buffer case is treated before
+                    memcpy(serial_recv_buffer, startOfRemainingBytes, remainingBytesNb);
                     //unused bytes are zeroed
-                    memset(serial_framebuffer + remainingBytesNb, 0, nbSerialBytes - remainingBytesNb);
+                    memset(serial_recv_buffer + remainingBytesNb, 0, nbBytesRead - remainingBytesNb);
                     serial_index = remainingBytesNb;
                 }
 
 #ifdef ARD_DEBUG
-                hdlc_framebuffer[hdlc_length] = 0;
-                hdlc_framebuffer[hdlc_length + 1] = 0;
+                hdlc_recv_framebuffer[hdlc_length] = 0;
+                hdlc_recv_framebuffer[hdlc_length + 1] = 0;
                 //treat the decoded frame
-                LOG(DEBUG, "HDLC frame received size=" + String(hdlc_length) + " msg=[" + String(hdlc_framebuffer) + "]");
+                LOG_DEBUG("HDLC frame received size=" + String(hdlc_length) + " msg=[" + String(hdlc_recv_framebuffer) + "]");
 #endif
-                handleMsg((unsigned char*)hdlc_framebuffer, hdlc_length);
+                handleMsg(hdlc_recv_framebuffer, hdlc_length);
             }
         } while (hdlc_length != 0); //there may be several frames, so as long as a frame is found, unpile buffer
 
@@ -110,7 +137,7 @@ void TeleopThread::run()
         yahdlc_get_state(&serial_buf_state);
         if (serial_buf_state.start_index < 0) //no start found, mean dust bytes at the begining of src buffer
         {
-            memset(serial_framebuffer, 0, nbSerialBytes);
+            memset(serial_recv_buffer, 0, nbBytesRead);
             serial_index = 0;
         }
 
@@ -118,17 +145,17 @@ void TeleopThread::run()
     } //end while(2)
 }
 
-void TeleopThread::handleMsg(unsigned char const * msg, size_t msgLength)
+void TeleopThread::handleMsg(char const * msg, size_t msgLength)
 {
     apb_TeleopRequest request = apb_TeleopRequest_init_default;
 
     /* Create a stream that reads from the buffer. */
-    pb_istream_t stream = pb_istream_from_buffer(msg, msgLength);
+    pb_istream_t stream = pb_istream_from_buffer((const pb_byte_t *)msg, msgLength);
 
     /* Now we are ready to decode the message. */
     if (!pb_decode(&stream, apb_TeleopRequest_fields, &request))
     {
-        LOG(ERROR, "Failed to deserialize message : " + String(PB_GET_ERROR(&stream)));
+        LOG_ERROR("Failed to deserialize message : " + String(PB_GET_ERROR(&stream)));
         return;
     }
 
@@ -143,12 +170,16 @@ void TeleopThread::handleMsg(unsigned char const * msg, size_t msgLength)
 
         default:
         {
-            LOG(ERROR, "Failed to identify message type : " + String((int)request.which_type));
+            LOG_ERROR("Failed to identify message type : " + String((int)request.which_type));
             break;
         }
     }
 
 }
+
+/**
+ * Receive COM API
+ */
 
 void TeleopThread::getOsStats(apb_TeleopRequest const & request)
 {
@@ -194,7 +225,23 @@ void TeleopThread::requestGotoCap(apb_TeleopRequest const & request)
             request.type.requestGotoCap.direction);
 }
 
-IEvent* TeleopThread::getEvent(eTeleopEvtId id)
+/**
+ * Send COM API
+ */
+
+void TeleopThread::log(LogMsg const & log)
 {
-    return &events[id];
+    apb_TeleopResponse response = apb_TeleopResponse_init_default;
+
+    /* Create a stream that will write to our buffer. */
+    pb_ostream_t stream = pb_ostream_from_buffer((unsigned char*)msg_send_buffer, sizeof(msg_send_buffer));
+    response.which_type = apb_TeleopResponse_log_tag;
+    response.type.log.date  = log.date;
+    response.type.log.level = log.level;
+    strcpy(response.type.log.text, log.text.c_str());
+
+    /* Now we are ready to encode the message! */
+    ardAssert(pb_encode(&stream, apb_TeleopResponse_fields, &response), "Failed to encode Log message.");
+    writeMsg(stream.bytes_written);
 }
+

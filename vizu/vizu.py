@@ -27,27 +27,27 @@ class ConnectScreen(QWidget):
         self.teleop = Teleop()
         
         self.tab = dict()
-        self.tab["Com"]   = TabCom(self.teleop.com)
+        self.tab["Com"]   = TabCom(self.teleop)
         self.tab["Log"]   = TabLog()
         self.tab["Strat"] = self.buildTabTable()
         self.tab["Robot"] = TabRobot()
         
         
         self.tabs = QTabWidget(self)
-        self.tabs.setTabShape(QTabWidget.Rounded)
         for tabName, tab in self.tab.items():
             self.tabs.addTab(tab, tabName)
-        
+        #disable tabs requiring a network connection
+        self._handleNetworkStatus(False)
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
         
         #connect Com tab
-        self.tab["Com"].serialConnected     .connect(self._connectionEstablished)
+        self.tab["Com"].networkStatus       .connect(self._handleNetworkStatus)
         self.tab["Com"].getOsStats          .connect(self.teleop.getOsStats)
         self.tab["Com"].configureMatch      .connect(self.teleop.configureMatch)
         self.tab["Com"].startMatch          .connect(self.teleop.startMatch)
         #connect Log tab
-        self.teleop.log[str].connect(self.log)
+        self.teleop.log.connect(self.tab["Log"].log)
         #conenct Robot tab
         for cmd, widget in self.tab["Robot"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  #getattr is used to get a method reference from name, hence automatically binding signals ;p
@@ -78,16 +78,18 @@ class ConnectScreen(QWidget):
         self.tabShortcutMap.setMapping(self.shortcuts["F4"], 3)
 
     
-    @pyqtSlot()
-    def _connectionEstablished(self):
-        self.tab["Log"].appendLog(("-----------connected-------------\n"))
-        #---DEBUG---
-        #self.tabs.setCurrentWidget(self.tab["Log"])
-        #self.tab["Com"]._getStats(True)
-    
-    @pyqtSlot(str)
-    def log(self, logMsg):
-        self.tab["Log"].appendLog(logMsg)
+    @pyqtSlot(bool)
+    def _handleNetworkStatus(self, connected):
+        if connected:
+            self.tab["Log"].appendLog(("-----------connected-------------\n"))
+            self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), True)
+            self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), True)
+            #self.tabs.setCurrentWidget(self.tab["Strat"])
+        else:
+            self.tab["Log"].appendLog(("----------disconnected-----------\n"))
+            self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), False)
+            self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), False)
+            self.tabs.setCurrentWidget(self.tab["Com"])
     
     @pyqtSlot(int)
     def selectTab(self, tabId):
@@ -102,7 +104,7 @@ if __name__ == '__main__':
     import os
     
     #re-generate proto (not optimal, but as they will change a lot at project beginning...)
-    os.system("..\generateCom.bat ..\\ off")
+    #os.system("..\generateCom.bat ..\\ off")
     
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     app = QApplication(sys.argv)

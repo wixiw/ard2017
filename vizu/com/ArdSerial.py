@@ -4,9 +4,9 @@
 from PyQt5.QtSerialPort import *
 
 #
-# This class manage a serial connection
+# This class manage a serial connection, as a Level 1 OSI Layer with UART (Physical link)
 # It acts as a decorator of QSerialPort in order to protect and simplify its API
-# When the class is killed, the serial is automatically closed
+# When the class is killed, the serial link is automatically closed
 #
 class ArdSerial():
     
@@ -16,11 +16,6 @@ class ArdSerial():
         self._serial.setParity(QSerialPort.NoParity)
         self._serial.setStopBits(QSerialPort.OneStop)
         self._serial.setFlowControl(QSerialPort.NoFlowControl)
-        
-    # Register a listener to be triggered when data is available
-    # @param the callback to register
-    def registerListener(self, callback):
-        self._serial.readyRead.connect(callback)
         
     # Get the list of physically connected ports
     # @return list[str]
@@ -39,16 +34,20 @@ class ArdSerial():
     
     # Connect to the specified port at the specified baudrate
     # @param str port : like "COM1", ideally from getAvailablePorts()
-    # @param int baudrate ideally from getAvailableBaudrates()
+    # @param int baudrate : ideally from getAvailableBaudrates()
+    # @param void slot(void) : the callback to be called when data are available
     # @return bool : true if the connection succeed, false otherwise
-    def connect(self, port, baudrate):            
+    def connect(self, port, baudrate, slot = None):            
         self._serial.setPortName(port)
         self._serial.setBaudRate(baudrate)
+        if slot != None:
+            self._serial.readyRead.connect(slot)
         return self._serial.open(QSerialPort.ReadWrite)
             
     # to be call after having connect() to close the line()
     def disconnect(self): 
         self._serial.close()
+        self._serial.readyRead.disconnect()
         
     # Read all available data
     # @return QByteArray
