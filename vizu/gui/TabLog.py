@@ -26,24 +26,24 @@ class TabLog(QWidget):
 #         p.setColor(QPalette.Base, Qt.black)
 #         p.setColor(QPalette.Text, Qt.green)
 #         self.text_logs.setPalette(p)
-        
-        layout_Log = QHBoxLayout(self)
-        layout_Log.addWidget(self.text_logs)
 
-        self.lock = threading.Lock()
+        self.btn_reset = QPushButton('Reset logs', self)
+        self.btn_reset.clicked.connect(self.text_logs.clear)
 
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.btn_reset)
+        layout.addWidget(self.text_logs)
+                 
     # append a log at the end of the display
     # if the number of log is more than the one configured with
     # setNbLogs(), the oldest log (the one at the top) is deleted.
     # @param str: the data to log
     def appendLog(self, data):
         assert isinstance(data, str), "appendLog expects to receive a string" 
-        self.lock.acquire()
         print(data)
-        self.text_logs.insertPlainText(data)
+        self.text_logs.appendPlainText(data)
         bar = self.text_logs.verticalScrollBar()
         bar.setValue(bar.maximum())
-        self.lock.release()
         
     # configure the number of logs displayed
     # @param int
@@ -53,8 +53,8 @@ class TabLog(QWidget):
     @pyqtSlot(Teleop_pb2.Log)
     def log(self, logMsg):
         header = str(logMsg.date).zfill(5) + " [" + Types_pb2.eLogLevel.Name(logMsg.level) + "] "
-        self.tab["Log"].appendLog(header + logMsg.text)
-
+        self.appendLog(header + logMsg.text)
+        
 if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)

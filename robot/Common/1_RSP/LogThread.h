@@ -33,6 +33,11 @@ namespace ard
 
         //push a log to the RAM buffer, the log will only be effective when the LogThread will have read the buffer
         virtual void log(LogMsg const & log) = 0;
+
+        //returns true if the channel is ready to log, false if it can't log.
+        //when it's false, any call to log is silently ignored
+        virtual bool isReady() const = 0;
+
     };
 
     //Write a log on an SD Card
@@ -48,6 +53,9 @@ namespace ard
 
         //Implements ILogChannel : write the log on the SD card
         virtual void log(LogMsg const & log) override;
+
+        //Implements ILogChannel : returns true if the SCCard is connected and opening succeed in init()
+        virtual bool isReady() const override {return sdCardPresent;};
 
     private:
         //Detection of SDcard presence
@@ -160,6 +168,9 @@ namespace ard
         //to be called periodically in the log thread
         void
         unpileFifo();
+
+        //helper to send a log to all connected channels
+        void disptachLogToChannels(LogMsg const& log);
 
         //private constructor as its a singleton class
         LogThread();COPY_CONSTRUCTORS (LogThread)

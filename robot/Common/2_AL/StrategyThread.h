@@ -47,6 +47,10 @@ namespace ard
     //read user config (color and strat selection)
     void readUserInputs();
 
+    //display preamble information to the user
+    //it's just a mean to reduce the volume of code in the run function
+    void displayIntroduction();
+
     //a value identifying the strategy choosed by the user
     uint8_t strategyId;
 	

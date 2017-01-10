@@ -162,11 +162,18 @@ namespace ard
         eOsState
         getState() const;
 
+        //boot duration accessor
+        DelayMs getBootDuration() const{return bootDuration;};
+
         //Debug only : send statistics to the debug serial link
         void
         displayStats();
 
-        //Send a message on the serial link
+        //Send a message on the STOUT serial link.
+        //This is a very simple interface that should not be used in a complete system
+        //As a log feature should replace this. As the log feature requires the ArdOs to be set
+        //The ArdOs cannot use the Log system to log (egg and chicken issue), so we introduced this function
+        //As soon as ArdOs is working, do not use this.
         void
         dprintln(String s);
 
@@ -310,7 +317,7 @@ namespace ard
         eOsState state;
 
         //Date of boot (ie time at which the scheduler is started)
-        TimeMs bootDuration;
+        DelayMs bootDuration;
 
         //mutex to protect the debug serial link
         Mutex debugSerialMutex;

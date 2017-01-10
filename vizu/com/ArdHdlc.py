@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from PyQt5.Qt import *
 import yahdlc
+import traceback
+from PyQt5.Qt import *
 from ArdSerial import * 
 
 #
@@ -46,7 +47,7 @@ class ArdHdlc(QObject):
     # @param void slot(bytes) : the QT Slot to be connected to newFrame
     # @return bool : true if the connection succeed, false otherwise
     def connect(self, port, baudrate, slot = None):
-        assert not self._connected
+        assert self._connected == False
         res = self._physicalLayer.connect(port, baudrate, self._dataReceived)
         if slot != None:
             self._newFrame.connect(slot)
@@ -66,7 +67,7 @@ class ArdHdlc(QObject):
 
     # @return bool : True if connected
     def isConnected(self):
-        return self._isConnected
+        return self._connected
 
     # Pass your serialized message in parameter
     # so that it's framed and sent on serial link
@@ -104,10 +105,11 @@ class ArdHdlc(QObject):
                 # Try to decode the data recevied from the serial line
         try:
             data, type, seq_no = yahdlc.get_data(self.recvBuffer)
+            
         
         #the message is not complete, wait next data to retry to parse the buffer, it's a normal condition (and a bad yahdlc python binding design ...)
         except yahdlc.MessageError:
-            return 00
+            return 0
         
         #checksum failed, message is ignored
         except yahdlc.FCSError:
@@ -126,26 +128,34 @@ class ArdHdlc(QObject):
             
         #this is the normal case where an hdlc frame has been successfully decoded
         else:
-                #---DEBUG--- print(" XXXX Frame decoded success !!!! XXXX")
-            #as yahdlc python bindings hide some data we are force to use DYI a lot ...
-            #recompose the raw frame (decause some escape char may provoke differences in in and out buffers ...)
-            originalData = yahdlc.frame_data(data, type, seq_no)
-                #---DEBUG--- print("originalData : " + str(originalData))
-                #---DEBUG--- print("before : " + str(self.recvBuffer))
-                #---DEBUG--- print("recv len=" + str(len(self.recvBuffer)) + " find at index : " + str(self.recvBuffer.find(originalData)) + " data len=" + str(len(originalData)))
-            #find in the input buf for the 'decoded original frame'
-            #remove read data before the 'decoded original frame' and the decoded original frame' from the input buffer 
-            nbBytesUsed = self.recvBuffer.find(originalData) + len(originalData)
-            unreadBytes = len(self.recvBuffer) - nbBytesUsed
-            self.recvBuffer = self.recvBuffer[nbBytesUsed:]
-            yahdlc.get_data_reset()
-                #---DEBUG--- print(" after : " + str(self.recvBuffer))
-                #---DEBUG--- print("hdlc type=" + str(type) + " seq=" + str(seq_no) + " frame=[" + str(data) + "]") 
-            
-            #finally, inform the listener a message has been received.
-            if type == yahdlc.FRAME_DATA:
-                self._newFrame.emit(data)
+            try:
+                    #---DEBUG--- print(" XXXX Frame decoded success !!!! XXXX")
+                #as yahdlc python bindings hide some data we are force to use DYI a lot ...
+                #recompose the raw frame (decause some escape char may provoke differences in in and out buffers ...)
+                originalData = yahdlc.frame_data(data, type, seq_no)
+            except:
+                traceback.print_exc()
+                print("Failed to recompose originalData : type=" + str(type) + " seq_no=" +str(seq_no) + ", received buffer reset, possible data loss.")
+                self.recvBuffer = bytes()
+                yahdlc.get_data_reset()
+                return 0
+            else:
+                    #---DEBUG--- print("originalData : " + str(originalData))
+                    #---DEBUG--- print("before : " + str(self.recvBuffer))
+                    #---DEBUG--- print("recv len=" + str(len(self.recvBuffer)) + " find at index : " + str(self.recvBuffer.find(originalData)) + " data len=" + str(len(originalData)))
+                #find in the input buf for the 'decoded original frame'
+                #remove read data before the 'decoded original frame' and the decoded original frame' from the input buffer 
+                nbBytesUsed = self.recvBuffer.find(originalData) + len(originalData)
+                unreadBytes = len(self.recvBuffer) - nbBytesUsed
+                self.recvBuffer = self.recvBuffer[nbBytesUsed:]
+                yahdlc.get_data_reset()
+                    #---DEBUG--- print(" after : " + str(self.recvBuffer))
+                    #---DEBUG--- print("hdlc type=" + str(type) + " seq=" + str(seq_no) + " frame=[" + str(data) + "]") 
                 
-            return unreadBytes
+                #finally, inform the listener a message has been received.
+                if type == yahdlc.FRAME_DATA:
+                    self._newFrame.emit(data)
+                    
+                return unreadBytes
         
 

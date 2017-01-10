@@ -65,7 +65,7 @@ class SetPosForm(QWidget):
         self.y = IntegerInput(self, -1500, 1500)
         self.h = HeadingInput(self)
         self.exe = QPushButton('Execute', self)
-        self.exe.pressed.connect(self._execute) 
+        self.exe.clicked.connect(self._execute) 
         
         layout = QHBoxLayout(self)
         layoutForm = QFormLayout()
@@ -95,7 +95,7 @@ class GotoCapForm(QWidget):
         self.h = HeadingInput(self)
         self.dir = DirectionInput(self)
         self.exe = QPushButton('Execute', self)
-        self.exe.pressed.connect(self._execute) 
+        self.exe.clicked.connect(self._execute) 
         
         layout = QHBoxLayout(self)
         layoutForm = QFormLayout()
@@ -125,7 +125,7 @@ class GotoForm(QWidget):
         self.y = IntegerInput(self, -1500, 1500)
         self.dir = DirectionInput(self)
         self.exe = QPushButton('Execute', self)
-        self.exe.pressed.connect(self._execute) 
+        self.exe.clicked.connect(self._execute) 
         
         layout = QHBoxLayout(self)
         layoutForm = QFormLayout()

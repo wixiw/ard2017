@@ -42,11 +42,14 @@ namespace ard
         //Implements IThreads : reads the serial inputs
         void run() override;
 
-        //Get any teleop event
+        //Get any teleop event (non-const on purpose)
         IEvent* getEvent(eTeleopEvtId id);
 
-        //push a log on the serial link
+        //Implements ILogChannel : push a log on the serial link
         virtual void log(LogMsg const & log) override;
+
+        //Implements ILogChannel : returns true if the communication is established
+        virtual bool isReady() const override;
 
     private:
         Event<1> events[EVT_MAX];

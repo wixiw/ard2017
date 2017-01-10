@@ -34,6 +34,13 @@ IEvent* TeleopThread::getEvent(eTeleopEvtId id)
     return &events[id];
 }
 
+bool TeleopThread::isReady() const
+{
+    //TODO a better solution would be welcome, for instance for exchanging info with the serial driver
+    // or with a dedicated comOpened message in the communication layer (maybe HDLC manage this ?)
+    return true;
+}
+
 void TeleopThread::writeMsg(unsigned int byteToWrite)
 {
     ardAssert(byteToWrite <= 200, "Too many bytes in encoded messages, send buffer overshoot.");

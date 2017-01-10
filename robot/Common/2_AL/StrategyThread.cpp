@@ -25,6 +25,24 @@ void StrategyThread::init()
     EventListener::init<1>();
 }
 
+void StrategyThread::displayIntroduction()
+{
+#ifdef ARD_DEBUG
+    g_ArdOs.dprintln (" --- DEBUG --- (see ARD_DEBUG in ArdOs.h) ");
+#else
+    g_ArdOs.dprintln ("Tips : In order to see debug logs, define ARD_DEBUG in ArdOs.h.");
+#endif
+
+    LOG_INFO(String("Robot has booted successfully in ") + g_ArdOs.getBootDuration() + "ms.");
+
+    LOG_INFO("Available strategies : ");
+    for (int i = 0; i < NB_MAX_STRATEGIES; ++i)
+    {
+        LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
+    }
+
+}
+
 void StrategyThread::run()
 {
     auto evt_startIn = ROBOT.getStartInEvt();
@@ -32,14 +50,11 @@ void StrategyThread::run()
     auto evt_teleopConfigure = ROBOT.getTeleopEvt(EVT_CONFIGURE);
     auto evt_teleopStart = ROBOT.getTeleopEvt(EVT_START_MATCH);
 
-    for (int i = 0; i < NB_MAX_STRATEGIES; ++i)
-    {
-        LOG_INFO("Strategy[" + String(i) + "]: " + strategies[i].name);
-    }
+    displayIntroduction();
 
     //wait for start insertion or teleop command
     {
-        LOG_INFO("STRAT : Waiting strategy/color configuration and start insertion.");
+        LOG_INFO("STRAT : Waiting for user to choose strategy/color and to insert start...");
         IEvent* evts[] =
         {   evt_startIn, evt_teleopConfigure};
         auto triggeredEvent = waitEvents(evts, 2);
@@ -54,7 +69,7 @@ void StrategyThread::run()
 
     //wait for start withdraw or a teleop command to start the match
     {
-        LOG_INFO("STRAT : Waiting start withdraw to begin strategy.");
+        LOG_INFO("STRAT : Waiting start withdraw to begin the match...");
         IEvent* evts[] =
         {   evt_startOut, evt_teleopStart};
         waitEvents(evts, 2); //returned event is not read as we don't care, result will be the same
@@ -94,22 +109,22 @@ void StrategyThread::configureMatch(uint8_t strategyId_, eColor matchColor)
     if ( matchColor == eColor_PREF )
     {
         ROBOT.setRGBled(YELLOW, ON);
-        LOG_INFO("User has selected PREF (Yellow) color");
+        LOG_INFO("User has selected PREF (Yellow) color.");
     }
     else if ( matchColor == eColor_SYM )
     {
         ROBOT.nav.setColor (eColor_SYM);
         ROBOT.setRGBled(BLUE, ON);
-        LOG_INFO("User has selected SYM (Blue) color");
+        LOG_INFO("User has selected SYM (Blue) color.");
     }
     else
     {
-        ardAssert(false, "StrategyThread::configureMatch : color should not be unknown");
+        ardAssert(false, "StrategyThread::configureMatch : color should not be unknown.");
     }
 
     //Check selected strategy
     strategyId = strategyId_;
     ardAssert(strategies[strategyId].functor != 0, "Selected strategy functor is null.");
-    LOG_INFO("User has selected strategy " + strategies[strategyId].name);
+    LOG_INFO("User has selected strategy " + strategies[strategyId].name + ".");
 }
 

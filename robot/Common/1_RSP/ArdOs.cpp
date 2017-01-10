@@ -120,7 +120,8 @@ ArdOs::ArdOs()
     debugSerialMutex = NULL;
     INIT_TABLE_TO_ZERO(threads);
     INIT_TABLE_TO_ZERO(params);
-    stdout = NULL;
+    STDOUT = NULL;
+    HEARTBEAT_PIN = 0;
 }
 
 void ArdOs::init()

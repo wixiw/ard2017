@@ -21,7 +21,8 @@ void loop()
     if (!once)
     {
         once = true;
-        g_ArdOs.dprintln(String("[ main ] ") + "Build : " + __DATE__ + " " + __TIME__ );
+        LOG_INFO("Version libArd : " + ROBOT.getVersion());
+        LOG_INFO(String("Version robotA : ") + __DATE__ + " " + __TIME__ );
     }
 
     // idle loop has a very small, configMINIMAL_STACK_SIZE, stack

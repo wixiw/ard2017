@@ -29,20 +29,20 @@ class TabCom(QWidget):
         
         self.btn_connect = QPushButton('Connect', self)
         self.btn_connect.setCheckable(True)
-        self.btn_connect.toggled[bool].connect(self._connectRequest)
+        self.btn_connect.toggled[bool].connect(self._connectFromButton)
         
         self.connected_btn = dict()
         self.connected_btn["getOsStats"] = QPushButton('Get Stats', self)
         self.connected_btn["getOsStats"].hide()
-        self.connected_btn["getOsStats"].clicked[bool].connect(self._getOsStats) 
+        self.connected_btn["getOsStats"].clicked.connect(self._getOsStats) 
         
         self.connected_btn["configureMatch"] = QPushButton('Configure Match', self)
         self.connected_btn["configureMatch"].hide()
-        self.connected_btn["configureMatch"].clicked[bool].connect(self._configureMatch) 
+        self.connected_btn["configureMatch"].clicked.connect(self._configureMatch) 
         
         self.connected_btn["startMatch"] = QPushButton('Start Match', self)
         self.connected_btn["startMatch"].hide()
-        self.connected_btn["startMatch"].clicked[bool].connect(self._startMatch) 
+        self.connected_btn["startMatch"].clicked.connect(self._startMatch) 
         
         layout = QVBoxLayout(self)
         layoutH1 = QHBoxLayout()
@@ -61,28 +61,30 @@ class TabCom(QWidget):
         layoutH2.addStretch()
         
         #keyboard shortcuts
-        QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connect)
-        QShortcut(QKeySequence(Qt.Key_D), self).activated.connect(self._disconnect)
+        QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connectFromShorcut)
 
     @pyqtSlot(bool)
-    def _connectRequest(self, pressed):
+    def _connectFromButton(self, pressed):
         if pressed:
             self._connect()
         else:
             self._disconnect()
         
-    @pyqtSlot(bool)
-    def _getOsStats(self, pressed): 
+    def _connectFromShorcut(self):
+        self.btn_connect.toggle()            
+        
+    @pyqtSlot()
+    def _getOsStats(self): 
        print("Stats request")
        self.getOsStats.emit()
        
-    @pyqtSlot(bool)
-    def _configureMatch(self, pressed): 
+    @pyqtSlot()
+    def _configureMatch(self): 
        print("Configure match request")
        self.configureMatch.emit(1, 2)
        
-    @pyqtSlot(bool)
-    def _startMatch(self, pressed): 
+    @pyqtSlot()
+    def _startMatch(self): 
        print("Start match request")
        self.startMatch.emit()
         

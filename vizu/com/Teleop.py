@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.Qt import *
-from com import *
+from ArdHdlc import *
 from proto import *
 
 #
@@ -35,21 +35,29 @@ class Teleop(QObject):
     def connect(self, port, baudrate):
         return self.com.connect(port, baudrate, self._frameReceived)
         
-    # go throw decorator
+    # go throught decorator
     def disconnect(self):
         self.com.disconnect()
+      
+    # go throught decorator  
+    def isConnected(self):
+        self.com.isConnected()
                
     # decode an HDLC frame payload to get the message, which is the TeleopResponse type
     @pyqtSlot(bytes)
     def _frameReceived(self, data):
+        response = Teleop_pb2.TeleopResponse()
         try:
-            response = ParseFromString(data)
+            response.ParseFromString(data)
         except:
             print("Failed to decode protobuf ms : " + str(data))
+            print(str(response))
+            traceback.print_exc()
         else:
             if response.WhichOneof("type") != None:
-                print("Teleop : message received " + str(response))
-                signal = getattr(self, "_" + response.WhichOneof("type"))
+                print("Teleop message received:")
+                print(str(response))
+                signal = getattr(self, response.WhichOneof("type"))
                 subMsg = getattr(response, response.WhichOneof("type"))
                 signal.emit(subMsg)
             else:
@@ -114,5 +122,4 @@ class Teleop(QObject):
         msg.requestGoto.target.y = y
         msg.requestGoto.direction = dir
         self._sendMsg(msg)
-        
         

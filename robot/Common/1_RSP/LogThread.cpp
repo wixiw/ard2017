@@ -95,13 +95,16 @@ void LogThread::init()
 
 void LogThread::run()
 {
-#ifdef ARD_DEBUG
-    g_ArdOs.dprintln (" --- DEBUG --- (see ARD_DEBUG in ArdOs.h) ");
-#else
-    g_ArdOs.dprintln ("Tips : In order to see debug logs, define ARD_DEBUG in ArdOs.h.");
-#endif
-
     fileLogger.init();
+
+    if( fileLogger.isReady() )
+    {
+        LogMsg msg;
+        msg.date = 0;
+        msg.level = eLogLevel_INFO;
+        msg.text = "SDCard log enabled.";
+        disptachLogToChannels(msg);
+    }
 
     while (1)
     {
@@ -159,30 +162,23 @@ void LogThread::unpileFifo()
 {
     if (missedLogs)
     {
+        LogMsg msg;
+        msg.date = millis();
+        msg.level = eLogLevel_ERROR;
+
         if (missedLogs == 255)
-        {
-            g_ArdOs.dprintln ("[FATAL] More than 255 logs have been lost.");
-        }
+            msg.text = "[FATAL] More than 255 logs have been lost.";
         else
-        {
-            g_ArdOs.dprintln (
-                    String ("[FATAL] ") + missedLogs + " logs have been lost.");
-            missedLogs = 0;
-        }
+            msg.text = String ("[FATAL] ") + missedLogs + " logs have been lost.";
+        disptachLogToChannels(msg);
+        missedLogs = 0;
     }
 
     // wait for next data record
     g_ArdOs.Semaphore_take(semDataPresent);
 
-    if(comLogger != NULL)
-    {
-        comLogger->log(fifoArray[fifoTail]);
-    }        
-
-    if (configSdCardLog)
-    {
-        fileLogger.log(fifoArray[fifoTail]);
-    }
+    //dispatch log
+    disptachLogToChannels(fifoArray[fifoTail]);
 
     g_ArdOs.Mutex_lock(mutex);
     // release record
@@ -190,6 +186,15 @@ void LogThread::unpileFifo()
     // advance FIFO index
     fifoTail = fifoTail < (FIFO_SIZE - 1) ? fifoTail + 1 : 0;
     g_ArdOs.Mutex_unlock(mutex);
+}
+
+void LogThread::disptachLogToChannels(LogMsg const& log)
+{
+    if(comLogger != NULL)
+        comLogger->log(log);
+
+    if (configSdCardLog)
+        fileLogger.log(log);
 }
 
 

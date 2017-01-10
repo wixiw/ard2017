@@ -39,6 +39,7 @@ Robot2017::Robot2017()
                 , teleop()
 #endif
 {
+    buildDate =String(__DATE__) + " " + __TIME__;
     actuators.addMiniThread(&nav);
     actuators.addMiniThread(&claws);
     strategy.registerStrategy("Alpha", Strategy_Alpha);
@@ -62,7 +63,7 @@ void Robot2017::boot()
     Serial.begin(/*baurate = */250000);
 
     //Configure OS
-    g_ArdOs.STDOUT = &Serial;
+    g_ArdOs.STDOUT = NULL;//If you wish to get debug texts, you need a serial terminal and g_ArdOs.STDOUT = &Serial;
     g_ArdOs.HEARTBEAT_PIN = LED_DUE_RX;
 
     //Threads init
@@ -81,7 +82,6 @@ void Robot2017::boot()
     Timer7.start(PERIOD_FAST_IT_US);
 
     //init OS
-    g_ArdOs.dprintln(String("[libARD] ") + "Build : " + __DATE__ + " " + __TIME__ );
     g_ArdOs.init(); //this function never ends
 }
 

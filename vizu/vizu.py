@@ -81,12 +81,12 @@ class ConnectScreen(QWidget):
     @pyqtSlot(bool)
     def _handleNetworkStatus(self, connected):
         if connected:
-            self.tab["Log"].appendLog(("-----------connected-------------\n"))
+            self.tab["Log"].appendLog(("-----------connected-------------"))
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), True)
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), True)
             #self.tabs.setCurrentWidget(self.tab["Strat"])
         else:
-            self.tab["Log"].appendLog(("----------disconnected-----------\n"))
+            self.tab["Log"].appendLog(("----------disconnected-----------"))
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), False)
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), False)
             self.tabs.setCurrentWidget(self.tab["Com"])
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     import os
     
     #re-generate proto (not optimal, but as they will change a lot at project beginning...)
-    #os.system("..\generateCom.bat ..\\ off")
+    os.system("..\generateCom.bat ..\\ off")
     
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     app = QApplication(sys.argv)

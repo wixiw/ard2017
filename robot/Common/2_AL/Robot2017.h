@@ -80,6 +80,9 @@ namespace ard
         //This function never ends
         void boot();
 
+        //Utility function to get version info
+        String const& getVersion(){return buildDate;};
+
         //Applicative layer
         ActuatorThread actuators;
         StrategyThread strategy;
@@ -97,6 +100,8 @@ namespace ard
 #endif
         //singleton instance
         static Robot2017 instance;
+
+        String buildDate;
 
         //Assemble all object instances
         //private constructor as its a singleton class
