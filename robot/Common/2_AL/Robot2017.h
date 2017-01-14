@@ -91,6 +91,9 @@ namespace ard
         //Public RSP interface : because i'm too lazy to hide it
         Navigation nav;
 
+        // Color sensor, for test QPE
+        ColorSensor colSensor;
+
     private:
         //RSP implementation
         HmiThread hmi;
