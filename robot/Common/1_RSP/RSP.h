@@ -15,6 +15,7 @@
 #include "ArdOs.h"
 #include "ArdMaths.h"
 #include "ArdUtils.h"
+#include "ColorSensor.h"
 #include "fcs16.h"
 #include "GpioTools.h"
 #include "HmiThread.h"

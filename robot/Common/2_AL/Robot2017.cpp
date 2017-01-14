@@ -34,7 +34,7 @@ void fast_interrupt()
 }
 
 Robot2017::Robot2017()
-        : actuators(), strategy(), claws(), nav(), hmi(50 /*ms*/), log(LogThread::getInstance())
+        : actuators(), strategy(), claws(), nav(), colSensor(), hmi(50 /*ms*/), log(LogThread::getInstance())
 #ifdef BUILD_TELEOP
                 , teleop()
 #endif
@@ -42,6 +42,7 @@ Robot2017::Robot2017()
     buildDate =String(__DATE__) + " " + __TIME__;
     actuators.addMiniThread(&nav);
     actuators.addMiniThread(&claws);
+    actuators.addMiniThread(&colSensor);
     strategy.registerStrategy("Alpha", Strategy_Alpha);
     strategy.registerStrategy("Led Test", Strategy_LedTest);
     strategy.registerStrategy("Button Test", Strategy_ButtonTest);

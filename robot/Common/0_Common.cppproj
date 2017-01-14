@@ -1019,6 +1019,12 @@
     <Compile Include="0_BSP\Drivers\AccelStepper.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="0_BSP\Drivers\Adafruit_TCS34725.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\Drivers\Adafruit_TCS34725.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="0_BSP\Drivers\DueTimer.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1176,6 +1182,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\ArdUtils.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\ColorSensor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\ColorSensor.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\fcs16.c">
