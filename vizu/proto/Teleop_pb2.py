@@ -22,7 +22,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='Teleop.proto',
   package='apb',
   syntax='proto2',
-  serialized_pb=_b('\n\x0cTeleop.proto\x12\x03\x61pb\x1a\x0cnanopb.proto\x1a\x0bTypes.proto\x1a\x0f\x43ommonMsg.proto\"?\n\x0e\x43onfigureMatch\x12\x10\n\x08strategy\x18\x01 \x02(\r\x12\x1b\n\nmatchColor\x18\x02 \x02(\x0e\x32\x07.eColor\"C\n\x0bRequestGoto\x12\x1a\n\x06target\x18\x01 \x02(\x0b\x32\n.apb.Point\x12\x18\n\tdirection\x18\x02 \x02(\x0e\x32\x05.eDir\"I\n\x0eRequestGotoCap\x12\x1d\n\x06target\x18\x01 \x02(\x0b\x32\r.apb.PointCap\x12\x18\n\tdirection\x18\x02 \x02(\x0e\x32\x05.eDir\"D\n\x03Log\x12\x0c\n\x04\x64\x61te\x18\x01 \x02(\r\x12\x19\n\x05level\x18\x02 \x02(\x0e\x32\n.eLogLevel\x12\x14\n\x04text\x18\x03 \x02(\tB\x06\x92?\x03\x08\xc8\x01\"g\n\x08RSPState\x12\x1c\n\x08navState\x18\n \x02(\x0e\x32\n.eNavState\x12\x1c\n\x08navOrder\x18\x0b \x02(\x0e\x32\n.eNavOrder\x12\x1f\n\x08position\x18\x0c \x02(\x0b\x32\r.apb.PointCap\"\x91\x02\n\rTeleopRequest\x12#\n\ngetOsStats\x18\x01 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12-\n\x0e\x63onfigureMatch\x18\x64 \x01(\x0b\x32\x13.apb.ConfigureMatchH\x00\x12#\n\nstartMatch\x18\x65 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12%\n\x0bsetPosition\x18\xc8\x01 \x01(\x0b\x32\r.apb.PointCapH\x00\x12(\n\x0brequestGoto\x18\xd2\x01 \x01(\x0b\x32\x10.apb.RequestGotoH\x00\x12.\n\x0erequestGotoCap\x18\xd3\x01 \x01(\x0b\x32\x13.apb.RequestGotoCapH\x00\x42\x06\n\x04type\"w\n\x0eTeleopResponse\x12\x17\n\x03log\x18\x01 \x01(\x0b\x32\x08.apb.LogH\x00\x12 \n\x07osStats\x18\x02 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12\"\n\x08rspState\x18\xc8\x01 \x01(\x0b\x32\r.apb.RSPStateH\x00\x42\x06\n\x04type')
+  serialized_pb=_b('\n\x0cTeleop.proto\x12\x03\x61pb\x1a\x0cnanopb.proto\x1a\x0bTypes.proto\x1a\x0f\x43ommonMsg.proto\"?\n\x0e\x43onfigureMatch\x12\x10\n\x08strategy\x18\x01 \x02(\r\x12\x1b\n\nmatchColor\x18\x02 \x02(\x0e\x32\x07.eColor\"C\n\x0bRequestGoto\x12\x1a\n\x06target\x18\x01 \x02(\x0b\x32\n.apb.Point\x12\x18\n\tdirection\x18\x02 \x02(\x0e\x32\x05.eDir\"I\n\x0eRequestGotoCap\x12\x1d\n\x06target\x18\x01 \x02(\x0b\x32\r.apb.PointCap\x12\x18\n\tdirection\x18\x02 \x02(\x0e\x32\x05.eDir\"D\n\x03Log\x12\x0c\n\x04\x64\x61te\x18\x01 \x02(\r\x12\x19\n\x05level\x18\x02 \x02(\x0e\x32\n.eLogLevel\x12\x14\n\x04text\x18\x03 \x02(\tB\x06\x92?\x03\x08\x90\x03\"g\n\x08RSPState\x12\x1c\n\x08navState\x18\n \x02(\x0e\x32\n.eNavState\x12\x1c\n\x08navOrder\x18\x0b \x02(\x0e\x32\n.eNavOrder\x12\x1f\n\x08position\x18\x0c \x02(\x0b\x32\r.apb.PointCap\"\x91\x02\n\rTeleopRequest\x12#\n\ngetOsStats\x18\x01 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12-\n\x0e\x63onfigureMatch\x18\x64 \x01(\x0b\x32\x13.apb.ConfigureMatchH\x00\x12#\n\nstartMatch\x18\x65 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12%\n\x0bsetPosition\x18\xc8\x01 \x01(\x0b\x32\r.apb.PointCapH\x00\x12(\n\x0brequestGoto\x18\xd2\x01 \x01(\x0b\x32\x10.apb.RequestGotoH\x00\x12.\n\x0erequestGotoCap\x18\xd3\x01 \x01(\x0b\x32\x13.apb.RequestGotoCapH\x00\x42\x06\n\x04type\"w\n\x0eTeleopResponse\x12\x17\n\x03log\x18\x01 \x01(\x0b\x32\x08.apb.LogH\x00\x12 \n\x07osStats\x18\x02 \x01(\x0b\x32\r.apb.EmptyMsgH\x00\x12\"\n\x08rspState\x18\xc8\x01 \x01(\x0b\x32\r.apb.RSPStateH\x00\x42\x06\n\x04type')
   ,
   dependencies=[nanopb__pb2.DESCRIPTOR,Types__pb2.DESCRIPTOR,CommonMsg__pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -171,7 +171,7 @@ _LOG = _descriptor.Descriptor(
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
-      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\222?\003\010\310\001'))),
+      options=_descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\222?\003\010\220\003'))),
   ],
   extensions=[
   ],
@@ -454,5 +454,5 @@ _sym_db.RegisterMessage(TeleopResponse)
 
 
 _LOG.fields_by_name['text'].has_options = True
-_LOG.fields_by_name['text']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\222?\003\010\310\001'))
+_LOG.fields_by_name['text']._options = _descriptor._ParseOptions(descriptor_pb2.FieldOptions(), _b('\222?\003\010\220\003'))
 # @@protoc_insertion_point(module_scope)

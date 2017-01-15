@@ -537,15 +537,6 @@ static TCB_t *prvAllocateTCBAndStack( const uint16_t usStackDepth, StackType_t *
  */
 static void prvResetNextTaskUnblockTime( void );
 
-#if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
-
-	/*
-	 * Helper function used to pad task names with spaces when printing out
-	 * human readable tables of task information.
-	 */
-	static char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName );
-
-#endif
 /*-----------------------------------------------------------*/
 
 BaseType_t xTaskGenericCreate( TaskFunction_t pxTaskCode, const char * const pcName, const uint16_t usStackDepth, void * const pvParameters, UBaseType_t uxPriority, TaskHandle_t * const pxCreatedTask, StackType_t * const puxStackBuffer, const MemoryRegion_t * const xRegions ) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
@@ -3625,7 +3616,7 @@ TCB_t *pxTCB;
 
 #if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
 
-	static char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName )
+	char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName )
 	{
 	size_t x;
 

@@ -190,7 +190,33 @@ void TeleopThread::handleMsg(char const * msg, size_t msgLength)
 
 void TeleopThread::getOsStats(apb_TeleopRequest const & request)
 {
-    g_ArdOs.displayStats();
+    char text[40];
+    char* pcWriteBuffer = text;
+
+    LOG_INFO("------- ArdOs Stats  -------");
+    LOG_INFO("|   Thread   |  Free stack |");
+    LOG_INFO("----------------------------");
+
+    TaskStatus_t pxTaskStatusArray[PRIO_MAX];
+    UBaseType_t uxArraySize = PRIO_MAX;
+    uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
+
+    /* Create a human readable table from the binary data. */
+    for( UBaseType_t x = 0; x < uxArraySize; x++ )
+    {
+        /* Write the task name to the string, padding with spaces so it
+        can be printed in tabular form more easily. */
+        pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
+
+        /* Write the rest of the string. */
+        sprintf( pcWriteBuffer, "\t%u", ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark);
+        pcWriteBuffer = text;
+
+        LOG_INFO(String(text));
+    }
+
+    LOG_INFO("-----------------------------------------------");
+
 }
 
 void TeleopThread::configureMatch(apb_TeleopRequest const & request)
