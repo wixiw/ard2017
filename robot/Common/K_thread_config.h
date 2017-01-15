@@ -16,14 +16,15 @@
 #define PRIO_STRATEGY       (tskIDLE_PRIORITY + 4)
 #define PRIO_HMI            (tskIDLE_PRIORITY + 3)
 #define PRIO_ACTUATORS      (tskIDLE_PRIORITY + 5)
-#define PRIO_RESERVED_OS    (tskIDLE_PRIORITY + 6)
+#define PRIO_MAX            (tskIDLE_PRIORITY + 6)
 
-//TODO value to be adjusted
-#define STACK_TELEOP      500
+//Take care config is in words, not bytes. 100 = 400o
+//adjusted for having 200 words spare
+#define STACK_TELEOP      400
 #define STACK_LOG         500
-#define STACK_HMI         500
-#define STACK_STRATEGY    500
-#define STACK_ACTUATORS   500
+#define STACK_HMI         300
+#define STACK_STRATEGY    300
+#define STACK_ACTUATORS   300
 
 //Periods :
 #define PERIOD_ACTUATORS         100 //ms

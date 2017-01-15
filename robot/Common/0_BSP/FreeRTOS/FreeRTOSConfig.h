@@ -104,7 +104,7 @@ extern uint32_t SystemCoreClock;
 #define configUSE_PREEMPTION			1
 #if 1  // WHG
 #define configUSE_IDLE_HOOK				1
-#define configUSE_TICK_HOOK				1
+#define configUSE_TICK_HOOK				0
 #define configCPU_CLOCK_HZ				( F_CPU )
 #else  // WHG
 #define configUSE_IDLE_HOOK				0
@@ -113,7 +113,7 @@ extern uint32_t SystemCoreClock;
 #endif  // WHG
 #define configTICK_RATE_HZ				( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES			( 6 )
-#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 130 )
+#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 70 )
 #define configTOTAL_HEAP_SIZE			( ( size_t ) ( 0 ) )  // WHG uses type 3 heap
 #define configMAX_TASK_NAME_LEN			( 10 )
 #define configUSE_TRACE_FACILITY		1  //required for vTaskList
@@ -137,10 +137,10 @@ extern uint32_t SystemCoreClock;
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 
 /* Software timer definitions. */
-#define configUSE_TIMERS				1
+#define configUSE_TIMERS				0
 #define configTIMER_TASK_PRIORITY		( 2 )
-#define configTIMER_QUEUE_LENGTH		5
-#define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE * 2 )
+#define configTIMER_QUEUE_LENGTH		0
+#define configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE * 0 )
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
@@ -152,7 +152,7 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelayUntil			1
 #define INCLUDE_vTaskDelay				1
 #define INCLUDE_eTaskGetState			1
-#define INCLUDE_xTimerPendFunctionCall	1
+#define INCLUDE_xTimerPendFunctionCall	0
 
 /* Cortex-M specific definitions. */
 #ifdef __NVIC_PRIO_BITS
