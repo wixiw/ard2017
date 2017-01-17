@@ -4466,9 +4466,3 @@ TickType_t uxReturn;
 	#include "tasks_test_access_functions.h"
 #endif
 
-//ARD specific
-void ard_getTaskName(char* name)
-{
-	strcpy(name, pxCurrentTCB->pcTaskName);
-}
-

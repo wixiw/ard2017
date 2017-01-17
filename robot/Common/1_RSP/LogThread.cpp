@@ -14,19 +14,12 @@ using namespace ard;
 //singleton instanciation
 LogThread LogThread::instance = LogThread();
 
-void SdCardLogger::init()
+void SdCardLogger::connect()
 {
-    g_ArdOs.dprintln ("[LogThread] Initializing SD card...");
     // see if the card is present and can be initialized:
-    if (!SD.begin (CS_SDCARD))
-    {
-        g_ArdOs.dprintln (
-                "[LogThread] SD card init FAILED, or not present, log persistency disabled.");
-    }
-    else
+    if (SD.begin (CS_SDCARD))
     {
         sdCardPresent = true;
-        g_ArdOs.dprintln ("[LogThread] SD card init SUCCESS.");
     }
 }
 
@@ -42,8 +35,6 @@ void SdCardLogger::log(LogMsg const & log)
         //if the file is not opened, consider that the sdcard is not present
         if (!logFile)
         {
-            g_ArdOs.dprintln (
-                    "[FATAL] Failed to open log file, SDcard logging feature disabled.");
             sdCardPresent = false;
         }
 
@@ -72,36 +63,41 @@ String SdCardLogger::formatLogMsg(LogMsg const& msg)
         break;
     }
 
-    return String(msg.date) + " [" + level + "] " + msg.text;
+    return String(msg.date) + " [" + level + "] [" + msg.component + "] " + msg.text;
 }
 
-LogThread::LogThread()
-        : configSdCardLog(true), semDataPresent(NULL), mutex(NULL), fifoHead(0), fifoTail(0), fifoCount(0), missedLogs(0), comLogger(NULL)
+LogThread::LogThread():
+        Thread("Log", PRIO_LOG, STACK_LOG),
+        configSdCardLog(true),
+        semDataPresent(NULL),
+        mutex(),
+        fifoHead(0),
+        fifoTail(0),
+        fifoCount(0),
+        missedLogs(0),
+        comLogger(NULL)
 {
     INIT_TABLE_TO_ZERO(fifoArray);
 }
 
 void LogThread::init()
 {
-    //create the thread
-    g_ArdOs.createThread_Cpp("Log", *this, STACK_LOG, PRIO_LOG);
+    Thread::init();
 
     // initialize fifoData semaphore to no data available
-    semDataPresent = g_ArdOs.Semaphore_create(FIFO_SIZE, 0);
-
-    //create the mutex
-    mutex = g_ArdOs.Mutex_create();
+    semDataPresent = xSemaphoreCreateCounting(FIFO_SIZE, 0);
 }
 
 void LogThread::run()
 {
-    fileLogger.init();
+    fileLogger.connect();
 
     if( fileLogger.isReady() )
     {
         LogMsg msg;
         msg.date = 0;
         msg.level = eLogLevel_INFO;
+        msg.component = getName();
         msg.text = "SDCard log enabled.";
         disptachLogToChannels(msg);
     }
@@ -132,7 +128,7 @@ void LogThread::log(eLogLevel logLevel, String const& log)
     //take the time of log before any action
     auto now = millis();
 
-    g_ArdOs.Mutex_lock(mutex);
+    mutex.lock();
 
     // get a buffer in the fifo to fill the message
     if (fifoCount == FIFO_SIZE)
@@ -146,6 +142,7 @@ void LogThread::log(eLogLevel logLevel, String const& log)
     // fill the buffer
     fifoArray[fifoHead].date = now;
     fifoArray[fifoHead].level = logLevel;
+    fifoArray[fifoHead].component =  pcTaskGetTaskName(xTaskGetCurrentTaskHandle());
     fifoArray[fifoHead].text = log;
     ++fifoCount;
 
@@ -153,9 +150,9 @@ void LogThread::log(eLogLevel logLevel, String const& log)
     fifoHead = fifoHead < (FIFO_SIZE - 1) ? fifoHead + 1 : 0;
 
     // signal a new data is in the fifo
-    g_ArdOs.Semaphore_give(semDataPresent);
+    xSemaphoreGive(semDataPresent);
 
-    g_ArdOs.Mutex_unlock(mutex);
+    mutex.unlock();
 }
 
 void LogThread::unpileFifo()
@@ -175,17 +172,17 @@ void LogThread::unpileFifo()
     }
 
     // wait for next data record
-    g_ArdOs.Semaphore_take(semDataPresent);
+    xSemaphoreTake(semDataPresent, portMAX_DELAY);
 
     //dispatch log
     disptachLogToChannels(fifoArray[fifoTail]);
 
-    g_ArdOs.Mutex_lock(mutex);
+    mutex.lock();
     // release record
     --fifoCount;
     // advance FIFO index
     fifoTail = fifoTail < (FIFO_SIZE - 1) ? fifoTail + 1 : 0;
-    g_ArdOs.Mutex_unlock(mutex);
+    mutex.unlock();
 }
 
 void LogThread::disptachLogToChannels(LogMsg const& log)

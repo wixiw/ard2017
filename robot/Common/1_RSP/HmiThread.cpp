@@ -161,30 +161,21 @@ void ard::Led::set(eLedState state)
 /*   HMI                                                                */
 /*--------------------------------------------------------------------- */
 
-HmiThread::HmiThread(uint16_t period)
-        :
-                ledRGB(LED_RGB_R, LED_RGB_G, LED_RGB_B),
-                led1(LED1),
-                led2(LED2),
-                led3(LED3),
-                led4(LED4),
-                ledDue_Rx(LED_DUE_RX, INVERTED),
-                ledDue_Tx(LED_DUE_TX, INVERTED),
-                ledDue_L(LED_DUE_L),
-                start(BUTTON_START, HMI_DEBOUNCE, HMI_DEBOUNCE),
-                matchColor(BUTTON_COLOR, HMI_DEBOUNCE, HMI_DEBOUNCE),
-                user1(BUTTON_USER1, HMI_DEBOUNCE, HMI_DEBOUNCE),
-                user2(BUTTON_USER2, HMI_DEBOUNCE, HMI_DEBOUNCE),
-                m_period(period)
-{
-
-}
-
-void HmiThread::init()
-{
-    //create the thread
-    g_ArdOs.createPeriodicThread_Cpp("HMI", *this, STACK_HMI, PRIO_HMI, PERIOD_HMI);
-}
+HmiThread::HmiThread(uint16_t period):
+    Thread("Hmi", PRIO_HMI, STACK_HMI, PERIOD_HMI),
+    ledRGB(LED_RGB_R, LED_RGB_G, LED_RGB_B),
+    led1(LED1),
+    led2(LED2),
+    led3(LED3),
+    led4(LED4),
+    ledDue_Rx(LED_DUE_RX, INVERTED),
+    ledDue_Tx(LED_DUE_TX, INVERTED),
+    ledDue_L(LED_DUE_L),
+    tirette(BUTTON_START, HMI_DEBOUNCE, HMI_DEBOUNCE),
+    matchColor(BUTTON_COLOR, HMI_DEBOUNCE, HMI_DEBOUNCE),
+    user1(BUTTON_USER1, HMI_DEBOUNCE, HMI_DEBOUNCE),
+    user2(BUTTON_USER2, HMI_DEBOUNCE, HMI_DEBOUNCE)
+{}
 
 void HmiThread::run()
 {

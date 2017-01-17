@@ -5,27 +5,16 @@
 
 using namespace ard;
 
-#include <FreeRTOS_ARM.h>
-TaskHandle_t xIdleHandle = NULL;
-
-//------------------------------------------------------------------------------
-void setup()
+int main( void )
 {
-    ROBOT.boot();
+    //Spawn ARD instance
+    ROBOT.bootOs();
+
+    return 0;
 }
 
-//------------------------------------------------------------------------------
-void loop()
+extern String const& getExeVersion()
 {
-    static bool once = false;
-    if (!once)
-    {
-        once = true;
-        LOG_INFO("Version libArd : " + ROBOT.getVersion());
-        LOG_INFO(String("Version robotA : ") + __DATE__ + " " + __TIME__ );
-    }
-
-    // idle loop has a very small, configMINIMAL_STACK_SIZE, stack
-    // loop must never block
-    while (2);
+    return String("Version robotA : ") + __DATE__ + " " + __TIME__;
 }
+

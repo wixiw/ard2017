@@ -268,99 +268,101 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <ArmGccCpp>
-  <armgcc.common.outputfiles.hex>True</armgcc.common.outputfiles.hex>
-  <armgcc.common.outputfiles.lss>True</armgcc.common.outputfiles.lss>
-  <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
-  <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
-  <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
-  <armgcc.compiler.symbols.DefSymbols>
-    <ListValues>
-      <Value>BOARD=ARDUINO_DUE_X</Value>
-      <Value>scanf=iscanf</Value>
-      <Value>ARM_MATH_CM3=true</Value>
-      <Value>printf=iprintf</Value>
-      <Value>F_CPU=84000000L</Value>
-      <Value>ARDUINO=10612</Value>
-      <Value>ARDUINO_SAM_DUE</Value>
-      <Value>ARDUINO_ARCH_SAM</Value>
-      <Value>USBCON</Value>
-      <Value>PB_FIELD_32BIT</Value>
-    </ListValues>
-  </armgcc.compiler.symbols.DefSymbols>
-  <armgcc.compiler.directories.IncludePaths>
-    <ListValues>
-      <Value>../0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
-      <Value>../0_BSP/CMSIS/Device/ATMEL</Value>
-      <Value>../0_BSP/CMSIS/CMSIS/Include</Value>
-      <Value>../0_BSP/ArduinoCore/include</Value>
-      <Value>../0_BSP/ArduinoCore</Value>
-      <Value>../0_BSP</Value>
-      <Value>../0_BSP/Drivers</Value>
-      <Value>..</Value>
-      <Value>../1_RSP</Value>
-      <Value>../1_RSP/protobuf</Value>
-    </ListValues>
-  </armgcc.compiler.directories.IncludePaths>
-  <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
-  <armgcc.compiler.optimization.OtherFlags>-fdata-sections</armgcc.compiler.optimization.OtherFlags>
-  <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
-  <armgcc.compiler.optimization.PrepareDataForGarbageCollection>True</armgcc.compiler.optimization.PrepareDataForGarbageCollection>
-  <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
-  <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
-  <armgcc.compiler.miscellaneous.OtherFlags>-std=gnu99  -nostdlib</armgcc.compiler.miscellaneous.OtherFlags>
-  <armgcccpp.compiler.symbols.DefSymbols>
-    <ListValues>
-      <Value>__FREERTOS__</Value>
-      <Value>BOARD=ARDUINO_DUE_X</Value>
-      <Value>scanf=iscanf</Value>
-      <Value>ARM_MATH_CM3=true</Value>
-      <Value>printf=iprintf</Value>
-      <Value>F_CPU=84000000L</Value>
-      <Value>ARDUINO=10612</Value>
-      <Value>ARDUINO_SAM_DUE</Value>
-      <Value>ARDUINO_ARCH_SAM</Value>
-      <Value>USBCON</Value>
-      <Value>PB_FIELD_32BIT</Value>
-    </ListValues>
-  </armgcccpp.compiler.symbols.DefSymbols>
-  <armgcccpp.compiler.directories.IncludePaths>
-    <ListValues>
-      <Value>../0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
-      <Value>../0_BSP/CMSIS/Device/ATMEL</Value>
-      <Value>../0_BSP/CMSIS/CMSIS/Include</Value>
-      <Value>../0_BSP/ArduinoCore/include</Value>
-      <Value>../0_BSP/ArduinoCore</Value>
-      <Value>../0_BSP</Value>
-      <Value>../0_BSP/Drivers</Value>
-      <Value>..</Value>
-      <Value>../1_RSP</Value>
-      <Value>../1_RSP/protobuf</Value>
-    </ListValues>
-  </armgcccpp.compiler.directories.IncludePaths>
-  <armgcccpp.compiler.optimization.level>Optimize for size (-Os)</armgcccpp.compiler.optimization.level>
-  <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>
-  <armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>
-  <armgcccpp.compiler.optimization.DebugLevel>Maximum (-g3)</armgcccpp.compiler.optimization.DebugLevel>
-  <armgcccpp.compiler.warnings.AllWarnings>True</armgcccpp.compiler.warnings.AllWarnings>
-  <armgcccpp.compiler.miscellaneous.OtherFlags>-nostdlib -fno-threadsafe-statics -std=gnu++11</armgcccpp.compiler.miscellaneous.OtherFlags>
-  <armgcccpp.linker.general.NoSharedLibraries>True</armgcccpp.linker.general.NoSharedLibraries>
-  <armgcccpp.linker.libraries.Libraries>
-    <ListValues>
-      <Value>libm</Value>
-    </ListValues>
-  </armgcccpp.linker.libraries.Libraries>
-  <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
-  <armgcccpp.linker.memorysettings.ExternalRAM />
-  <armgcccpp.assembler.debugging.DebugLevel>Default (-g)</armgcccpp.assembler.debugging.DebugLevel>
-  <armgcccpp.preprocessingassembler.general.AssemblerFlags>-D__FREERTOS__</armgcccpp.preprocessingassembler.general.AssemblerFlags>
-  <armgcccpp.preprocessingassembler.general.IncludePaths>
-    <ListValues>
-      <Value>../0_BSP/CMSIS/Device/ATMEL</Value>
-      <Value>../0_BSP/CMSIS/CMSIS/Include</Value>
-    </ListValues>
-  </armgcccpp.preprocessingassembler.general.IncludePaths>
-  <armgcccpp.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcccpp.preprocessingassembler.debugging.DebugLevel>
-</ArmGccCpp>
+        <armgcc.common.outputfiles.hex>True</armgcc.common.outputfiles.hex>
+        <armgcc.common.outputfiles.lss>True</armgcc.common.outputfiles.lss>
+        <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
+        <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
+        <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
+        <armgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>BOARD=ARDUINO_DUE_X</Value>
+            <Value>scanf=iscanf</Value>
+            <Value>ARM_MATH_CM3=true</Value>
+            <Value>printf=iprintf</Value>
+            <Value>F_CPU=84000000L</Value>
+            <Value>ARDUINO=10612</Value>
+            <Value>ARDUINO_SAM_DUE</Value>
+            <Value>ARDUINO_ARCH_SAM</Value>
+            <Value>USBCON</Value>
+            <Value>PB_FIELD_32BIT</Value>
+          </ListValues>
+        </armgcc.compiler.symbols.DefSymbols>
+        <armgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>../0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
+            <Value>../0_BSP/CMSIS/Device/ATMEL</Value>
+            <Value>../0_BSP/CMSIS/CMSIS/Include</Value>
+            <Value>../0_BSP/ArduinoCore/include</Value>
+            <Value>../0_BSP/ArduinoCore</Value>
+            <Value>../0_BSP</Value>
+            <Value>../0_BSP/Drivers</Value>
+            <Value>..</Value>
+            <Value>../1_RSP</Value>
+            <Value>../1_RSP/serialization</Value>
+            <Value>../1_RSP/core</Value>
+          </ListValues>
+        </armgcc.compiler.directories.IncludePaths>
+        <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
+        <armgcc.compiler.optimization.OtherFlags>-fdata-sections</armgcc.compiler.optimization.OtherFlags>
+        <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
+        <armgcc.compiler.optimization.PrepareDataForGarbageCollection>True</armgcc.compiler.optimization.PrepareDataForGarbageCollection>
+        <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
+        <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
+        <armgcc.compiler.miscellaneous.OtherFlags>-std=gnu99  -nostdlib</armgcc.compiler.miscellaneous.OtherFlags>
+        <armgcccpp.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>__FREERTOS__</Value>
+            <Value>BOARD=ARDUINO_DUE_X</Value>
+            <Value>scanf=iscanf</Value>
+            <Value>ARM_MATH_CM3=true</Value>
+            <Value>printf=iprintf</Value>
+            <Value>F_CPU=84000000L</Value>
+            <Value>ARDUINO=10612</Value>
+            <Value>ARDUINO_SAM_DUE</Value>
+            <Value>ARDUINO_ARCH_SAM</Value>
+            <Value>USBCON</Value>
+            <Value>PB_FIELD_32BIT</Value>
+          </ListValues>
+        </armgcccpp.compiler.symbols.DefSymbols>
+        <armgcccpp.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>../0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
+            <Value>../0_BSP/CMSIS/Device/ATMEL</Value>
+            <Value>../0_BSP/CMSIS/CMSIS/Include</Value>
+            <Value>../0_BSP/ArduinoCore/include</Value>
+            <Value>../0_BSP/ArduinoCore</Value>
+            <Value>../0_BSP</Value>
+            <Value>../0_BSP/Drivers</Value>
+            <Value>..</Value>
+            <Value>../1_RSP</Value>
+            <Value>../1_RSP/serialization</Value>
+            <Value>../1_RSP/core</Value>
+          </ListValues>
+        </armgcccpp.compiler.directories.IncludePaths>
+        <armgcccpp.compiler.optimization.level>Optimize (-O1)</armgcccpp.compiler.optimization.level>
+        <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>
+        <armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>
+        <armgcccpp.compiler.optimization.DebugLevel>Maximum (-g3)</armgcccpp.compiler.optimization.DebugLevel>
+        <armgcccpp.compiler.warnings.AllWarnings>True</armgcccpp.compiler.warnings.AllWarnings>
+        <armgcccpp.compiler.miscellaneous.OtherFlags>-nostdlib -fno-threadsafe-statics -std=gnu++11</armgcccpp.compiler.miscellaneous.OtherFlags>
+        <armgcccpp.linker.general.NoSharedLibraries>True</armgcccpp.linker.general.NoSharedLibraries>
+        <armgcccpp.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </armgcccpp.linker.libraries.Libraries>
+        <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
+        <armgcccpp.linker.memorysettings.ExternalRAM />
+        <armgcccpp.assembler.debugging.DebugLevel>Default (-g)</armgcccpp.assembler.debugging.DebugLevel>
+        <armgcccpp.preprocessingassembler.general.AssemblerFlags>-D__FREERTOS__</armgcccpp.preprocessingassembler.general.AssemblerFlags>
+        <armgcccpp.preprocessingassembler.general.IncludePaths>
+          <ListValues>
+            <Value>../0_BSP/CMSIS/Device/ATMEL</Value>
+            <Value>../0_BSP/CMSIS/CMSIS/Include</Value>
+          </ListValues>
+        </armgcccpp.preprocessingassembler.general.IncludePaths>
+        <armgcccpp.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcccpp.preprocessingassembler.debugging.DebugLevel>
+      </ArmGccCpp>
     </ToolchainSettings>
     <OutputFileName>libARD</OutputFileName>
     <OutputFileExtension>.a</OutputFileExtension>
@@ -518,9 +520,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\libraries\Wire.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\main.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\new.cpp">
@@ -1087,22 +1086,10 @@
     <Compile Include="0_BSP\Drivers\utility\SdVolume.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\FreeRTOS\assertMsg.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\FreeRTOS\basic_io_arm.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\FreeRTOS\basic_io_arm.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\FreeRTOS\croutine.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\FreeRTOS\croutine.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\FreeRTOS\deprecated_definitions.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\FreeRTOS\event_groups.c">
@@ -1123,7 +1110,7 @@
     <Compile Include="0_BSP\FreeRTOS\FreeRTOS_ARM.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\FreeRTOS\heap_3.c">
+    <Compile Include="0_BSP\FreeRTOS\heap_1.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\FreeRTOS\list.c">
@@ -1171,19 +1158,10 @@
     <Compile Include="0_BSP\FreeRTOS\timers.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\ArdMaths.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\ArdMaths.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="1_RSP\ArdOs.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\ArdOs.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\ArdUtils.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\ColorSensor.cpp">
@@ -1192,10 +1170,46 @@
     <Compile Include="1_RSP\ColorSensor.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\fcs16.c">
+    <Compile Include="1_RSP\com\ArdHdlc.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\fcs16.h">
+    <Compile Include="1_RSP\com\ArdHdlc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\com\ComInterfaces.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\com\ComInterfaces.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\com\ComOnUart.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\com\ComOnUart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\com\yahdlc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\com\yahdlc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\ArdFramework.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\ArdFramework.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\ArdMaths.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\ArdMaths.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\Types.pb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\Types.pb.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\GpioTools.cpp">
@@ -1222,52 +1236,40 @@
     <Compile Include="1_RSP\Navigation.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\protobuf\pb.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\protobuf\pb_common.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\protobuf\pb_common.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\protobuf\pb_decode.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\protobuf\pb_decode.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\protobuf\pb_encode.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\protobuf\pb_encode.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="1_RSP\RSP.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Types.pb.c">
+    <Compile Include="1_RSP\serialization\pb.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Types.pb.h">
+    <Compile Include="1_RSP\serialization\pb_common.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\yahdlc.c">
+    <Compile Include="1_RSP\serialization\pb_common.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\yahdlc.h">
+    <Compile Include="1_RSP\serialization\pb_decode.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\ActuatorThread.cpp">
+    <Compile Include="1_RSP\serialization\pb_decode.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\ActuatorThread.h">
+    <Compile Include="1_RSP\serialization\pb_encode.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\ActuatorX.cpp">
+    <Compile Include="1_RSP\serialization\pb_encode.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\ActuatorX.h">
+    <Compile Include="2_AL\actuators\ActuatorThread.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\actuators\ActuatorThread.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\actuators\ActuatorX.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\actuators\ActuatorX.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\proto\CommonMsg.pb.c">
@@ -1276,10 +1278,16 @@
     <Compile Include="2_AL\proto\CommonMsg.pb.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\proto\Teleop.pb.c">
+    <Compile Include="2_AL\proto\RemoteControl.pb.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\proto\Teleop.pb.h">
+    <Compile Include="2_AL\proto\RemoteControl.pb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\RemoteControl.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\RemoteControl.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Robot2017.cpp">
@@ -1288,28 +1296,22 @@
     <Compile Include="2_AL\Robot2017.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\StrategyAlpha.cpp">
+    <Compile Include="2_AL\strategies\StrategyAlpha.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\StrategyAlpha.h">
+    <Compile Include="2_AL\strategies\StrategyAlpha.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\StrategyThread.cpp">
+    <Compile Include="2_AL\strategies\StrategyThread.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\StrategyThread.h">
+    <Compile Include="2_AL\strategies\StrategyThread.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\TeleopThread.cpp">
+    <Compile Include="2_AL\strategies\TestStrategies.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\TeleopThread.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\TestStrategies.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\TestStrategies.h">
+    <Compile Include="2_AL\strategies\TestStrategies.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="K_constants.h">
@@ -1347,9 +1349,14 @@
     <Folder Include="0_BSP\Drivers\utility\" />
     <Folder Include="0_BSP\FreeRTOS" />
     <Folder Include="1_RSP" />
-    <Folder Include="1_RSP\protobuf" />
+    <Folder Include="1_RSP\2017" />
+    <Folder Include="1_RSP\com" />
+    <Folder Include="1_RSP\core" />
+    <Folder Include="1_RSP\serialization" />
     <Folder Include="2_AL" />
+    <Folder Include="2_AL\actuators\" />
     <Folder Include="2_AL\proto\" />
+    <Folder Include="2_AL\strategies\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="0_BSP\ArduinoCore\linker_scripts\flash.ld">
@@ -1367,19 +1374,7 @@
     <None Include="0_BSP\CMSIS\CMSIS\Lib\GCC\libarm_cortexM3l_math.a">
       <SubType>compile</SubType>
     </None>
-    <None Include="0_BSP\CMSIS\Device\ATMEL\sam3xa\source\gcc\sam3x8e_flash.ld">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="0_BSP\CMSIS\Device\ATMEL\sam3xa\source\gcc\sam3x8e_sram.ld">
-      <SubType>compile</SubType>
-    </None>
     <None Include="0_BSP\Drivers\origine.txt">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="0_BSP\FreeRTOS\readme.txt">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="0_BSP\FreeRTOS\stdint.readme">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>

@@ -10,36 +10,233 @@
 
 using namespace ard;
 
+#define ASSERT_OS_STARTED ASSERT_TEXT(ArdOs::getState() == ArdOs::eOsState::RUNNING, "OS must be started before using this function.")
+
+//-------------------------------------------------------------------------------
+//                      OsObject
+//-------------------------------------------------------------------------------
+//static member instanciation
+uint8_t OsObject::objectCount = 0;
+
+OsObject::OsObject(String const& name):
+                ArdObject(name)
+{
+    ArdOs::registerObject(this);
+}
+
+OsObject::~OsObject(){};
+
+void OsObject::init()
+{
+    ArdObject::init();
+    ASSERT_TEXT(objectCount < 0xFF , "Too many objects of that type.");
+    objectCount++;
+}
+
+//-------------------------------------------------------------------------------
+//                      Thread
 //-------------------------------------------------------------------------------
 
-//infinite wait signal
-Signal infinite;
+//table of all params so that the generic run function is possible
+//it is also used to test if a priority is already in use
+static Thread::ThreadParams threadParams[PRIO_NB];
 
-void ArdOs::die()
-{
-    Signal_wait(infinite);
+//static member instanciation
+ILogger* Thread::logger = NULL;
+
+//a signal that is never set
+static Signal infinite; 
+
+//FreeRtos need a "C function" whereas we have C++ methods, due to demangling issues
+//we have to use a plain "C function" that wrap to the Thread class.
+//helper to prevent user from exiting their threads, as it push FreeRtos in assert
+void Thread_genericRun(void* pvParameters)
+{    
+    auto params = reinterpret_cast<Thread::ThreadParams*>(pvParameters);
+    ASSERT_TEXT(params != NULL, "params cast failed.");
+    ASSERT(params->object != NULL);
+
+    //The thread is periodic
+    if (params->period)
+    {
+        params->object->logFromThread(eLogLevel_DEBUG, String("Periodic thread started (stack=")
+                + params->object->getStackSize()
+                + "w prio=" + params->object->getPriority()
+                + " p=" + params->object->getPeriod() + "ms)");
+
+        auto lastWakeTime = xTaskGetTickCount();
+        while (2)/* because 1 is has-been*/
+        {
+            //execute the class run method
+            params->object->run();
+
+            //wait until next period
+            vTaskDelayUntil(&lastWakeTime, params->period);
+        }
+    }
+    //The thread is not periodic
+    else
+    {
+        params->object->logFromThread(eLogLevel_DEBUG, String("Aperiodic thread started (stack=")
+                + params->object->getStackSize()
+                + "w prio=" + params->object->getPriority()
+                + ")");
+
+        //execute the class run method
+        params->object->run();
+
+        //Wait infinitly so that the thread context is never exited (else FreeRtos would asserts)
+        params->object->logFromThread(eLogLevel_INFO, "Thread exited due to run() execution end.");
+        infinite.wait();
+    }
 }
 
-void enterIdleCB()
+Thread::Thread(String const& name, ThreadPriority priority, StackSize stackSize, DelayMs period):
+                OsObject(name),
+                priority(priority),
+                debugPin(0)
 {
-    digitalWrite(g_ArdOs.HEARTBEAT_PIN, LOW);
+    //all thread does it since it not required, but it simplifies the thing
+    threadParams[tskIDLE_PRIORITY].used = true;
+
+    threadParams[priority].used         = false;
+    threadParams[priority].handle       = NULL;
+    threadParams[priority].object       = NULL;
+    threadParams[priority].stackSize    = stackSize;
+    threadParams[priority].period       = period;
 }
 
-void exitIdleCB()
+void Thread::init()
 {
-    digitalWrite(g_ArdOs.HEARTBEAT_PIN, HIGH);
+    ASSERT(getName().length() <= configMAX_TASK_NAME_LEN);
+
+    //refining parent function requires to call parent one before
+    OsObject::init();
+
+    //Check inputs
+    ASSERT_TEXT(!threadParams[priority].used, "a Thread already exist at this priority");
+    ASSERT_TEXT(priority <= PRIO_MAX, "priority is too high");
+    threadParams[priority].used         = true;
+    threadParams[priority].object       = this;
+
+    //create the OS thread and initialize the Thread handler
+    BaseType_t res = xTaskCreate(
+            Thread_genericRun,
+            getName().c_str(),
+            threadParams[priority].stackSize,
+            &(threadParams[priority]),
+            priority,
+            &(threadParams[priority].handle));
+    ASSERT_TEXT(pdPASS == res, "task creation failed");
 }
 
+
+void Thread::startThread()
+{
+    ASSERT_TEXT(isInitialized(), "not initialized");
+    vTaskResume(threadParams[priority].handle);
+}
+
+void Thread::stopThread()
+{
+    ASSERT_TEXT(isInitialized(), "not initialized");
+    //Request thread to stay blocked until decided
+    vTaskSuspend(threadParams[priority].handle);
+}
+
+void Thread::setLogger(ILogger* newLogger)
+{
+    ASSERT_TEXT( newLogger != NULL, "you tried to configure a NULL logger.");
+    ASSERT_TEXT( logger == NULL,    "you tried to configure a logger twice.");
+}
+
+StackSize Thread::getStackSize() const
+{
+    return threadParams[priority].stackSize;
+}
+
+DelayMs Thread::getPeriod() const
+{
+    return threadParams[priority].period;
+}
+
+void Thread::logFromThread(eLogLevel lvl, String const& text)
+{
+    if(logger)
+    {
+        logger->log(lvl, text);
+    }
+}
+
+void Thread::sleepMs(DelayMs delay)
+{
+    ArdOs::sleepMs(delay);
+}
+
+//-------------------------------------------------------------------------------
+//                     Poller Thread
+//-------------------------------------------------------------------------------
+
+PollerThread::PollerThread(String const& name,
+        ThreadPriority priority,
+        StackSize stackSize,
+        DelayMs period,
+        uint8_t nbPolledObjects):
+                Thread(name, priority, stackSize, period),
+                polledObjects(NULL),
+                nextRank(0),
+                nbMaxObjects(nbPolledObjects)
+{
+    polledObjects = (PolledObject**)malloc(sizeof(PolledObject*));
+}
+
+void PollerThread::init()
+{
+    Thread::init();
+
+    for(int i = 0 ; i < nextRank ; ++i)
+    {
+        polledObjects[i]->init();
+    }
+}
+
+void PollerThread::run()
+{
+    debugTrace_beginLoop();
+
+    for(int i = 0 ; i < nextRank ; ++i)
+    {
+        polledObjects[i]->update(getPeriod());
+    }
+
+    debugTrace_endLoop();
+}
+
+void PollerThread::addPolledObject(PolledObject& object )
+{
+    ASSERT(!isInitialized());
+    ASSERT_TEXT(nextRank < nbMaxObjects, "too many mini objects");
+    polledObjects[nextRank] = &object;
+    nextRank++;
+}
+
+//-------------------------------------------------------------------------------
+//                      SwTimer
 //-------------------------------------------------------------------------------
 
 SwTimer::SwTimer()
-        : m_entryDate(0U), m_delay(0U), m_started(false)
+: OsObject(),
+  m_entryDate(0U),
+  m_delay(0U),
+  m_started(false)
 {
 }
 
 void SwTimer::arm(uint32_t delayInMs)
 {
-    ardAssert(delayInMs != 0, "Delay shall be non null.");
+    ASSERT(isInitialized());
+    ASSERT_OS_STARTED;
+    ASSERT_TEXT(delayInMs != 0, "Delay shall be non null.");
     m_entryDate = millis();
     m_delay = delayInMs;
     m_started = true;
@@ -54,6 +251,8 @@ void SwTimer::cancel()
 
 bool SwTimer::isFired() const
 {
+    ASSERT(isInitialized());
+    ASSERT_OS_STARTED;
     if (m_started && m_delay <= millis() - m_entryDate)
         return true;
     else
@@ -61,273 +260,196 @@ bool SwTimer::isFired() const
 }
 
 //-------------------------------------------------------------------------------
+//                      Mutex
+//-------------------------------------------------------------------------------
 
-//singleton instanciation
-ArdOs ArdOs::instance = ArdOs();
+Mutex::Mutex():
+                OsObject(),
+                osHandler(NULL)
+{}
 
-//helper to prevent user from exiting their threads, as it push FreeRtos in assert
-void ArdOs_genericRun(void* pvParameters)
+void Mutex::init()
 {
-    auto params = reinterpret_cast<ArdOs::genericRunParams*>(pvParameters);
-    ardAssert(params != NULL, "Generic params cast failed.");
+    OsObject::init();
+    osHandler = xSemaphoreCreateMutex();
+}
 
-    //Informs that the task is started
-    char taskName[configMAX_TASK_NAME_LEN];
-    ard_getTaskName(taskName);
-    g_ArdOs.dprintln (String ("[ArdOs] ") + taskName + " is running.");
+void Mutex::lock(DelayMs timeout)
+{
+    ASSERT(isInitialized());
+    ASSERT_TEXT(!interruptContext(),"a mutex cannot be used with interrupts, use critical section instead.");
 
-    //The thread is periodic
-    if (params->period)
+    BaseType_t res = pdFALSE;
+    do
     {
-        auto lastWakeTime = xTaskGetTickCount();
-        while (2)/* because 1 is has-been*/
-        {
-            //Run either the function or the class run method
-            if (params->pClass)
-                params->pClass->run();
-            else
-                params->method();
-
-            //wait until next period
-            vTaskDelayUntil(&lastWakeTime, params->period);
-        }
+        res = xSemaphoreTake(osHandler, timeout);
     }
-    //The thread isnot periodic
-    else
-    {
-        //Run either the function or the class run method
-        if (params->pClass)
-            params->pClass->run();
-        else
-            params->method();
-
-        //Wait infinitly so that the thread context is never exited (else FreeRtos would asserts)
-        g_ArdOs.dprintln (String ("[ArdOs] ") + taskName + " is finished.");
-        g_ArdOs.Signal_wait(infinite);
-    }
+    //retry if delay is set to maximum value
+    while(timeout == portMAX_DELAY && res == pdFALSE );
 
 }
 
-ArdOs::ArdOs()
+void Mutex::unlock()
 {
-    nextThreadRank = 0;
-    heartbeatCounter = 0;
-    heartbeatPinValue = 0;
-    signalCount = 0;
-    mutexCount = 0;
-    state = eOsState::UNINIT;
-    bootDuration = 0;
-    debugSerialMutex = NULL;
-    INIT_TABLE_TO_ZERO(threads);
-    INIT_TABLE_TO_ZERO(params);
-    STDOUT = NULL;
-    HEARTBEAT_PIN = 0;
-}
-
-void ArdOs::init()
-{
-    ardAssert(state == eOsState::UNINIT, "ArdOs is not in the right state to do an init");
-    infinite = Signal_create();
-    debugSerialMutex = Mutex_create();
-
-    digitalWrite(LED_DUE_L, LOW);
-    digitalWrite(HEARTBEAT_PIN, heartbeatPinValue);
-
-    // start FreeRTOS
-    state = eOsState::RUNNING;
-    bootDuration = millis();
-    dprintln(String("[ArdOs] ") + "Robot is booted successfully, it took " + bootDuration + " ms.");
-    vTaskStartScheduler();
-
-    // should never reach this as the vTaskStartScheduler never ends
-    dprintln("ERROR : Scheduler exited !");
-    while (1)
-    {
-    };
-}
-
-void ArdOs::displayStats()
-{
-    char text[40 * configMAX_PRIORITIES];
-    vTaskList(text);
-    dprintln("--------------- ArdOs Stats  ------------------");
-    dprintln("|   Thread   | State | Prio | Free stack | ID |");
-    dprintln("-----------------------------------------------");
-    dprintln(text);
-    dprintln(" * States : blocked ('B'), ready ('R'), deleted ('D') or suspended ('S').");
-    dprintln(" * Priority : higher number, higher priority");
-    dprintln("-----------------------------------------------");
-    dprintln(String("Nb Threads : ") + String(nextThreadRank + 2) + " / " + String(configMAX_PRIORITIES + 1));
-    dprintln(String("Nb Mutexes : ") + mutexCount);
-    dprintln(String("Nb Signals : ") + signalCount);
-    dprintln(String("Booted in ") + bootDuration + " ms.");
-    dprintln("-----------------------------------------------");
-
-    //TODO static reportStackSizes
-    //TODO static reportCpuConsumption
-}
-
-void ArdOs::dprintln(String s)
-{
-    //If stdout is left to NULL, the user requested that no debug text are sent
-    if(STDOUT == NULL)
-        return;
-
-    //it's not possible to protect the link until the OS is setup (then the mutex pointer is no more NULL
-    //but when set, use the mutex.
-    if (debugSerialMutex)
-    {
-        xSemaphoreGive(debugSerialMutex);
-        STDOUT->println(s);
-        STDOUT->flush();
-        xSemaphoreGive(debugSerialMutex);
-    }
-    else
-    {
-        STDOUT->println(s);
-        STDOUT->flush();
-    }
-}
-
-void ArdOs::createThread_C(const char * const name, ThreadRunFct runFunction, uint16_t stack, uint16_t priority)
-{
-    ardAssert(state == eOsState::UNINIT, "ArdOs is not in the right state to do a thread creation");
-
-    //Check inputs
-    ardAssert(nextThreadRank <= configMAX_PRIORITIES - 1, "Too many threads."); //there is configMAX_PRIORITIES + 1 threads, but 2 are reserved for IDLE task, and Arduino OS task so +1-2 = -1
-    ardAssert(priority <= configMAX_PRIORITIES - 1,
-            String(name) + " priority ("+priority+") is too high (max is "+String(configMAX_PRIORITIES - 1)+"), check for stack/priority order or increase max value in FreeRtosConfig.h."); // configMAX_PRIORITIES is reserved for OS thread
-
-    //fill the params
-    params[nextThreadRank].pClass = NULL;
-    params[nextThreadRank].method = runFunction;
-
-    //create the thread
-    ardAssert(pdPASS == xTaskCreate(ArdOs_genericRun, name, stack, reinterpret_cast<void*>(&params[nextThreadRank]), priority, &threads[nextThreadRank]),
-            "Task creation failed.");
-
-    //increment the table index
-    ++nextThreadRank;
-}
-
-void ArdOs::createThread_Cpp(const char * const name, IThread& pClass, uint16_t stack, uint16_t priority)
-{
-    createPeriodicThread_Cpp(name, pClass, stack, priority, 0);
-}
-
-void ArdOs::createPeriodicThread_Cpp(const char * const name, IThread& pClass, uint16_t stack, uint16_t priority, uint16_t periodMs)
-{
-    ardAssert(state == eOsState::UNINIT, "ArdOs is not in the right state to do a thread creation");
-
-    //Check inputs
-    ardAssert(nextThreadRank <= configMAX_PRIORITIES - 1, "Too many threads."); //there is configMAX_PRIORITIES + 1 threads, but 2 are reserved for IDLE task, and Arduino OS task so +1-2 = -1
-    ardAssert(priority <= configMAX_PRIORITIES - 1,
-            String(name) + " priority ("+priority+") is too high (max is "+String(configMAX_PRIORITIES - 1)+"), check for stack/priority order or increase max value in FreeRtosConfig.h."); // configMAX_PRIORITIES is reserved for OS thread
-
-    //fill the params
-    params[nextThreadRank].pClass = &pClass;
-    params[nextThreadRank].method = NULL;
-    params[nextThreadRank].period = periodMs;
-
-    //create the thread
-    ardAssert(pdPASS == xTaskCreate(ArdOs_genericRun, name, stack, &params[nextThreadRank], priority, &threads[nextThreadRank]),
-            "Task creation failed.");
-
-    //increment the table index
-    ++nextThreadRank;
-}
-
-Signal ArdOs::Signal_create()
-{
-    ardAssert(state == eOsState::UNINIT, "ArdOs is not in the right state to do a signal creation");
-    auto s = xSemaphoreCreateBinary();
-    ardAssert(s != NULL, "No more heap");
-    ++signalCount;
-    return s;
-}
-
-void ArdOs::Signal_set(Signal s)
-{
-    ardAssert(state == eOsState::RUNNING, "ArdOs is not in the right state to set a signal.");
-    xSemaphoreGive(s);
-}
-
-void ArdOs::Signal_setFromIsr(Signal s)
-{
-    ardAssert(state == eOsState::RUNNING, "ArdOs is not in the right state to set a signal.");
-    portBASE_TYPE xHigherPriorityTaskWoken = 0;
-    xSemaphoreGiveFromISR(s, &xHigherPriorityTaskWoken);
-}
-
-void ArdOs::Signal_wait(Signal s)
-{
-    ardAssert(state == eOsState::RUNNING, "ArdOs is not in the right state to wait for a signal.");
-    xSemaphoreTake(s, portMAX_DELAY);
-}
-
-Mutex ArdOs::Mutex_create()
-{
-    ardAssert(state == eOsState::UNINIT, "ArdOs is not in the right state to do a mutex creation");
-    auto m = xSemaphoreCreateMutex();
-    ardAssert(m != NULL, "No more heap");
-    ++mutexCount;
-    return m;
-}
-
-void ArdOs::Mutex_lock(Mutex s)
-{
-    ardAssert(state == eOsState::RUNNING, "ArdOs is not in the right state to lock a mutex");
-    xSemaphoreTake(s, portMAX_DELAY);
-}
-
-void ArdOs::Mutex_unlock(Mutex s)
-{
-    ardAssert(state == eOsState::RUNNING, "ArdOs is not in the right state to unlock a mutex");
-    xSemaphoreGive(s);
-}
-
-Semaphore ArdOs::Semaphore_create(const UBaseType_t maxCount, const UBaseType_t initCount)
-{
-    ardAssert(state == eOsState::UNINIT, "ArdOs is not in the right state to do a semaphore creation");
-    auto s = xSemaphoreCreateCounting(maxCount, initCount);
-    ardAssert(s != NULL, "No more heap");
-    ++signalCount;
-    return s;
-}
-
-void ArdOs::Semaphore_give(Semaphore s)
-{
-    ardAssert(state == eOsState::RUNNING, "ArdOs is not in the right state to give a semaphore");
-    xSemaphoreGive(s);
-}
-
-void ArdOs::Semaphore_take(Semaphore s)
-{
-    ardAssert(state == eOsState::RUNNING, "ArdOs is not in the right state to take a semaphore");
-    xSemaphoreTake(s, portMAX_DELAY);
-}
-
-bool ArdOs::Semaphore_tryTake(Semaphore s)
-{
-    ardAssert(state == eOsState::RUNNING, "ArdOs is not in the right state to take a semaphore");
-    return pdTRUE == xSemaphoreTake(s, 0);
-}
-
-void ArdOs::sleep_ms(uint16_t durationMs)
-{
-    vTaskDelay(durationMs);
+    ASSERT(isInitialized());
+    ASSERT_TEXT(!interruptContext(),"a mutex cannot be used with interrupts, use critical section instead.");
+    xSemaphoreGive(osHandler);
 }
 
 //-------------------------------------------------------------------------------
+//                      Signal
+//-------------------------------------------------------------------------------
+
+Signal::Signal():
+                OsObject(),
+                osHandler(NULL){}
+
+void Signal::init()
+{
+    OsObject::init();
+    osHandler = xSemaphoreCreateBinary();
+}
+
+void Signal::wait(DelayMs timeout)
+{
+    ASSERT(isInitialized());
+    ASSERT_TEXT(!interruptContext(), "You can't wait for a signal inside an interrupt");
+
+    BaseType_t res = pdFALSE;
+    do
+    {
+        res = xSemaphoreTake(osHandler, timeout);
+    }
+    //retry if delay is set to maximum value
+    while(timeout == portMAX_DELAY && res == pdFALSE );
+}
+
+void Signal::set()
+{
+    ASSERT(isInitialized());
+    if(interruptContext())
+    {
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        xSemaphoreGiveFromISR(osHandler, &xHigherPriorityTaskWoken);
+        //force context switch if a task with higher priority is awoken
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
+    else
+        xSemaphoreGive(osHandler);
+}
+
+//-------------------------------------------------------------------------------
+//                      Queue
+//-------------------------------------------------------------------------------
+
+Queue::Queue():
+                OsObject(),
+                osHandler(NULL){}
+
+void Queue::init()
+{
+    OsObject::init();
+    osHandler = xSemaphoreCreateBinary();
+}
+
+void Queue::push(DelayMs timeout)
+{
+    ASSERT(isInitialized());
+
+    BaseType_t res = pdFALSE;
+    do
+    {
+        //TODO
+    }
+    //retry if delay is set to maximum value
+    while(timeout == portMAX_DELAY && res == pdFALSE );
+}
+
+void Queue::pop(DelayMs timeout)
+{
+    ASSERT(isInitialized());
+    if(interruptContext())
+    {
+        //TODO
+
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        xSemaphoreGiveFromISR(osHandler, &xHigherPriorityTaskWoken);
+        //force context switch if a task with higher priority is awoken
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    }
+    else
+        xSemaphoreGive(osHandler);
+}
+
+//-------------------------------------------------------------------------------
+//                      ArdOs
+//-------------------------------------------------------------------------------
+
+//static member instanciation
+ArdOs::eOsState ArdOs::state        = ArdOs::eOsState::INITIALIZING;
+uint8_t         ArdOs::objectCount  = 0;
+
+//Table to register objects
+OsObject* objectList[ArdOs::MAX_OBJECT_NB];
+
+void ArdOs::init()
+{
+    ASSERT(state==eOsState::INITIALIZING);
+
+    for( uint8_t i = 0; i<objectCount ; i++)
+    {
+        ASSERT(objectList!=NULL);
+        objectList[i]->init();
+    }
+
+    state = eOsState::READY;
+}
+
+void ArdOs::start()
+{
+    ASSERT(state==eOsState::READY);
+    state = eOsState::RUNNING;
+    vTaskStartScheduler();
+}
+
+void ArdOs::stop()
+{
+    ASSERT(state==eOsState::RUNNING);
+    state = eOsState::READY;
+    vTaskSuspendAll();
+}
+
+void ArdOs::registerObject(OsObject* object)
+{
+    ASSERT(state==eOsState::INITIALIZING);
+    ASSERT(object != NULL);
+    ASSERT(objectCount < MAX_OBJECT_NB);
+
+    //append the object to the list and increment counter
+    objectList[objectCount++] = object;
+}
+
+void ArdOs::sleepMs(DelayMs delay)
+{
+    ASSERT(state==eOsState::RUNNING);
+    vTaskDelay(delay);
+}
+
+//-------------------------------------------------------------------------------
+//                      Events
+//-------------------------------------------------------------------------------
+//the compiler requires that for some optimizations ...
+IEventListener::~IEventListener(){}
+IEvent::~IEvent(){}
 
 IEvent* EventListener::waitEvents(IEvent* listenedEvts[], int nbEvents)
 {
-    ardAssert(listenedEvts != NULL, "EventListener::waitEvents : null pointer to table.");
-    
+    ASSERT_TEXT(listenedEvts != NULL, "EventListener::waitEvents : null pointer to table.");
+
     //subsribe to the event list
     for( int i = 0 ; i < nbEvents ; ++i )
     {
-        ardAssert(listenedEvts[i] != NULL, "EventListener::waitEvents : null pointer to event.");
+        ASSERT_TEXT(listenedEvts[i] != NULL, "EventListener::waitEvents : null pointer to event.");
         listenedEvts[i]->subscribe(this);
     }
 
@@ -335,7 +457,7 @@ IEvent* EventListener::waitEvents(IEvent* listenedEvts[], int nbEvents)
     //block until one event is emitted
     if (!xQueueReceive(queue, &receivedEvent, portMAX_DELAY))
     {
-        ardAssert(false, "EventListener::wait : unexpected return code");
+        ASSERT_TEXT(false, "EventListener::wait : unexpected return code");
     }
 
     //unsubsribe to the event list
@@ -349,18 +471,18 @@ IEvent* EventListener::waitEvents(IEvent* listenedEvts[], int nbEvents)
 
 void EventListener::privateSend(IEvent* publisher)
 {
-    ardAssert(publisher != NULL, "EventListener::privateSend don't expect an invalid event.");
+    ASSERT_TEXT(publisher != NULL, "EventListener::privateSend don't expect an invalid event.");
     if (!xQueueSendToBack(queue, &publisher, 0))
     {
-        ardAssert(false, "EventListener::privateSend : queue is full");
+        ASSERT_TEXT(false, "EventListener::privateSend : queue is full");
     }
 }
 
 void EventListener::privateSendFromISR(IEvent* publisher)
 {
-    configASSERT(publisher != NULL); //ardAssert is not accessible from interrupt
+    ASSERT(publisher != NULL);
     if (!xQueueSendToBackFromISR(queue, &publisher, 0))
     {
-        configASSERT(false);//ardAssert is not accessible from interrupt
+        ASSERT(false);
     }
 }

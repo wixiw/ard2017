@@ -23,6 +23,8 @@
 #include "itoa.h"
 #include "avr/dtostrf.h"
 
+String String::empty = String();
+
 /*********************************************/
 /*  Constructors                             */
 /*********************************************/

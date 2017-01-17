@@ -12,12 +12,18 @@
 #include "ArduinoCore/USB/USBAPI.h"
 #include "ArduinoCore/Stream.h"
 #include "ArduinoCore/variant.h"
+#include "CMSIS/CMSIS/Include/core_cm3.h"
 #include "FreeRtos/FreeRTOS_ARM.h"
+
+#ifdef __cplusplus
 #include "Drivers/AccelStepper.h"
 #include "Drivers/DueTimer.h"
 #include "Drivers/SPIArduino.h" //SPI shall be imported before SD
 #include "Drivers/SD.h"
 #include "Drivers/Servo.h"
+#include "Drivers/Adafruit_TCS34725.h"
+#endif //C++
+
 #include "K_constants.h"
 
 

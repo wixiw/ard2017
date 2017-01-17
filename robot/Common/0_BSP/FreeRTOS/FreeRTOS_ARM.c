@@ -3,7 +3,13 @@
  * \brief FreeRTOS for Due and Teensy 3.0
  */
 #include "FreeRTOS_ARM.h"
-#include "../ArduinoCore/Arduino.h"
+#include "Arduino.h"
+#include "BSP.h"
+
+//ARD map LED to blink
+#define ERROR_PIN       LED_DUE_L
+#define HEARTBEAT_PIN    LED_DUE_RX
+
 //------------------------------------------------------------------------------
 /** calibration factor for delayMS */
 #define CAL_FACTOR (F_CPU/7000)
@@ -20,7 +26,7 @@ static void delayMS(uint32_t millis) {
 
 //ARD
 #define UNUSED(x) ((void)(x))
-void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
+__attribute__((optimize(0))) void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress ) 
 {
 	/* These are volatile to try and prevent the compiler/linker optimising them
 	away as the variables never actually get used.  If the debugger won't show the
@@ -61,28 +67,22 @@ void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
  *
  * \param[in] n  number of short pulses
  */
-static void errorBlink(int n) {
+void errorBlink(int n) {
 	noInterrupts();
 		
   pinMode(13, OUTPUT);
   for (;;) {
     int i;
     for (i = 0; i < n; i++) {
-      digitalWrite(13, 1);
+      digitalWrite(ERROR_PIN, 1);
       delayMS(300);
-      digitalWrite(13, 0);
+      digitalWrite(ERROR_PIN, 0);
       delayMS(300);
     }
     delayMS(2000);
   }
 }
-//------------------------------------------------------------------------------
-/** assertBlink
- * Blink one short pulse every two seconds if configASSERT fails.
-*/
-void assertBlink() {
-  errorBlink(1);
-}
+
 //------------------------------------------------------------------------------
 	/** vApplicationMallocFailedHook()
    Blink two short pulses if malloc fails.
@@ -100,21 +100,6 @@ void assertBlink() {
 void vApplicationMallocFailedHook() {
   errorBlink(2);
 }
-//------------------------------------------------------------------------------
-
-	/** vApplicationIdleHook() will only be called if configUSE_IDLE_HOOK is set
-	to 1 in FreeRTOSConfig.h.  It will be called on each iteration of the idle
-	task.  It is essential that code added to this hook function never attempts
-	to block in any way (for example, call xQueueReceive() with a block time
-	specified, or call vTaskDelay()).  If the application makes use of the
-	vTaskDelete() API function (as this demo application does) then it is also
-	important that vApplicationIdleHook() is permitted to return to its calling
-	function, because it is the responsibility of the idle task to clean up
-	memory allocated by the kernel to any task that has since been deleted. */
-void  __attribute__((weak)) vApplicationIdleHook( void ) {
-  void loop();
-  loop();
-}
 /*-----------------------------------------------------------*/
 	/**  Blink three short pulses if stack overflow is detected.
 	Run time stack overflow checking is performed if
@@ -123,17 +108,19 @@ void  __attribute__((weak)) vApplicationIdleHook( void ) {
   \param[in] pxTask Task handle
   \param[in] pcTaskName Task name
   */
-void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName) {
-	(void) pcTaskName;
-	(void) pxTask;
-	errorBlink(3);
+__attribute__((optimize(0))) void vApplicationStackOverflowHook(TaskHandle_t pxTask, char *pcTaskName) 
+{
+	UNUSED(pcTaskName);
+	UNUSED(pxTask);
+	errorBlink(4);
 }
 //------------------------------------------------------------------------------
 // catch Teensy 3 and Due exceptions
 /** Hard fault - blink four short flash every two seconds */
-void hard_fault_isr()	{errorBlink(4);}
+void hard_fault_isr()	{errorBlink(5);}
 /** Hard fault - blink four short flash every two seconds */
-void HardFault_Handler() 	{	//ARD : from http://www.freertos.org/Debugging-Hard-Faults-On-Cortex-M-Microcontrollers.html
+__attribute__((optimize(0))) void HardFault_Handler() 	 
+{	//ARD : from http://www.freertos.org/Debugging-Hard-Faults-On-Cortex-M-Microcontrollers.html
 	    __asm volatile
     (
         " tst lr, #4                                                \n"
@@ -145,7 +132,7 @@ void HardFault_Handler() 	{	//ARD : from http://www.freertos.org/Debugging-Hard-
         " bx r2                                                     \n"
         " handler2_address_const: .word prvGetRegistersFromStack    \n"
     );
-	errorBlink(4);
+	errorBlink(1);
 	}
 
 /** Bus fault - blink five short flashes every two seconds */
@@ -157,19 +144,15 @@ void BusFault_Handler() {errorBlink(5);}
 void usage_fault_isr() {errorBlink(6);}
 /** Usage fault - blink six short flashes every two seconds */
 void UsageFault_Handler() {errorBlink(6);}
-/*-----------------------------------------------------------*/
-	/** This function will be called by each tick interrupt if
-	configUSE_TICK_HOOK is set to 1 in FreeRTOSConfig.h.  User code can be
-	added here, but the tick hook is called from an interrupt context, so
-	code must not attempt to block, and only the interrupt safe FreeRTOS API
-	functions can be used (those that end in FromISR()). */
-void __attribute__((weak)) vApplicationTickHook() {
+
+//ARD : see FreeRTOSConfig.h
+void enterIdleCB()
+{
+    digitalWrite(HEARTBEAT_PIN, LOW);
 }
-/*-----------------------------------------------------------*/
-/** Dummy time stats gathering functions need to be defined to keep the
-linker happy.  Could edit FreeRTOSConfig.h to remove these.*/
-void vMainConfigureTimerForRunTimeStats( void ) {}
-/** Dummy function
- *  \return zero
- */
-unsigned long ulMainGetRunTimeCounterValue() {return 0UL;}
+
+//ARD : see FreeRTOSConfig.h
+void exitIdleCB()
+{
+    digitalWrite(HEARTBEAT_PIN, HIGH);
+}

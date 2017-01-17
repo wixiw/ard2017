@@ -196,7 +196,7 @@ void adc_configure_trigger(Adc *p_adc, const enum adc_trigger_t trigger,
 	p_adc->ADC_MR &= ~(ADC_MR_TRGEN | ADC_MR_TRGSEL_Msk | ADC_MR_FREERUN); //Clear all bits related to triggers and freerun
 	
 	//Configure FreeRun
-	if(uc_freerun & ADC_MR_FREERUN == ADC_MR_FREERUN_ON) {                 //FreeRun is enabled
+	if((uc_freerun & ADC_MR_FREERUN) == ADC_MR_FREERUN_ON) {                 //FreeRun is enabled
 		p_adc->ADC_MR |= ADC_MR_FREERUN_ON;
 		
 		//Free Run Mode: Never wait for any trigger
@@ -205,7 +205,7 @@ void adc_configure_trigger(Adc *p_adc, const enum adc_trigger_t trigger,
 	}
 	
 	//Configure hardware triggers
-	if(trigger & ADC_MR_TRGEN == ADC_MR_TRGEN_EN) {                       //Hardware trigger is enabled
+	if((trigger & ADC_MR_TRGEN) == ADC_MR_TRGEN_EN) {                       //Hardware trigger is enabled
 		p_adc->ADC_MR |= (trigger & ADC_MR_TRGSEL_Msk) | ADC_MR_TRGEN_EN; //Set trigger selection bits and enable hardware trigger
 	}
 }

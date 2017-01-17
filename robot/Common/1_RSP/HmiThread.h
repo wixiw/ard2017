@@ -108,18 +108,13 @@ namespace ard
      *
      * The ledDue_L should not be used, the OS is using it to display errors
      */
-    class HmiThread: public IThread
+    class HmiThread: public Thread
     {
     public:
         HmiThread(uint16_t period /*ms*/);
 
-        //Implements IThreads : creates the thread
-        void
-        init() override;
-
-        //Implements IThreads : makes LED blinking
-        void
-        run() override;
+        //Implements Thread : makes LED blinking
+        void run() override;
 
         RgbLed ledRGB;
         Led led1;
@@ -130,13 +125,10 @@ namespace ard
         Led ledDue_Tx;
         Led ledDue_L;
 
-        FilteredInput start;
+        FilteredInput tirette;
         FilteredInput matchColor;
         FilteredInput user1; //user1 is on the left (1/2 choice)
         FilteredInput user2; //user2 is on the right (test/master choice)
-
-    private:
-        uint16_t m_period; //in ms
     };
 
 } /* namespace ard */

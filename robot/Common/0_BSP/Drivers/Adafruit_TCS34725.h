@@ -36,13 +36,9 @@
 #ifndef _TCS34725_H_
 #define _TCS34725_H_
 
-#if ARDUINO >= 100
- #include <Arduino.h>
-#else
- #include <WProgram.h>
-#endif
+#include <Arduino.h>
 
-#include "libraries/Wire.h"
+#include "ArduinoCore/libraries/Wire.h"
 
 #define TCS34725_ADDRESS          (0x29)
 

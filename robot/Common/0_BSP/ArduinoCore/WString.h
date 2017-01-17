@@ -191,6 +191,8 @@ public:
 	long toInt(void) const;
 	float toFloat(void) const;
 	double toDouble(void) const;
+    
+    static String empty;
 
 protected:
 	char *buffer;	        // the actual char array
@@ -209,6 +211,8 @@ protected:
 	void move(String &rhs);
 	#endif
 };
+
+
 
 class StringSumHelper : public String
 {

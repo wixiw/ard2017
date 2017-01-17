@@ -2,8 +2,7 @@
 #define COLORSENSOR_H
 
 #include "BSP.h"
-#include "Types.pb.h"
-#include "Adafruit_TCS34725.h"
+#include "ArdOs.h"
 
 namespace ard
 {
@@ -25,17 +24,14 @@ namespace ard
     /**
      * This class manage the color sensor module, base on the Adafruit TCS34725 chip
      */
-    class ColorSensor: public IMiniPeriodicThread
+    class ColorSensor: public PolledObject
     {
     public:
         ColorSensor();
         ~ColorSensor();
 
-        //Implements IMiniThread
-        void
-        init() override;
-        void
-        update(TimeMs sinceLastCall) override;
+        //Implements PolledObject: read the capteur data and filters outputs to get the measured value
+        void update(TimeMs sinceLastCall) override;
 
     private:
         Adafruit_TCS34725 tcs;

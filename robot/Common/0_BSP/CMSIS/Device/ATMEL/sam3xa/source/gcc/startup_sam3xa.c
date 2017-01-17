@@ -195,8 +195,17 @@ void Reset_Handler(void)
 
 	/* Initialize the C library */
 
-	// Arduino: we must setup hardware before doing this
-	//__libc_init_array();
+    SystemInit();
+
+    // Set Systick to 1ms interval, common to all SAM3 variants
+    if (SysTick_Config(SystemCoreClock / 1000))
+    {
+      // Capture error
+      while (1);
+    }
+
+    // Initialize C library
+    __libc_init_array();
 
 	/* Branch to main function */
 	main();

@@ -90,20 +90,13 @@
  * See http://www.freertos.org/a00110.html.
  *----------------------------------------------------------*/
 
+#include <stdbool.h>
 #include <stdint.h>
-#if 0  // WHG
-extern uint32_t SystemCoreClock;
-#else  // WHG
-
-/* WHG definitions for Arduino */
-#define INCLUDE_uxTaskGetStackHighWaterMark 1
-#define INCLUDE_xTaskGetIdleTaskHandle 1
-#define configENABLE_BACKWARD_COMPATIBILITY 0
-#endif  // WHG
+#include "K_thread_config.h"
 
 #define configUSE_PREEMPTION			1
 #if 1  // WHG
-#define configUSE_IDLE_HOOK				1
+#define configUSE_IDLE_HOOK				0
 #define configUSE_TICK_HOOK				0
 #define configCPU_CLOCK_HZ				( F_CPU )
 #else  // WHG
@@ -112,10 +105,10 @@ extern uint32_t SystemCoreClock;
 #define configCPU_CLOCK_HZ				( SystemCoreClock )
 #endif  // WHG
 #define configTICK_RATE_HZ				( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES			( 6 )
+#define configMAX_PRIORITIES			( PRIO_NB )
 #define configMINIMAL_STACK_SIZE		( ( unsigned short ) 70 )
-#define configTOTAL_HEAP_SIZE			( ( size_t ) ( 0 ) )  // WHG uses type 3 heap
-#define configMAX_TASK_NAME_LEN			( 10 )
+#define configTOTAL_HEAP_SIZE			( ( size_t ) ( 40000 ) )  // WHG uses type 3 heap
+#define configMAX_TASK_NAME_LEN			( 8+1 ) //+1 for the \0
 #define configUSE_TRACE_FACILITY		1  //required for vTaskList
 #define configUSE_16_BIT_TICKS			0
 #define configIDLE_SHOULD_YIELD			1
@@ -144,14 +137,16 @@ extern uint32_t SystemCoreClock;
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
-#define INCLUDE_vTaskPrioritySet		1
-#define INCLUDE_uxTaskPriorityGet		1
-#define INCLUDE_vTaskDelete				1
-#define INCLUDE_vTaskCleanUpResources	1
+#define INCLUDE_vTaskPrioritySet		0
+#define INCLUDE_uxTaskPriorityGet		0
+#define INCLUDE_vTaskDelete				0
+#define INCLUDE_vTaskCleanUpResources	0
 #define INCLUDE_vTaskSuspend			1
 #define INCLUDE_vTaskDelayUntil			1
 #define INCLUDE_vTaskDelay				1
-#define INCLUDE_eTaskGetState			1
+#define INCLUDE_eTaskGetState			0
+#define INCLUDE_xTaskGetIdleTaskHandle  1 //ARD : required to drive the "CPU consuption" LED
+#define INCLUDE_pcTaskGetTaskName       1 //ARD : required to log
 #define INCLUDE_xTimerPendFunctionCall	0
 
 /* Cortex-M specific definitions. */
@@ -181,16 +176,8 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
-// WHG
-// FreeRTOS default configASSERT
-//#define configASSERT( x ) if( ( x ) == 0 ) { taskDISABLE_INTERRUPTS(); for( ;; ); }
-
-void assertBlink();
-#define configASSERT( x ) if( ( x ) == 0 )  assertBlink()
-
-//void assertMsg(const char*, int);
-//#define configASSERT( x ) if( ( x ) == 0 ) assertMsg(__FILE__,__LINE__)
-//////////////////////WHG/////////////////////////////
+extern void ardAssertImpl(bool condition, char const* file, unsigned int line, char const* text);
+#define configASSERT( x ) ardAssertImpl(x, __FILE__,__LINE__, "")
 
 //------------------------------------------------------------------------------
 
