@@ -8,10 +8,7 @@
 #ifndef ROBOTS_LOGTHREAD_H_
 #define ROBOTS_LOGTHREAD_H_
 
-#include "ArdUtils.h"
 #include "ArdOs.h"
-#include "BSP.h"
-#include "Types.pb.h"
 
 namespace ard
 {
@@ -20,6 +17,7 @@ namespace ard
     {
         TimeMs date;
         eLogLevel level;
+        String component;
         String text;
     };
 
@@ -37,7 +35,6 @@ namespace ard
         //returns true if the channel is ready to log, false if it can't log.
         //when it's false, any call to log is silently ignored
         virtual bool isReady() const = 0;
-
     };
 
     //Write a log on an SD Card
@@ -46,10 +43,9 @@ namespace ard
     public:
         virtual ~SdCardLogger() = default;
 
-        //Implements ILogChannel : open the SD card file
-        //setup the SDcard driver and open the log file
+        //The setup the SDcard driver and the log file opening
         //shall not be done in the init section (...) because it relies on millis() calls to check timeout which only works when the OS is started.
-        virtual void init();
+        virtual void connect();
 
         //Implements ILogChannel : write the log on the SD card
         virtual void log(LogMsg const & log) override;
@@ -68,10 +64,10 @@ namespace ard
         String formatLogMsg(LogMsg const& msg);
     };
 
-//alias to get ArdOs singleton instance
-#define LOG_DEBUG(msg) LogThread::getInstance().log(eLogLevel_DEBUG,msg)
-#define LOG_INFO(msg) LogThread::getInstance().log(eLogLevel_INFO,msg)
-#define LOG_ERROR(msg) LogThread::getInstance().log(eLogLevel_ERROR,msg)
+    //alias to get ArdOs singleton instance
+    #define LOG_DEBUG(msg) LogThread::getInstance().log(eLogLevel_DEBUG,msg)
+    #define LOG_INFO(msg) LogThread::getInstance().log(eLogLevel_INFO,msg)
+    #define LOG_ERROR(msg) LogThread::getInstance().log(eLogLevel_ERROR,msg)
 
 
     /**
@@ -89,30 +85,27 @@ namespace ard
      *  - file is closed regurlarly to prevent filesystem corruption.
      *
      */
-    class LogThread: public IThread
+    class LogThread: public Thread, public ILogger
     {
     public:
         virtual ~LogThread() = default;
 
         //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
-        static LogThread&
-        getInstance()
+        static LogThread& getInstance()
         {
             return instance;
         }
         ;
 
-        //Implements IThreads : Create threads, configures the serial line and open the file
-        void
-        init() override;
+        //TODO a supprimer quand RemoteControl sera mappe
+        //Override Thread : Create semaphore
+        void init() override;
 
-        //Implements IThreads : unpile the fifo
-        void
-        run() override;
+        //Implements Thread : unpile the fifo
+        void run() override;
 
-        //push a log to the RAM buffer, the log will only be effective when the LogThread will have read the buffer
-        void
-        log(eLogLevel logLevel, String const& log);
+        //Implements ILogger : publish the log to all existing logChannels
+        void log(eLogLevel logLevel, String const& log) override;
 
         //attach a new com logger
         void setComLogger(ILogChannel* channel)
@@ -136,7 +129,7 @@ namespace ard
         static LogThread instance;
 
         // count of data records in fifo
-        Semaphore semDataPresent;
+        SemaphoreHandle_t semDataPresent;
 
         // ensure only one log is pile at a time
         Mutex mutex;

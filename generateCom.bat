@@ -1,3 +1,6 @@
+REM you may uncomment this to desactivate proto generation, it may speed up the build
+REM exit 0
+
 @echo off
 echo ------------- generating com --------------------------
 
@@ -40,7 +43,7 @@ for /F %%i in ('dir /B/D %MSG_PATH%\*.proto') do (
 	
 	REM If the file is Types.proto, a special treatment is operated as the generation goes elsewhere
 	if [%%i] == [Types.proto] (
-		call %PROTOC% --nanopb_out=%ARD_PATH%\robot\Common\1_RSP --python_out=%PYTHON_OUT_PATH% -I %ARD_PATH%\devenv\nanopb-0.3.7-windows-x86\generator\proto --proto_path=%MSG_PATH% %MSG_PATH%\%%i
+		call %PROTOC% --nanopb_out=%ARD_PATH%\robot\Common\1_RSP\core --python_out=%PYTHON_OUT_PATH% -I %ARD_PATH%\devenv\nanopb-0.3.7-windows-x86\generator\proto --proto_path=%MSG_PATH% %MSG_PATH%\%%i
 	) else (
 		call %PROTOC% --nanopb_out=%C_OUT_PATH% --python_out=%PYTHON_OUT_PATH% -I %ARD_PATH%\devenv\nanopb-0.3.7-windows-x86\generator\proto --proto_path=%MSG_PATH% %MSG_PATH%\%%i
 	)

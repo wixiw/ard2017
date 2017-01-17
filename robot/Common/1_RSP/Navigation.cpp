@@ -6,44 +6,38 @@
 
 using namespace ard;
 
-Navigation::Navigation()
-        :
-                m_pose(),
-                m_state(eNavState::IDLE),
-                m_target(),
-                m_sensTarget(eDir_UNDEFINED),
-                m_order(eNavOrder::NOTHING),
-                m_angleToTarget(0),
-                m_distanceToTarget(0),
-                stepperG(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
-                stepperD(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
-                omronFrontLeft(OMRON1, 50, 50),
-                omronFrontRight(OMRON2, 50, 50),
-                omronRearLeft(OMRON3, 50, 50),
-                omronRearRight(OMRON4, 50, 50),
-                m_color(eColor_PREF),
-                m_speed(SPEED_MAX),
-                m_speed_virage(SPEED_MAX_VIR),
-                m_mutex(NULL),
-                m_targetReached(NULL),
-                oldStepG(0),
-                oldStepD(0)
+Navigation::Navigation():
+    Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
+    m_pose(),
+    m_state(eNavState::IDLE),
+    m_target(),
+    m_sensTarget(eDir_UNDEFINED),
+    m_order(eNavOrder::NOTHING),
+    m_angleToTarget(0),
+    m_distanceToTarget(0),
+    stepperG(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
+    stepperD(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
+    omronFrontLeft(OMRON1, 50, 50),
+    omronFrontRight(OMRON2, 50, 50),
+    omronRearLeft(OMRON3, 50, 50),
+    omronRearRight(OMRON4, 50, 50),
+    m_color(eColor_PREF),
+    m_speed(SPEED_MAX),
+    m_speed_virage(SPEED_MAX_VIR),
+    m_mutex(),
+    m_targetReached(),
+    oldStepG(0),
+    oldStepD(0)
 {
-}
-
-/**---------------------------------
- * Container thread interface
- ---------------------------------*/
-
-void Navigation::init()
-{
-    m_mutex = g_ArdOs.Mutex_create();
-    m_targetReached = g_ArdOs.Signal_create();
     stepperG.setAcceleration(ACC_MAX);
     stepperD.setAcceleration(ACC_MAX);
 }
 
-void Navigation::update(TimeMs sinceLastCall)
+/**---------------------------------
+ * Thread interface
+ ---------------------------------*/
+
+void Navigation::run()
 {
     static auto lastState = m_state;
     if (m_state != lastState)
@@ -53,7 +47,7 @@ void Navigation::update(TimeMs sinceLastCall)
     }
 
     //Take a mutex to prevent localisation and target to be changed during a cycle
-    g_ArdOs.Mutex_lock(m_mutex);
+    m_mutex.lock();
 
     switch (m_state)
     {
@@ -128,7 +122,7 @@ void Navigation::update(TimeMs sinceLastCall)
             m_angleToTarget = 0;
             m_state = eNavState::IDLE;
             m_order = eNavOrder::NOTHING;
-            g_ArdOs.Signal_set(m_targetReached);
+            m_targetReached.set();
             LOG_INFO("NAV : order finished.");
         }
         break;
@@ -145,7 +139,7 @@ void Navigation::update(TimeMs sinceLastCall)
     }
     }
 
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
 }
 
 void Navigation::updateFromInterrupt()
@@ -171,55 +165,55 @@ void Navigation::setPosition(PointCap newPose)
 
 void Navigation::goTo(Point target, eDir sens)
 {
-    g_ArdOs.Mutex_lock(m_mutex);
+    m_mutex.lock();
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
-        g_ArdOs.Mutex_unlock(m_mutex);
+        m_mutex.unlock();
         wait ();
-        g_ArdOs.Mutex_lock(m_mutex);
+        m_mutex.lock();
     }
 
     m_order = eNavOrder::GOTO;
     m_target = target.toAmbiPose (m_color);
     m_sensTarget = sens;
 
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
 }
 
 void Navigation::goToCap(PointCap target, eDir sens)
 {
-    g_ArdOs.Mutex_lock(m_mutex);
+    m_mutex.lock();
 
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
-        g_ArdOs.Mutex_unlock(m_mutex);
+        m_mutex.unlock();
         wait ();
-        g_ArdOs.Mutex_lock(m_mutex);
+        m_mutex.lock();
     }
 
     m_order = eNavOrder::GOTO_CAP;
     m_target = target.toAmbiPose (m_color);
     m_sensTarget = sens;
 
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
 }
 
 void Navigation::goForward(float distanceMm)
 {
-    ardAssert(false, "not implemented");
-    g_ArdOs.Mutex_lock(m_mutex);
+    ASSERT_TEXT(false, "not implemented");
+    m_mutex.lock();
 
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
-        g_ArdOs.Mutex_unlock(m_mutex);
+        m_mutex.unlock();
         wait();
-        g_ArdOs.Mutex_lock(m_mutex);
+        m_mutex.lock();
     }
 
     //TODO
@@ -227,21 +221,21 @@ void Navigation::goForward(float distanceMm)
 //  m_target = target.toAmbiPose(m_color);
 //  m_sensTarget = sens;
 
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
 }
 
 void Navigation::turnTo(float angle)
 {
-    ardAssert(false, "not implemented");
-    g_ArdOs.Mutex_lock(m_mutex);
+    ASSERT_TEXT(false, "not implemented");
+    m_mutex.lock();
 
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
-        g_ArdOs.Mutex_unlock(m_mutex);
+        m_mutex.unlock();
         wait();
-        g_ArdOs.Mutex_lock(m_mutex);
+        m_mutex.lock();
     }
 
     //TODO
@@ -249,21 +243,21 @@ void Navigation::turnTo(float angle)
 //  m_target = target.toAmbiPose(m_color);
 //  m_sensTarget = sens;
 
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
 }
 
 void Navigation::faceTo(Point p)
 {
-    ardAssert(false, "not implemented");
-    g_ArdOs.Mutex_lock(m_mutex);
+    ASSERT_TEXT(false, "not implemented");
+    m_mutex.lock();
 
     //If an order is present, wait
     if (m_state != eNavState::IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
-        g_ArdOs.Mutex_unlock(m_mutex);
+        m_mutex.unlock();
         wait();
-        g_ArdOs.Mutex_lock(m_mutex);
+        m_mutex.lock();
     }
 
     //TODO
@@ -271,13 +265,13 @@ void Navigation::faceTo(Point p)
 //  m_target = target.toAmbiPose(m_color);
 //  m_sensTarget = sens;
 
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
 }
 
-void Navigation::stop()
+void Navigation::stopMoving()
 {
     LOG_INFO("NAV : stop requested");
-    g_ArdOs.Mutex_lock(m_mutex);
+    m_mutex.lock();
 
     //prevent any interrupt from occurring between any configuration of a left/right motor
     //TODO portDISABLE_INTERRUPTS();
@@ -289,20 +283,20 @@ void Navigation::stop()
     m_state = eNavState::STOPPING;
     m_order = Navigation::eNavOrder::NOTHING;
 
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
 }
 
 void Navigation::wait()
 {
     //obviously don't put a mutex, it's a blocking call ... !
-    g_ArdOs.Signal_wait(m_targetReached);
+    m_targetReached.wait();
 }
 
 bool Navigation::targetReached()
 {
-    g_ArdOs.Mutex_lock(m_mutex);
+    m_mutex.lock();
     bool res = m_state == eNavState::IDLE;
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
     return res;
 }
 
@@ -312,10 +306,10 @@ bool Navigation::targetReached()
 
 void Navigation::setColor(eColor c)
 {
-    ardAssert(c != eColor_UNKNOWN, "NAV : color should not be set to undefined.");
-    g_ArdOs.Mutex_lock(m_mutex);
+    ASSERT_TEXT(c != eColor_UNKNOWN, "NAV : color should not be set to undefined.");
+    m_mutex.lock();
     m_color = c;
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
 }
 
 void Navigation::setSpeed(float s)
@@ -339,7 +333,7 @@ void Navigation::setSpeed(float s)
 
 void Navigation::setSpeedVir(float s)
 {
-    g_ArdOs.Mutex_lock(m_mutex);
+    m_mutex.lock();
     if (s > 0)
     {
         m_speed_virage = s;
@@ -348,7 +342,7 @@ void Navigation::setSpeedVir(float s)
     {
         m_speed_virage = SPEED_MAX_VIR;
     }
-    g_ArdOs.Mutex_unlock(m_mutex);
+    m_mutex.unlock();
 }
 
 /**---------------------------------

@@ -74,7 +74,7 @@ class ArdHdlc(QObject):
     # @return bool : True if message sent successfully
     def sendMsg(self, msg):
         assert self._connected
-        # TODO sequence id is not used yet, as Teleop doesn't require any robustness, 
+        # TODO sequence id is not used yet, as RemoteControl doesn't require any robustness, 
         # in order to use this com with a robot to robot com, it'll be required
         frame = yahdlc.frame_data(msg, yahdlc.FRAME_DATA, self.sendSedNumber)
         #---DEBUG---- print("HLDC frame : 0x[%s]" % frame.hex())
@@ -105,7 +105,8 @@ class ArdHdlc(QObject):
                 # Try to decode the data recevied from the serial line
         try:
             data, type, seq_no = yahdlc.get_data(self.recvBuffer)
-            
+            #---DEBUG--- 
+            print("hdlc type=" + str(type) + " seq=" + str(seq_no) + " frame=[" + str(data) + "]") 
         
         #the message is not complete, wait next data to retry to parse the buffer, it's a normal condition (and a bad yahdlc python binding design ...)
         except yahdlc.MessageError:

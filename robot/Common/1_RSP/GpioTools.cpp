@@ -13,8 +13,8 @@ uint8_t fio_manager_nbIo = 0;
 
 void fio_manager_registerIn(FilteredInput* io)
 {
-    ardAssert(NULL != io, "fio_manager_registerIn received a null pointer");
-    ardAssert(fio_manager_nbIo < FIO_MANAGER_MAX_IO, "fio_manager is full, can't add a new pin");
+    ASSERT_TEXT(NULL != io, "fio_manager_registerIn received a null pointer");
+    ASSERT_TEXT(fio_manager_nbIo < FIO_MANAGER_MAX_IO, "fio_manager is full, can't add a new pin");
     fio_manager_table[fio_manager_nbIo++] = io;
 }
 
@@ -51,8 +51,7 @@ FilteredInput::getEvent(eGpioEdge edge)
     switch (edge)
     {
     default:
-        ardAssert(false, "FilteredInput::getEvent : unexpected value.")
-        ;
+        ASSERT_TEXT(false, "FilteredInput::getEvent : unexpected value.");
         break;
 
     case ANY_EDGE:
@@ -68,7 +67,7 @@ FilteredInput::getEvent(eGpioEdge edge)
         break;
     }
 
-    ardAssert(false, "FilteredInput::getEvent : unreachable.");
+    ASSERT_TEXT(false, "FilteredInput::getEvent : unreachable.");
     return NULL;
 }
 

@@ -3,39 +3,32 @@
 #define NAVIGATION_H
 
 #include "BSP.h"
-#include "ArdMaths.h"
+#include "ArdOs.h"
+#include "core/ArdMaths.h"
 #include "GpioTools.h"
-#include "Types.pb.h"
+
 
 namespace ard
 {
   /**
-   * This class manage the robot position and movements.
-   * It is expected to be embedded in a periodic thread
-   * Hence, the strategy will access it from another thread
-   * Thus, introducing thread safety issue (so a mutex is present)
+   * This class manage the robot position movements, and avoidance
+   * It is isolated from the rest of the code to prevent something
+   * to block the avoidance/localisation part.
    */
-  class Navigation : public IMiniPeriodicThread
+  class Navigation : public Thread
   {
   public:
     Navigation ();
 
     /**---------------------------------
-     * Container thread interface
+     * Thread interface
      ---------------------------------*/
 
-    //Implements IMiniThread
-    void
-    init() override;
-
-    //Implements IMiniThread : method to be called by the container thread
-    //                         it's expected to be called periodically
-    void
-    update (TimeMs sinceLastCall) override;
+    //Implements Thread
+    void run() override;
 
     //As the motor lib needs to be called
-    void
-    updateFromInterrupt();
+    void updateFromInterrupt();
 
     /**---------------------------------
      * User (= strategy) interface
@@ -132,7 +125,7 @@ namespace ard
      * Stops the robot. It interrupts current order.
      */
     void 
-    stop();
+    stopMoving();
 
     /**
      * This is a blocking call until the current order is finished

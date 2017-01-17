@@ -1,7 +1,5 @@
-#include <Arduino.h>
-#include "LogThread.h"
 #include "ColorSensor.h"
-#include "BSP.h"
+#include "LogThread.h"
 
 using namespace ard;
 
@@ -30,11 +28,6 @@ ColorSensor::ColorSensor()
 }
 
 ColorSensor::~ColorSensor()
-{
-}
-
-void
-ColorSensor::init()
 {
 }
 

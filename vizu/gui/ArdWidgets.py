@@ -92,7 +92,7 @@ class DirectionInput(QComboBox):
         self.lineEdit().setReadOnly(True)
         self.lineEdit().setAlignment(Qt.AlignHCenter)
         
-        #@return int : return the numeric value of the field (or 0==Undefined if not set)
+    #@return int : return the numeric value of the field (or 0==Undefined if not set)
     def getValue(self):
         return self.currentData()
     

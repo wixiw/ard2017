@@ -8,20 +8,23 @@
 #ifndef ROBOTS_RSP_H_
 #define ROBOTS_RSP_H_
 
-#include "pb.h"
-#include "pb_decode.h"
-#include "pb_encode.h"
-#include "K_thread_config.h"
+#include "com/ComInterfaces.h"
+#include "com/ComOnUart.h"
+#include "serialization/pb.h"
+#include "serialization/pb_decode.h"
+#include "serialization/pb_encode.h"
+
+#include "core/ArdFramework.h"
+#include "core/ArdMaths.h"
+#include "core/Types.pb.h"
+
 #include "ArdOs.h"
-#include "ArdMaths.h"
-#include "ArdUtils.h"
 #include "ColorSensor.h"
-#include "fcs16.h"
 #include "GpioTools.h"
 #include "HmiThread.h"
 #include "LogThread.h"
 #include "Navigation.h"
-#include "Types.pb.h"
-#include "yahdlc.h"
+
+#include "K_thread_config.h"
 
 #endif /* ROBOTS_RSP_H_ */

@@ -22,6 +22,8 @@
 #ifndef Stream_h
 #define Stream_h
 
+#ifdef __cplusplus
+
 #include <inttypes.h>
 #include "Print.h"
 
@@ -127,4 +129,6 @@ class Stream : public Print
 };
 
 #undef NO_IGNORE_CHAR
-#endif
+
+#endif //C++
+#endif //header protection

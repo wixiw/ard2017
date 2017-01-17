@@ -371,18 +371,6 @@ void __libc_init_array(void);
 
 void init( void )
 {
-  SystemInit();
-
-  // Set Systick to 1ms interval, common to all SAM3 variants
-  if (SysTick_Config(SystemCoreClock / 1000))
-  {
-    // Capture error
-    while (true);
-  }
-
-  // Initialize C library
-  __libc_init_array();
-
   // Disable pull-up on every pin
   for (unsigned i = 0; i < PINS_COUNT; i++)
 	  digitalWrite(i, LOW);

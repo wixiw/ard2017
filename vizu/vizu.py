@@ -24,7 +24,7 @@ class ConnectScreen(QWidget):
         self.move(300, 300)
         self.setWindowTitle('8=> Vizu')  
         
-        self.teleop = Teleop()
+        self.teleop = RemoteControl()
         
         self.tab = dict()
         self.tab["Com"]   = TabCom(self.teleop)

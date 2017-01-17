@@ -8,77 +8,209 @@
 #ifndef ROBOTS_ARDOS_H_
 #define ROBOTS_ARDOS_H_
 
-#include <stdint.h>
 #include "BSP.h"
-
-#include "ArdUtils.h"
+#include "core/ArdFramework.h"
 #include "K_thread_config.h"
-
-
-//WARNING : ardAssert shal NOT be using inside an interrutpion, use configASSERT instead
-#ifdef ARD_DEBUG
-#define ardAssert(x,text) if( ( x ) == 0 ){g_ArdOs.dprintln(String("  *ASSERT* : ") + text); delay(1000); configASSERT(x);}
-#else
-#define ardAssert(x,text) configASSERT(x)
-#endif
-
-//Callback called when entering the idle task
-void
-enterIdleCB();
-//Callback called when exiting the idle task
-void
-exitIdleCB();
 
 namespace ard
 {
-
-    typedef uint32_t TimeMs;
-    typedef uint32_t DelayMs;
-
+    //-------------------------------------------------------------------------------
+    //                      OsObject
     //-------------------------------------------------------------------------------
 
     /**
-     * Use this interface to declare you are a thread class
+     * Abstract class to gather all objets represeting an OS concept
+     * Usefull to get statistics and ensure OS lifecycle is correct
      */
-    class IThread
+    class OsObject: public ArdObject
     {
     public:
-        virtual void
-        init() = 0;
+        OsObject(String const& name = String::empty);
 
-        virtual void
-        run() = 0;
+        //will assert, it is forbidden to destroy an OS object
+        virtual ~OsObject();
 
-        //Put thread in sleep mode during delay ms.
-        void sleepMs(DelayMs delay)
+        //Implements ArdObject : creates the thread OS object
+        virtual void init() override;
+
+        //static getter for statistics
+        static uint8_t getCount()
         {
-            vTaskDelay(delay);
+            return objectCount;
         }
 
-        virtual ~IThread()
+        //Test if object is executed from interrupt mode true if code is called from interrupt
+        static bool interruptContext()
         {
+            return (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) != 0 ;
         }
-        ;
+
+    private:
+        //count how many object of that type has been initialized
+        //note that uninitialized object are not considered as they are not used
+        static uint8_t objectCount;
     };
+
+    //-------------------------------------------------------------------------------
+    //                      Thread
+    //-------------------------------------------------------------------------------
 
     /**
-     * Use IMiniThread when you aggregate several components in one periodic thread
+     * Inherit this abstract in order to create a Thread
+     * from a C++ class.
+     *
+     * Note that the thread is automatically waiting on a start signal you have to provide
+     * with start();
      */
-    class IMiniPeriodicThread
+    class Thread: public OsObject
     {
+        friend void Thread_genericRun(void* pvParameters);
+
     public:
-        virtual void
-        init() = 0;
-
-        virtual void
-        update(TimeMs sinceLastCall) = 0;
-
-        virtual ~IMiniPeriodicThread()
+        //struct to gather parameters to pass to ArdOs_genericRun
+        class ThreadParams
         {
+        public:
+
+            bool            used;
+            TaskHandle_t    handle;
+            Thread*         object;
+            StackSize       stackSize;
+            DelayMs         period;
+
+            ThreadParams():
+                used(false),
+                handle(NULL),
+                object(NULL),
+                stackSize(0),
+                period(0){}
+        };
+
+        /**
+         * @param name : a name for debug/introspection purposes, length is limited by configMAX_TASK_NAME_LEN
+         * @param priority : the Thread priority, it shall not be equal to another existing one, the lowest value, the lowest priority
+         * @param stackSize : the stack length in WORDS (not bytes), hence 100 = 400o
+         * @param period (optional) : the period at which run() is called. run is called once is not defined or set to 0
+         */
+        Thread(String const& name,
+                ThreadPriority priority,
+                StackSize stackSize,
+                DelayMs period=0);
+
+        //Implements ArdObject : creates the thread OS object
+        virtual void init() override;
+
+        //Start the thread
+        virtual void startThread();
+
+        //Stop the thread
+        virtual void stopThread();
+
+        //Implement this function as the Thread main function
+        virtual void run() = 0;
+
+        //We may optionally connect a logger to all threads
+        static void setLogger(ILogger* newLogger);
+
+        //getter
+        StackSize getStackSize() const;
+
+        //getter
+        DelayMs getPeriod() const;
+
+        //inline getter
+        ThreadPriority const& getPriority() const
+        {
+            return priority;
         }
-        ;
+
+        //Implements ILogger interface
+        void logFromThread(eLogLevel lvl, String const& text);
+
+        //Start triggering gpio for oscilloscope analysis
+        //It generates a PWM with high state being the computation time
+        //@param pin : Arduino pin ID
+        void activateDebug(uint8_t pin)
+        {
+            debugPin = pin;
+        }
+
+    protected:
+        //Put thread in sleep mode during delay ms.
+        void sleepMs(DelayMs delay);
+
+        //Call this in your run() function to trigger the debug gpios : signals the start of the period
+        //inlined to prevent stack pile overflow
+        void debugTrace_beginLoop()
+        {
+            if(debugPin)
+            {
+                digitalWrite(debugPin, HIGH);
+            }
+        }
+
+        //Call this in your run() function to trigger the debug gpios : signals the end of the periods
+        //inlined to prevent stack pile overflow
+        void debugTrace_endLoop()
+        {
+            if(debugPin)
+            {
+                digitalWrite(debugPin, HIGH);
+            }
+        }
+
+    private:    
+        //see constructor
+        ThreadPriority priority;
+
+        //The pin on which to send debug signals
+        uint8_t debugPin;
+
+        //the one that can log for us
+        static ILogger* logger;
     };
 
+    //-------------------------------------------------------------------------------
+    //                     Poller Thread
+    //-------------------------------------------------------------------------------
+
+    /**
+     * Use a PolledObject when you need be updated periodically
+     * without having enougth to do to justify a periodic thread creation
+     */
+    class PolledObject: public ArdObject
+    {
+    public:
+        //polling event
+        virtual void update(TimeMs sinceLastCall) = 0;
+    };
+
+    class PollerThread: public Thread
+    {
+    public:
+        PollerThread(String const& name,
+                ThreadPriority priority,
+                StackSize stackSize,
+                DelayMs period,
+                uint8_t nbPolledObjects);
+
+        //Overrides Thread : initialize all polled objects
+        void init() override;
+
+        //Implements Threads : run all actuator systems and sensors
+        void run () override;
+
+        //Add a polled object the list, shall be called before calling init()
+        void addPolledObject(PolledObject& object );
+
+    private:
+        PolledObject** polledObjects;
+        uint8_t nextRank;
+        uint8_t nbMaxObjects;
+    };
+
+    //-------------------------------------------------------------------------------
+    //                      SwTimer
     //-------------------------------------------------------------------------------
 
     /**
@@ -86,7 +218,7 @@ namespace ard
      * It's a passive class, based on system clock memorisation
      * The comparaison is done when isFired() is called
      */
-    class SwTimer
+    class SwTimer: public OsObject
     {
     public:
         SwTimer();
@@ -109,225 +241,152 @@ namespace ard
         bool m_started;
     };
 
-    //-------------------------------------------------------------------------------
-    //alias to get ArdOs singleton instance
-#define g_ArdOs ArdOs::getInstance()
 
-    //FreeRtos is usgin the same type for all the following concepts, so we redefine them :
-    typedef SemaphoreHandle_t Signal;
-    typedef SemaphoreHandle_t Semaphore;
-    typedef SemaphoreHandle_t Mutex;
+    //-------------------------------------------------------------------------------
+    //                      Mutex
+    //-------------------------------------------------------------------------------
 
     /**
-     * Manage all threads and scheduler so that :
-     * - all created threads are referenced so that statistics are available
-     * - provide an heartbeat system on led RX (pin 72) : lowest priority task increment a counter and toggle the led,
-     *   highest priority task checks the counter is incremented
-     * This class is NOT thread safe, so you are supposed to access it in only one thread
-     * Its static class (=static singleton).
+     * Use Mutex to protect shared memories in multi threaded environnements.
+     * Do not use this for thread synchronization, prefer a Signal for that use.
+     * Do not use from interrupt context, it's a no-sense, prefer a critical section for that
+     */
+    class Mutex: public OsObject
+    {
+    public:
+        Mutex();
+
+        //Implements ArdObject : creates the OS object
+        void init() override;
+
+        //Wait for Mutex to be free, and get exclusivity
+        //lock may by exited sooner if a timeout is set
+        //using a 0 value is equivalent to a "tryLock()"
+        void lock(DelayMs timeout = portMAX_DELAY);
+
+        //Release Mutex exclusivity
+        void unlock();
+
+    private:
+        SemaphoreHandle_t osHandler;
+
+    };
+
+    //-------------------------------------------------------------------------------
+    //                      Signal
+    //-------------------------------------------------------------------------------
+    /**
+     * Use Signal to syncronize threads in multi threaded environnements.
+     * Do not use this for memory protection, prefer a Mutex for that use.
+     */
+    class Signal: public OsObject
+    {
+    public:
+        Signal();
+
+        //Implements ArdObject : creates the OS object
+        void init() override;
+
+        //Wait for the Signal to bet set()
+        //or that the timeout elasped
+        //using a 0 value is equivalent to a "tryLock()"
+        void wait(DelayMs timeout = portMAX_DELAY);
+
+        //Send the signal so that a wait()'ing thread is unblocked.
+        //If several thread are waiting, the next set will only awake one waiter
+        void set();
+
+    private:
+        SemaphoreHandle_t osHandler;
+    };
+
+
+    //-------------------------------------------------------------------------------
+    //                      Queue
+    //-------------------------------------------------------------------------------
+    /**
+     * Use a queue to send date to a thread
+     * Do not use to synchronize thread, prefer a Signal.
+     * In fact it's the opposite a queue is often used to
+     * decouple 2 thread timings constraints.
+     */
+    class Queue: public OsObject
+    {
+    public:
+        Queue();
+
+        //Implements ArdObject : creates the OS object
+        void init() override;
+
+        //Push an object into the queue
+        //this call may be blocking if no room is available
+        //the call will not block more than timeout
+        //using a 0 value is equivalent to a "tryLock()"
+        void push(DelayMs timeout = portMAX_DELAY);
+
+        //using a 0 value is equivalent to a "tryLock()"
+        void pop(DelayMs timeout = portMAX_DELAY);
+
+    private:
+        QueueHandle_t osHandler;
+    };
+
+//-------------------------------------------------------------------------------
+//                      ArdOs
+//-------------------------------------------------------------------------------
+
+    /**
+     * Manage instanciation of OS Objects
+     * This class is not thread safe, initialization is supposed to
+     * be executed from one unique thread
+     * It's a pure static class
      */
     class ArdOs
     {
     public:
-        typedef void
-        (*ThreadRunFct)(void);
-
-        //struct to gather parameters to pass to ArdOs_genericRun
-        typedef struct
-        {
-            IThread* pClass;
-            ThreadRunFct method;
-            uint16_t period;
-        } genericRunParams;
-
         typedef enum class eOsState
         {
-            UNINIT, RUNNING
+            INITIALIZING, READY, RUNNING
         } eOsState;
 
-        //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
-        static ArdOs&
-        getInstance()
-        {
-            return instance;
-        }
-        ;
+        //initialize all OS objects
+        static void init();
 
-        //to be called before any action on this class
-        //start the scheduler, call this after having build your application object instances
-        void
-        init();
+        //enable interrupts and start the scheduler, init() must have been called once before
+        //this function never returns in normal conditions
+        static void start();
+
+        //Stop all threads and disable interrupts
+        static void stop();
+
+        //add a new OS object to the list
+        static void registerObject(OsObject* object);
+
+        //Makes the calling thread to sleep for a while
+        static void sleepMs(DelayMs delay);
 
         //Get the OS initialization state
-        eOsState
-        getState() const;
+        static eOsState getState()
+        {
+            return state;
+        }
 
-        //boot duration accessor
-        DelayMs getBootDuration() const{return bootDuration;};
-
-        //Debug only : send statistics to the debug serial link
-        void
-        displayStats();
-
-        //Send a message on the STOUT serial link.
-        //This is a very simple interface that should not be used in a complete system
-        //As a log feature should replace this. As the log feature requires the ArdOs to be set
-        //The ArdOs cannot use the Log system to log (egg and chicken issue), so we introduced this function
-        //As soon as ArdOs is working, do not use this.
-        void
-        dprintln(String s);
-
-        //Make the calling thread sleeping for a duration
-        void
-        sleep_ms(uint16_t durationMs);
-
-        //wait indefinitely on a signal that will never be set
-        void
-        die();
-
-        /** ------------------
-         *  THREADS
-         * --------------------- */
-
-        //Do not call this function before OS is initialized
-        //Create a new thread pointing on a function (C style)
-        void
-        createThread_C(const char * const name, ThreadRunFct runFunction, uint16_t stack, uint16_t priority);
-
-        //Do not call this function before OS is initialized
-        //Create a new thread pointing on a class method (C++ style)
-        void
-        createThread_Cpp(const char * const name, IThread& pClass, uint16_t stack, uint16_t priority);
-
-        //Do not call this function before OS is initialized
-        //Create a new thread pointing on a class method (C++ style)
-        //The run method will be called periodically
-        void
-        createPeriodicThread_Cpp(const char * const name, IThread& pClass, uint16_t stack, uint16_t priority, uint16_t periodMs);
-
-        /** ------------------
-         *  SIGNAL
-         * --------------------- */
-
-        //Create a Signal instance, and update statistics
-        Signal
-        Signal_create();
-
-        //Signal to the signal listener that he can awake
-        //Don't put a fucking NULL pointer, it's not checked
-        //Only available when ArdOs is running (else it assets)
-        void
-        Signal_set(Signal s);
-        void
-
-        //Same as Signal_set, but from an intteruption context
-        Signal_setFromIsr(Signal s);
-
-        //Wait until the signal is set. Usually only one thread
-        //should wait at a time. Note that if several wait are called
-        //in a raw, the next set will only awake one waiter
-        //Don't put a fucking NULL pointer, it's not checked
-        //Only available when ArdOs is running (else it assets)
-        void
-        Signal_wait(Signal s);
-
-        /** ------------------
-         *  MUTEX
-         * --------------------- */
-
-        //Create a Mutex instance, and update statistics it should be used to
-        //protect shared memories. Do not use this for thread
-        //synchronization, prefer a Signal for that use.
-        Mutex
-        Mutex_create();
-
-        //Take a critical section.
-        //Only available when ArdOs is running (else it assets)
-        //Don't put a fucking NULL pointer, it's not checked
-        void
-        Mutex_lock(Mutex m);
-
-        //Release a critical section. It should be used to
-        //protect shared memories. Do not use this for thread
-        //synchronization, prefer a Signal for that use.
-        //Only available when ArdOs is running (else it assets)
-        //Don't put a fucking NULL pointer, it's not checked
-        void
-        Mutex_unlock(Mutex m);
-
-        /** ------------------
-         *  SEMAPHORE
-         * --------------------- */
-
-        //Create a Semaphore instance, register it for statistics
-        //@param maxCount : maximal number of items in the semaphore
-        //@param initCount : number of items "gived" to the semaphore at initialization
-        Semaphore
-        Semaphore_create(const UBaseType_t maxCount, const UBaseType_t initCount);
-
-        //Put a new resource in the semaphore
-        //Only available when ArdOs is running (else it assets)
-        void
-        Semaphore_give(Semaphore s);
-
-        //Get a new resource in the semaphore
-        //Only available when ArdOs is running (else it assets)
-        void
-        Semaphore_take(Semaphore s);
-
-        //Try to get new resource in the semaphore, don't block on failure
-        //@return true when taken, false when semaphore is empty
-        //Only available when ArdOs is running (else it assets)
-        bool
-        Semaphore_tryTake(Semaphore s);
-
-        //This is a public property to set on the serial line to be use to send debug text data
-        //Let it to NULL in order to disable debug texts
-        Stream* STDOUT;
-
-        //The pin on which hearbeat is generated, is may be use for oscilloscop check of idle task execution
-        int HEARTBEAT_PIN;
+        //Maximal number of Objects that can be registerObject()'ed
+        static const uint8_t MAX_OBJECT_NB = 20;
 
     private:
-
-        //singleton instance
-        static ArdOs instance;
-
-        //table of all threads handlers
-        TaskHandle_t threads[configMAX_PRIORITIES];
-
-        //statistic counter for signals
-        uint16_t signalCount;
-
-        //statistic counter for mutex
-        uint16_t mutexCount;
-
-        //table of all params (because they have to be static)
-        genericRunParams params[configMAX_PRIORITIES];
-
-        //next rank in the table
-        uint8_t nextThreadRank;
-
-        //strictly incrementing counter
-        uint32_t heartbeatCounter;
-
-        //last value sent to the heartbeat LED;
-        int8_t heartbeatPinValue;
-
-        eOsState state;
-
-        //Date of boot (ie time at which the scheduler is started)
-        DelayMs bootDuration;
-
-        //mutex to protect the debug serial link
-        Mutex debugSerialMutex;
+        static eOsState state;
+        static uint8_t objectCount;
 
         //private constructor as its a singleton class
-        ArdOs();COPY_CONSTRUCTORS (ArdOs)
-        ;
+        ArdOs();
+        COPY_CONSTRUCTORS (ArdOs)
     };
 
-    //-------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
+//                      Events
+//-------------------------------------------------------------------------------
+
     //forward declare as event classes are (on purpose) very coupled
     class IEvent;
     template<int nbListeners> class Event;
@@ -336,33 +395,33 @@ namespace ard
     class IEventListener
     {
     public:
-        virtual ~IEventListener() = default;
+        virtual ~IEventListener();
 
     private:
         //private + friend classes to prevent user from using it accidentally
         friend class IEvent;
         template<int nbListeners> friend class Event;
-        virtual void privateSend(IEvent* publisher);
-        virtual void privateSendFromISR(IEvent* publisher);
+        virtual void privateSend(IEvent* publisher) = 0;
+        virtual void privateSendFromISR(IEvent* publisher) = 0;
     };
 
-    //Interface used to absract the template parameter
+    //Interface used to abstract the template parameter
     class IEvent
     {
     public:
-        virtual ~IEvent() = default;
+        virtual ~IEvent();
 
         //to be called by the class who wants to publish the event from a thread
-        virtual void publish();
+        virtual void publish() = 0;
 
         //to be called by the class who wants to publish the event from an interrupt
-        virtual void publishFromISR();
+        virtual void publishFromISR() = 0;
 
         //register to the publication
-        virtual void subscribe(IEventListener* listener);
+        virtual void subscribe(IEventListener* listener) = 0;
 
         //unregister to the publication
-        virtual void unsubscribe(IEventListener* listener);
+        virtual void unsubscribe(IEventListener* listener) = 0;
     };
 
     /**
@@ -417,28 +476,28 @@ namespace ard
 
         //implements IEvent
         void publish() override
-        {
+                {
             for (int i = 0; i < nbListeners; ++i)
             {
-                if(listeners[i] != NULL)
+                if (listeners[i] != NULL)
                     listeners[i]->privateSend(this);
             }
-        }
+                }
 
         //implements IEvent
         void publishFromISR() override
-        {
+                {
             for (int i = 0; i < nbListeners; ++i)
             {
-                if(listeners[i] != NULL)
+                if (listeners[i] != NULL)
                     listeners[i]->privateSendFromISR(this);
             }
-        }
+                }
 
         //implements IEvent
         void subscribe(IEventListener* listener) override
-        {
-            ardAssert(listener, "Event::subscribe : listener should not be NULL.");
+                {
+            ASSERT_TEXT(listener, "Event::subscribe : listener should not be NULL.");
             for (int i = 0; i < nbListeners; ++i)
             {
                 if (listeners[i] == NULL)
@@ -447,13 +506,13 @@ namespace ard
                     return;
                 }
             }
-            ardAssert(false, "Event::subscribe : no more room to register a listener");
-        }
+            ASSERT_TEXT(false, "Event::subscribe : no more room to register a listener");
+                }
 
         //implements IEvent
         void unsubscribe(IEventListener* listener) override
-        {
-            ardAssert(listener, "Event::unsubscribe : listener should not be NULL.");
+                {
+            ASSERT_TEXT(listener, "Event::unsubscribe : listener should not be NULL.");
             for (int i = 0; i < nbListeners; ++i)
             {
                 if (listeners[i] == listener)
@@ -462,8 +521,8 @@ namespace ard
                     return;
                 }
             }
-            ardAssert(false, "Event::unsubscribe : listener is not in the list");
-        }
+            ASSERT_TEXT(false, "Event::unsubscribe : listener is not in the list");
+                }
 
     private:
         //list of active event subscribers
