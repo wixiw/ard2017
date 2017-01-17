@@ -191,36 +191,35 @@ void RemoteControl::handleMsg(char const * msg, size_t msgLength)
 
 void RemoteControl::getOsStats(apb_RemoteControlRequest const & request)
 {
-    char text[40];
-    char* pcWriteBuffer = text;
+    LOG_INFO("------------ ArdOs Stats  ---------------");
+    LOG_INFO("|   Thread   |  Free stack (in words)   |");
+    LOG_INFO("-----------------------------------------");
 
-    LOG_INFO("------- ArdOs Stats  -------");
-    LOG_INFO("|   Thread   |  Free stack |");
-    LOG_INFO("----------------------------");
+    Thread::ThreadParams const* threads = Thread::getThreadParams();
 
-    TaskStatus_t pxTaskStatusArray[PRIO_MAX];
-    UBaseType_t uxArraySize = PRIO_MAX;
-    uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
+    LOG_INFO(String("  Idle\t")
+            + uxTaskGetStackHighWaterMark(xTaskGetIdleTaskHandle())
+            + "/" + configMINIMAL_STACK_SIZE);
 
     /* Create a human readable table from the binary data. */
-    for( UBaseType_t x = 0; x < uxArraySize; x++ )
+    for( int i = 1; i < PRIO_NB; i++ )
     {
-        /* Write the task name to the string, padding with spaces so it
-        can be printed in tabular form more easily. */
-        pcWriteBuffer[0] = ' ';
-        pcWriteBuffer[1] = ' ';
-        pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer+2, pxTaskStatusArray[ x ].pcTaskName );
-
-        /* Write the rest of the string. */
-        sprintf( pcWriteBuffer, "\t%u", ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark);
-        pcWriteBuffer = text;
-
-        LOG_INFO(String(text));
+        if(threads[i].handle != NULL)
+        {
+            LOG_INFO(String("  ") + pcTaskGetTaskName(threads[i].handle)
+                    + "\t" + uxTaskGetStackHighWaterMark(threads[i].handle)
+                    + "/" + threads[i].stackSize);
+        }
     }
 
-    LOG_INFO("-----------------------------------------------");
-    LOG_INFO(String("  Free heap size : ") + xPortGetFreeHeapSize() + "o");
-    LOG_INFO("-----------------------------------------------");
+    LOG_INFO("-----------------------------------------");
+    LOG_INFO(String("  Free heap    : ") + (100*xPortGetFreeHeapSize())/configTOTAL_HEAP_SIZE + "% (" + xPortGetFreeHeapSize() + "o / " + configTOTAL_HEAP_SIZE + "o)");
+    LOG_INFO(String("  Nb mutexes   : ") + Mutex::getCount());
+    LOG_INFO(String("  Nb signals   : ") + Signal::getCount());
+    LOG_INFO(String("  Nb queues    : ") + Queue::getCount());
+    LOG_INFO(String("  Nb threads   : ") + Thread::getCount());
+    LOG_INFO(String("  Nb SW Timers : ") + SwTimer::getCount());
+    LOG_INFO("-----------------------------------------");
 
 }
 

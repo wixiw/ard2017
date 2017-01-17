@@ -25,19 +25,10 @@ class TabLog(QWidget):
         self.text_logs.centerOnScroll()
         self.text_logs.setMaximumBlockCount(200);
         self.text_logs.setReadOnly(True)
-        
-#         p = QPalette()
-#         p.setColor(QPalette.Base, Qt.black)
-#         p.setColor(QPalette.Text, Qt.green)
-#         self.text_logs.setPalette(p)
-
+        self.setFont("Courier", 10)
+            
         self.btn_reset = QPushButton('Reset logs', self)
         self.btn_reset.clicked.connect(self.text_logs.clear)
-
-#         self.combo_level  = QComboBox(self);
-#         self.combo_level.addItem("No level")
-#         self.combo_level.addItem("Short")
-#         self.combo_level.addItem("Explicit")
 
         self.chk_time   = QCheckBox("time", self)
         self.chk_time.stateChanged.connect(self.timeCfg)
@@ -48,6 +39,12 @@ class TabLog(QWidget):
         self.chk_level.stateChanged.connect(self.levelCfg)
         self.chk_level.setCheckState(Qt.Checked)
         
+        self.combo_level = QComboBox(self)
+        self.combo_level.addItem("Debug",  Types_pb2.DEBUG)
+        self.combo_level.addItem("Info",   Types_pb2.INFO)
+        self.combo_level.addItem("Error",  Types_pb2.ERROR)
+        self.combo_level.addItem("Assert", Types_pb2.ASSERT)
+        
         self.chk_cpt    = QCheckBox("component", self)
         self.chk_cpt.stateChanged.connect(self.componentCfg)
         self.chk_cpt.setCheckState(Qt.Checked)
@@ -56,6 +53,7 @@ class TabLog(QWidget):
         layoutFilters = QHBoxLayout()
         layoutFilters.addWidget(self.chk_time)
         layoutFilters.addWidget(self.chk_level)
+        layoutFilters.addWidget(self.combo_level)
         layoutFilters.addWidget(self.chk_cpt)
         layoutFilters.addWidget(self.btn_reset)
         layout.addLayout(layoutFilters)
@@ -103,7 +101,12 @@ class TabLog(QWidget):
 
     @pyqtSlot(RemoteControl_pb2.Log)
     def log(self, logMsg):
+        #do not log under a certain level
+        if logMsg.level < self.combo_level.currentData():
+            return
+        
         header = str()
+        
         #time
         if self.time == Qt.Checked:
             header+= str(logMsg.date).zfill(5) + " "
@@ -116,7 +119,26 @@ class TabLog(QWidget):
         if self.component == Qt.Checked:
             header+= "[" + logMsg.component.rjust(8) + "] "
             
+        #color log and append log
         self.appendLog(header + logMsg.text)
+    
+    #changes the theme of the log viewer
+    #@param Qt.Color : the color of the text
+    #@param Qt.Color : the color of the background
+    def setTheme(self, fontColor, backgroundColor = Qt.white):
+        p= QPalette()
+        p.setColor(QPalette.Base, backgroundColor)
+        p.setColor(QPalette.Text, fontColor)
+        self.text_logs.setPalette(p)
+
+    #change the log viewer font
+    #@param str : the font name
+    #@param int : the font size 
+    def setFont(self, name, size):
+        f = self.text_logs.document().defaultFont()
+        f.setPointSize(10)
+        f.setFamily("Courier New")
+        self.text_logs.document().setDefaultFont(f)
         
 if __name__ == '__main__':
     import sys

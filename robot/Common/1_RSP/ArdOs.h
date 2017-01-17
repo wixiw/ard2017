@@ -30,25 +30,11 @@ namespace ard
         //will assert, it is forbidden to destroy an OS object
         virtual ~OsObject();
 
-        //Implements ArdObject : creates the thread OS object
-        virtual void init() override;
-
-        //static getter for statistics
-        static uint8_t getCount()
-        {
-            return objectCount;
-        }
-
         //Test if object is executed from interrupt mode true if code is called from interrupt
         static bool interruptContext()
         {
             return (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) != 0 ;
         }
-
-    private:
-        //count how many object of that type has been initialized
-        //note that uninitialized object are not considered as they are not used
-        static uint8_t objectCount;
     };
 
     //-------------------------------------------------------------------------------
@@ -112,6 +98,17 @@ namespace ard
         //We may optionally connect a logger to all threads
         static void setLogger(ILogger* newLogger);
 
+        //Implements ILogger interface
+        void logFromThread(eLogLevel lvl, String const& text);
+
+        //Start triggering gpio for oscilloscope analysis
+        //It generates a PWM with high state being the computation time
+        //@param pin : Arduino pin ID
+        void activateDebug(uint8_t pin)
+        {
+            debugPin = pin;
+        }
+
         //getter
         StackSize getStackSize() const;
 
@@ -124,16 +121,14 @@ namespace ard
             return priority;
         }
 
-        //Implements ILogger interface
-        void logFromThread(eLogLevel lvl, String const& text);
-
-        //Start triggering gpio for oscilloscope analysis
-        //It generates a PWM with high state being the computation time
-        //@param pin : Arduino pin ID
-        void activateDebug(uint8_t pin)
+        //static getter for statistics
+        static uint8_t getCount() //const : no-const on a static member
         {
-            debugPin = pin;
+            return objectCount;
         }
+
+        //@return: a table of Thread::ThreadParams[PRIO_NB] containing all threads data
+        static Thread::ThreadParams const * getThreadParams();
 
     protected:
         //Put thread in sleep mode during delay ms.
@@ -141,7 +136,7 @@ namespace ard
 
         //Call this in your run() function to trigger the debug gpios : signals the start of the period
         //inlined to prevent stack pile overflow
-        void debugTrace_beginLoop()
+        void debugTrace_beginLoop() const
         {
             if(debugPin)
             {
@@ -151,7 +146,7 @@ namespace ard
 
         //Call this in your run() function to trigger the debug gpios : signals the end of the periods
         //inlined to prevent stack pile overflow
-        void debugTrace_endLoop()
+        void debugTrace_endLoop() const
         {
             if(debugPin)
             {
@@ -168,6 +163,10 @@ namespace ard
 
         //the one that can log for us
         static ILogger* logger;
+
+        //count how many object of that type has been initialized
+        //note that uninitialized object are not considered as they are not used
+        static uint8_t objectCount;
     };
 
     //-------------------------------------------------------------------------------
@@ -235,10 +234,20 @@ namespace ard
         bool
         isFired() const;
 
+        //static getter for statistics
+        static uint8_t getCount() //const : no-const on a static member
+        {
+            return objectCount;
+        }
+
     private:
         TimeMs m_entryDate;
         DelayMs m_delay;
         bool m_started;
+
+        //count how many object of that type has been initialized
+        //note that uninitialized object are not considered as they are not used
+        static uint8_t objectCount;
     };
 
 
@@ -267,8 +276,18 @@ namespace ard
         //Release Mutex exclusivity
         void unlock();
 
+        //static getter for statistics
+        static uint8_t getCount() //const : no-const on a static member
+        {
+            return objectCount;
+        }
+
     private:
         SemaphoreHandle_t osHandler;
+
+        //count how many object of that type has been initialized
+        //note that uninitialized object are not considered as they are not used
+        static uint8_t objectCount;
 
     };
 
@@ -296,8 +315,18 @@ namespace ard
         //If several thread are waiting, the next set will only awake one waiter
         void set();
 
+        //static getter for statistics
+        static uint8_t getCount() //const : no-const on a static member
+        {
+            return objectCount;
+        }
+
     private:
         SemaphoreHandle_t osHandler;
+
+        //count how many object of that type has been initialized
+        //note that uninitialized object are not considered as they are not used
+        static uint8_t objectCount;
     };
 
 
@@ -327,8 +356,18 @@ namespace ard
         //using a 0 value is equivalent to a "tryLock()"
         void pop(DelayMs timeout = portMAX_DELAY);
 
+        //static getter for statistics
+        static uint8_t getCount() //const : no-const on a static member
+        {
+            return objectCount;
+        }
+
     private:
         QueueHandle_t osHandler;
+
+        //count how many object of that type has been initialized
+        //note that uninitialized object are not considered as they are not used
+        static uint8_t objectCount;
     };
 
 //-------------------------------------------------------------------------------
