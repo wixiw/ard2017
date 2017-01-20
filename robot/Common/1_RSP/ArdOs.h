@@ -122,7 +122,7 @@ namespace ard
         }
 
         //static getter for statistics
-        static uint8_t getCount() //const : no-const on a static member
+        static uint8_t getOsObjectCount() //const : no-const on a static member
         {
             return objectCount;
         }
@@ -235,7 +235,7 @@ namespace ard
         isFired() const;
 
         //static getter for statistics
-        static uint8_t getCount() //const : no-const on a static member
+        static uint8_t getOsObjectCount() //const : no-const on a static member
         {
             return objectCount;
         }
@@ -277,7 +277,7 @@ namespace ard
         void unlock();
 
         //static getter for statistics
-        static uint8_t getCount() //const : no-const on a static member
+        static uint8_t getOsObjectCount() //const : no-const on a static member
         {
             return objectCount;
         }
@@ -316,7 +316,7 @@ namespace ard
         void set();
 
         //static getter for statistics
-        static uint8_t getCount() //const : no-const on a static member
+        static uint8_t getOsObjectCount() //const : no-const on a static member
         {
             return objectCount;
         }
@@ -342,7 +342,11 @@ namespace ard
     class Queue: public OsObject
     {
     public:
-        Queue();
+        /**
+         * @param nbItems : the maximal number of items that can wait in the queue
+         * @param itemSize : the size of the biggest object to put in the queue
+         */
+        Queue(uint8_t nbItems, size_t itemSize);
 
         //Implements ArdObject : creates the OS object
         void init() override;
@@ -351,19 +355,35 @@ namespace ard
         //this call may be blocking if no room is available
         //the call will not block more than timeout
         //using a 0 value is equivalent to a "tryLock()"
-        void push(DelayMs timeout = portMAX_DELAY);
+        //@return false if the queue is full, true on success
+        bool push(void* queuedObject, DelayMs timeout = portMAX_DELAY);
 
         //using a 0 value is equivalent to a "tryLock()"
-        void pop(DelayMs timeout = portMAX_DELAY);
+        //@return false if the queue is empty, true on success
+        bool pop(void* unqueuedObject, DelayMs timeout = portMAX_DELAY);
+
+        //Return the number of objects in the queue
+        uint8_t getAvailableSpace();
+
+        //For statistics : the maximal number of items it has been in the queue.
+        uint8_t getMinAvailSpace()
+        {
+            return queueMinAvailSpace;
+        }
 
         //static getter for statistics
-        static uint8_t getCount() //const : no-const on a static member
+        static uint8_t getOsObjectCount() //const : no-const on a static member
         {
             return objectCount;
         }
 
     private:
         QueueHandle_t osHandler;
+        uint8_t nbItems;
+        size_t itemSize;
+
+        //For statistics : the minimal number of free slot during queue life.
+        uint8_t queueMinAvailSpace;
 
         //count how many object of that type has been initialized
         //note that uninitialized object are not considered as they are not used
@@ -383,7 +403,7 @@ namespace ard
     class ArdOs
     {
     public:
-        typedef enum class eOsState
+        typedef enum eOsState
         {
             INITIALIZING, READY, RUNNING
         } eOsState;

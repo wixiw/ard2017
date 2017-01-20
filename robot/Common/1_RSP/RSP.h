@@ -16,15 +16,17 @@
 
 #include "core/ArdFramework.h"
 #include "core/ArdMaths.h"
-#include "core/Types.pb.h"
+
+#include "Types.pb.h"
+#include "CommonMsg.pb.h"
 
 #include "ArdOs.h"
 #include "ColorSensor.h"
 #include "GpioTools.h"
 #include "HmiThread.h"
-#include "LogThread.h"
 #include "Navigation.h"
 
 #include "K_thread_config.h"
+#include "Log.h"
 
 #endif /* ROBOTS_RSP_H_ */

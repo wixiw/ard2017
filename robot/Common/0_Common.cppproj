@@ -296,10 +296,11 @@
             <Value>../0_BSP/ArduinoCore</Value>
             <Value>../0_BSP</Value>
             <Value>../0_BSP/Drivers</Value>
-            <Value>..</Value>
+            <Value>../generated</Value>
             <Value>../1_RSP</Value>
             <Value>../1_RSP/serialization</Value>
             <Value>../1_RSP/core</Value>
+            <Value>..</Value>
           </ListValues>
         </armgcc.compiler.directories.IncludePaths>
         <armgcc.compiler.optimization.level>Optimize for size (-Os)</armgcc.compiler.optimization.level>
@@ -333,13 +334,13 @@
             <Value>../0_BSP/ArduinoCore</Value>
             <Value>../0_BSP</Value>
             <Value>../0_BSP/Drivers</Value>
-            <Value>..</Value>
+            <Value>../generated</Value>
             <Value>../1_RSP</Value>
             <Value>../1_RSP/serialization</Value>
             <Value>../1_RSP/core</Value>
+            <Value>..</Value>
           </ListValues>
         </armgcccpp.compiler.directories.IncludePaths>
-        <armgcccpp.compiler.optimization.level>Optimize (-O1)</armgcccpp.compiler.optimization.level>
         <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>
         <armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>
         <armgcccpp.compiler.optimization.DebugLevel>Maximum (-g3)</armgcccpp.compiler.optimization.DebugLevel>
@@ -366,7 +367,7 @@
     </ToolchainSettings>
     <OutputFileName>libARD</OutputFileName>
     <OutputFileExtension>.a</OutputFileExtension>
-    <PreBuildEvent>$(SolutionDir)..\generateCom.bat $(SolutionDir)..\ on</PreBuildEvent>
+    <PreBuildEvent>REM $(SolutionDir)..\generateCom.bat $(SolutionDir)..\ on</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="0_BSP\ArduinoCore\abi.cpp">
@@ -1206,12 +1207,6 @@
     <Compile Include="1_RSP\core\ArdMaths.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\core\Types.pb.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\core\Types.pb.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="1_RSP\GpioTools.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1224,10 +1219,10 @@
     <Compile Include="1_RSP\HmiThread.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\LogThread.cpp">
+    <Compile Include="1_RSP\Log.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\LogThread.h">
+    <Compile Include="1_RSP\Log.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\Navigation.cpp">
@@ -1272,18 +1267,6 @@
     <Compile Include="2_AL\actuators\ActuatorX.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\proto\CommonMsg.pb.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\proto\CommonMsg.pb.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\proto\RemoteControl.pb.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\proto\RemoteControl.pb.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\RemoteControl.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1312,6 +1295,24 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\strategies\TestStrategies.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\CommonMsg.pb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\CommonMsg.pb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\RemoteControl.pb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\RemoteControl.pb.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\Types.pb.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\Types.pb.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="K_constants.h">
@@ -1355,8 +1356,8 @@
     <Folder Include="1_RSP\serialization" />
     <Folder Include="2_AL" />
     <Folder Include="2_AL\actuators\" />
-    <Folder Include="2_AL\proto\" />
     <Folder Include="2_AL\strategies\" />
+    <Folder Include="generated\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="0_BSP\ArduinoCore\linker_scripts\flash.ld">

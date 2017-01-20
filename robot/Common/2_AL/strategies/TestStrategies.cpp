@@ -93,24 +93,28 @@ ard::Strategy_OmronTest ()
 {
 	LOG_INFO("STRAT : Strategy_OmronTest.");
 
+	apb_NavState nav;
+
 	while (1)
 	{
-		if (ROBOT.nav.getOmronState_FL ())
+	    nav = ROBOT.nav.getState();
+
+		if (nav.omronFL)
 		ROBOT.setLed(LED1, eLedState::ON);
 		else
 		ROBOT.setLed(LED1, eLedState::OFF);
 
-		if (ROBOT.nav.getOmronState_FR ())
+		if (nav.omronFR)
 		ROBOT.setLed(LED2, eLedState::ON);
 		else
 		ROBOT.setLed(LED2, eLedState::OFF);
 
-		if (ROBOT.nav.getOmronState_RL ())
+		if (nav.omronRL)
 		ROBOT.setLed(LED3, eLedState::ON);
 		else
 		ROBOT.setLed(LED3, eLedState::OFF);
 
-		if (ROBOT.nav.getOmronState_RR ())
+		if (nav.omronRR)
 		ROBOT.setLed(LED4, eLedState::ON);
 		else
 		ROBOT.setLed(LED4, eLedState::OFF);

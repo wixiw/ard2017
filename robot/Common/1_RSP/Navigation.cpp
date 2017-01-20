@@ -1,18 +1,18 @@
 #include <Arduino.h>
-#include "LogThread.h"
 #include "Navigation.h"
 #include "K_constants.h"
 #include "BSP.h"
+#include "Log.h"
 
 using namespace ard;
 
 Navigation::Navigation():
     Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
     m_pose(),
-    m_state(eNavState::IDLE),
+    m_state(eNavState_IDLE),
     m_target(),
     m_sensTarget(eDir_UNDEFINED),
-    m_order(eNavOrder::NOTHING),
+    m_order(eNavOrder_NOTHING),
     m_angleToTarget(0),
     m_distanceToTarget(0),
     stepperG(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
@@ -52,31 +52,31 @@ void Navigation::run()
     switch (m_state)
     {
     default:
-    case eNavState::IDLE:
+    case eNavState_IDLE:
     {
         switch (m_order)
         {
         default:
-        case eNavOrder::NOTHING:
+        case eNavOrder_NOTHING:
         {
             break;
         }
 
-        case eNavOrder::GOTO:
-        case eNavOrder::GOTO_CAP:
+        case eNavOrder_GOTO:
+        case eNavOrder_GOTO_CAP:
         {
             LOG_INFO(
                     "NAV : new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget)
                             + ".");
             turn(m_angleToTarget);
-            m_state = eNavState::FACING_DEST;
+            m_state = eNavState_FACING_DEST;
             break;
         }
         }
         break;
     }
 
-    case eNavState::FACING_DEST:
+    case eNavState_FACING_DEST:
     {
         if (subOrderFinished())
         {
@@ -86,18 +86,18 @@ void Navigation::run()
 
             //Change state
             m_angleToTarget = 0;
-            m_state = eNavState::GOING_TO_TARGET;
+            m_state = eNavState_GOING_TO_TARGET;
             LOG_DEBUG("NAV : facing destination, beginning line.");
         }
         break;
     }
 
-    case eNavState::GOING_TO_TARGET:
+    case eNavState_GOING_TO_TARGET:
     {
         if (subOrderFinished())
         {
             //Request rotation to final heading
-            if (m_order == eNavOrder::GOTO_CAP)
+            if (m_order == eNavOrder_GOTO_CAP)
             {
                 if (m_target.h - m_pose.h < -M_PI)
                     m_angleToTarget = m_target.h - m_pose.h + 2 * M_PI;
@@ -110,29 +110,29 @@ void Navigation::run()
 
             //Change state
             m_distanceToTarget = 0;
-            m_state = eNavState::TURNING_AT_TARGET;
+            m_state = eNavState_TURNING_AT_TARGET;
         }
         break;
     }
 
-    case eNavState::TURNING_AT_TARGET:
+    case eNavState_TURNING_AT_TARGET:
     {
         if (subOrderFinished())
         {
             m_angleToTarget = 0;
-            m_state = eNavState::IDLE;
-            m_order = eNavOrder::NOTHING;
+            m_state = eNavState_IDLE;
+            m_order = eNavOrder_NOTHING;
             m_targetReached.set();
             LOG_INFO("NAV : order finished.");
         }
         break;
     }
 
-    case eNavState::STOPPING:
+    case eNavState_STOPPING:
     {
         if (subOrderFinished())
         {
-            m_state = eNavState::IDLE;
+            m_state = eNavState_IDLE;
             LOG_INFO("NAV : stopped.");
         }
         break;
@@ -167,7 +167,7 @@ void Navigation::goTo(Point target, eDir sens)
 {
     m_mutex.lock();
     //If an order is present, wait
-    if (m_state != eNavState::IDLE)
+    if (m_state != eNavState_IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
         m_mutex.unlock();
@@ -175,7 +175,7 @@ void Navigation::goTo(Point target, eDir sens)
         m_mutex.lock();
     }
 
-    m_order = eNavOrder::GOTO;
+    m_order = eNavOrder_GOTO;
     m_target = target.toAmbiPose (m_color);
     m_sensTarget = sens;
 
@@ -187,7 +187,7 @@ void Navigation::goToCap(PointCap target, eDir sens)
     m_mutex.lock();
 
     //If an order is present, wait
-    if (m_state != eNavState::IDLE)
+    if (m_state != eNavState_IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
         m_mutex.unlock();
@@ -195,7 +195,7 @@ void Navigation::goToCap(PointCap target, eDir sens)
         m_mutex.lock();
     }
 
-    m_order = eNavOrder::GOTO_CAP;
+    m_order = eNavOrder_GOTO_CAP;
     m_target = target.toAmbiPose (m_color);
     m_sensTarget = sens;
 
@@ -208,7 +208,7 @@ void Navigation::goForward(float distanceMm)
     m_mutex.lock();
 
     //If an order is present, wait
-    if (m_state != eNavState::IDLE)
+    if (m_state != eNavState_IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
         m_mutex.unlock();
@@ -230,7 +230,7 @@ void Navigation::turnTo(float angle)
     m_mutex.lock();
 
     //If an order is present, wait
-    if (m_state != eNavState::IDLE)
+    if (m_state != eNavState_IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
         m_mutex.unlock();
@@ -252,7 +252,7 @@ void Navigation::faceTo(Point p)
     m_mutex.lock();
 
     //If an order is present, wait
-    if (m_state != eNavState::IDLE)
+    if (m_state != eNavState_IDLE)
     {
         LOG_INFO("NAV : new order pending until current order is finished");
         m_mutex.unlock();
@@ -280,8 +280,8 @@ void Navigation::stopMoving()
     //TODO portENABLE_INTERRUPTS();
 
     //The state is directly changed to interrupting
-    m_state = eNavState::STOPPING;
-    m_order = Navigation::eNavOrder::NOTHING;
+    m_state = eNavState_STOPPING;
+    m_order = eNavOrder_NOTHING;
 
     m_mutex.unlock();
 }
@@ -295,7 +295,7 @@ void Navigation::wait()
 bool Navigation::targetReached()
 {
     m_mutex.lock();
-    bool res = m_state == eNavState::IDLE;
+    bool res = m_state == eNavState_IDLE;
     m_mutex.unlock();
     return res;
 }
@@ -344,6 +344,26 @@ void Navigation::setSpeedVir(float s)
     }
     m_mutex.unlock();
 }
+
+/**---------------------------------
+ * Publish state
+ ---------------------------------*/
+apb_NavState Navigation::getState() const
+{
+    apb_NavState state = apb_NavState_init_default;
+
+    state.state = m_state;
+    state.order = m_order;
+    state.pos = m_pose.getProto();
+
+    state.omronFL = omronFrontLeft.readRaw();
+    state.omronFR = omronFrontRight.readRaw();
+    state.omronRL = omronRearLeft.readRaw();
+    state.omronRR = omronRearRight.readRaw();
+
+    return state;
+}
+
 
 /**---------------------------------
  * Private functions
@@ -396,7 +416,7 @@ void Navigation::turn(float angle)
 void Navigation::interruptCurrentMove()
 {
     LOG_INFO("NAV : current order is interrupted.");
-    m_state = eNavState::STOPPING;
+    m_state = eNavState_STOPPING;
     //prevent any interrupt from occurring between any configuration of a left/right motor
     //TODO portDISABLE_INTERRUPTS();
     stepperG.stop();
@@ -432,9 +452,9 @@ String Navigation::orderToString(eNavOrder order)
     switch (order)
     {
     default:
-    ENUM2STR(eNavOrder::NOTHING)
-;        ENUM2STR(eNavOrder::GOTO);
-        ENUM2STR(eNavOrder::GOTO_CAP);
+    ENUM2STR(eNavOrder_NOTHING)
+;        ENUM2STR(eNavOrder_GOTO);
+        ENUM2STR(eNavOrder_GOTO_CAP);
     }
 }
 
@@ -443,10 +463,10 @@ String Navigation::stateToString(eNavState state)
     switch (state)
     {
     default:
-    ENUM2STR(eNavState::IDLE)
-;        ENUM2STR(eNavState::FACING_DEST);
-        ENUM2STR(eNavState::GOING_TO_TARGET);
-        ENUM2STR(eNavState::TURNING_AT_TARGET);
-        ENUM2STR(eNavState::STOPPING);
+    ENUM2STR(eNavState_IDLE)
+;        ENUM2STR(eNavState_FACING_DEST);
+        ENUM2STR(eNavState_GOING_TO_TARGET);
+        ENUM2STR(eNavState_TURNING_AT_TARGET);
+        ENUM2STR(eNavState_STOPPING);
     }
 }

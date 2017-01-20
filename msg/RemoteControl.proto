@@ -32,11 +32,11 @@ message Log {
 }
 
 //feedback on Robot low level states
-message RSPState
+message Telemetry
 {
-	required eNavState 		navState 			= 10; //current motion state
-	required eNavOrder		navOrder			= 11; //current motion order
-	required PointCap		position			= 12; //robot position
+	required uint32			date				= 1;
+	required NavState 		nav 				= 2;
+	required ActuatorsState actuators			= 3;
 }
 
 //----------------------------------------------------------------------
@@ -51,6 +51,8 @@ message RemoteControlRequest
 	{
 		//messages from 0 to 99 are general purpose messages
 		EmptyMsg 			getOsStats 			= 1;
+		EmptyMsg 			getOsStatsLogs		= 2;
+		EmptyMsg 			getTelemetry		= 3;
 
 		//messages from 100 to 199 are reserved fo strategy
 		ConfigureMatch 		configureMatch 		= 100;
@@ -69,6 +71,6 @@ message RemoteControlResponse
 	{
 		Log					log					= 1;
 		EmptyMsg 			osStats 			= 2;
-		RSPState			rspState			= 200;
+		Telemetry			telemetry			= 200;
 	}
 }

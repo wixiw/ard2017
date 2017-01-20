@@ -17,7 +17,7 @@ class RemoteControl(QObject):
     #-------------------------
     log             = pyqtSignal(RemoteControl_pb2.Log)
     osStats         = pyqtSignal(CommonMsg_pb2.EmptyMsg)
-    rspState        = pyqtSignal(RemoteControl_pb2.RSPState)
+    telemetry       = pyqtSignal(RemoteControl_pb2.Telemetry)
     #-------------------------
     
     def __init__(self):
@@ -55,8 +55,8 @@ class RemoteControl(QObject):
             traceback.print_exc()
         else:
             if response.WhichOneof("type") != None:
-                print("RemoteControl message received:")
-                print(str(response))
+                #--- DEBUG --- print("RemoteControl message received:")
+                #--- DEBUG --- print(str(response))
                 signal = getattr(self, response.WhichOneof("type"))
                 subMsg = getattr(response, response.WhichOneof("type"))
                 signal.emit(subMsg)
@@ -83,6 +83,18 @@ class RemoteControl(QObject):
     def getOsStats(self):
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.getOsStats.SetInParent()
+        self._sendMsg(msg)
+    
+    @pyqtSlot()
+    def getOsStatsLogs(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.getOsStats.SetInParent()
+        self._sendMsg(msg)
+        
+    @pyqtSlot()
+    def getTelemetry(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.getTelemetry.SetInParent()
         self._sendMsg(msg)
     
     @pyqtSlot(int, int)

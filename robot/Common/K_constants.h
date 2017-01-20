@@ -5,6 +5,9 @@
 #define BUILD_REMOTE_CONTROL
 //#define ARD_DEBUG
 
+#define LOG_QUEUE_SIZE 20
+#define LOG_MAX_SIZE 200
+
 #define ENABLE_DETECTION 1
 
 #define GAIN_ANALOG_TENSION_BATTERIE 0.024
@@ -26,5 +29,6 @@
 #define VOIE 104.73
 #define X_AR 34.0
 #define Y_GAUCHE 60.0
+
 
 #endif

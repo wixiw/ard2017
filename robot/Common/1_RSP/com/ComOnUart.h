@@ -17,10 +17,19 @@ namespace ard
      * This class is the Top Level class to use to setup an UART communication with HDLC.
      * It provides threads to handle send/receive commands, and assembles all the communication layers
      */
-    class ComOnUart: public ICom
+    class ComOnUart: public ICom, public ArdObject
     {
     public:
-        ComOnUart(String name);
+        typedef struct{
+            const char msg[MSG_SIZE];
+            size_t length;
+        } MsgBuffer;
+
+        /**
+         * @param : the prefix for Rx and Tx threads name
+         * @param : the length of the queue where log producers pile messages until the TX thread unpiles it
+         */
+        ComOnUart(String const & name, uint8_t recvQueueSize);
         virtual ~ComOnUart() = default;
 
         //Init threads
@@ -39,51 +48,52 @@ namespace ard
         virtual bool isConnected() const override;
 
         //Implements ICom interface :
-        //@param : return false if send queue is full : retry later
-        virtual bool sendMsg(char const * msg, size_t msgLength) override;
+        //@return : return false if send queue is full : retry later
+        virtual bool sendMsg(char const * msg, size_t msgLength) override
+        {
+            return txThread.sendMsg(msg, msgLength);
+        }
 
     private:
         /**
          * This internal class is used to manage the emission thread
          */
-        class Sender //TODO Thread
+        class Sender: public Thread
         {
         public:
-            Sender(ComOnUart& parent);
+            Sender(String const& name, ICom& com, uint8_t recvQueueSize);
             virtual ~Sender() = default;
 
-            //Override Thread : creates the thread
-            void init(); //TODO override;
-
             //Implements Thread : reads the serial inputs
-            void run(); //TODO override;
+            void run() override;
+
+            //@return : return false if send queue is full : retry later
+            bool sendMsg(char const * msg, size_t msgLength);
 
         private:
-            ComOnUart& parent;
-//            QueueHandle_t queue;
-//            StaticQueue_t _queue_private_state;
-//#define QUEUE_LENGTH 3
-//#define QUEUE_ITEM_SIZE 2
-//            uint8_t queueBuffer[QUEUE_LENGTH*QUEUE_ITEM_SIZE];
+            //The com link on which to send data
+            ICom& com;
+
+            //One queue for each parameter, it's important to queue and unqueue in the same order.
+            Queue queueLength;
+            Queue queueMsg;
         };
 
         /**
          * This internal class is used to manage the reception thread
          */
-        class Receiver //TODO Thread
+        class Receiver: public Thread
         {
         public:
-            Receiver(ComOnUart& parent);
+            Receiver(String const& name, ArdHdlc& com);
             virtual ~Receiver() = default;
 
-            //Override Thread : creates the thread
-            void init(); //TODO override;
-
             //Implements Thread : reads the serial inputs
-            void run(); //TODO override;
+            void run() override;
 
         private:
-            ComOnUart& parent;
+            //The com link on which to send data
+            ArdHdlc& com;
         };
 
         String name;

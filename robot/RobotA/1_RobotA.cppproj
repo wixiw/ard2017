@@ -154,6 +154,7 @@
       <Value>../../Common/0_BSP/Drivers</Value>
       <Value>../../Common/1_RSP</Value>
       <Value>../../Common</Value>
+	  <Value>../../Common/generated</Value>
       <Value>../../Common/1_RSP</Value>
       <Value>../../Common/1_RSP/com</Value>
       <Value>../../Common/1_RSP/core</Value>

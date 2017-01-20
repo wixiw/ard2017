@@ -10,7 +10,7 @@
 
 using namespace ard;
 
-#define ASSERT_OS_STARTED ASSERT_TEXT(ArdOs::getState() == ArdOs::eOsState::RUNNING, "OS must be started before using this function.")
+#define ASSERT_OS_STARTED ASSERT_TEXT(ArdOs::getState() == ArdOs::RUNNING, "OS must be started before using this function.")
 
 //-------------------------------------------------------------------------------
 //                      OsObject
@@ -140,6 +140,7 @@ void Thread::setLogger(ILogger* newLogger)
 {
     ASSERT_TEXT( newLogger != NULL, "you tried to configure a NULL logger.");
     ASSERT_TEXT( logger == NULL,    "you tried to configure a logger twice.");
+    logger = newLogger;
 }
 
 void Thread::logFromThread(eLogLevel lvl, String const& text)
@@ -360,9 +361,12 @@ void Signal::set()
 //static member instanciation
 uint8_t Queue::objectCount = 0;
 
-Queue::Queue():
+Queue::Queue(uint8_t nbItems, size_t itemSize):
     OsObject(),
-    osHandler(NULL)
+    osHandler(NULL),
+    nbItems(nbItems),
+    itemSize(itemSize),
+    queueMinAvailSpace(0)
 {
     ASSERT_TEXT(objectCount < 0xFF , "Too many objects of that type.");
     objectCount++;
@@ -371,37 +375,58 @@ Queue::Queue():
 void Queue::init()
 {
     OsObject::init();
-    osHandler = xSemaphoreCreateBinary();
+    osHandler = xQueueCreate(nbItems, itemSize);
 }
 
-void Queue::push(DelayMs timeout)
+bool Queue::push(void* queuedObject, DelayMs timeout)
 {
     ASSERT(isInitialized());
-
     BaseType_t res = pdFALSE;
-    do
-    {
-        ASSERT(false);
-        //TODO
-    }
-    //retry if delay is set to maximum value
-    while(timeout == portMAX_DELAY && res == pdFALSE );
-}
 
-void Queue::pop(DelayMs timeout)
-{
-    ASSERT(isInitialized());
-    if(interruptContext())
+    if( interruptContext() )
     {
-        //TODO
-        ASSERT(false);
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-        xSemaphoreGiveFromISR(osHandler, &xHigherPriorityTaskWoken);
+        res = xQueueSendFromISR(osHandler, queuedObject, &xHigherPriorityTaskWoken);
         //force context switch if a task with higher priority is awoken
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
     else
-        xSemaphoreGive(osHandler);
+    {
+        do
+        {
+            res = xQueueSend(osHandler, queuedObject, timeout);
+        }
+        //retry if delay is set to maximum value
+        while(timeout == portMAX_DELAY && res == pdFALSE );
+    }
+
+    //Update statistics
+    UBaseType_t freeSlots = getAvailableSpace();
+    if( freeSlots < queueMinAvailSpace )
+        queueMinAvailSpace = freeSlots;
+
+    return res == pdTRUE;
+}
+
+bool Queue::pop(void* unqueuedObject, DelayMs timeout)
+{
+    ASSERT(isInitialized());
+    ASSERT_TEXT(!interruptContext(), "A queue pop() shall not be used from ISR");
+
+    BaseType_t res = pdFALSE;
+    do
+    {
+        res = xQueueReceive(osHandler, unqueuedObject, timeout);
+    }
+    //retry if delay is set to maximum value
+    while(timeout == portMAX_DELAY && res == pdFALSE );
+
+    return res == pdTRUE;
+}
+
+uint8_t Queue::getAvailableSpace()
+{
+    return uxQueueSpacesAvailable(osHandler);
 }
 
 //-------------------------------------------------------------------------------

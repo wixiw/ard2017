@@ -25,8 +25,21 @@ void StrategyThread::init()
     EventListener::init<1>();
 }
 
+extern String getExeVersion();
 void StrategyThread::displayIntroduction()
 {
+    #ifdef ARD_DEBUG
+    LOG_INFO(" --- DEBUG --- (see ARD_DEBUG in K_constants.h) ");
+    #else
+    LOG_INFO("Tips : In order to see debug logs, define ARD_DEBUG in ArdOs.h.");
+    #endif
+
+    //Trace binary version to prevent miss build error and usage error during the middle of the night.
+    LOG_INFO("Version libArd : " + ROBOT.getVersion());
+    LOG_INFO(getExeVersion());
+
+    LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
+
     LOG_INFO("Available strategies : ");
     for (int i = 0; i < NB_MAX_STRATEGIES; ++i)
     {
@@ -45,7 +58,7 @@ void StrategyThread::run()
 
     //wait for start insertion or teleop command
     {
-        LOG_INFO("STRAT : Waiting for user to choose strategy/color and to insert start...");
+        LOG_INFO("Waiting for user to choose strategy/color and to insert start...");
         IEvent* evts[] =
         {   evt_startIn, evt_teleopConfigure};
         auto triggeredEvent = waitEvents(evts, 2);
@@ -60,7 +73,7 @@ void StrategyThread::run()
 
     //wait for start withdraw or a teleop command to start the match
     {
-        LOG_INFO("STRAT : Waiting start withdraw to begin the match...");
+        LOG_INFO("Waiting start withdraw to begin the match...");
         IEvent* evts[] =
         {   evt_startOut, evt_teleopStart};
         waitEvents(evts, 2); //returned event is not read as we don't care, result will be the same

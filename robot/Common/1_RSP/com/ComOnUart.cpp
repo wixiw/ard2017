@@ -9,11 +9,11 @@
 
 using namespace ard;
 
-ComOnUart::ComOnUart(String name):
-        name(name),
+ComOnUart::ComOnUart(String const& name, uint8_t recvQueueSize):
+        ArdObject(name),
         dataLink(name, Serial),
-        txThread(*this),
-        rxThread(*this)
+        txThread(name+"Tx", dataLink, recvQueueSize),
+        rxThread(name+"Rx", dataLink)
 {
 }
 
@@ -43,39 +43,45 @@ bool ard::ComOnUart::isConnected() const
     return dataLink.isConnected();
 }
 
-bool ComOnUart::sendMsg(char const * msg, size_t msgLength)
+ComOnUart::Sender::Sender(String const& name, ICom& com, uint8_t recvQueueSize):
+        Thread(name, PRIO_REMOTE_CTRL_TX, STACK_REMOTE_CTRL_TX),
+        com(com),
+        queueLength(recvQueueSize, sizeof(size_t)),
+        queueMsg(recvQueueSize, MSG_SIZE)
 {
-    //TODO : faire une queue de message pour envoyer
-    return dataLink.sendMsg(msg, msgLength);
-}
-
-ComOnUart::Sender::Sender(ComOnUart& _parent)
-    : parent(_parent)
-{
-}
-
-void ComOnUart::Sender::init()
-{
-    //create the thread
-//    g_ArdOs.createThread_Cpp("RemoteControlTx", *this, STACK_TELEOP_TX, PRIO_TELEOP_TX);
-//    queue = xQueueCreateStatic(QUEUE_LENGTH, QUEUE_ITEM_SIZE, queueBuffer, _queue_private_state);
 }
 
 void ComOnUart::Sender::run()
 {
-    //TODO lire la pile d'entree et depiler sur le bus. Attention a bien tester que le driver est dispo
-    //assert (dataLink.sendMsg(msg, msgLength), "Sender::run issue");
+    char sendBuf[MSG_SIZE];
+
+    while(2)
+    {
+        size_t length = 0;
+        queueLength.pop(&length);
+        queueMsg.pop(&sendBuf);
+        ASSERT_TEXT(com.sendMsg(sendBuf, length), "Sender::run issue");
+    }
 }
 
-ComOnUart::Receiver::Receiver(ComOnUart& parent)
-    : parent(parent)
+bool ComOnUart::Sender::sendMsg(char const * msg, size_t msgLength)
 {
+    if( queueLength.push(&msgLength, 0) )
+    {
+        ASSERT(queueMsg.push((void*) msg));
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
 }
 
-void ComOnUart::Receiver::init()
+ComOnUart::Receiver::Receiver(String const& name, ArdHdlc& com):
+        Thread(name, PRIO_REMOTE_CTRL_RX, STACK_REMOTE_CTRL_RX),
+        com(com)
 {
-    //create the thread
-//    g_ArdOs.createThread_Cpp("RemoteControlRx", *this, STACK_TELEOP_RX, PRIO_TELEOP_RX);
 }
 
 void ComOnUart::Receiver::run()
@@ -84,9 +90,9 @@ void ComOnUart::Receiver::run()
     {
         //There are a lot of overflow and performance issues in the following algorithm, but it's a starting point (anyway the Arduino buffer is worse ...)
         //if no bytes is present wait a bit and read again
-        if ( parent.dataLink.feedReadBuffer())
+        if ( com.feedReadBuffer())
         {
-            parent.dataLink.parseBuffer();
+            com.parseBuffer();
             vTaskDelay(10);   
             
         }

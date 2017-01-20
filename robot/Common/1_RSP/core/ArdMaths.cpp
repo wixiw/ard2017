@@ -33,7 +33,7 @@ Point::Point(float _x, float _y)
 }
 ;
 
-Point Point::toAmbiPose(eColor c)
+Point Point::toAmbiPose(eColor c) const
 {
     Point res;
     ASSERT_TEXT(c != eColor_UNKNOWN, "Color should not be undefined");
@@ -50,19 +50,27 @@ Point Point::toAmbiPose(eColor c)
     return res;
 }
 
-float Point::angleTo(Point p)
+float Point::angleTo(Point p) const
 {
     return atan2(p.y - y, p.x - x);
 }
 
-float Point::distanceTo(Point p)
+float Point::distanceTo(Point p) const
 {
     return sqrt((p.y - y) * (p.y - y) + (p.x - x) * (p.x - x));
 }
 
-String Point::toString()
+String Point::toString() const
 {
     return String("(") + x + "mm, " + y + "mm)";
+}
+
+apb_Point Point::getProto() const
+{
+    apb_Point p = apb_Point_init_zero;
+    p.x = x;
+    p.y = y;
+    return p;
 }
 
 PointCap::PointCap()
@@ -83,7 +91,7 @@ PointCap::PointCap(float x, float y, float h)
 }
 ;
 
-PointCap PointCap::toAmbiPose(eColor c)
+PointCap PointCap::toAmbiPose(eColor c) const
 {
     PointCap res = Point::toAmbiPose(c);
     if (c == eColor_SYM)
@@ -93,7 +101,16 @@ PointCap PointCap::toAmbiPose(eColor c)
     return res;
 }
 
-String PointCap::toString()
+String PointCap::toString() const
 {
     return String("(") + x + "mm, " + y + "mm, " + h + "rad), h=" + RAD_TO_DEG*h +"°";
+}
+
+apb_PointCap PointCap::getProto() const
+{
+    apb_PointCap p = apb_PointCap_init_zero;
+    p.x = x;
+    p.y = y;
+    p.h = h;
+    return p;
 }

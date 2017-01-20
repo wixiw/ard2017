@@ -117,7 +117,7 @@ class TabLog(QWidget):
             header+= "[" + self.getLogLvlShortName(logMsg.level) + "] "
         #component
         if self.component == Qt.Checked:
-            header+= "[" + logMsg.component.rjust(8) + "] "
+            header+= "[" + logMsg.component.ljust(8) + "] "
             
         #color log and append log
         self.appendLog(header + logMsg.text)

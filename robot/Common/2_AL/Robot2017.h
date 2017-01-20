@@ -26,7 +26,7 @@ namespace ard
      * Most members are public as this class aims at gathering all object references
      * It would be a pain (and stupid) to catch all them with non-const getter
      */
-    class Robot2017 //: Thread
+    class Robot2017
     {
     public:
         //-------------------------------------------------------------------
@@ -81,10 +81,6 @@ namespace ard
         //This function never ends, you may continue initialization in run()
         void bootOs();
 
-        //Implements Thread : Execute every action the requires to have the OS up (including logging and computing boot duration)
-        //                    It is executed as the lowest priority task
-        void run(); // override;
-
         //Utility function to get version info
         String const& getVersion(){return buildDate;};
 
@@ -98,10 +94,11 @@ namespace ard
     private:
         //RSP implementation
         HmiThread hmi;
-        LogThread& log;
+        LogDispatcher& log;
 #ifdef BUILD_REMOTE_CONTROL
         RemoteControl remoteControl;
 #endif
+        SdCardLogger fileLogger;
         //singleton instance
         static Robot2017* instance;
 

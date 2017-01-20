@@ -102,7 +102,7 @@
 #define configCPU_CLOCK_HZ						F_CPU
 #define configTICK_RATE_HZ						((TickType_t )1000) // ARD : it's quite high but usefull to get log timed properly. in case of high rate interrupts issues we could reduce this
 #define configMAX_PRIORITIES					PRIO_NB //ARD : see K_thread_config.h
-#define configMINIMAL_STACK_SIZE				70U 	//ARD : size of the idle task, take care it's in words, not in bytes : 100 means 400o
+#define configMINIMAL_STACK_SIZE				20U 	//ARD : size of the idle task, take care it's in words, not in bytes : 100 means 400o
 #define configMAX_TASK_NAME_LEN					(8+1) 	//ARD : +1 for the \0
 #define configUSE_TRACE_FACILITY                1 // ARD : required for vTaskList to see stack info
 #define configUSE_STATS_FORMATTING_FUNCTIONS    1 // ARD : required for vTaskList to see stack info
@@ -120,7 +120,7 @@
 #define configNUM_THREAD_LOCAL_STORAGE_POINTERS 0 // ARD : we do not use it
 #define configSUPPORT_STATIC_ALLOCATION         1 // ARD : <3 <3 <3
 #define configSUPPORT_DYNAMIC_ALLOCATION        0 // ARD : all static ! fuck off new()
-#define configTOTAL_HEAP_SIZE					40000U
+#define configTOTAL_HEAP_SIZE					50000U
 #define configGENERATE_RUN_TIME_STATS           0 // ARD : TODO it could be usefull
 #define configUSE_APPLICATION_TASK_TAG          0 // ARD : TODO see what we can do with this, it could help to trace what's happening with context switches
 /* Co-routine definitions : NOT USED*/

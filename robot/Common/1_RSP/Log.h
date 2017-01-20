@@ -1,5 +1,5 @@
 /*
- * LogThread.h
+ * Log.h
  *
  *  Created on: 19 oct. 2016
  *      Author: wix
@@ -17,8 +17,8 @@ namespace ard
     {
         TimeMs date;
         eLogLevel level;
-        String component;
-        String text;
+        char component[configMAX_TASK_NAME_LEN];
+        char text[LOG_MAX_SIZE];
     };
 
     /**
@@ -29,7 +29,7 @@ namespace ard
     public:
         virtual ~ILogChannel() = default;
 
-        //push a log to the RAM buffer, the log will only be effective when the LogThread will have read the buffer
+        //push a log to the RAM buffer, the log will only be effective when the LogDispatcher will have read the buffer
         virtual void log(LogMsg const & log) = 0;
 
         //returns true if the channel is ready to log, false if it can't log.
@@ -37,15 +37,19 @@ namespace ard
         virtual bool isReady() const = 0;
     };
 
-    //Write a log on an SD Card
-    class SdCardLogger: public ILogChannel
+    /**
+     * Write a log on an SD Card
+     * This class is very limited with connection/unconnection. You cannot hotplug SDcard.
+     * Likewise, if an error occurs with file opening, this class stops its activity.
+     */
+    class SdCardLogger: public Thread, public ILogChannel
     {
     public:
+        SdCardLogger(uint8_t recvQueueSize);
         virtual ~SdCardLogger() = default;
 
-        //The setup the SDcard driver and the log file opening
-        //shall not be done in the init section (...) because it relies on millis() calls to check timeout which only works when the OS is started.
-        virtual void connect();
+        //Implements Thread : try to open the SD card and reads the serial inputs
+        void run() override;
 
         //Implements ILogChannel : write the log on the SD card
         virtual void log(LogMsg const & log) override;
@@ -62,13 +66,19 @@ namespace ard
 
         //use to format a serial log
         String formatLogMsg(LogMsg const& msg);
+
+        //receive queue to decouple sender from SD card blocking calls
+        Queue queue;
+
+        //SC card write buffer to unpile queue
+        LogMsg writeBuffer;
     };
 
     //alias to get ArdOs singleton instance
-    #define LOG_DEBUG(msg) LogThread::getInstance().log(eLogLevel_DEBUG,msg)
-    #define LOG_INFO(msg) LogThread::getInstance().log(eLogLevel_INFO,msg)
-    #define LOG_ERROR(msg) LogThread::getInstance().log(eLogLevel_ERROR,msg)
-
+    #define LOG_DEBUG(msg)  LogDispatcher::getInstance().log(eLogLevel_DEBUG,msg)
+    #define LOG_INFO(msg)   LogDispatcher::getInstance().log(eLogLevel_INFO,msg)
+    #define LOG_ERROR(msg)  LogDispatcher::getInstance().log(eLogLevel_ERROR,msg)
+    #define LOG_ASSERT(msg) LogDispatcher::getInstance().log(eLogLevel_ASSERT,msg)
 
     /**
      * This class is used to decouple log providers
@@ -85,88 +95,37 @@ namespace ard
      *  - file is closed regurlarly to prevent filesystem corruption.
      *
      */
-    class LogThread: public Thread, public ILogger
+    class LogDispatcher: public ILogger
     {
     public:
-        virtual ~LogThread() = default;
+        virtual ~LogDispatcher() = default;
 
-        //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
-        static LogThread& getInstance()
+        //retrieve the singleton instance (you should prefer the use of LOG_xxx macros)
+        static LogDispatcher& getInstance()
         {
             return instance;
-        }
-        ;
-
-        //TODO a supprimer quand RemoteControl sera mappe
-        //Override Thread : Create semaphore
-        void init() override;
-
-        //Implements Thread : unpile the fifo
-        void run() override;
+        };
 
         //Implements ILogger : publish the log to all existing logChannels
         void log(eLogLevel logLevel, String const& log) override;
 
         //attach a new com logger
-        void setComLogger(ILogChannel* channel)
-        {
-            comLogger = channel;
-        }
-
-        //configure if logs are sent to the serial bus (activated by default)
-        void activateSDLogs(bool activate)
-        {
-            configSdCardLog = activate;
-        }
+        void addLogger(ILogChannel& channel);
 
     private:
-        bool configSdCardLog;
-
-        //fifo index
-        typedef uint16_t FifoIndex;
-
         //singleton instance
-        static LogThread instance;
-
-        // count of data records in fifo
-        SemaphoreHandle_t semDataPresent;
-
-        // ensure only one log is pile at a time
-        Mutex mutex;
-
-        // size of fifo in records
-        static const FifoIndex FIFO_SIZE = 20;
-
-        // array of data items
-        LogMsg fifoArray[FIFO_SIZE];
-
-        //index of the first element
-        FifoIndex fifoHead;
-
-        //index of the first element
-        FifoIndex fifoTail;
-
-        //Nb pending logs
-        FifoIndex fifoCount;
-
-        //Counter of lost logs due to the fact that the log thread is too slow
-        uint8_t missedLogs;
-
-        //File logger
-        SdCardLogger fileLogger;
+        static LogDispatcher instance;
 
         //Com logger
-        ILogChannel* comLogger;
-
-        //to be called periodically in the log thread
-        void
-        unpileFifo();
+        #define MAX_LOGGERS 2
+        uint8_t nbLoggers;
+        ILogChannel* loggers[MAX_LOGGERS];
 
         //helper to send a log to all connected channels
         void disptachLogToChannels(LogMsg const& log);
 
         //private constructor as its a singleton class
-        LogThread();COPY_CONSTRUCTORS (LogThread)
+        LogDispatcher();COPY_CONSTRUCTORS (LogDispatcher)
     };
 }
 

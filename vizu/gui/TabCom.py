@@ -8,7 +8,8 @@ class TabCom(QWidget):
     
     #QT emitted signals :
     networkStatus = pyqtSignal(bool)
-    getOsStats = pyqtSignal()
+    getOsStatsLogs = pyqtSignal()
+    getTelemetry = pyqtSignal()
     configureMatch = pyqtSignal(int, int)
     startMatch = pyqtSignal()
     
@@ -32,9 +33,13 @@ class TabCom(QWidget):
         self.btn_connect.toggled[bool].connect(self._connectFromButton)
         
         self.connected_btn = dict()
-        self.connected_btn["getOsStats"] = QPushButton('Get Stats', self)
+        self.connected_btn["getOsStats"] = QPushButton('Get OS Stats', self)
         self.connected_btn["getOsStats"].hide()
-        self.connected_btn["getOsStats"].clicked.connect(self._getOsStats) 
+        self.connected_btn["getOsStats"].clicked.connect(self._getOsStatsLogs) 
+        
+        self.connected_btn["getTelemetry"] = QPushButton('Get Telemetry', self)
+        self.connected_btn["getTelemetry"].hide()
+        self.connected_btn["getTelemetry"].clicked.connect(self._getTelemetry) 
         
         self.connected_btn["configureMatch"] = QPushButton('Configure Match', self)
         self.connected_btn["configureMatch"].hide()
@@ -74,9 +79,14 @@ class TabCom(QWidget):
         self.btn_connect.toggle()            
         
     @pyqtSlot()
-    def _getOsStats(self): 
+    def _getOsStatsLogs(self): 
        print("Stats request")
-       self.getOsStats.emit()
+       self.getOsStatsLogs.emit()
+       
+    @pyqtSlot()
+    def _getTelemetry(self): 
+       print("Telemetry request")
+       self.getTelemetry.emit()
        
     @pyqtSlot()
     def _configureMatch(self): 
@@ -102,7 +112,7 @@ class TabCom(QWidget):
                 self.connected_btn[button].show()
             self.networkStatus.emit(True)
         else:
-            print("Connection error")
+            print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizy instance...)")
             self.btn_connect.setText("Connect")
             self.btn_connect.setChecked(False)
             self.combo_COM.setEnabled(True)

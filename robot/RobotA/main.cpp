@@ -13,7 +13,7 @@ int main( void )
     return 0;
 }
 
-extern String const& getExeVersion()
+extern String getExeVersion()
 {
     return String("Version robotA : ") + __DATE__ + " " + __TIME__;
 }

@@ -41,7 +41,8 @@ class ConnectScreen(QWidget):
         
         #connect Com tab
         self.tab["Com"].networkStatus       .connect(self._handleNetworkStatus)
-        self.tab["Com"].getOsStats          .connect(self.teleop.getOsStats)
+        self.tab["Com"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
+        self.tab["Com"].getTelemetry        .connect(self.teleop.getTelemetry)
         self.tab["Com"].configureMatch      .connect(self.teleop.configureMatch)
         self.tab["Com"].startMatch          .connect(self.teleop.startMatch)
         #connect Log tab
@@ -115,7 +116,7 @@ if __name__ == '__main__':
     import os
     
     #re-generate proto (not optimal, but as they will change a lot at project beginning...)
-    os.system("..\generateCom.bat ..\\ off")
+    #os.system("..\generateCom.bat ..\\ off")
     
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     app = QApplication(sys.argv)
