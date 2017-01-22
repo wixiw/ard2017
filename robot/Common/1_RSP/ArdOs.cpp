@@ -10,14 +10,11 @@
 
 using namespace ard;
 
-#define ASSERT_OS_STARTED ASSERT_TEXT(ArdOs::getState() == ArdOs::eOsState::RUNNING, "OS must be started before using this function.")
+#define ASSERT_OS_STARTED ASSERT_TEXT(ArdOs::getState() == ArdOs::RUNNING, "OS must be started before using this function.")
 
 //-------------------------------------------------------------------------------
 //                      OsObject
 //-------------------------------------------------------------------------------
-//static member instanciation
-uint8_t OsObject::objectCount = 0;
-
 OsObject::OsObject(String const& name):
                 ArdObject(name)
 {
@@ -26,16 +23,11 @@ OsObject::OsObject(String const& name):
 
 OsObject::~OsObject(){};
 
-void OsObject::init()
-{
-    ArdObject::init();
-    ASSERT_TEXT(objectCount < 0xFF , "Too many objects of that type.");
-    objectCount++;
-}
-
 //-------------------------------------------------------------------------------
 //                      Thread
 //-------------------------------------------------------------------------------
+//static member instanciation
+uint8_t Thread::objectCount = 1; //IDLE task is created by the OS
 
 //table of all params so that the generic run function is possible
 //it is also used to test if a priority is already in use
@@ -96,8 +88,8 @@ Thread::Thread(String const& name, ThreadPriority priority, StackSize stackSize,
                 priority(priority),
                 debugPin(0)
 {
-    //all thread does it since it not required, but it simplifies the thing
-    threadParams[tskIDLE_PRIORITY].used = true;
+    ASSERT_TEXT(objectCount < 0xFF , "Too many objects of that type.");
+    objectCount++;
 
     threadParams[priority].used         = false;
     threadParams[priority].handle       = NULL;
@@ -148,6 +140,15 @@ void Thread::setLogger(ILogger* newLogger)
 {
     ASSERT_TEXT( newLogger != NULL, "you tried to configure a NULL logger.");
     ASSERT_TEXT( logger == NULL,    "you tried to configure a logger twice.");
+    logger = newLogger;
+}
+
+void Thread::logFromThread(eLogLevel lvl, String const& text)
+{
+    if(logger)
+    {
+        logger->log(lvl, text);
+    }
 }
 
 StackSize Thread::getStackSize() const
@@ -160,12 +161,9 @@ DelayMs Thread::getPeriod() const
     return threadParams[priority].period;
 }
 
-void Thread::logFromThread(eLogLevel lvl, String const& text)
+Thread::ThreadParams const * Thread::getThreadParams()
 {
-    if(logger)
-    {
-        logger->log(lvl, text);
-    }
+    return threadParams;
 }
 
 void Thread::sleepMs(DelayMs delay)
@@ -224,12 +222,17 @@ void PollerThread::addPolledObject(PolledObject& object )
 //                      SwTimer
 //-------------------------------------------------------------------------------
 
+//static member instanciation
+uint8_t SwTimer::objectCount = 0;
+
 SwTimer::SwTimer()
 : OsObject(),
   m_entryDate(0U),
   m_delay(0U),
   m_started(false)
 {
+    ASSERT_TEXT(objectCount < 0xFF , "Too many objects of that type.");
+    objectCount++;
 }
 
 void SwTimer::arm(uint32_t delayInMs)
@@ -263,10 +266,16 @@ bool SwTimer::isFired() const
 //                      Mutex
 //-------------------------------------------------------------------------------
 
+//static member instanciation
+uint8_t Mutex::objectCount = 0;
+
 Mutex::Mutex():
                 OsObject(),
                 osHandler(NULL)
-{}
+{
+    ASSERT_TEXT(objectCount < 0xFF , "Too many objects of that type.");
+    objectCount++;
+}
 
 void Mutex::init()
 {
@@ -300,9 +309,16 @@ void Mutex::unlock()
 //                      Signal
 //-------------------------------------------------------------------------------
 
+//static member instanciation
+uint8_t Signal::objectCount = 0;
+
 Signal::Signal():
-                OsObject(),
-                osHandler(NULL){}
+        OsObject(),
+        osHandler(NULL)
+{
+    ASSERT_TEXT(objectCount < 0xFF , "Too many objects of that type.");
+    objectCount++;
+}
 
 void Signal::init()
 {
@@ -342,43 +358,75 @@ void Signal::set()
 //                      Queue
 //-------------------------------------------------------------------------------
 
-Queue::Queue():
-                OsObject(),
-                osHandler(NULL){}
+//static member instanciation
+uint8_t Queue::objectCount = 0;
+
+Queue::Queue(uint8_t nbItems, size_t itemSize):
+    OsObject(),
+    osHandler(NULL),
+    nbItems(nbItems),
+    itemSize(itemSize),
+    queueMinAvailSpace(0)
+{
+    ASSERT_TEXT(objectCount < 0xFF , "Too many objects of that type.");
+    objectCount++;
+}
 
 void Queue::init()
 {
     OsObject::init();
-    osHandler = xSemaphoreCreateBinary();
+    osHandler = xQueueCreate(nbItems, itemSize);
 }
 
-void Queue::push(DelayMs timeout)
+bool Queue::push(void* queuedObject, DelayMs timeout)
 {
     ASSERT(isInitialized());
-
     BaseType_t res = pdFALSE;
-    do
-    {
-        //TODO
-    }
-    //retry if delay is set to maximum value
-    while(timeout == portMAX_DELAY && res == pdFALSE );
-}
 
-void Queue::pop(DelayMs timeout)
-{
-    ASSERT(isInitialized());
-    if(interruptContext())
+    if( interruptContext() )
     {
-        //TODO
-
         BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-        xSemaphoreGiveFromISR(osHandler, &xHigherPriorityTaskWoken);
+        res = xQueueSendFromISR(osHandler, queuedObject, &xHigherPriorityTaskWoken);
         //force context switch if a task with higher priority is awoken
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
     else
-        xSemaphoreGive(osHandler);
+    {
+        do
+        {
+            res = xQueueSend(osHandler, queuedObject, timeout);
+        }
+        //retry if delay is set to maximum value
+        while(timeout == portMAX_DELAY && res == pdFALSE );
+    }
+
+    //Update statistics
+    UBaseType_t freeSlots = getAvailableSpace();
+    if( freeSlots < queueMinAvailSpace )
+        queueMinAvailSpace = freeSlots;
+
+    return res == pdTRUE;
+}
+
+bool Queue::pop(void* unqueuedObject, DelayMs timeout)
+{
+    ASSERT(isInitialized());
+    ASSERT_TEXT(!interruptContext(), "A queue pop() shall not be used from ISR");
+
+    BaseType_t res = pdFALSE;
+    do
+    {
+        res = xQueueReceive(osHandler, unqueuedObject, timeout);
+    }
+    //retry if delay is set to maximum value
+    while(timeout == portMAX_DELAY && res == pdFALSE );
+
+    return res == pdTRUE;
+}
+
+uint8_t Queue::getAvailableSpace()
+{
+    return uxQueueSpacesAvailable(osHandler);
 }
 
 //-------------------------------------------------------------------------------
@@ -395,6 +443,12 @@ OsObject* objectList[ArdOs::MAX_OBJECT_NB];
 void ArdOs::init()
 {
     ASSERT(state==eOsState::INITIALIZING);
+
+    threadParams[0].used         = true;
+    threadParams[0].handle       = NULL;
+    threadParams[0].object       = NULL;
+    threadParams[0].stackSize    = configMINIMAL_STACK_SIZE;
+    threadParams[0].period       = 0;
 
     for( uint8_t i = 0; i<objectCount ; i++)
     {

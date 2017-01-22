@@ -94,42 +94,39 @@
 #include <stdint.h>
 #include "K_thread_config.h"
 
-#define configUSE_PREEMPTION			1
-#if 1  // WHG
-#define configUSE_IDLE_HOOK				0
-#define configUSE_TICK_HOOK				0
-#define configCPU_CLOCK_HZ				( F_CPU )
-#else  // WHG
-#define configUSE_IDLE_HOOK				0
-#define configUSE_TICK_HOOK				0
-#define configCPU_CLOCK_HZ				( SystemCoreClock )
-#endif  // WHG
-#define configTICK_RATE_HZ				( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES			( PRIO_NB )
-#define configMINIMAL_STACK_SIZE		( ( unsigned short ) 70 )
-#define configTOTAL_HEAP_SIZE			( ( size_t ) ( 40000 ) )  // WHG uses type 3 heap
-#define configMAX_TASK_NAME_LEN			( 8+1 ) //+1 for the \0
-#define configUSE_TRACE_FACILITY		1  //required for vTaskList
-#define configUSE_16_BIT_TICKS			0
-#define configIDLE_SHOULD_YIELD			1
-#define configUSE_MUTEXES				1
-#define configQUEUE_REGISTRY_SIZE		0
-#define configCHECK_FOR_STACK_OVERFLOW	2
-#define configUSE_RECURSIVE_MUTEXES		1
-#define configUSE_MALLOC_FAILED_HOOK	1
-#define configUSE_APPLICATION_TASK_TAG	0
-#define configUSE_COUNTING_SEMAPHORES	1
-#define configUSE_QUEUE_SETS		    1
-#define configGENERATE_RUN_TIME_STATS	0
-
-//ARD specific
-#define configUSE_STATS_FORMATTING_FUNCTIONS 1 //required for vTaskList
-
-/* Co-routine definitions. */
+#define configUSE_PREEMPTION					1 //ARD : this is THE reason why we changed from a cooperative scheduler !
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION 1 //ARD : TODO could it help for -Onone boot issue ?
+#define configUSE_IDLE_HOOK		        		0 //ARD : required to have the Arduino loop function (it's not sure it's required)
+#define configUSE_MALLOC_FAILED_HOOK            1 //ARD : prevent from testing null pointers
+#define configUSE_TICK_HOOK		        		0 //ARD : we don't use it
+#define configCPU_CLOCK_HZ						F_CPU
+#define configTICK_RATE_HZ						((TickType_t )1000) // ARD : it's quite high but usefull to get log timed properly. in case of high rate interrupts issues we could reduce this
+#define configMAX_PRIORITIES					PRIO_NB //ARD : see K_thread_config.h
+#define configMINIMAL_STACK_SIZE				20U 	//ARD : size of the idle task, take care it's in words, not in bytes : 100 means 400o
+#define configMAX_TASK_NAME_LEN					(8+1) 	//ARD : +1 for the \0
+#define configUSE_TRACE_FACILITY                1 // ARD : required for vTaskList to see stack info
+#define configUSE_STATS_FORMATTING_FUNCTIONS    1 // ARD : required for vTaskList to see stack info
+#define configUSE_16_BIT_TICKS		        	0 // ARD : there is no reason to use this as we are on a 32bits machine
+#define configIDLE_SHOULD_YIELD                 0 // ARD : we don't use any task at idle priority
+#define configUSE_TASK_NOTIFICATIONS            0 // ARD : it's a new freertos v9 feature we do not use yet
+#define configUSE_MUTEXES			        	1 // ARD : we need it, to protect shared memories
+#define configUSE_RECURSIVE_MUTEXES             1 // ARD : we need it
+#define configUSE_COUNTING_SEMAPHORES           1 // ARD : we need it, to send signals between threads
+#define configCHECK_FOR_STACK_OVERFLOW          2 // ARD : we need it, as the robot is always in debug condition we can't ensure stack are big enougth to be confident (2 is the strongest check), but time consuming during thread context switches
+#define configQUEUE_REGISTRY_SIZE		        0 // ARD : we do not use OS aware debuggers so we don't need this
+#define configUSE_QUEUE_SETS                    0 // ARD : it could be usefull, but not used yet
+#define configUSE_TIME_SLICING                  0 // ARD : we use exclusive priorities only, time slicing is not required
+#define configENABLE_BACKWARD_COMPATIBILITY     0 // ARD : we began with v8 so it's ok for us
+#define configNUM_THREAD_LOCAL_STORAGE_POINTERS 0 // ARD : we do not use it
+#define configSUPPORT_STATIC_ALLOCATION         1 // ARD : <3 <3 <3
+#define configSUPPORT_DYNAMIC_ALLOCATION        0 // ARD : all static ! fuck off new()
+#define configTOTAL_HEAP_SIZE					50000U
+#define configGENERATE_RUN_TIME_STATS           0 // ARD : TODO it could be usefull
+#define configUSE_APPLICATION_TASK_TAG          0 // ARD : TODO see what we can do with this, it could help to trace what's happening with context switches
+/* Co-routine definitions : NOT USED*/
 #define configUSE_CO_ROUTINES 			0
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
-
-/* Software timer definitions. */
+/* Software timer definitions : NOT USED */
 #define configUSE_TIMERS				0
 #define configTIMER_TASK_PRIORITY		( 2 )
 #define configTIMER_QUEUE_LENGTH		0
@@ -137,17 +134,18 @@
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
-#define INCLUDE_vTaskPrioritySet		0
-#define INCLUDE_uxTaskPriorityGet		0
-#define INCLUDE_vTaskDelete				0
-#define INCLUDE_vTaskCleanUpResources	0
-#define INCLUDE_vTaskSuspend			1
-#define INCLUDE_vTaskDelayUntil			1
-#define INCLUDE_vTaskDelay				1
-#define INCLUDE_eTaskGetState			0
-#define INCLUDE_xTaskGetIdleTaskHandle  1 //ARD : required to drive the "CPU consuption" LED
-#define INCLUDE_pcTaskGetTaskName       1 //ARD : required to log
-#define INCLUDE_xTimerPendFunctionCall	0
+#define INCLUDE_vTaskPrioritySet	        	0
+#define INCLUDE_uxTaskPriorityGet		        0
+#define INCLUDE_vTaskDelete			        	0
+#define INCLUDE_vTaskCleanUpResources       	0
+#define INCLUDE_vTaskSuspend			        1
+#define INCLUDE_vTaskDelayUntil		        	1
+#define INCLUDE_vTaskDelay				        1
+#define INCLUDE_eTaskGetState		        	0
+#define INCLUDE_xTaskGetIdleTaskHandle          1 //ARD : required to drive the "CPU consuption" LED
+#define INCLUDE_pcTaskGetTaskName               1 //ARD : required to log
+#define INCLUDE_xTimerPendFunctionCall	        0 //ARD : SW timers not used
+#define INCLUDE_uxTaskGetStackHighWaterMark     1 //ARD : required by getOsStats()
 
 /* Cortex-M specific definitions. */
 #ifdef __NVIC_PRIO_BITS

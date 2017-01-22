@@ -22,6 +22,13 @@ void ActuatorThread::init()
     PollerThread::init();
 }
 
+apb_ActuatorsState ActuatorThread::getState()
+{
+    apb_ActuatorsState state = apb_ActuatorsState_init_default;
+    //TODO
+    return state;
+}
+
 
 
 

@@ -22,13 +22,16 @@ void ardAssertImpl(bool condition, char const* file, unsigned int line, char con
 {
     if(!condition)
     {
-        errorBlink(3);
+        if( ArdOs::getState() == ArdOs::RUNNING )
+        {
+            LOG_ASSERT(String(file) +":" + line + String(text));
+            ROBOT.dieMotherFucker();
+        }
+        else
+        {
+            errorBlink(3);
+        }
     }
-    //TODO
-    //    log(eLogLevel_ASSERT, String("  *ASSERT* : ") + text,
-    //            String(__FILE__) + ":" + "__LINE__" );
-    //    delay(1000); //TODO there is better things to do like stop all but log thread, kill interrupts, ...
-    //
 }
 
 //singleton instanciation
@@ -53,36 +56,34 @@ void fast_interrupt()
 }
 
 Robot2017::Robot2017():
-//    Thread("Boot", PRIO_BOOT, STACK_BOOT),
     actuators(),
     strategy(),
     nav(),
     hmi(50 /*ms*/),
-    log(LogThread::getInstance())
+    log(LogDispatcher::getInstance()),
 #ifdef BUILD_REMOTE_CONTROL
-    , remoteControl()
+    remoteControl(),
 #endif
+    fileLogger(LOG_QUEUE_SIZE)
 {
-    buildDate =String(__DATE__) + " " + __TIME__;
+    buildDate = String(__DATE__) + " " + __TIME__;
     strategy.registerStrategy("Alpha",          Strategy_Alpha);
     strategy.registerStrategy("Led Test",       Strategy_LedTest);
     strategy.registerStrategy("Button Test",    Strategy_ButtonTest);
     strategy.registerStrategy("Omron Test",     Strategy_OmronTest);
 }
 
-extern String const& getExeVersion();
-
 void Robot2017::bootOs()
 {
-    //the listener registration is lost if it is done in the constructor,
-    //I don't know why ... So it's done here because it works
-    log.setComLogger(&remoteControl);
-
     //Init drivers
     init_bsp();
 
-    //Connect the log thread to Thread class (dependency injection)
-//    Thread::setLogger(&log);
+    //Connect the log service
+    Thread::setLogger(&log);
+    log.addLogger(fileLogger);
+#ifdef BUILD_REMOTE_CONTROL
+    log.addLogger(remoteControl);
+#endif
 
     //Map fast periodic functions to timers interrupts
     Timer6.attachInterrupt(veryFast_interrupt);
@@ -107,28 +108,17 @@ void Robot2017::bootOs()
     ArdOs::start();//this function never ends
 }
 
-void Robot2017::run()
-{
-    #ifdef ARD_DEBUG
-    LOG_INFO(" --- DEBUG --- (see ARD_DEBUG in ArdOs.h) ");
-    #else
-    LOG_INFO("Tips : In order to see debug logs, define ARD_DEBUG in ArdOs.h.");
-    #endif
-    //Trace binary version to prevent miss build error and usage error during the middle of the night.
-    LOG_INFO("Version libArd : " + ROBOT.getVersion());
-    LOG_INFO(getExeVersion());
-
-    LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
-}
-
 void Robot2017::dieMotherFucker()
 {
     //Ask the robot to stop moving and wait for it to be at rest
     nav.stopMoving();
     nav.wait();
 
-    //stop every SW activity
-    ArdOs::stop();
+    //stop every active SW activity, logs and remote controls are still active
+    ROBOT.strategy.stopThread();
+    ROBOT.actuators.stopThread();
+    ROBOT.nav.stopThread();
+    ROBOT.hmi.stopThread();
 }
 
 Robot2017& Robot2017::operator=(const Robot2017& p)

@@ -36,14 +36,13 @@ class ConnectScreen(QWidget):
         self.tabs = QTabWidget(self)
         for tabName, tab in self.tab.items():
             self.tabs.addTab(tab, tabName)
-        #disable tabs requiring a network connection
-        self._handleNetworkStatus(False)
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
         
         #connect Com tab
         self.tab["Com"].networkStatus       .connect(self._handleNetworkStatus)
-        self.tab["Com"].getOsStats          .connect(self.teleop.getOsStats)
+        self.tab["Com"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
+        self.tab["Com"].getTelemetry        .connect(self.teleop.getTelemetry)
         self.tab["Com"].configureMatch      .connect(self.teleop.configureMatch)
         self.tab["Com"].startMatch          .connect(self.teleop.startMatch)
         #connect Log tab
@@ -72,11 +71,13 @@ class ConnectScreen(QWidget):
         self.shortcuts["F3"] = QShortcut(QKeySequence(Qt.Key_F3), self)
         self.shortcuts["F3"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F3"], 2)
-            #F4 for Log tab
+            #F4 for Robot tab
         self.shortcuts["F4"] = QShortcut(QKeySequence(Qt.Key_F4), self)
         self.shortcuts["F4"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F4"], 3)
 
+            #disable tabs and shortcuts requiring a network connection
+        self._handleNetworkStatus(False)
     
     @pyqtSlot(bool)
     def _handleNetworkStatus(self, connected):
@@ -85,11 +86,22 @@ class ConnectScreen(QWidget):
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), True)
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), True)
             #self.tabs.setCurrentWidget(self.tab["Strat"])
+            
+            self.shortcuts["F1"].setEnabled(True)
+            self.shortcuts["F2"].setEnabled(True)
+            self.shortcuts["F3"].setEnabled(True)
+            self.shortcuts["F4"].setEnabled(True)
+            
         else:
             self.tab["Log"].appendLog(("----------disconnected-----------"))
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), False)
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), False)
             self.tabs.setCurrentWidget(self.tab["Com"])
+            
+            self.shortcuts["F1"].setEnabled(True)
+            self.shortcuts["F2"].setEnabled(True)
+            self.shortcuts["F3"].setEnabled(False)
+            self.shortcuts["F4"].setEnabled(False)
     
     @pyqtSlot(int)
     def selectTab(self, tabId):
@@ -104,7 +116,7 @@ if __name__ == '__main__':
     import os
     
     #re-generate proto (not optimal, but as they will change a lot at project beginning...)
-    os.system("..\generateCom.bat ..\\ off")
+    #os.system("..\generateCom.bat ..\\ off")
     
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     app = QApplication(sys.argv)

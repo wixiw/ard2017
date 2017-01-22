@@ -7,6 +7,7 @@
 
 #include "ArdHdlc.h"
 #include "yahdlc.h"
+#include "Log.h"
 
 using namespace ard;
 
@@ -43,14 +44,24 @@ void ArdHdlc::disconnect()
 bool ArdHdlc::feedReadBuffer()
 {
     bool newBytes = false;
-
-    while (physicalLink.available())
+    int read = 0;
+    
+    while (read != -1)
     {
-        //As the yahdlc layer requires a flat buffer we "un-ring" the driver ring buffer
-        serial_recv_buffer[serial_index] = (char) physicalLink.read();
-        serial_index++;
-        newBytes = true;
-        ASSERT_TEXT(serial_index <= SERIAL_BUF_SIZE, "Serial framebuffer overshoot");
+        read = physicalLink.read(); //-1 when no more data available
+        if( 0 <= read )
+        {
+            //As the yahdlc layer requires a flat buffer we "un-ring" the driver ring buffer
+            serial_recv_buffer[serial_index] = (char) read;
+            serial_index++;
+            newBytes = true;
+            
+            if(SERIAL_BUF_SIZE < serial_index)
+            {
+                LOG_ERROR("Serial framebuffer overshoot");
+            }                
+        }
+
     }
 
     return newBytes;
@@ -87,9 +98,10 @@ void ArdHdlc::parseBuffer()
                 //it's possible that some bytes are present after the decoded frame (ex : several received frames)
                 size_t remainingBytesNb = serial_index - nbParsedBytes;
                 char* startOfRemainingBytes = serial_recv_buffer + nbParsedBytes; //no overflow as full buffer case is treated before
+                //read bytes are set to 0
+                memset(serial_recv_buffer, 0, nbParsedBytes);
+                //remaining bytes are moved to the top of the buffer
                 memcpy(serial_recv_buffer, startOfRemainingBytes, remainingBytesNb);
-                //unused bytes are zeroed
-                memset(serial_recv_buffer + remainingBytesNb, 0, serial_index - remainingBytesNb);
                 serial_index = remainingBytesNb;
             }
 
@@ -98,7 +110,7 @@ void ArdHdlc::parseBuffer()
             hdlc_recv_framebuffer[hdlc_length] = 0;
             hdlc_recv_framebuffer[hdlc_length + 1] = 0;
             //treat the decoded frame
-            LOG_DEBUG("HDLC frame received size=" + String(hdlc_length) + " msg=[" + String(hdlc_recv_framebuffer) + "]");
+            LOG_DEBUG("HDLC frame received size=" + String(hdlc_length));
 #endif
             if(listener)
                 listener->handleMsg(this, hdlc_recv_framebuffer, hdlc_length);

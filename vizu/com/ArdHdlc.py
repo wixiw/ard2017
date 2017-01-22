@@ -74,6 +74,7 @@ class ArdHdlc(QObject):
     # @return bool : True if message sent successfully
     def sendMsg(self, msg):
         assert self._connected
+        #---DEBUG---- print("msg to send : 0x[%s]" % msg.hex())
         # TODO sequence id is not used yet, as RemoteControl doesn't require any robustness, 
         # in order to use this com with a robot to robot com, it'll be required
         frame = yahdlc.frame_data(msg, yahdlc.FRAME_DATA, self.sendSedNumber)
@@ -87,14 +88,15 @@ class ArdHdlc(QObject):
         assert self._connected
             #---DEBUG--- print("ArdHdlc received data")
         self.recvBuffer += self._physicalLayer.readAll()
+        bytesToRead = len(self.recvBuffer)
         
         #YAHDLC can't manage buffer that are bigger than 520o :
-        if 512 + 8 < len(self.recvBuffer):
+        if 512 + 8 < bytesToRead:
             print("Error : receive buffer overshoot, data lost.")
             self.recvBuffer = self.recvBuffer[-520:] #it means : keep the last 520 bytes 
 
         #read input buffer until it's cleared
-        bytesToRead = 666
+
         while 0 < bytesToRead:
             bytesToRead = self._readOneHdlcFrame()
                 
@@ -102,21 +104,25 @@ class ArdHdlc(QObject):
     #read one hdlc frame and delete read data from self.recvBuffer
     #@return int : remaining bytes to read (you should call the function once again), or 0 in case of error
     def _readOneHdlcFrame(self):
-                # Try to decode the data recevied from the serial line
+        #---DEBUG--- print("recv buf (" + str(len(self.recvBuffer)) + ")=" + str(self.recvBuffer)) 
+        
+        # Try to decode the data recevied from the serial line
         try:
             data, type, seq_no = yahdlc.get_data(self.recvBuffer)
-            #---DEBUG--- 
-            print("hdlc type=" + str(type) + " seq=" + str(seq_no) + " frame=[" + str(data) + "]") 
+            #---DEBUG--- print("hdlc type=" + str(type) + " seq=" + str(seq_no) + " frame=[" + str(data) + "]") 
         
         #the message is not complete, wait next data to retry to parse the buffer, it's a normal condition (and a bad yahdlc python binding design ...)
         except yahdlc.MessageError:
+            #---DEBUG--- print("yahdlc error in decoding frame : MessageError.")
+            yahdlc.get_data_reset()
             return 0
         
-        #checksum failed, message is ignored
+        #the message is not complete OR checksum failed, wait next data to retry to parse the buffer, it may be a normal condition (and a bad yahdlc python binding design ...)
         except yahdlc.FCSError:
-            print("yahdlc error in decoding frame : checksum failed.")
-            #print("hdlc type=" + str(type) + " seq=" + str(seq_no) + " frame=[" + str(data) + "]") 
+            #---DEBUG--- print("yahdlc error in decoding frame : checksum failed.")
+            #print("recv buf=[" + str(self.recvBuffer) + "]") 
             #TODO : clean the recv buffer and adapt the return code
+            yahdlc.get_data_reset()
             return 0
             
         #unknown error, this is really bad. Input buffer is cleaned

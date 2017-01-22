@@ -9,11 +9,8 @@
 #define ROBOTS_TELEOPTHREAD_H_
 
 #include "RSP.h"
-#include "proto/RemoteControl.pb.h"
-
-//Note that Python yahdlc binding can't go over 8 (header) + 512
-#define TMP_SERIAL_BUF_SIZE 200
-#define TMP_HDLC_BUF_SIZE 200
+#include "RemoteControl.pb.h"
+#include "com/ComInterfaces.h"
 
 namespace ard
 {
@@ -29,15 +26,14 @@ namespace ard
      * The aim of those commands are :
      * - simulate an HW event
      * - teleoperate the robot for tests
+     * We choosed not to set up a telemetry thread which would provide precise period or event-based data,
+     * in order to save embedded ressource. The partner SW is responsible for polling telemetry
      */
-    class RemoteControl: public Thread, public ILogChannel
+    class RemoteControl: public ILogChannel, public IComListener
     {
     public:
         RemoteControl();
         virtual ~RemoteControl() = default;
-
-        //Implements Thread : reads the serial inputs
-        void run() override;
 
         //Get any teleop event (non-const on purpose)
         IEvent* getEvent(eRemoteControlEvtId id);
@@ -45,44 +41,34 @@ namespace ard
         //Implements ILogChannel : returns true if the communication is established
         virtual bool isReady() const override;
 
+        //Implements IComListener : not used
+        virtual void com_connected(ICom const* origin) override{};
+
+        //Implements IComListener : not used
+        virtual void com_disconnected(ICom const* origin) override{};
+
+        //Implements IComListener : parse the message and route it the the "Receive COM API" methods
+        void handleMsg(ICom const* origin, char const * msg, size_t msgLength) override;
+
         /**------------------------------
          * Send COM API
          --------------------------------*/
         //Implements ILogChannel : push a log on the serial link
         virtual void log(LogMsg const & log) override;
-        
+
+
     private:
         Event<1> events[EVT_MAX];
         
-        //This method is not used, it is just keept as a reminder on how to quickly use a serial com with the Arduino libs.
-        //today we prefer the use of google protobuf but they requires a "partner" program to tchat with it, whereas the
-        //simple serial interface may be used withy any serial terminal.
-        void simpleSerialRun();
-
-        //Decode the message
-        void handleMsg(char const * msg, size_t msgLength);
-
-        //reception buffers
-        unsigned int serial_index = 0;
-        char serial_recv_buffer[TMP_SERIAL_BUF_SIZE];
-        char hdlc_recv_framebuffer[TMP_HDLC_BUF_SIZE];
-
-        //emission buffers. hdlc buffer are flat buffers
-        //because yahdlc is not able to read from ring buffers
-        char msg_send_buffer[TMP_SERIAL_BUF_SIZE];
-        char hdlc_send_framebuffer[TMP_HDLC_BUF_SIZE];
-
-        //create an hdlc frame from msg buffer and send it byte by bytes
-        void writeMsg(unsigned int byteToWrite);
-
-        //read bytes one by one on the serial link and store them in the serial buffer
-        //@return bytes read
-        unsigned int feedReadBuffer();
+        ComOnUart com;
+        char msg_send_buffer[MSG_SIZE];
 
         /**------------------------------
          * Receive COM API
          --------------------------------*/
         void getOsStats             (apb_RemoteControlRequest const & request);
+        void getOsStatsLogs         (apb_RemoteControlRequest const & request);
+        void getTelemetry           (apb_RemoteControlRequest const & request);
         void configureMatch         (apb_RemoteControlRequest const & request);
         void startMatch             (apb_RemoteControlRequest const & request);
         void setPosition            (apb_RemoteControlRequest const & request);

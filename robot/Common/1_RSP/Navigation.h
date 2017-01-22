@@ -6,7 +6,7 @@
 #include "ArdOs.h"
 #include "core/ArdMaths.h"
 #include "GpioTools.h"
-
+#include "CommonMsg.pb.h"
 
 namespace ard
 {
@@ -150,22 +150,13 @@ namespace ard
     void
     setSpeedVir (float s);
 
-    eGpioLevel getOmronState_FL(){return omronFrontLeft.readRaw();};
-    eGpioLevel getOmronState_FR(){return omronFrontRight.readRaw();};
-    eGpioLevel getOmronState_RL(){return omronRearLeft.readRaw();};
-    eGpioLevel getOmronState_RR(){return omronRearRight.readRaw();};
+    /**---------------------------------
+     * Publish state
+     ---------------------------------*/
+
+    apb_NavState getState() const;
 
   private:
-    typedef enum class eNavState
-    {
-      IDLE, FACING_DEST, GOING_TO_TARGET, TURNING_AT_TARGET, STOPPING
-    } eNavState;
-
-    typedef enum class eNavOrder
-    {
-      NOTHING, GOTO, GOTO_CAP, STOP
-    } eNavOrder;
-
     //Integrates the new displacement mesures with current position
     //This function modifies critical section variables with no protection
     //It's the caller responsibility to protect the call with portENTER_CRITICAL/portEXIT_CRITICAL from a thread, or call it in an interrupt context

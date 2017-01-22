@@ -21,6 +21,9 @@ namespace ard
     //Overrides Thread : register polled objects
     void init() override;
 
+    //used for telemetry or any instropection
+    apb_ActuatorsState getState();
+
     //data are public to prevent having to write a decorator, but anyone is welcome to do it
     ColorSensor stockColor;
     ActuatorX   claws;

@@ -8,26 +8,21 @@
 #include "RemoteControl.h"
 #include "Robot2017.h"
 
-//TODO temp :
-#include "com/yahdlc.h"
-
 using namespace ard;
 
 #define HANDLE_MSG(msg)                 \
 case apb_RemoteControlRequest_##msg##_tag:     \
 {                                       \
-    LOG_INFO(#msg " request received."); \
+    LOG_DEBUG(#msg " request received."); \
     msg(request);                        \
     break;                              \
 }
 
 RemoteControl::RemoteControl():
-        Thread("RemotCtl", PRIO_REMOTE_CTRL, STACK_REMOTE_CTRL)
+    com("RemCtl", LOG_QUEUE_SIZE)
 {
-    INIT_TABLE_TO_ZERO(serial_recv_buffer);
-    INIT_TABLE_TO_ZERO(hdlc_recv_framebuffer);
     INIT_TABLE_TO_ZERO(msg_send_buffer);
-    INIT_TABLE_TO_ZERO(hdlc_send_framebuffer);
+    com.setListener(this);
 }
 
 IEvent* RemoteControl::getEvent(eRemoteControlEvtId id)
@@ -37,124 +32,12 @@ IEvent* RemoteControl::getEvent(eRemoteControlEvtId id)
 
 bool RemoteControl::isReady() const
 {
-    //TODO a better solution would be welcome, for instance for exchanging info with the serial driver
-    // or with a dedicated comOpened message in the communication layer (maybe HDLC manage this ?)
-    return true;
+    return com.isConnected();
 }
 
-void RemoteControl::writeMsg(unsigned int byteToWrite)
+void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLength)
 {
-    ASSERT_TEXT(byteToWrite <= 200, "Too many bytes in encoded messages, send buffer overshoot.");
-    unsigned int hdlcByteToWrite = 0;
-
-    yahdlc_control_t control;
-    control.frame = YAHDLC_FRAME_DATA;
-    control.seq_no = 0;
-
-    ASSERT_TEXT( 0 == 
-            yahdlc_frame_data(&control, msg_send_buffer, byteToWrite, hdlc_send_framebuffer, &hdlcByteToWrite),
-            "Failed to encode hdlc frame.");
-
-    ASSERT_TEXT(hdlcByteToWrite <= 200, "Too many bytes in encoded hldc buffer, send buffer overshoot.");
-    for(unsigned int i = 0 ; i < hdlcByteToWrite ; i++)
-    {
-        Serial.write(hdlc_send_framebuffer[i]);
-    }
-    INIT_TABLE_TO_ZERO(hdlc_send_framebuffer);
-}
-
-unsigned int RemoteControl::feedReadBuffer()
-{
-    while (Serial.available())
-    {
-        //As the yahdlc layer requires a flat buffer we "un-ring" the driver ring buffer
-        serial_recv_buffer[serial_index] = (char) Serial.read();
-        serial_index++;
-        ASSERT_TEXT(serial_index <= TMP_SERIAL_BUF_SIZE, "Serial framebuffer overshoot");
-    }
-
-    return serial_index;
-}
-
-void RemoteControl::run()
-{
-    //use this function to shortcut the google protobuf layer in case you want a simple way of commanding the robot.
-    //simpleSerialRun();
-
-    //hldc local vars
-    yahdlc_control_t control;
-
-    size_t nbBytesRead = 0;//nb bytes in the receive buffer
-    size_t nbHdlcBytes = 0;//nb bytes parsed by yahdlc that can be thrown away
-    unsigned int hdlc_length = 0;
-
-    while (2)
-    {
-        //There are a lot of overflow and performance issues in the following algorithm, but it's a starting point (anyway the Arduino buffer is worse ...)
-        nbBytesRead = feedReadBuffer();
-        //if no bytes is present wait a bit and read again
-        if ( nbBytesRead == 0)
-        {
-            vTaskDelay(50);
-            continue;
-        }
-
-        do
-        {
-            //clean the buffer that will receive the future frame
-            hdlc_length = 0;
-            INIT_TABLE_TO_ZERO(hdlc_recv_framebuffer);
-            INIT_STRUCT_TO_ZERO(control);
-
-            //as a simple solution we filter char by char, for performance improvments we could modify the Arduino UARTClass
-            //and add a ReadAll function to get a longer buffer. As long as only non-operational action is
-            //done here, there is no need for performance
-            int res = yahdlc_get_data(&control, serial_recv_buffer, nbBytesRead, hdlc_recv_framebuffer, &hdlc_length);
-            if (0 < res)
-            {
-                //clean input buffer : unused data at the front and decoded frame are deleted
-                nbHdlcBytes = res + 1; //the result is the index of the last read element in the buffer
-                if (nbHdlcBytes == TMP_SERIAL_BUF_SIZE)
-                {
-                    INIT_TABLE_TO_ZERO(serial_recv_buffer);
-                    serial_index = 0;
-                }
-                else
-                {
-                    //it's possible that some bytes are present after the decoded frame (ex : several received frames)
-                    size_t remainingBytesNb = nbBytesRead - nbHdlcBytes;
-                    char* startOfRemainingBytes = serial_recv_buffer + nbHdlcBytes; //no overflow as full buffer case is treated before
-                    memcpy(serial_recv_buffer, startOfRemainingBytes, remainingBytesNb);
-                    //unused bytes are zeroed
-                    memset(serial_recv_buffer + remainingBytesNb, 0, nbBytesRead - remainingBytesNb);
-                    serial_index = remainingBytesNb;
-                }
-
-#ifdef ARD_DEBUG
-                hdlc_recv_framebuffer[hdlc_length] = 0;
-                hdlc_recv_framebuffer[hdlc_length + 1] = 0;
-                //treat the decoded frame
-                LOG_DEBUG("HDLC frame received size=" + String(hdlc_length) + " msg=[" + String(hdlc_recv_framebuffer) + "]");
-#endif
-                handleMsg(hdlc_recv_framebuffer, hdlc_length);
-            }
-        } while (hdlc_length != 0); //there may be several frames, so as long as a frame is found, unpile buffer
-
-        //clean dust bytes if an incomplete frame is holder the buffer beginning
-        yahdlc_state_t serial_buf_state;
-        yahdlc_get_state(&serial_buf_state);
-        if (serial_buf_state.start_index < 0) //no start found, mean dust bytes at the begining of src buffer
-        {
-            memset(serial_recv_buffer, 0, nbBytesRead);
-            serial_index = 0;
-        }
-
-        vTaskDelay(1);
-    } //end while(2)
-}
-
-void RemoteControl::handleMsg(char const * msg, size_t msgLength)
-{
+    UNUSED(origin);
     apb_RemoteControlRequest request = apb_RemoteControlRequest_init_default;
 
     /* Create a stream that reads from the buffer. */
@@ -170,6 +53,8 @@ void RemoteControl::handleMsg(char const * msg, size_t msgLength)
     switch (request.which_type)
     {
         HANDLE_MSG(getOsStats)
+        HANDLE_MSG(getOsStatsLogs)
+        HANDLE_MSG(getTelemetry)
         HANDLE_MSG(configureMatch)
         HANDLE_MSG(startMatch)
         HANDLE_MSG(setPosition)
@@ -191,37 +76,58 @@ void RemoteControl::handleMsg(char const * msg, size_t msgLength)
 
 void RemoteControl::getOsStats(apb_RemoteControlRequest const & request)
 {
-    char text[40];
-    char* pcWriteBuffer = text;
+    ASSERT(false);
+}
 
-    LOG_INFO("------- ArdOs Stats  -------");
-    LOG_INFO("|   Thread   |  Free stack |");
-    LOG_INFO("----------------------------");
+void RemoteControl::getOsStatsLogs(apb_RemoteControlRequest const & request)
+{
+    LOG_INFO("------------ ArdOs Stats  ---------------");
+    LOG_INFO("|   Thread   |  Free stack (in words)   |");
+    LOG_INFO("-----------------------------------------");
 
-    TaskStatus_t pxTaskStatusArray[PRIO_MAX];
-    UBaseType_t uxArraySize = PRIO_MAX;
-    uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, NULL );
+    Thread::ThreadParams const* threads = Thread::getThreadParams();
+
+    LOG_INFO(String("  Idle\t")
+            + uxTaskGetStackHighWaterMark(xTaskGetIdleTaskHandle())
+            + "/" + configMINIMAL_STACK_SIZE);
 
     /* Create a human readable table from the binary data. */
-    for( UBaseType_t x = 0; x < uxArraySize; x++ )
+    for( int i = 1; i < PRIO_NB; i++ )
     {
-        /* Write the task name to the string, padding with spaces so it
-        can be printed in tabular form more easily. */
-        pcWriteBuffer[0] = ' ';
-        pcWriteBuffer[1] = ' ';
-        pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer+2, pxTaskStatusArray[ x ].pcTaskName );
-
-        /* Write the rest of the string. */
-        sprintf( pcWriteBuffer, "\t%u", ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark);
-        pcWriteBuffer = text;
-
-        LOG_INFO(String(text));
+        if(threads[i].handle != NULL)
+        {
+            LOG_INFO(String("  ") + pcTaskGetTaskName(threads[i].handle)
+                    + "\t" + uxTaskGetStackHighWaterMark(threads[i].handle)
+                    + "/" + threads[i].stackSize);
+        }
     }
 
-    LOG_INFO("-----------------------------------------------");
-    LOG_INFO(String("  Free heap size : ") + xPortGetFreeHeapSize() + "o");
-    LOG_INFO("-----------------------------------------------");
+    LOG_INFO("-----------------------------------------");
+    LOG_INFO(String("  Free heap    : ") + (100*xPortGetFreeHeapSize())/configTOTAL_HEAP_SIZE + "% (" + xPortGetFreeHeapSize() + "o / " + configTOTAL_HEAP_SIZE + "o)");
+    LOG_INFO(String("  Nb mutexes   : ") + Mutex::getOsObjectCount());
+    LOG_INFO(String("  Nb signals   : ") + Signal::getOsObjectCount());
+    LOG_INFO(String("  Nb queues    : ") + Queue::getOsObjectCount());
+    LOG_INFO(String("  Nb threads   : ") + Thread::getOsObjectCount());
+    LOG_INFO(String("  Nb SW Timers : ") + SwTimer::getOsObjectCount());
+    LOG_INFO("-----------------------------------------");
+}
 
+void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
+{
+    /* Clean send buffer and create a stream that will write to our buffer. */
+    INIT_TABLE_TO_ZERO(msg_send_buffer);
+    pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
+
+    /* populates message */
+    apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
+    response.which_type                     = apb_RemoteControlResponse_telemetry_tag;
+    response.type.telemetry.date            = millis();
+    response.type.telemetry.nav             = ROBOT.nav.getState();
+    response.type.telemetry.actuators       = ROBOT.actuators.getState();
+
+    /* Now we are ready to encode the message! */
+    ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode Log message.");
+    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: log failed");
 }
 
 void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
@@ -269,18 +175,20 @@ void RemoteControl::requestGotoCap(apb_RemoteControlRequest const & request)
 
 void RemoteControl::log(LogMsg const & log)
 {
-    apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
-
-    /* Create a stream that will write to our buffer. */
+    /* Clean send buffer and create a stream that will write to our buffer. */
+    INIT_TABLE_TO_ZERO(msg_send_buffer);
     pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
-    response.which_type = apb_RemoteControlResponse_log_tag;
-    response.type.log.date  = log.date;
-    response.type.log.level = log.level;
-    strcpy(response.type.log.component, log.component.c_str());
-    strcpy(response.type.log.text, log.text.c_str());
+
+    /* populates message */
+    apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
+    response.which_type         = apb_RemoteControlResponse_log_tag;
+    response.type.log.date      = log.date;
+    response.type.log.level     = log.level;
+    strcpy(response.type.log.component, log.component);
+    strcpy(response.type.log.text, log.text);
 
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode Log message.");
-    writeMsg(stream.bytes_written);
+    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: log failed");
 }
 
