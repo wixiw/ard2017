@@ -35,7 +35,7 @@ namespace ard
 
         //Freeze the robot so we are sure it doesn't do
         //anything until the end of the match
-        //Note : it will still do the funny action
+        // Caution : cannot be called from interrupt.
         void dieMotherFucker();
 
         //answer true if the start is plugged

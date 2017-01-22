@@ -34,15 +34,22 @@ namespace ard
     class FilteredInput
     {
     public:
+        static const bool INVERTED = true;
+
         /**
          * @param pin : the gpio on which the filter is attached
          * @param debounceHigh : see setDebounceHigh
          * @param debounceLow : see setDebounceLow
+         * @param invert : invert the signal level. The signal is inverted at the far beginning
+         *                  of the computation as if the electronic signal were inverted
+         *                  hence any reference to rising/falling edge events is done
+         *                  on the inverted signal.
          */
-        FilteredInput(uint8_t pinId, uint32_t debounceHigh = 0, uint32_t debounceLow = 0);
+        FilteredInput(uint8_t pinId, uint32_t debounceHigh = 0, uint32_t debounceLow = 0, bool invert = false);
 
         /**
          *  Add a debounce filter on the gpio for rising level
+         *  Note : the debounce applies on the inverted raw signal
          *  @param debounce : the minimal duration of a high
          *        level change to consider it (in milliseconds)
          *        set to 0 to deactivate
@@ -52,6 +59,7 @@ namespace ard
 
         /**
          *  Add a debounce filter on the gpio for lowering level
+         *  Note : the debounce applies on the inverted raw signal
          *  @param debounce : the minimal duration of a high
          *        level change to consider it (in milliseconds)
          *        set to 0 to deactivate
@@ -67,12 +75,13 @@ namespace ard
 
         /**
          * Reset the filter
+         * Note : the ouput filter value is set to HIGH when the signal is inverted.
          */
         void
         reset();
 
         /**
-         * Read the filtered value
+         * Read the filtered value (note the the inversion in taken into account)
          */
         eGpioLevel read() const
         {
@@ -80,27 +89,30 @@ namespace ard
         }
 
         /**
-         * Read the raw value (unfiltered
+         * Read the raw inverted value (unfiltered)
          */
         eGpioLevel readRaw() const
         {
-            return digitalRead(pin) ? GPIO_HIGH : GPIO_LOW;
+            if(invert)
+                return digitalRead(pin) ? GPIO_LOW : GPIO_HIGH;
+            else
+                return digitalRead(pin) ? GPIO_HIGH : GPIO_LOW;
         }
 
         /**
-         * Returns true if the raw input is high, and the filtered output is low
+         * Returns true if the raw inverted input is high, and the filtered output is low
          */
         bool isRising() const
         {
-            return digitalRead(pin) == GPIO_HIGH && filteredLevel == GPIO_LOW;
+            return readRaw() == GPIO_HIGH && filteredLevel == GPIO_LOW;
         }
 
         /**
-         * Returns true if the raw input is low, and the filtered output is high
+         * Returns true if the raw inverted input is low, and the filtered output is high
          */
         bool isFalling() const
         {
-            return digitalRead(pin) == GPIO_LOW && filteredLevel == GPIO_HIGH;
+            return readRaw() == GPIO_LOW && filteredLevel == GPIO_HIGH;
         }
 
         /**
@@ -111,6 +123,7 @@ namespace ard
 
     private:
         uint8_t pin;
+        bool invert;
         eGpioLevel filteredLevel;
         uint32_t debounceHighDuration;
         volatile uint32_t debounceHighCount;

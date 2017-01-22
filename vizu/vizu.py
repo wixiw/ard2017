@@ -13,6 +13,7 @@ from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
+from core import *
 from com import *
 from gui import *
 

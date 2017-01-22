@@ -4,6 +4,7 @@
 from PyQt5.Qt import *
 from ArdHdlc import *
 from proto import *
+from core import *
 
 #
 # This class is a network middleware allowing SW to call RPC method 
@@ -13,7 +14,7 @@ from proto import *
 class RemoteControl(QObject):
     
     #-------------------------
-    # TELEOP RECEIVE API
+    # TELEOP RECEIVE/Reply API
     #-------------------------
     log             = pyqtSignal(RemoteControl_pb2.Log)
     osStats         = pyqtSignal(CommonMsg_pb2.EmptyMsg)
@@ -23,60 +24,45 @@ class RemoteControl(QObject):
     def __init__(self):
         super().__init__() 
         self.com = ArdHdlc()
+        self.timer_telemetry = QTimer(self)
+        self.timer_telemetry.timeout.connect(self._telemetryTick)
+        self.telemetry.connect(self._telemetryDataCb)
+        self.robotState = RemoteControl_pb2.Telemetry()
+
+#---------------------------------------------------------------------------------
+# Public API :
+#---------------------------------------------------------------------------------
 
     #@return [list(str), list(str)] : list of ports and baudrates
     def getSerialPortInfo(self):
         return self.com.getAvailablePorts(), self.com.getAvailableBaudrates()
     
     # Connect to the specified port at the specified baudrate
+    # If the connection is established, then start the polling thread to get telemetry
     # @param str port : like "COM1", ideally from getAvailablePorts()
     # @param int baudrate : ideally from getAvailableBaudrates()
     # @return bool : true if the connection succeed, false otherwise
     def connect(self, port, baudrate):
-        return self.com.connect(port, baudrate, self._frameReceived)
+        res = self.com.connect(port, baudrate, self._frameReceived)
+        if res:
+          self.timer_telemetry.start(1000)  
+        return res 
         
     # go throught decorator
     def disconnect(self):
+        self.timer_telemetry.stop()
         self.com.disconnect()
       
     # go throught decorator  
     def isConnected(self):
         self.com.isConnected()
-               
-    # decode an HDLC frame payload to get the message, which is the RemoteControlResponse type
-    @pyqtSlot(bytes)
-    def _frameReceived(self, data):
-        response = RemoteControl_pb2.RemoteControlResponse()
-        try:
-            response.ParseFromString(data)
-        except:
-            print("Failed to decode protobuf ms : " + str(data))
-            print(str(response))
-            traceback.print_exc()
-        else:
-            if response.WhichOneof("type") != None:
-                #--- DEBUG --- print("RemoteControl message received:")
-                #--- DEBUG --- print(str(response))
-                signal = getattr(self, response.WhichOneof("type"))
-                subMsg = getattr(response, response.WhichOneof("type"))
-                signal.emit(subMsg)
-            else:
-                print("RemoteControl : Unkown message " + str(response))
         
-            
-    #serialize and send the message on communication link
-    #do not use this function directly, use TELEOP API below
-    def _sendMsg(self, msg):
-        assert isinstance(msg, RemoteControl_pb2.RemoteControlRequest), "RemoteControl_pb2._sendMsg expects to receive a RemoteControlRequest class"
-        print("RemoteControl request : " + str(msg))
-
-        if self.com.sendMsg(msg.SerializeToString()):
-            print("Frame sent successfully.")
-        else:
-            print("Frame send error.")
-            
+    #@return 
+    def getRobotPosition(self):
+        return Pose2D.fromPoseMsg(self.robotState.nav.pos)
+    
 #---------------------------------------------------------------------------------
-# TELEOP API : any of the method below send a msg with the same name in RemoteControl_pb2.py
+# TELEOP SEND/Request API : any of the method below send a msg with the same name in RemoteControl_pb2.py
 #---------------------------------------------------------------------------------
     
     @pyqtSlot()
@@ -110,28 +96,74 @@ class RemoteControl(QObject):
         msg.startMatch.SetInParent()
         self._sendMsg(msg)
         
-    @pyqtSlot(int,int,float)
-    def setPosition(self, x,y,h):
+    @pyqtSlot(Pose2D)
+    def setPosition(self, pose):
         msg = RemoteControl_pb2.RemoteControlRequest()
-        msg.setPosition.x = x
-        msg.setPosition.y = y
-        msg.setPosition.h = h
+        msg.setPosition = pose.toPoseMsg()
         self._sendMsg(msg)
         
-    @pyqtSlot(int,int,float,int)
-    def requestGotoCap(self, x,y,h,dir):
+    @pyqtSlot(Pose2D, int)
+    def requestGotoCap(self, pose, dir):
         msg = RemoteControl_pb2.RemoteControlRequest()
-        msg.requestGotoCap.target.x = x
-        msg.requestGotoCap.target.y = y
-        msg.requestGotoCap.target.h = h
+        msg.requestGotoCap.target = pose.toPoseMsg()
         msg.requestGotoCap.direction = dir
         self._sendMsg(msg)
         
-    @pyqtSlot(int,int,int)
-    def requestGoto(self, x,y,dir):
+    @pyqtSlot(Point ,int)
+    def requestGoto(self, point, dir):
         msg = RemoteControl_pb2.RemoteControlRequest()
-        msg.requestGoto.target.x = x
-        msg.requestGoto.target.y = y
+        msg.requestGoto.target.x = point.x
+        msg.requestGoto.target.y = point.y
         msg.requestGoto.direction = dir
         self._sendMsg(msg)
+        
+#---------------------------------------------------------------------------------
+# Private/internal API :
+#---------------------------------------------------------------------------------
+  
+    # decode an HDLC frame payload to get the message, which is the RemoteControlResponse type
+    @pyqtSlot(bytes)
+    def _frameReceived(self, data):
+        response = RemoteControl_pb2.RemoteControlResponse()
+        try:
+            response.ParseFromString(data)
+        except:
+            print("Failed to decode protobuf ms : " + str(data))
+            print(str(response))
+            traceback.print_exc()
+        else:
+            try:
+                #--- DEBUG --- print("RemoteControl message received:")
+                #--- DEBUG --- print(str(response))
+                signal = getattr(self, response.WhichOneof("type"))
+                subMsg = getattr(response, response.WhichOneof("type"))
+                signal.emit(subMsg)
+            except:
+                print("RemoteControl : Unkown message " + str(response))
+        
+            
+    #serialize and send the message on communication link
+    #do not use this function directly, use TELEOP API below
+    def _sendMsg(self, msg):
+        assert isinstance(msg, RemoteControl_pb2.RemoteControlRequest), "RemoteControl_pb2._sendMsg expects to receive a RemoteControlRequest class"
+        print("RemoteControl request : " + str(msg))
+
+        if self.com.sendMsg(msg.SerializeToString()):
+            print("Frame sent successfully.")
+        else:
+            print("Frame send error.")
+
+    #self.timer_telemetry Callback : send a telemetry data request  
+    @pyqtSlot()
+    def _telemetryTick(self):
+        self.getTelemetry()
+  
+    #telemetry reply data callback
+    @pyqtSlot(RemoteControl_pb2.Telemetry)     
+    def _telemetryDataCb(self, msg):
+        print("Telemetry received.")
+        print(str(msg))
+        self.robotState = msg
+        
+        
         

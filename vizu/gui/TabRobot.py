@@ -6,6 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from ArdWidgets import *
+from core import *
 
 #
 # This class is a pre-built widget which is designed to display 
@@ -56,8 +57,8 @@ class TabRobot(QWidget):
 
 
 class SetPosForm(QWidget):
-    #signal(x,y,h)
-    execute = pyqtSignal(int, int, float)
+    #signal(pose)
+    execute = pyqtSignal(Pose2D)
                         
     def __init__(self):
         super().__init__()
@@ -82,11 +83,11 @@ class SetPosForm(QWidget):
         
     @pyqtSlot()
     def _execute(self):
-        self.execute.emit(self.x.getValue(), self.y.getValue(), self.h.getValue())
+        self.execute.emit(Pose2D(self.x.getValue(), self.y.getValue(), self.h.getValue()))
         
 class GotoCapForm(QWidget):
-    #signal(x,y,h,dir)
-    execute = pyqtSignal(int, int, float, int)
+    #signal(pose,dir)
+    execute = pyqtSignal(Pose2D, int)
                         
     def __init__(self):
         super().__init__()
@@ -113,11 +114,11 @@ class GotoCapForm(QWidget):
         
     @pyqtSlot()
     def _execute(self):
-        self.execute.emit(self.x.getValue(), self.y.getValue(), self.h.getValue(), self.dir.getValue())
+        self.execute.emit(Pose2D(self.x.getValue(), self.y.getValue(), self.h.getValue()), self.dir.getValue())
         
 class GotoForm(QWidget):
-    #signal(x,y,dir)
-    execute = pyqtSignal(int, int, int)
+    #signal(point, dir)
+    execute = pyqtSignal(Point, int)
     
     def __init__(self):
         super().__init__()
@@ -141,7 +142,7 @@ class GotoForm(QWidget):
         
     @pyqtSlot()
     def _execute(self):
-        self.execute.emit(self.x.getValue(), self.y.getValue(), self.dir.getValue())
+        self.execute.emit(Point(self.x.getValue(), self.y.getValue()), self.dir.getValue())
         
         
 if __name__ == '__main__':

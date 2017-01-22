@@ -26,8 +26,9 @@ void ard::gpioToolsIsrCallback(uint32_t period_us)
     }
 }
 
-FilteredInput::FilteredInput(uint8_t pinId, uint32_t debounceHigh, uint32_t debounceLow)
-        : pin(pinId)
+FilteredInput::FilteredInput(uint8_t pinId, uint32_t debounceHigh, uint32_t debounceLow, bool invert):
+        pin(pinId),
+        invert(invert)
 {
     reset();
     fio_manager_registerIn(this);
@@ -75,13 +76,24 @@ void FilteredInput::reset()
 {
     debounceHighCount = 0;
     debounceLowCount = 0;
-    filteredLevel = GPIO_LOW;
+    if(invert)
+        filteredLevel = GPIO_HIGH;
+    else
+        filteredLevel = GPIO_LOW;
 }
 
 void FilteredInput::update(uint32_t period_us)
 {
+    int newPinState;
+
+    if(invert)
+        newPinState = 1 - digitalRead(pin);
+    else
+        newPinState = digitalRead(pin);
+
+
     //Pin rising edge
-    if (digitalRead(pin) == GPIO_HIGH && filteredLevel == GPIO_LOW)
+    if (newPinState == GPIO_HIGH && filteredLevel == GPIO_LOW)
     {
         debounceHighCount += period_us;
 
@@ -93,7 +105,7 @@ void FilteredInput::update(uint32_t period_us)
             eventRising.publishFromISR();
         }
     }
-    else if (digitalRead(pin) == GPIO_LOW && filteredLevel == GPIO_HIGH)
+    else if (newPinState == GPIO_LOW && filteredLevel == GPIO_HIGH)
     {
         debounceLowCount += period_us;
 
