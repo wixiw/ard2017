@@ -49,7 +49,9 @@ class ConnectScreen(QWidget):
         self.tab["Com"].startMatch          .connect(self.teleop.startMatch)
         #connect Log tab
         self.teleop.log.connect(self.tab["Log"].log)
-        #conenct Robot tab
+        #connect Strat tab
+        self.teleop.telemetry.connect(self.tab["Strat"]._telemetryDataCb)
+        #connect Robot tab
         for cmd, widget in self.tab["Robot"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  #getattr is used to get a method reference from name, hence automatically binding signals ;p
         

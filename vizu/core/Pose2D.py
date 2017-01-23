@@ -16,7 +16,7 @@ class Pose2D(Point):
             assert abs(self.h) < 10., "h is out of range %s" % h
             self.normalizeAngle(self.h)
     
-    def normalizeAngle(angle):
+    def normalizeAngle(self, angle):
         angle=angle%(2*pi)
         if angle>pi:
             angle= angle - 2*pi
@@ -81,15 +81,11 @@ class Pose2D(Point):
         return p
     
     #Convert a Pose2D to a PoseMsg ros message
-    #@param Pose2D pose2D : pose to convert
-    #@return  CommonMsg_pb2.PointCap
-    @staticmethod
-    def toPoseMsg(pose2D):
-        p = PoseMsg()
-        p.x = pose2D.x
-        p.y = pose2D.y
-        p.h = pose2D.h
-        return p
+    #@param CommonMsg_pb2.PointCap msg : the msg which receive the data
+    def toPoseMsg(self, msg):
+        msg.x = self.x
+        msg.y = self.y
+        msg.h = self.h
     
     
     def __add__(self, p):

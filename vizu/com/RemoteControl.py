@@ -21,14 +21,15 @@ class RemoteControl(QObject):
     telemetry       = pyqtSignal(RemoteControl_pb2.Telemetry)
     #-------------------------
     
+    #trigger listeners
+    
+    
     def __init__(self):
         super().__init__() 
         self.com = ArdHdlc()
         self.timer_telemetry = QTimer(self)
         self.timer_telemetry.timeout.connect(self._telemetryTick)
-        self.telemetry.connect(self._telemetryDataCb)
-        self.robotState = RemoteControl_pb2.Telemetry()
-
+        
 #---------------------------------------------------------------------------------
 # Public API :
 #---------------------------------------------------------------------------------
@@ -56,10 +57,6 @@ class RemoteControl(QObject):
     # go throught decorator  
     def isConnected(self):
         self.com.isConnected()
-        
-    #@return 
-    def getRobotPosition(self):
-        return Pose2D.fromPoseMsg(self.robotState.nav.pos)
     
 #---------------------------------------------------------------------------------
 # TELEOP SEND/Request API : any of the method below send a msg with the same name in RemoteControl_pb2.py
@@ -99,13 +96,13 @@ class RemoteControl(QObject):
     @pyqtSlot(Pose2D)
     def setPosition(self, pose):
         msg = RemoteControl_pb2.RemoteControlRequest()
-        msg.setPosition = pose.toPoseMsg()
+        pose.toPoseMsg(msg.setPosition)
         self._sendMsg(msg)
         
     @pyqtSlot(Pose2D, int)
     def requestGotoCap(self, pose, dir):
         msg = RemoteControl_pb2.RemoteControlRequest()
-        msg.requestGotoCap.target = pose.toPoseMsg()
+        pose.toPoseMsg(msg.requestGotoCap.target)
         msg.requestGotoCap.direction = dir
         self._sendMsg(msg)
         
@@ -146,10 +143,11 @@ class RemoteControl(QObject):
     #do not use this function directly, use TELEOP API below
     def _sendMsg(self, msg):
         assert isinstance(msg, RemoteControl_pb2.RemoteControlRequest), "RemoteControl_pb2._sendMsg expects to receive a RemoteControlRequest class"
-        print("RemoteControl request : " + str(msg))
+        #---DEBUG--- print("RemoteControl request : " + str(msg))
 
         if self.com.sendMsg(msg.SerializeToString()):
-            print("Frame sent successfully.")
+            #--- DEBUG---print("Frame sent successfully.")
+            pass
         else:
             print("Frame send error.")
 
@@ -158,12 +156,6 @@ class RemoteControl(QObject):
     def _telemetryTick(self):
         self.getTelemetry()
   
-    #telemetry reply data callback
-    @pyqtSlot(RemoteControl_pb2.Telemetry)     
-    def _telemetryDataCb(self, msg):
-        print("Telemetry received.")
-        print(str(msg))
-        self.robotState = msg
         
         
         

@@ -13,13 +13,11 @@ class Point(object):
             self.x = 'FREE'
         else:
             self.x = float(x)
-            assert abs(self.x) < 3., "x is out of table %s" % x
         
         if True == isinstance(y,str) and y =="FREE":
             self.y = 'FREE'
         else:
             self.y = float(y)
-            assert abs(self.y) < 3., "y is out of table %s" % y
             
  
     def dist(self, p):
@@ -59,5 +57,5 @@ class Point(object):
         also the str() function. It should produce a string that, when
         evaluated, returns a point with the 
         same data."""
-        return '[%0.3f , %0.3f]' % (self.x, self.y)     
+        return '[%d , %d]' % (self.x, self.y)     
     

@@ -6,7 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from core import *
-import copy
+import math
 
 #spare area around the table
 T_SPARE  =  100.
@@ -34,33 +34,31 @@ markPen.setCosmetic(True)
 #
 class TabStrat(QWidget):
     
+    #@param robot : the prowy providing telemetry data
     def __init__(self, parent = None):
         super().__init__(parent)
-        self.table = TableWidget(self)
-        layoutFilters = QHBoxLayout()
-        layoutFilters.addWidget(self.table)
-
-class TableWidget(QWidget):
-    
-    def __init__(self, parent = None):
-        super().__init__(parent)
-        self.p = QPainter()
         self.resize(600,400)
+        self.p = QPainter()
+        self.table = TableWidget(self.p)
+        self.robot = RobotWidget(self.p)
         self.view = QRect( - T_SPARE,
-                           - T_SPARE,
-                            T_WIDTH     +  2.*T_SPARE,
-                            T_HEIGHT    +  2.*T_SPARE)
+                   - T_SPARE,
+                    T_WIDTH     +  2.*T_SPARE,
+                    T_HEIGHT    +  2.*T_SPARE)
+        self.robotState = RemoteControl_pb2.Telemetry()
         
     def paintEvent(self, event):
         self.p.begin(self)
-        print(str(self.p.device().width()) + " " + str(self.p.device().height()))
+        #---DEBUG--- print(str(self.p.device().width()) + " " + str(self.p.device().height()))
         self.p.setWindow(self.view)
         self.p.setViewport(0., 0., self.p.device().width(), self.p.device().height())
-        print(self.view)
+        #---DEBUG--- print(self.view)
         
-        self.drawEmptyTable()
+        self.table.draw()
+        self.p.translate(T_WIDTH/2, T_HEIGHT/2)
+        self.robot.draw(self.getRobotPosition())
         self.p.end()
-        
+    
     def mousePressEvent(self, event):
         p = event.pos()
         #trans, ok = self.p.transform().inverted()
@@ -69,7 +67,71 @@ class TableWidget(QWidget):
         qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p2.x()) + " " + str(p2.y()))) 
         return QWidget.mousePressEvent(self, event)
 
-    def drawEmptyTable(self):
+    #@return Pose2D : the last received telemetry position
+    def getRobotPosition(self):
+        return Pose2D.fromPoseMsg(self.robotState.nav.pos)
+
+    #telemetry reply data callback
+    @pyqtSlot(RemoteControl_pb2.Telemetry)     
+    def _telemetryDataCb(self, msg):
+        #--- DEBUG --- print("Telemetry received.")
+        #--- DEBUG --- print(str(msg))
+        self.robotState = msg
+        self.update()
+
+class RobotWidget():
+    
+    def __init__(self, painter):
+        self.p = painter
+                
+    def draw(self, pose):
+        self.p.save()
+        self.p.setRenderHint(QPainter.Antialiasing)
+        self.p.translate(pose.x, pose.y)
+        self.p.rotate(math.degrees(pose.h))
+        self.drawCarriage()
+        self.drawWheels()
+        self.drawMarks()
+        self.p.restore()
+
+    def drawCarriage(self):
+        self.p.setPen(markPen)
+        self.p.setBrush(Qt.gray)
+        carriage = QPainterPath()
+        carriage.moveTo(-40, 75)
+        carriage.lineTo(130, 75)
+        carriage.lineTo(130, 45)
+        carriage.lineTo( 40, 45)
+        carriage.lineTo( 40,-45)
+        carriage.lineTo(130,-45)
+        carriage.lineTo(130,-75)
+        carriage.lineTo(-40,-75)
+        carriage.closeSubpath()
+        self.p.drawPath(carriage)
+        pass
+    
+    def drawWheels(self):
+        #draw wheels
+        self.p.setBrush(Qt.green)
+        self.p.drawRoundedRect(QRectF(-35, 55, 60, 10), 3, 3)
+        self.p.drawRoundedRect(QRectF(-35, -65, 60, 10), 3, 3)
+        
+    def drawMarks(self):
+        pen = QPen(ardGray)
+        pen.setWidth(1)
+        pen.setCosmetic(True)
+        pen.setDashPattern([2, 3])
+        self.p.setPen(pen)
+        
+        self.p.drawLine(-60, 0, 150, 0)
+        self.p.drawLine(0, 90, 0, -90)
+
+class TableWidget():
+    
+    def __init__(self, painter):
+        self.p = painter
+                
+    def draw(self):
         self.drawBackground()
         self.drawStartArea()
         self.drawCraters()

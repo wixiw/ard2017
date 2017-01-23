@@ -74,10 +74,14 @@ class FloatInput(QLineEdit):
 
 #
 # This widget is a restricted text field usable to select a heading/angle value.
+# User sets its value in degree, but SW get it in rads
 #
 class HeadingInput(FloatInput):
     def __init__(self, parent):
         super().__init__(parent, -180., 180., 1)
+        
+    def getValue(self):
+        return math.radians(FloatInput.getValue(self))
         
 #
 # This widget is a restricted combobox to select a direction forward/backward
