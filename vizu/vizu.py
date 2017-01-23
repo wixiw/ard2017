@@ -4,8 +4,10 @@
 #expand path to find modules :
 import sys
 sys.path.append("com")
+sys.path.append("core")
 sys.path.append("gui")
 sys.path.append("proto")
+sys.path.append("../devenv/nanopb-0.3.7-windows-x86/generator/proto")
 
 import signal
 
@@ -13,7 +15,6 @@ from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-from core import *
 from com import *
 from gui import *
 
@@ -30,7 +31,7 @@ class ConnectScreen(QWidget):
         self.tab = dict()
         self.tab["Com"]   = TabCom(self.teleop)
         self.tab["Log"]   = TabLog()
-        self.tab["Strat"] = self.buildTabTable()
+        self.tab["Strat"] = TabStrat()
         self.tab["Robot"] = TabRobot()
         
         
@@ -108,10 +109,6 @@ class ConnectScreen(QWidget):
     def selectTab(self, tabId):
         self.tabs.setCurrentIndex(tabId)
         
-    def buildTabTable(self):
-        tab_Table = QWidget(self)        
-        return tab_Table
-            
 if __name__ == '__main__':
     import sys
     import os

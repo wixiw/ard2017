@@ -96,39 +96,4 @@ class DirectionInput(QComboBox):
     def getValue(self):
         return self.currentData()
     
-
-class __Test__ArdWidgets(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.intInput = IntegerInput(self, -100, 100)
-        self.floatInput = FloatInput(self, -1. , 1., 3)
-        self.hInput = HeadingInput(self)
-        self.dirInput = DirectionInput(self)
-        self.read = QPushButton('Read', self)
-        layout = QFormLayout(self)
-        layout.addRow("intInput", self.intInput)
-        layout.addRow("floatInput", self.floatInput)
-        layout.addRow("hInput", self.hInput)
-        layout.addRow("dirInput", self.dirInput)
-        layout.addRow("", self.read) 
-        self.read.pressed.connect(self.readCB)
-        
-    @pyqtSlot()
-    def readCB(self):
-            print("int : "      + str(self.intInput.getValue()))
-            print("float : "    + str(self.floatInput.getValue()))
-            print("h : "        + str(self.hInput.getValue()))
-            print("dir : "      + str(self.dirInput.getValue()))
-
-if __name__ == '__main__':
-    import sys
-    app = QApplication(sys.argv)
-    main = __Test__ArdWidgets()
-    main.show()
-    
-
-    
-    sys.exit(app.exec_())
-    
-    
     

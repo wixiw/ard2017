@@ -1,9 +1,5 @@
 #print("Importing proto package")
 
-#expand path to find modules :
-import sys
-sys.path.append("../devenv/nanopb-0.3.7-windows-x86/generator/proto")
-
 from os.path import dirname, basename, isfile
 import glob
 modules = glob.glob(dirname(__file__)+"/*.py")
