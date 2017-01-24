@@ -22,7 +22,7 @@ void ardAssertImpl(bool condition, char const* file, unsigned int line, char con
 {
     if(!condition)
     {
-        if( ArdOs::getState() == ArdOs::RUNNING )
+        if( ArdOs::getState() == ArdOs::RUNNING && !Thread::interruptContext() )
         {
             LOG_ASSERT(String(file) +":" + line + String(text));
             ROBOT.dieMotherFucker();

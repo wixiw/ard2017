@@ -55,6 +55,7 @@ class TabLog(QWidget):
         layoutFilters.addWidget(self.chk_level)
         layoutFilters.addWidget(self.combo_level)
         layoutFilters.addWidget(self.chk_cpt)
+        layoutFilters.addStretch(1)
         layoutFilters.addWidget(self.btn_reset)
         layout.addLayout(layoutFilters)
         layout.addWidget(self.text_logs)

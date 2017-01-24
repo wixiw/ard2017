@@ -42,7 +42,7 @@ namespace ard
     void
     setPosition (PointCap newPose);
     void
-    setPosition(float x/*mm*/, float y/*mm*/, float h/*°*/){setPosition(PointCap(x,y,h));};
+    setPosition(float x/*mm*/, float y/*mm*/, float h/*rad*/){setPosition(PointCap(x,y,h));};
 
     /**
      * Get the current robot position

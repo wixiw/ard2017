@@ -4,8 +4,10 @@
 #expand path to find modules :
 import sys
 sys.path.append("com")
+sys.path.append("core")
 sys.path.append("gui")
 sys.path.append("proto")
+sys.path.append("../devenv/nanopb-0.3.7-windows-x86/generator/proto")
 
 import signal
 
@@ -29,7 +31,7 @@ class ConnectScreen(QWidget):
         self.tab = dict()
         self.tab["Com"]   = TabCom(self.teleop)
         self.tab["Log"]   = TabLog()
-        self.tab["Strat"] = self.buildTabTable()
+        self.tab["Strat"] = TabStrat()
         self.tab["Robot"] = TabRobot()
         
         
@@ -47,7 +49,9 @@ class ConnectScreen(QWidget):
         self.tab["Com"].startMatch          .connect(self.teleop.startMatch)
         #connect Log tab
         self.teleop.log.connect(self.tab["Log"].log)
-        #conenct Robot tab
+        #connect Strat tab
+        self.teleop.telemetry.connect(self.tab["Strat"]._telemetryDataCb)
+        #connect Robot tab
         for cmd, widget in self.tab["Robot"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  #getattr is used to get a method reference from name, hence automatically binding signals ;p
         
@@ -107,10 +111,6 @@ class ConnectScreen(QWidget):
     def selectTab(self, tabId):
         self.tabs.setCurrentIndex(tabId)
         
-    def buildTabTable(self):
-        tab_Table = QWidget(self)        
-        return tab_Table
-            
 if __name__ == '__main__':
     import sys
     import os
