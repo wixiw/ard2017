@@ -17,9 +17,7 @@ from gui import *
 class TU_TableWidget(QWidget):
     def __init__(self):
         super().__init__()
-        self.table = TableWidget(self)
-
-
+        self.table = TabStrat(self)
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, signal.SIG_DFL)
