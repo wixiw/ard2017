@@ -29,7 +29,11 @@ class RemoteControl(QObject):
         self.com = ArdHdlc()
         self.timer_telemetry = QTimer(self)
         self.timer_telemetry.timeout.connect(self._telemetryTick)
-        
+      
+      
+    def __del__(self):
+        del self.timer_telemetry
+          
 #---------------------------------------------------------------------------------
 # Public API :
 #---------------------------------------------------------------------------------
@@ -71,7 +75,7 @@ class RemoteControl(QObject):
     @pyqtSlot()
     def getOsStatsLogs(self):
         msg = RemoteControl_pb2.RemoteControlRequest()
-        msg.getOsStats.SetInParent()
+        msg.getOsStatsLogs.SetInParent()
         self._sendMsg(msg)
         
     @pyqtSlot()
@@ -154,6 +158,7 @@ class RemoteControl(QObject):
     #self.timer_telemetry Callback : send a telemetry data request  
     @pyqtSlot()
     def _telemetryTick(self):
+        #print("tick")
         self.getTelemetry()
   
         

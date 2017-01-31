@@ -53,3 +53,4 @@ Temporary Items
 
 robot/Common/1_RSP/Types.pb.h
 robot/Common/1_RSP/Types.pb.c
+*.ini

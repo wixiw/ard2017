@@ -19,15 +19,26 @@ class TabCom(QWidget):
         self.com = comMdw
         ports, baudrates = self.com.getSerialPortInfo()
         
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("Com")
+        defaultPort = settings.value("port", "COM1")
+        defaultBaudrate = settings.value("baudrate", "250000")
+        
         #Serial port configuration
+            #COM port selector
         self.combo_COM = QComboBox(self)
         self.combo_COM.addItems(ports)
-        #---DEBUG ---- pour simplifier la vie a cette feignasse de Lambert
-        self.combo_COM.setCurrentIndex(1)
+        i = self.combo_COM.findText(defaultPort)
+        if i != -1 :
+            self.combo_COM.setCurrentIndex(i)
+            #Baudrate selector
         self.combo_Baudrate = QComboBox(self)
         for baudrate in baudrates:
             self.combo_Baudrate.addItem(str(baudrate), baudrate)
-        
+        i = self.combo_Baudrate.findData(defaultBaudrate)
+        if i != -1 :
+            self.combo_Baudrate.setCurrentIndex(i)
+            #connection button
         self.btn_connect = QPushButton('Connect', self)
         self.btn_connect.setCheckable(True)
         self.btn_connect.toggled[bool].connect(self._connectFromButton)
@@ -91,7 +102,7 @@ class TabCom(QWidget):
     @pyqtSlot()
     def _configureMatch(self): 
        print("Configure match request")
-       self.configureMatch.emit(1, 2)
+       self.configureMatch.emit(0, 2)
        
     @pyqtSlot()
     def _startMatch(self): 
@@ -108,6 +119,10 @@ class TabCom(QWidget):
         
         if self.com.connect(port, baudrate):
             print("Connected")
+            settings = QSettings("config.ini", QSettings.IniFormat)
+            settings.beginGroup("Com")
+            settings.setValue("port", port)
+            settings.setValue("baudrate", baudrate)
             for button in self.connected_btn:
                 self.connected_btn[button].show()
             self.networkStatus.emit(True)

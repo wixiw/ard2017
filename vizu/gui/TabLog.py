@@ -113,9 +113,9 @@ class TabLog(QWidget):
             header+= str(logMsg.date).zfill(5) + " "
         #level
         if self.level == Qt.Checked:
-            header+= "[" + Types_pb2.eLogLevel.Name(logMsg.level) + "] "
+            header+= "[" + Types_pb2.eLogLevel.Name(logMsg.level).ljust(6) + "] "
         elif self.level == Qt.PartiallyChecked:
-            header+= "[" + self.getLogLvlShortName(logMsg.level) + "] "
+            header+= "[" + self.getLogLvlShortName(logMsg.level).ljust(6) + "] "
         #component
         if self.component == Qt.Checked:
             header+= "[" + logMsg.component.ljust(8) + "] "

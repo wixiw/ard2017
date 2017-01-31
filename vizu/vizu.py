@@ -22,8 +22,7 @@ class ConnectScreen(QWidget):
     
     def __init__(self):
         super().__init__()             
-        self.resize(640, 480)
-        self.move(300, 300)
+        self.readSettings()
         self.setWindowTitle('8=> Vizu')  
         
         self.teleop = RemoteControl()
@@ -83,6 +82,9 @@ class ConnectScreen(QWidget):
             #disable tabs and shortcuts requiring a network connection
         self._handleNetworkStatus(False)
     
+    def __del__(self):
+        self.writeSettings()
+    
     @pyqtSlot(bool)
     def _handleNetworkStatus(self, connected):
         if connected:
@@ -111,6 +113,20 @@ class ConnectScreen(QWidget):
     def selectTab(self, tabId):
         self.tabs.setCurrentIndex(tabId)
         
+    def readSettings(self):
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("MainWindow")
+        self.resize(settings.value("size", QSize(640, 480)))
+        self.move(settings.value("pos", QPoint(300, 300)))
+        settings.endGroup();
+    
+    def writeSettings(self):
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("MainWindow")
+        settings.setValue("size", self.size())
+        settings.setValue("pos", self.pos())
+        settings.endGroup()
+        
 if __name__ == '__main__':
     import sys
     import os
@@ -119,7 +135,20 @@ if __name__ == '__main__':
     #os.system("..\generateCom.bat ..\\ off")
     
     signal.signal(signal.SIGINT, signal.SIG_DFL)
+    
     app = QApplication(sys.argv)
+    app.setApplicationName("Vizu")
+    app.setOrganizationName("A.R.D.")
+    app.setOrganizationDomain("team-ard.com")
+    
+    #Start application
     screen = ConnectScreen()
     screen.show()
-    sys.exit(app.exec_())
+    res = app.exec_()
+    
+    #save settings
+    del screen
+    print("Settings saved")
+    
+    
+    sys.exit(res)

@@ -37,6 +37,86 @@ class TabStrat(QWidget):
     #@param robot : the prowy providing telemetry data
     def __init__(self, parent = None):
         super().__init__(parent)
+        
+        self.overview = TableOverview(self)
+        
+        #build info tab
+        self.label = dict()
+        self.layoutInfo = QVBoxLayout()
+        self.buildPosInfo()
+        self.buildMotionInfo()
+        self.layoutInfo.addWidget(self.box_pos)
+        self.layoutInfo.addWidget(self.box_motion)
+        self.layoutInfo.addSpacerItem(QSpacerItem(150,0,QSizePolicy.Minimum,QSizePolicy.Expanding))
+        
+        self.layout = QHBoxLayout(self)
+        self.layout.addLayout(self.layoutInfo)
+        self.layout.addWidget(self.overview)
+        
+        self.robotState = RemoteControl_pb2.Telemetry()
+        
+    
+    def buildPosInfo(self):
+        self.box_pos = QGroupBox("Position")
+        self.label["x"] = QLabel("0")
+        self.label["y"] = QLabel("0")
+        self.label["h"] = QLabel("0")
+        self.label["x"].setAlignment(Qt.AlignRight)
+        self.label["y"].setAlignment(Qt.AlignRight)
+        self.label["h"].setAlignment(Qt.AlignRight)
+        box_layout = QFormLayout()
+        box_layout.addRow("x (mm) : ", self.label["x"])
+        box_layout.addRow("y (mm) : ", self.label["y"])
+        box_layout.addRow("h (°)  : ", self.label["h"])
+        self.box_pos.setLayout(box_layout)
+        
+    def buildMotionInfo(self):
+        self.box_motion = QGroupBox("Motion")
+        self.label["state"] = QLabel("?")
+        self.label["order"] = QLabel("?")
+        self.label["state"].setAlignment(Qt.AlignRight)
+        self.label["order"].setAlignment(Qt.AlignRight)
+        box_layout = QFormLayout()
+        box_layout.addRow("state : ", self.label["state"])
+        box_layout.addRow("order : ", self.label["order"])
+        self.box_motion.setLayout(box_layout)
+    
+    #@return Pose2D : the last received telemetry position
+    def getRobotPosition(self):
+        return Pose2D.fromPoseMsg(self.robotState.nav.pos)
+    
+    def getMotionStateStr(self):
+        return Types_pb2.eNavState.Name(self.robotState.nav.state)
+
+    def getMotionOrderStr(self):
+        return Types_pb2.eNavOrder.Name(self.robotState.nav.order)
+
+    #telemetry reply data callback
+    @pyqtSlot(RemoteControl_pb2.Telemetry)     
+    def _telemetryDataCb(self, msg):
+        if self.isVisible():
+            #--- DEBUG --- print("Telemetry received.")
+            #--- DEBUG --- 
+            print(str(msg))
+            self.robotState = msg
+            pose = self.getRobotPosition()
+            self.overview.robotPose = pose
+            self.label["x"].setText("%0.0f" %pose.x)
+            self.label["y"].setText("%0.0f" %pose.y)
+            self.label["h"].setText("%0.0f" % math.degrees(pose.h))
+            self.label["state"].setText(self.getMotionStateStr())
+            self.label["order"].setText(self.getMotionOrderStr())
+            self.update()
+
+#
+# This class is an overview of the table with robot displayed at current position
+#
+class TableOverview(QWidget):
+    
+    #@param robot : the prowy providing telemetry data
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self.layout = QHBoxLayout(self)
         self.resize(600,400)
         self.p = QPainter()
         self.table = TableWidget(self.p)
@@ -45,18 +125,24 @@ class TabStrat(QWidget):
                    - T_SPARE,
                     T_WIDTH     +  2.*T_SPARE,
                     T_HEIGHT    +  2.*T_SPARE)
-        self.robotState = RemoteControl_pb2.Telemetry()
+        self.robotPose = Pose2D()
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setSizePolicy(sizePolicy)
         
     def paintEvent(self, event):
         self.p.begin(self)
-        #---DEBUG--- print(str(self.p.device().width()) + " " + str(self.p.device().height()))
+        
+        aspectH = min( self.p.device().height(), self.p.device().width() / 1.5)
+        aspectW = min( self.p.device().width(), self.p.device().height() * 1.5)
+        
+        #---DEBUG---  print(str(self.p.device().width()) + " " + str(self.p.device().height()))
         self.p.setWindow(self.view)
-        self.p.setViewport(0., 0., self.p.device().width(), self.p.device().height())
+        self.p.setViewport(0., 0., aspectW, aspectH)
         #---DEBUG--- print(self.view)
         
         self.table.draw()
         self.p.translate(T_WIDTH/2, T_HEIGHT/2)
-        self.robot.draw(self.getRobotPosition())
+        self.robot.draw(self.robotPose)
         self.p.end()
     
     def mousePressEvent(self, event):
@@ -66,18 +152,6 @@ class TabStrat(QWidget):
         p2 = trans.map(p)
         qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p2.x()) + " " + str(p2.y()))) 
         return QWidget.mousePressEvent(self, event)
-
-    #@return Pose2D : the last received telemetry position
-    def getRobotPosition(self):
-        return Pose2D.fromPoseMsg(self.robotState.nav.pos)
-
-    #telemetry reply data callback
-    @pyqtSlot(RemoteControl_pb2.Telemetry)     
-    def _telemetryDataCb(self, msg):
-        #--- DEBUG --- print("Telemetry received.")
-        #--- DEBUG --- print(str(msg))
-        self.robotState = msg
-        self.update()
 
 class RobotWidget():
     
@@ -308,20 +382,7 @@ class TableWidget():
         self.p.setRenderHint(QPainter.Antialiasing)
         self.p.drawEllipse(QRectF(x - radius, y - radius, 2*radius, 2*radius))
         self.p.restore()
-    
-if __name__ == '__main__':
-    #expand path to find modules :
-    import sys
-    sys.path.append("com")
-    sys.path.append("core")
-    sys.path.append("../proto")
-    
-    app = QApplication(sys.argv)
-    #widget = TabRobot()
-    widget = TableWidget()
-    widget.show()
-    sys.exit(app.exec_())
-    
+        
     
     
     
