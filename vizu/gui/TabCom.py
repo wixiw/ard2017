@@ -8,10 +8,6 @@ class TabCom(QWidget):
     
     #QT emitted signals :
     networkStatus = pyqtSignal(bool)
-    getOsStatsLogs = pyqtSignal()
-    getTelemetry = pyqtSignal()
-    configureMatch = pyqtSignal(int, int)
-    startMatch = pyqtSignal()
     
     #@param ArdSerial : a reference on the object managing the serial line
     def __init__(self, comMdw):
@@ -43,38 +39,15 @@ class TabCom(QWidget):
         self.btn_connect.setCheckable(True)
         self.btn_connect.toggled[bool].connect(self._connectFromButton)
         
-        self.connected_btn = dict()
-        self.connected_btn["getOsStats"] = QPushButton('Get OS Stats', self)
-        self.connected_btn["getOsStats"].hide()
-        self.connected_btn["getOsStats"].clicked.connect(self._getOsStatsLogs) 
-        
-        self.connected_btn["getTelemetry"] = QPushButton('Get Telemetry', self)
-        self.connected_btn["getTelemetry"].hide()
-        self.connected_btn["getTelemetry"].clicked.connect(self._getTelemetry) 
-        
-        self.connected_btn["configureMatch"] = QPushButton('Configure Match', self)
-        self.connected_btn["configureMatch"].hide()
-        self.connected_btn["configureMatch"].clicked.connect(self._configureMatch) 
-        
-        self.connected_btn["startMatch"] = QPushButton('Start Match', self)
-        self.connected_btn["startMatch"].hide()
-        self.connected_btn["startMatch"].clicked.connect(self._startMatch) 
-        
         layout = QVBoxLayout(self)
         layoutH1 = QHBoxLayout()
-        layoutH2 = QVBoxLayout()
         layout.addLayout(layoutH1)
-        layout.addLayout(layoutH2)
         layout.addStretch()
         
         layoutH1.addWidget(self.combo_COM)
         layoutH1.addWidget(self.combo_Baudrate)
         layoutH1.addWidget(self.btn_connect)      
         layoutH1.addStretch()
-        
-        for button in self.connected_btn:    
-            layoutH2.addWidget(self.connected_btn[button])
-        layoutH2.addStretch()
         
         #keyboard shortcuts
         QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connectFromShorcut)
@@ -88,26 +61,6 @@ class TabCom(QWidget):
         
     def _connectFromShorcut(self):
         self.btn_connect.toggle()            
-        
-    @pyqtSlot()
-    def _getOsStatsLogs(self): 
-       print("Stats request")
-       self.getOsStatsLogs.emit()
-       
-    @pyqtSlot()
-    def _getTelemetry(self): 
-       print("Telemetry request")
-       self.getTelemetry.emit()
-       
-    @pyqtSlot()
-    def _configureMatch(self): 
-       print("Configure match request")
-       self.configureMatch.emit(0, 2)
-       
-    @pyqtSlot()
-    def _startMatch(self): 
-       print("Start match request")
-       self.startMatch.emit()
         
     def _connect(self):
         port = self.combo_COM.currentText()
@@ -123,8 +76,6 @@ class TabCom(QWidget):
             settings.beginGroup("Com")
             settings.setValue("port", port)
             settings.setValue("baudrate", baudrate)
-            for button in self.connected_btn:
-                self.connected_btn[button].show()
             self.networkStatus.emit(True)
         else:
             print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizy instance...)")
@@ -132,8 +83,6 @@ class TabCom(QWidget):
             self.btn_connect.setChecked(False)
             self.combo_COM.setEnabled(True)
             self.combo_Baudrate.setEnabled(True)
-            for button in self.connected_btn:
-                self.connected_btn[button].hide()
             
     def _disconnect(self):
         self.com.disconnect()
@@ -141,8 +90,6 @@ class TabCom(QWidget):
         self.btn_connect.setChecked(False)
         self.combo_COM.setEnabled(True)
         self.combo_Baudrate.setEnabled(True)
-        for button in self.connected_btn:
-            self.connected_btn[button].hide()
         self.networkStatus.emit(False)
         print("Disconnected")
             

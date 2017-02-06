@@ -3,6 +3,7 @@
 
 from math import *
 from Point import *
+from ArdMath import *
 from proto import *
 
 class Pose2D(Point):
@@ -14,16 +15,7 @@ class Pose2D(Point):
         else:
             self.h = float(h)
             assert abs(self.h) < 10., "h is out of range %s" % h
-            self.normalizeAngle(self.h)
-    
-    def normalizeAngle(self, angle):
-        angle=angle%(2*pi)
-        if angle>pi:
-            angle= angle - 2*pi
-        if angle <= -pi:
-            angle=angle+2*pi 
-        return angle
-
+            normalizeAngle(self.h)
     
     #/**
     #* Les Pose2D évoluent dans le groupe spécial euclidien nommé SE(2)\n
@@ -94,7 +86,7 @@ class Pose2D(Point):
         if not isinstance(self.y,str) and not isinstance(p.y,str):
             y = self.y+p.y
         if not isinstance(self.h,str) and not isinstance(p.h,str):
-            h = self.normalizeAngle(self.h+p.h)    
+            h = normalizeAngle(self.h+p.h)    
         return Pose2D(x, y, h)
     
     def __mul__(self, k):
@@ -103,7 +95,7 @@ class Pose2D(Point):
         if not isinstance(self.y,str) and not isinstance(p.y,str):
             y = self.y*p.y
         if not isinstance(self.h,str) and not isinstance(p.h,str):
-            h = self.normalizeAngle(self.h*p.h)    
+            h = normalizeAngle(self.h*p.h)    
         return Pose2D(x, y, h)
     
     def __sub__(self, p):
@@ -112,7 +104,7 @@ class Pose2D(Point):
         if not isinstance(self.y,str) and not isinstance(p.y,str):
             y = self.y-p.y
         if not isinstance(self.h,str) and not isinstance(p.h,str):
-            h = self.normalizeAngle(self.h-p.h)    
+            h = normalizeAngle(self.h-p.h)    
         return Pose2D(x, y, h)
  
     def __repr__(self):

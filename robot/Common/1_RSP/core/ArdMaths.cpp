@@ -85,7 +85,7 @@ PointCap::PointCap(Point p)
 }
 ;
 
-PointCap::PointCap(float x, float y, float h)
+PointCap::PointCap(float x, float y, double h)
         : Point(x, y), h(h)
 {
 }
@@ -95,7 +95,7 @@ PointCap PointCap::toAmbiPose(eColor c) const
 {
     PointCap res = Point::toAmbiPose(c);
     if (c == eColor_SYM)
-        res.h = M_PI - h;
+        res.h = moduloPiPi(M_PI - h);
     else
         res.h = h;
     return res;
@@ -113,4 +113,13 @@ apb_PointCap PointCap::getProto() const
     p.y = y;
     p.h = h;
     return p;
+}
+
+PointCap PointCap::fromProto(apb_PointCap const& p)
+{
+    PointCap res;
+    res.x = p.x;
+    res.y = p.y;
+    res.h = p.h;
+    return res;
 }

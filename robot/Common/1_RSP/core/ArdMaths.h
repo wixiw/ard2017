@@ -50,11 +50,11 @@ namespace ard
     class PointCap: public Point
     {
     public:
-        float h;/*rad*/
+        double h;/*rad*/
 
         PointCap();
         PointCap(Point p);
-        PointCap(float x /*mm*/, float y/*mm*/, float h/*degree*/);
+        PointCap(float x /*mm*/, float y/*mm*/, double h/*degree*/);
 
         //return the symetric from the x axis
         PointCap toAmbiPose(eColor c) const;
@@ -63,6 +63,9 @@ namespace ard
 
         //Get the associated proto struct
         apb_PointCap getProto() const;
+
+        //Build from the associated proto struct
+        static PointCap fromProto(apb_PointCap const& p);
     };
 
 } /* namespace ard */

@@ -3,10 +3,8 @@
 void
 init_bsp ()
 {
-    // Initialize board
     watchdogSetup();
-    init();
-    delay(1);
+
     //#if defined(USBCON)
     //    USBDevice.attach();
     //#endif

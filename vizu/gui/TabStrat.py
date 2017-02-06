@@ -42,9 +42,9 @@ class TabStrat(QWidget):
         
         #build info tab
         self.label = dict()
-        self.layoutInfo = QVBoxLayout()
         self.buildPosInfo()
         self.buildMotionInfo()
+        self.layoutInfo = QVBoxLayout()
         self.layoutInfo.addWidget(self.box_pos)
         self.layoutInfo.addWidget(self.box_motion)
         self.layoutInfo.addSpacerItem(QSpacerItem(150,0,QSizePolicy.Minimum,QSizePolicy.Expanding))
@@ -96,8 +96,7 @@ class TabStrat(QWidget):
     def _telemetryDataCb(self, msg):
         if self.isVisible():
             #--- DEBUG --- print("Telemetry received.")
-            #--- DEBUG --- 
-            print(str(msg))
+            #--- DEBUG --- print(str(msg))
             self.robotState = msg
             pose = self.getRobotPosition()
             self.overview.robotPose = pose
@@ -142,7 +141,11 @@ class TableOverview(QWidget):
         
         self.table.draw()
         self.p.translate(T_WIDTH/2, T_HEIGHT/2)
-        self.robot.draw(self.robotPose)
+        drawingPose = Pose2D()
+        drawingPose.x = self.robotPose.x
+        drawingPose.y = -self.robotPose.y
+        drawingPose.h = normalizeAngle(math.pi + self.robotPose.h)
+        self.robot.draw(drawingPose)
         self.p.end()
     
     def mousePressEvent(self, event):

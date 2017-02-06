@@ -42,10 +42,11 @@ class ConnectScreen(QWidget):
         
         #connect Com tab
         self.tab["Com"].networkStatus       .connect(self._handleNetworkStatus)
-        self.tab["Com"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
-        self.tab["Com"].getTelemetry        .connect(self.teleop.getTelemetry)
-        self.tab["Com"].configureMatch      .connect(self.teleop.configureMatch)
-        self.tab["Com"].startMatch          .connect(self.teleop.startMatch)
+        self.tab["Robot"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
+        self.tab["Robot"].getTelemetry        .connect(self.teleop.getTelemetry)
+        self.tab["Robot"].configureMatch      .connect(self.teleop.configureMatch)
+        self.tab["Robot"].startMatch          .connect(self.teleop.startMatch)
+        self.tab["Robot"].resetCpu            .connect(self.teleop.resetCpu)
         #connect Log tab
         self.teleop.log.connect(self.tab["Log"].log)
         #connect Strat tab
@@ -79,6 +80,24 @@ class ConnectScreen(QWidget):
         self.shortcuts["F4"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F4"], 3)
 
+        #add shortcut to manage match
+        self.configureMap = QSignalMapper()
+        self.configureMap.mapped.connect(self._configShortcut)
+            #YELLOW config with "y"
+        self.shortcuts["y"] = QShortcut(QKeySequence(Qt.Key_Y), self)
+        self.shortcuts["y"].activated.connect(self.configureMap.map)
+        self.configureMap.setMapping(self.shortcuts["y"], Types_pb2.PREF)
+            #BLUE config with "b"        
+        self.shortcuts["b"] = QShortcut(QKeySequence(Qt.Key_B), self)
+        self.shortcuts["b"].activated.connect(self.configureMap.map)
+        self.configureMap.setMapping(self.shortcuts["b"], Types_pb2.SYM)
+            #Start match with s
+        self.shortcuts["s"] = QShortcut(QKeySequence(Qt.Key_S), self)
+        self.shortcuts["s"].activated.connect(self.teleop.startMatch)
+            #reset with r
+        self.shortcuts["r"] = QShortcut(QKeySequence(Qt.Key_R), self)
+        self.shortcuts["r"].activated.connect(self.teleop.resetCpu)
+        
             #disable tabs and shortcuts requiring a network connection
         self._handleNetworkStatus(False)
     
@@ -126,6 +145,10 @@ class ConnectScreen(QWidget):
         settings.setValue("size", self.size())
         settings.setValue("pos", self.pos())
         settings.endGroup()
+        
+    @pyqtSlot(int)
+    def _configShortcut(self, color):
+        self.teleop.configureMatch(0,color) #0 for default strat
         
 if __name__ == '__main__':
     import sys

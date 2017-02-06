@@ -193,8 +193,6 @@ void Reset_Handler(void)
 		SCB->VTOR |= (1UL) << SCB_VTOR_TBLBASE_Pos;
 	}
 
-	/* Initialize the C library */
-
     SystemInit();
 
     // Set Systick to 1ms interval, common to all SAM3 variants
@@ -203,6 +201,10 @@ void Reset_Handler(void)
       // Capture error
       while (1);
     }
+
+    // Initialize board
+    init();
+    delay(1);
 
     // Initialize C library
     __libc_init_array();
