@@ -3,9 +3,11 @@
 
 #include "BSP.h"
 #include "ArdOs.h"
+#include "CommonMsg.pb.h"
 
 namespace ard
 {
+
     class ObjectColor
     {
     public:
@@ -13,8 +15,9 @@ namespace ard
         unsigned short g; // green
         unsigned short b; // blue
         unsigned short l; // luminance
+        eObjectColor c;
 
-        ObjectColor():r(0),g(0),b(0),l(0){};
+        ObjectColor():r(0),g(0),b(0),l(0),c(eObjectColor_UNDEF){};
 
         void computeFromRawData(uint16_t r,uint16_t g,uint16_t b,uint16_t c);
 
@@ -32,6 +35,8 @@ namespace ard
 
         //Implements PolledObject: read the capteur data and filters outputs to get the measured value
         void update(TimeMs sinceLastCall) override;
+
+        apb_ColorSensorState getState();
 
     private:
         Adafruit_TCS34725 tcs;

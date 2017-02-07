@@ -44,9 +44,11 @@ class TabStrat(QWidget):
         self.label = dict()
         self.buildPosInfo()
         self.buildMotionInfo()
+        self.buildSensorsInfo()
         self.layoutInfo = QVBoxLayout()
         self.layoutInfo.addWidget(self.box_pos)
         self.layoutInfo.addWidget(self.box_motion)
+        self.layoutInfo.addWidget(self.box_sensors)
         self.layoutInfo.addSpacerItem(QSpacerItem(150,0,QSizePolicy.Minimum,QSizePolicy.Expanding))
         
         self.layout = QHBoxLayout(self)
@@ -80,17 +82,34 @@ class TabStrat(QWidget):
         box_layout.addRow("state : ", self.label["state"])
         box_layout.addRow("order : ", self.label["order"])
         self.box_motion.setLayout(box_layout)
+        
+    def buildSensorsInfo(self):
+        self.box_sensors = QGroupBox("Sensors")
+        self.label["RGBL"] = QLabel("?")
+        self.label["objColor"] = QLabel("?")
+        self.label["RGBL"].setAlignment(Qt.AlignRight)
+        self.label["objColor"].setAlignment(Qt.AlignRight)
+        box_layout = QFormLayout()
+        box_layout.addRow("RGB : ", self.label["RGBL"])
+        box_layout.addRow("Color : ", self.label["objColor"])
+        self.box_sensors.setLayout(box_layout)
     
     #@return Pose2D : the last received telemetry position
     def getRobotPosition(self):
         return Pose2D.fromPoseMsg(self.robotState.nav.pos)
+    
+    def getRobotSensors(self):
+        return self.robotState.actuators
     
     def getMotionStateStr(self):
         return Types_pb2.eNavState.Name(self.robotState.nav.state)
 
     def getMotionOrderStr(self):
         return Types_pb2.eNavOrder.Name(self.robotState.nav.order)
-
+    
+    def getObjectColorStr(self):
+        return Types_pb2.eObjectColor.Name(self.getRobotSensors().colorSensor.color)
+    
     #telemetry reply data callback
     @pyqtSlot(RemoteControl_pb2.Telemetry)     
     def _telemetryDataCb(self, msg):
@@ -99,12 +118,17 @@ class TabStrat(QWidget):
             #--- DEBUG --- print(str(msg))
             self.robotState = msg
             pose = self.getRobotPosition()
+            col = self.getRobotSensors().colorSensor
+            colStr = self.getObjectColorStr()
             self.overview.robotPose = pose
             self.label["x"].setText("%0.0f" %pose.x)
             self.label["y"].setText("%0.0f" %pose.y)
             self.label["h"].setText("%0.0f" % math.degrees(pose.h))
             self.label["state"].setText(self.getMotionStateStr())
             self.label["order"].setText(self.getMotionOrderStr())
+            self.label["RGBL"].setText("(%d,%d,%d,%d)" % (col.r, col.g, col.b, col.l))
+            self.label["RGBL"].setStyleSheet("QLabel { color : white; background-color: rgba(%d,%d,%d,%d); }" % (col.r, col.g, col.b, 255))
+            self.label["objColor"].setText(colStr)
             self.update()
 
 #
