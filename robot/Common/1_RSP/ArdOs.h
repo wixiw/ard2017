@@ -37,176 +37,6 @@ namespace ard
         }
     };
 
-    //-------------------------------------------------------------------------------
-    //                      Thread
-    //-------------------------------------------------------------------------------
-
-    /**
-     * Inherit this abstract in order to create a Thread
-     * from a C++ class.
-     *
-     * Note that the thread is automatically waiting on a start signal you have to provide
-     * with start();
-     */
-    class Thread: public OsObject
-    {
-        friend void Thread_genericRun(void* pvParameters);
-
-    public:
-        //struct to gather parameters to pass to ArdOs_genericRun
-        class ThreadParams
-        {
-        public:
-
-            bool            used;
-            TaskHandle_t    handle;
-            Thread*         object;
-            StackSize       stackSize;
-            DelayMs         period;
-
-            ThreadParams():
-                used(false),
-                handle(NULL),
-                object(NULL),
-                stackSize(0),
-                period(0){}
-        };
-
-        /**
-         * @param name : a name for debug/introspection purposes, length is limited by configMAX_TASK_NAME_LEN
-         * @param priority : the Thread priority, it shall not be equal to another existing one, the lowest value, the lowest priority
-         * @param stackSize : the stack length in WORDS (not bytes), hence 100 = 400o
-         * @param period (optional) : the period at which run() is called. run is called once is not defined or set to 0
-         */
-        Thread(String const& name,
-                ThreadPriority priority,
-                StackSize stackSize,
-                DelayMs period=0);
-
-        //Implements ArdObject : creates the thread OS object
-        virtual void init() override;
-
-        //Start the thread
-        virtual void startThread();
-
-        //Stop the thread
-        virtual void stopThread();
-
-        //Implement this function as the Thread main function
-        virtual void run() = 0;
-
-        //We may optionally connect a logger to all threads
-        static void setLogger(ILogger* newLogger);
-
-        //Implements ILogger interface
-        void logFromThread(eLogLevel lvl, String const& text);
-
-        //Start triggering gpio for oscilloscope analysis
-        //It generates a PWM with high state being the computation time
-        //@param pin : Arduino pin ID
-        void activateDebug(uint8_t pin)
-        {
-            debugPin = pin;
-        }
-
-        //getter
-        StackSize getStackSize() const;
-
-        //getter
-        DelayMs getPeriod() const;
-
-        //inline getter
-        ThreadPriority const& getPriority() const
-        {
-            return priority;
-        }
-
-        //static getter for statistics
-        static uint8_t getOsObjectCount() //const : no-const on a static member
-        {
-            return objectCount;
-        }
-
-        //@return: a table of Thread::ThreadParams[PRIO_NB] containing all threads data
-        static Thread::ThreadParams const * getThreadParams();
-
-    protected:
-        //Put thread in sleep mode during delay ms.
-        void sleepMs(DelayMs delay);
-
-        //Call this in your run() function to trigger the debug gpios : signals the start of the period
-        //inlined to prevent stack pile overflow
-        void debugTrace_beginLoop() const
-        {
-            if(debugPin)
-            {
-                digitalWrite(debugPin, HIGH);
-            }
-        }
-
-        //Call this in your run() function to trigger the debug gpios : signals the end of the periods
-        //inlined to prevent stack pile overflow
-        void debugTrace_endLoop() const
-        {
-            if(debugPin)
-            {
-                digitalWrite(debugPin, HIGH);
-            }
-        }
-
-    private:    
-        //see constructor
-        ThreadPriority priority;
-
-        //The pin on which to send debug signals
-        uint8_t debugPin;
-
-        //the one that can log for us
-        static ILogger* logger;
-
-        //count how many object of that type has been initialized
-        //note that uninitialized object are not considered as they are not used
-        static uint8_t objectCount;
-    };
-
-    //-------------------------------------------------------------------------------
-    //                     Poller Thread
-    //-------------------------------------------------------------------------------
-
-    /**
-     * Use a PolledObject when you need be updated periodically
-     * without having enougth to do to justify a periodic thread creation
-     */
-    class PolledObject: public ArdObject
-    {
-    public:
-        //polling event
-        virtual void update(TimeMs sinceLastCall) = 0;
-    };
-
-    class PollerThread: public Thread
-    {
-    public:
-        PollerThread(String const& name,
-                ThreadPriority priority,
-                StackSize stackSize,
-                DelayMs period,
-                uint8_t nbPolledObjects);
-
-        //Overrides Thread : initialize all polled objects
-        void init() override;
-
-        //Implements Threads : run all actuator systems and sensors
-        void run () override;
-
-        //Add a polled object the list, shall be called before calling init()
-        void addPolledObject(PolledObject& object );
-
-    private:
-        PolledObject** polledObjects;
-        uint8_t nextRank;
-        uint8_t nbMaxObjects;
-    };
 
     //-------------------------------------------------------------------------------
     //                      SwTimer
@@ -266,6 +96,7 @@ namespace ard
         Mutex();
 
         //Implements ArdObject : creates the OS object
+        //User should not call this, it is automatically called during the ArdOs::init() call
         void init() override;
 
         //Wait for Mutex to be free, and get exclusivity
@@ -304,6 +135,7 @@ namespace ard
         Signal();
 
         //Implements ArdObject : creates the OS object
+        //User should not call this, it is automatically called during the ArdOs::init() call
         void init() override;
 
         //Wait for the Signal to bet set()
@@ -328,7 +160,6 @@ namespace ard
         //note that uninitialized object are not considered as they are not used
         static uint8_t objectCount;
     };
-
 
     //-------------------------------------------------------------------------------
     //                      Queue
@@ -390,6 +221,189 @@ namespace ard
         static uint8_t objectCount;
     };
 
+    //-------------------------------------------------------------------------------
+    //                      Thread
+    //-------------------------------------------------------------------------------
+
+    /**
+     * Inherit this abstract in order to create a Thread
+     * from a C++ class.
+     *
+     * Note that the thread is automatically waiting on a start signal you have to provide
+     * with start();
+     */
+    class Thread: public OsObject
+    {
+        friend void Thread_genericRun(void* pvParameters);
+
+    public:
+        //struct to gather parameters to pass to ArdOs_genericRun
+        class ThreadParams
+        {
+        public:
+
+            bool            used;
+            TaskHandle_t    handle;
+            Thread*         object;
+            StackSize       stackSize;
+            DelayMs         period;
+
+            ThreadParams():
+                used(false),
+                handle(NULL),
+                object(NULL),
+                stackSize(0),
+                period(0){}
+        };
+
+        /**
+         * @param name : a name for debug/introspection purposes, length is limited by configMAX_TASK_NAME_LEN
+         * @param priority : the Thread priority, it shall not be equal to another existing one, the lowest value, the lowest priority
+         * @param stackSize : the stack length in WORDS (not bytes), hence 100 = 400o
+         * @param period (optional) : the period at which run() is called. run is called once is not defined or set to 0
+         */
+        Thread(String const& name,
+                ThreadPriority priority,
+                StackSize stackSize,
+                DelayMs period=0);
+
+        //Implements ArdObject : creates the thread OS object
+        //User should not call this, it is automatically called during the ArdOs::init() call
+        virtual void init() override;
+
+        //Start the thread
+        virtual void startThread();
+
+        //Stop the thread
+        virtual void stopThread();
+
+        //Implement this function as the Thread main function
+        virtual void run() = 0;
+
+        //We may optionally connect a logger to all threads
+        static void setLogger(ILogger* newLogger);
+
+        //Implements ILogger interface
+        void logFromThread(eLogLevel lvl, String const& text);
+
+        //Start triggering gpio for oscilloscope analysis
+        //It generates a PWM with high state being the computation time
+        //@param pin : Arduino pin ID
+        void activateDebug(uint8_t pin)
+        {
+            debugPin = pin;
+        }
+
+        //getter
+        StackSize getStackSize() const;
+
+        //getter
+        DelayMs getPeriod() const;
+
+        //inline getter
+        ThreadPriority const& getPriority() const
+        {
+            return priority;
+        }
+
+        //static getter for statistics
+        static uint8_t getOsObjectCount() //const : no-const on a static member
+        {
+            return objectCount;
+        }
+
+        //@return: a table of Thread::ThreadParams[PRIO_NB] containing all threads data
+        static ThreadParams const * getThreadParams();
+
+        //a signal that is never set to block a thread
+        static Signal* infinite;
+
+    protected:
+        //table of all params so that the generic run function is possible
+        //it is also used to test if a priority is already in use
+        //it's placed here to ensure proper/controller initialization of memory (by opposition of a global/static var)
+        //it will be initialized by first constructor as a threadParams[PRIO_NB];
+        static ThreadParams* threadParams;
+
+        //Put thread in sleep mode during delay ms.
+        void sleepMs(DelayMs delay);
+
+        //Call this in your run() function to trigger the debug gpios : signals the start of the period
+        //inlined to prevent stack pile overflow
+        void debugTrace_beginLoop() const
+        {
+            if(debugPin)
+            {
+                digitalWrite(debugPin, HIGH);
+            }
+        }
+
+        //Call this in your run() function to trigger the debug gpios : signals the end of the periods
+        //inlined to prevent stack pile overflow
+        void debugTrace_endLoop() const
+        {
+            if(debugPin)
+            {
+                digitalWrite(debugPin, HIGH);
+            }
+        }
+
+    private:
+        //see constructor
+        ThreadPriority priority;
+
+        //The pin on which to send debug signals
+        uint8_t debugPin;
+
+        //the one that can log for us
+        static ILogger* logger;
+
+        //count how many object of that type has been initialized
+        //note that uninitialized object are not considered as they are not used
+        static uint8_t objectCount;
+    };
+
+    //-------------------------------------------------------------------------------
+    //                     Poller Thread
+    //-------------------------------------------------------------------------------
+
+    /**
+     * Use a PolledObject when you need be updated periodically
+     * without having enougth to do to justify a periodic thread creation
+     */
+    class PolledObject: public ArdObject
+    {
+    public:
+        //polling event
+        virtual void update(TimeMs sinceLastCall) = 0;
+    };
+
+    class PollerThread: public Thread
+    {
+    public:
+        PollerThread(String const& name,
+                ThreadPriority priority,
+                StackSize stackSize,
+                DelayMs period,
+                uint8_t nbPolledObjects);
+
+        //Overrides Thread : initialize all polled objects
+        //User should not call this, it is automatically called during the ArdOs::init() call
+        void init() override;
+
+        //Implements Threads : run all actuator systems and sensors
+        void run () override;
+
+        //Add a polled object the list, shall be called before calling init()
+        void addPolledObject(PolledObject& object );
+
+    private:
+        PolledObject** polledObjects;
+        uint8_t nextRank;
+        uint8_t nbMaxObjects;
+    };
+
+
 //-------------------------------------------------------------------------------
 //                      ArdOs
 //-------------------------------------------------------------------------------
@@ -398,6 +412,7 @@ namespace ard
      * Manage instanciation of OS Objects
      * This class is not thread safe, initialization is supposed to
      * be executed from one unique thread
+     *
      * It's a pure static class
      */
     class ArdOs
@@ -409,6 +424,7 @@ namespace ard
         } eOsState;
 
         //initialize all OS objects
+        //User should not call this, it is automatically called during the ArdOs::init() call
         static void init();
 
         //enable interrupts and start the scheduler, init() must have been called once before
@@ -424,6 +440,9 @@ namespace ard
         //Makes the calling thread to sleep for a while
         static void sleepMs(DelayMs delay);
 
+        //SW reset
+        static void reboot();
+
         //Get the OS initialization state
         static eOsState getState()
         {
@@ -434,7 +453,10 @@ namespace ard
         static const uint8_t MAX_OBJECT_NB = 20;
 
     private:
+        //Tracking of initialization status to prevent stupid errors
         static eOsState state;
+
+        //counts the total number of objects registered with registerObject
         static uint8_t objectCount;
 
         //private constructor as its a singleton class

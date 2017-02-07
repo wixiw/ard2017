@@ -3,6 +3,14 @@
 
 from math import *
 from core.Point import *
+
+def normalizeAngle(angle):
+    angle=angle%(2*pi)
+    if angle>pi:
+        angle= angle - 2*pi
+    if angle <= -pi:
+        angle=angle+2*pi 
+    return angle
     
 def intersectCircle(x0,y0,r0,x1,y1,r1):
     #see http://paulbourke.net/geometry/2circle/ for justif

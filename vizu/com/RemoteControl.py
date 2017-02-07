@@ -50,7 +50,7 @@ class RemoteControl(QObject):
     def connect(self, port, baudrate):
         res = self.com.connect(port, baudrate, self._frameReceived)
         if res:
-          self.timer_telemetry.start(1000)  
+          self.timer_telemetry.start(100)  
         return res 
         
     # go throught decorator
@@ -95,6 +95,12 @@ class RemoteControl(QObject):
     def startMatch(self):
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.startMatch.SetInParent()
+        self._sendMsg(msg)
+        
+    @pyqtSlot()
+    def resetCpu(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.reboot.SetInParent()
         self._sendMsg(msg)
         
     @pyqtSlot(Pose2D)

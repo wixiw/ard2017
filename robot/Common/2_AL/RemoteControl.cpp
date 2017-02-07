@@ -60,6 +60,7 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(setPosition)
         HANDLE_MSG(requestGoto)
         HANDLE_MSG(requestGotoCap)
+        HANDLE_MSG(reboot)
 
         default:
         {
@@ -146,10 +147,7 @@ void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
 
 void RemoteControl::setPosition(apb_RemoteControlRequest const & request)
 {
-    ROBOT.nav.setPosition(
-            request.type.setPosition.x,
-            request.type.setPosition.y,
-            request.type.setPosition.h);
+    ROBOT.nav.setPosition(PointCap::fromProto(request.type.setPosition));
 }
 
 void RemoteControl::requestGoto(apb_RemoteControlRequest const & request)
@@ -167,6 +165,11 @@ void RemoteControl::requestGotoCap(apb_RemoteControlRequest const & request)
             request.type.requestGotoCap.target.y,
             request.type.requestGotoCap.target.h,
             request.type.requestGotoCap.direction);
+}
+
+void RemoteControl::reboot(apb_RemoteControlRequest const & request)
+{
+    ArdOs::reboot();
 }
 
 /**
@@ -191,4 +194,5 @@ void RemoteControl::log(LogMsg const & log)
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode Log message.");
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: log failed");
 }
+
 

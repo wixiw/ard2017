@@ -74,6 +74,7 @@ namespace ard
         void setPosition            (apb_RemoteControlRequest const & request);
         void requestGoto            (apb_RemoteControlRequest const & request);
         void requestGotoCap         (apb_RemoteControlRequest const & request);
+        void reboot                 (apb_RemoteControlRequest const & request);
 
     };
 

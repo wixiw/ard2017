@@ -3,6 +3,7 @@
 
 import signal
 import math
+from ArdMath import *
 from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -81,7 +82,7 @@ class HeadingInput(FloatInput):
         super().__init__(parent, -180., 180., 1)
         
     def getValue(self):
-        return math.radians(FloatInput.getValue(self))
+        return normalizeAngle(math.radians(FloatInput.getValue(self)))
         
 #
 # This widget is a restricted combobox to select a direction forward/backward

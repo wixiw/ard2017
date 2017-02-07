@@ -19,3 +19,8 @@ int main(void)
     {
     }
 }
+
+extern String getExeVersion()
+{
+    return String("Version robotA : ") + __DATE__ + " " + __TIME__;
+}
