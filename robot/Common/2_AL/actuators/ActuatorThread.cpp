@@ -25,7 +25,7 @@ void ActuatorThread::init()
 apb_ActuatorsState ActuatorThread::getState()
 {
     apb_ActuatorsState state = apb_ActuatorsState_init_default;
-    //TODO
+    state.colorSensor = stockColor.getState();
     return state;
 }
 

@@ -31,6 +31,14 @@ enum eNavOrder {
 	STOP 			= 3;
 }
 
+// Specific 2017
+enum objectColor {
+	UNDEF			= 0;
+	BLUE			= 1;
+	YELLOW			= 2;
+	WHITE			= 3;
+}
+
 enum eLogLevel {
 	DEBUG 			= 0;
 	INFO 			= 1;
