@@ -108,7 +108,7 @@ class TabStrat(QWidget):
         return Types_pb2.eNavOrder.Name(self.robotState.nav.order)
     
     def getObjectColorStr(self):
-        return Types_pb2.objectColor.Name(self.getRobotSensors().colorSensor.color)
+        return Types_pb2.eObjectColor.Name(self.getRobotSensors().colorSensor.color)
     
     #telemetry reply data callback
     @pyqtSlot(RemoteControl_pb2.Telemetry)     
@@ -127,7 +127,7 @@ class TabStrat(QWidget):
             self.label["state"].setText(self.getMotionStateStr())
             self.label["order"].setText(self.getMotionOrderStr())
             self.label["RGBL"].setText("(%d,%d,%d,%d)" % (col.r, col.g, col.b, col.l))
-            self.label["RGBL"].setStyleSheet("QLabel { background-color: rgba(%d,%d,%d,%d); }" % (col.r, col.g, col.b, 255))
+            self.label["RGBL"].setStyleSheet("QLabel { color : white; background-color: rgba(%d,%d,%d,%d); }" % (col.r, col.g, col.b, 255))
             self.label["objColor"].setText(colStr)
             self.update()
 

@@ -32,7 +32,7 @@ enum eNavOrder {
 }
 
 // Specific 2017
-enum objectColor {
+enum eObjectColor {
 	UNDEF			= 0;
 	BLUE			= 1;
 	YELLOW			= 2;

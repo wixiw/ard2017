@@ -15,9 +15,9 @@ namespace ard
         unsigned short g; // green
         unsigned short b; // blue
         unsigned short l; // luminance
-        objectColor c;
+        eObjectColor c;
 
-        ObjectColor():r(0),g(0),b(0),l(0),c(objectColor_UNDEF){};
+        ObjectColor():r(0),g(0),b(0),l(0),c(eObjectColor_UNDEF){};
 
         void computeFromRawData(uint16_t r,uint16_t g,uint16_t b,uint16_t c);
 

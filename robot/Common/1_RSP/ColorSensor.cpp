@@ -20,13 +20,13 @@ ObjectColor::computeFromRawData(uint16_t red, uint16_t green, uint16_t blue, uin
     if (       100 <= r && r <= 135
             && 93  <= g && g <= 109
             && 38  <= b && b <= 50 )
-        c = objectColor_YELLOW;
+        c = eObjectColor_YELLOW;
     else if (  34 <= r && r <= 82
             && 83  <= g && g <= 90
             && 105  <= b && b <= 135 )
-        c = objectColor_BLUE;
+        c = eObjectColor_BLUE;
     else
-        c = objectColor_UNDEF;
+        c = eObjectColor_UNDEF;
 
 }
 
@@ -35,10 +35,10 @@ ObjectColor::toString()
 {
     String color = "";
     switch (c){
-        case (objectColor_UNDEF)     : color = "UNDEFINED"; break;
-        case (objectColor_BLUE)      : color = "BLUE"; break;
-        case (objectColor_YELLOW)    : color = "YELLOW"; break;
-        case (objectColor_WHITE)     : color = "WHITE"; break;
+        case (eObjectColor_UNDEF)     : color = "UNDEFINED"; break;
+        case (eObjectColor_BLUE)      : color = "BLUE"; break;
+        case (eObjectColor_YELLOW)    : color = "YELLOW"; break;
+        case (eObjectColor_WHITE)     : color = "WHITE"; break;
     default:;
     }
 

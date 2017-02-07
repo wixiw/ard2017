@@ -36,7 +36,7 @@ message ColorSensorState {
 	required uint32			g					= 2;
 	required uint32			b					= 3;
 	required uint32			l					= 4;
-	required objectColor	color				= 5;
+	required eObjectColor	color				= 5;
 }
 
 message ActuatorsState {
