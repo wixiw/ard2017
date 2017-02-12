@@ -28,14 +28,14 @@ const DueTimer::Timer DueTimer::Timers[NUM_TIMERS] = {
 #ifdef USING_SERVO_LIB
 	// Set callbacks as used, allowing DueTimer::getAvailable() to work
 	void (*DueTimer::callbacks[NUM_TIMERS])() = {
-		(void (*)()) 1, // Timer 0 - Occupied
-		(void (*)()) 0, // Timer 1
-		(void (*)()) 1, // Timer 2 - Occupied
-		(void (*)()) 1, // Timer 3 - Occupied
-		(void (*)()) 1, // Timer 4 - Occupied
-		(void (*)()) 1, // Timer 5 - Occupied
-		(void (*)()) 0, // Timer 6
-		(void (*)()) 0, // Timer 7
+		(void (*)()) 1, // Timer 0 - Occupied by ARD OS CPU run statistics
+		(void (*)()) 0, // Timer 1 -
+		(void (*)()) 0, // Timer 2 -
+		(void (*)()) 0, // Timer 3 -
+		(void (*)()) 0, // Timer 4 -
+		(void (*)()) 1, // Timer 5 - Occupied by Servo Lib
+		(void (*)()) 0, // Timer 6 - Used by ARD periodic interrupt
+		(void (*)()) 0, // Timer 7 - Used by ARD periodic interrupt
 		(void (*)()) 0  // Timer 8
 	};
 #else
@@ -65,19 +65,6 @@ DueTimer::DueTimer(unsigned short _timer) : timer(_timer){
 	/*
 		The constructor of the class DueTimer 
 	*/
-}
-
-DueTimer DueTimer::getAvailable(void){
-	/*
-		Return the first timer with no callback set
-	*/
-
-	for(int i = 0; i < NUM_TIMERS; i++){
-		if(!callbacks[i])
-			return DueTimer(i);
-	}
-	// Default, return Timer0;
-	return DueTimer(0);
 }
 
 DueTimer& DueTimer::attachInterrupt(void (*isr)()){

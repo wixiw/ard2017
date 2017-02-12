@@ -86,6 +86,7 @@ void Robot2017::bootOs()
 #endif
 
     //Map fast periodic functions to timers interrupts
+    //Timer1 is used for CPU stats, see FreeRTOSConfig.h and FreeRTOS_ARM.c
     Timer6.attachInterrupt(veryFast_interrupt);
     Timer7.attachInterrupt(fast_interrupt);
 
@@ -114,11 +115,8 @@ void Robot2017::dieMotherFucker()
     nav.stopMoving();
     nav.wait();
 
-    //stop every active SW activity, logs and remote controls are still active
+    //last action as strategy thread is certainly called^^
     ROBOT.strategy.stopThread();
-    ROBOT.actuators.stopThread();
-    ROBOT.nav.stopThread();
-    ROBOT.hmi.stopThread();
 }
 
 Robot2017& Robot2017::operator=(const Robot2017& p)

@@ -302,6 +302,7 @@ Thread::Thread(String const& name, ThreadPriority priority, StackSize stackSize,
     if( threadParams == NULL )
     {
         threadParams = (ThreadParams*) malloc(sizeof(ThreadParams)*PRIO_NB);
+        memset(threadParams, 0, sizeof(ThreadParams)*PRIO_NB);
 
         //FreeRtos will manage the idle thread for us, for clarity
         //an entry is registered here

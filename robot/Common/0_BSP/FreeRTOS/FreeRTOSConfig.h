@@ -93,6 +93,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "K_thread_config.h"
+#include "tc.h"
 
 #define configUSE_PREEMPTION					1 //ARD : this is THE reason why we changed from a cooperative scheduler !
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 1 //ARD : TODO could it help for -Onone boot issue ?
@@ -121,7 +122,7 @@
 #define configSUPPORT_STATIC_ALLOCATION         1 // ARD : <3 <3 <3
 #define configSUPPORT_DYNAMIC_ALLOCATION        0 // ARD : all static ! fuck off new()
 #define configTOTAL_HEAP_SIZE					50000U
-#define configGENERATE_RUN_TIME_STATS           0 // ARD : TODO it could be usefull
+#define configGENERATE_RUN_TIME_STATS           1 // ARD : required to collect CPU stats
 #define configUSE_APPLICATION_TASK_TAG          0 // ARD : TODO see what we can do with this, it could help to trace what's happening with context switches
 /* Co-routine definitions : NOT USED*/
 #define configUSE_CO_ROUTINES 			0
@@ -191,5 +192,13 @@ void exitIdleCB();
 #define traceTASK_SWITCHED_OUT() \
   if( xTaskGetCurrentTaskHandle() == xTaskGetIdleTaskHandle() ) \
     exitIdleCB()
+
+//ARD : configure the timer used to compute CPU statistics
+// see http://www.freertos.org/rtos-run-time-stats.html
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() ardConfigureCpuStatTimer()
+
+//ARD : read the timer used to compute CPU statistics
+// see http://www.freertos.org/rtos-run-time-stats.html
+#define portGET_RUN_TIME_COUNTER_VALUE() TC_ReadCV(TC0,0)
 
 #endif /* FREERTOS_CONFIG_H */

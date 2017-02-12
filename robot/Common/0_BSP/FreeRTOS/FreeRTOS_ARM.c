@@ -156,3 +156,29 @@ void exitIdleCB()
 {
     digitalWrite(HEARTBEAT_PIN, HIGH);
 }
+
+//ARD : configure the timer used to compute CPU statistics Timer 0 chan 0 is used
+// see http://www.freertos.org/rtos-run-time-stats.html
+void ardConfigureCpuStatTimer()
+{
+    // Tell the Power Management Controller to disable
+    // the write protection of the (Timer/Counter) registers:
+    pmc_set_writeprotect(false);
+
+    // start clock on peripheral 27 (Timer counter 0)
+    pmc_enable_periph_clk(ID_TC0);
+
+    // Find best timer config for one tick by 100us (10* systick)
+    uint32_t dwDiv = 0;
+    uint32_t dwTcClks = 0;
+    TC_FindMckDivisor(10000, VARIANT_MCK, &dwDiv, &dwTcClks, VARIANT_MAINOSC);
+
+    // Set up the Timer in waveform mode which creates a PWM
+    // in UP mode with no trigger
+    // and sets it up with the determined internal clock as clock input.
+    TC_Configure(TC0, 0, TC_CMR_WAVE | dwTcClks);
+
+    //Start the timer
+    TC_Start(TC0,0);
+}
+

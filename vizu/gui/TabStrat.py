@@ -49,7 +49,7 @@ class TabStrat(QWidget):
         self.layoutInfo.addWidget(self.box_pos)
         self.layoutInfo.addWidget(self.box_motion)
         self.layoutInfo.addWidget(self.box_sensors)
-        self.layoutInfo.addSpacerItem(QSpacerItem(150,0,QSizePolicy.Minimum,QSizePolicy.Expanding))
+        self.layoutInfo.addSpacerItem(QSpacerItem(175,0,QSizePolicy.Minimum,QSizePolicy.Expanding))
         
         self.layout = QHBoxLayout(self)
         self.layout.addLayout(self.layoutInfo)

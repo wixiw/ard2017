@@ -83,7 +83,7 @@ void RemoteControl::getOsStats(apb_RemoteControlRequest const & request)
 void RemoteControl::getOsStatsLogs(apb_RemoteControlRequest const & request)
 {
     LOG_INFO("------------ ArdOs Stats  ---------------");
-    LOG_INFO("|   Thread   |  Free stack (in words)   |");
+    LOG_INFO("|   Thread   |  used stack (in words)   |");
     LOG_INFO("-----------------------------------------");
 
     Thread::ThreadParams const* threads = Thread::getThreadParams();
@@ -98,13 +98,22 @@ void RemoteControl::getOsStatsLogs(apb_RemoteControlRequest const & request)
         if(threads[i].handle != NULL)
         {
             LOG_INFO(String("  ") + pcTaskGetTaskName(threads[i].handle)
-                    + "\t" + uxTaskGetStackHighWaterMark(threads[i].handle)
-                    + "/" + threads[i].stackSize);
+                    + "\t" + String(threads[i].stackSize - uxTaskGetStackHighWaterMark(threads[i].handle))
+                    + "/" + threads[i].stackSize
+                    + " ( " + String((100*(threads[i].stackSize - uxTaskGetStackHighWaterMark(threads[i].handle))) / threads[i].stackSize) + "%)");
         }
     }
 
     LOG_INFO("-----------------------------------------");
-    LOG_INFO(String("  Free heap    : ") + (100*xPortGetFreeHeapSize())/configTOTAL_HEAP_SIZE + "% (" + xPortGetFreeHeapSize() + "o / " + configTOTAL_HEAP_SIZE + "o)");
+    LOG_INFO("| CPU consumption                       |");
+    LOG_INFO("-----------------------------------------");
+    static char buf[1+40*PRIO_NB];
+    buf[0] = '\n'; //return to new line
+    vTaskGetRunTimeStats(buf+1);
+    LOG_INFO(buf);
+
+    LOG_INFO("-----------------------------------------");
+    LOG_INFO(String("  Heap         : ") + (100*(configTOTAL_HEAP_SIZE - xPortGetFreeHeapSize()))/configTOTAL_HEAP_SIZE + "% (" + String(configTOTAL_HEAP_SIZE - xPortGetFreeHeapSize()) + "o / " + configTOTAL_HEAP_SIZE + "o)");
     LOG_INFO(String("  Nb mutexes   : ") + Mutex::getOsObjectCount());
     LOG_INFO(String("  Nb signals   : ") + Signal::getOsObjectCount());
     LOG_INFO(String("  Nb queues    : ") + Queue::getOsObjectCount());

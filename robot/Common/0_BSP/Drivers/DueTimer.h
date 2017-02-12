@@ -72,8 +72,6 @@ protected:
 
 public:
 
-	static DueTimer getAvailable(void);
-
 	DueTimer(unsigned short _timer);
 	DueTimer& attachInterrupt(void (*isr)());
 	DueTimer& detachInterrupt(void);

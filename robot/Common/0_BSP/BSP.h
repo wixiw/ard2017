@@ -13,6 +13,7 @@
 #include "ArduinoCore/Stream.h"
 #include "ArduinoCore/variant.h"
 #include "CMSIS/CMSIS/Include/core_cm3.h"
+#include "CMSIS/Device/ATMEL/sam.h"
 #include "FreeRtos/FreeRTOS_ARM.h"
 
 #ifdef __cplusplus

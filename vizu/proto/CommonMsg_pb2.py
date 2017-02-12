@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='CommonMsg.proto',
   package='apb',
   syntax='proto2',
-  serialized_pb=_b('\n\x0f\x43ommonMsg.proto\x12\x03\x61pb\x1a\x0bTypes.proto\"\n\n\x08\x45mptyMsg\"\x1d\n\x05Point\x12\t\n\x01x\x18\x01 \x02(\x02\x12\t\n\x01y\x18\x02 \x02(\x02\"+\n\x08PointCap\x12\t\n\x01x\x18\x01 \x02(\x02\x12\t\n\x01y\x18\x02 \x02(\x02\x12\t\n\x01h\x18\x03 \x02(\x02\"\xa0\x01\n\x08NavState\x12\x19\n\x05state\x18\n \x02(\x0e\x32\n.eNavState\x12\x19\n\x05order\x18\x0b \x02(\x0e\x32\n.eNavOrder\x12\x1a\n\x03pos\x18\x0c \x02(\x0b\x32\r.apb.PointCap\x12\x0f\n\x07omronFL\x18\x15 \x02(\x08\x12\x0f\n\x07omronFR\x18\x16 \x02(\x08\x12\x0f\n\x07omronRL\x18\x17 \x02(\x08\x12\x0f\n\x07omronRR\x18\x18 \x02(\x08\">\n\x10\x43olorSensorState\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01l\x18\x04 \x02(\r\"<\n\x0e\x41\x63tuatorsState\x12*\n\x0b\x63olorSensor\x18\x01 \x02(\x0b\x32\x15.apb.ColorSensorState')
+  serialized_pb=_b('\n\x0f\x43ommonMsg.proto\x12\x03\x61pb\x1a\x0bTypes.proto\"\n\n\x08\x45mptyMsg\"\x1d\n\x05Point\x12\t\n\x01x\x18\x01 \x02(\x02\x12\t\n\x01y\x18\x02 \x02(\x02\"+\n\x08PointCap\x12\t\n\x01x\x18\x01 \x02(\x02\x12\t\n\x01y\x18\x02 \x02(\x02\x12\t\n\x01h\x18\x03 \x02(\x02\"\xa0\x01\n\x08NavState\x12\x19\n\x05state\x18\n \x02(\x0e\x32\n.eNavState\x12\x19\n\x05order\x18\x0b \x02(\x0e\x32\n.eNavOrder\x12\x1a\n\x03pos\x18\x0c \x02(\x0b\x32\r.apb.PointCap\x12\x0f\n\x07omronFL\x18\x15 \x02(\x08\x12\x0f\n\x07omronFR\x18\x16 \x02(\x08\x12\x0f\n\x07omronRL\x18\x17 \x02(\x08\x12\x0f\n\x07omronRR\x18\x18 \x02(\x08\"\\\n\x10\x43olorSensorState\x12\t\n\x01r\x18\x01 \x02(\r\x12\t\n\x01g\x18\x02 \x02(\r\x12\t\n\x01\x62\x18\x03 \x02(\r\x12\t\n\x01l\x18\x04 \x02(\r\x12\x1c\n\x05\x63olor\x18\x05 \x02(\x0e\x32\r.eObjectColor\"<\n\x0e\x41\x63tuatorsState\x12*\n\x0b\x63olorSensor\x18\x01 \x02(\x0b\x32\x15.apb.ColorSensorState')
   ,
   dependencies=[Types__pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -243,6 +243,13 @@ _COLORSENSORSTATE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='color', full_name='apb.ColorSensorState.color', index=4,
+      number=5, type=14, cpp_type=8, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -256,7 +263,7 @@ _COLORSENSORSTATE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=288,
-  serialized_end=350,
+  serialized_end=380,
 )
 
 
@@ -286,13 +293,14 @@ _ACTUATORSSTATE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=352,
-  serialized_end=412,
+  serialized_start=382,
+  serialized_end=442,
 )
 
 _NAVSTATE.fields_by_name['state'].enum_type = Types__pb2._ENAVSTATE
 _NAVSTATE.fields_by_name['order'].enum_type = Types__pb2._ENAVORDER
 _NAVSTATE.fields_by_name['pos'].message_type = _POINTCAP
+_COLORSENSORSTATE.fields_by_name['color'].enum_type = Types__pb2._EOBJECTCOLOR
 _ACTUATORSSTATE.fields_by_name['colorSensor'].message_type = _COLORSENSORSTATE
 DESCRIPTOR.message_types_by_name['EmptyMsg'] = _EMPTYMSG
 DESCRIPTOR.message_types_by_name['Point'] = _POINT

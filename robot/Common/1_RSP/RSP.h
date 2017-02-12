@@ -24,9 +24,8 @@
 #include "ColorSensor.h"
 #include "GpioTools.h"
 #include "HmiThread.h"
-#include "Navigation.h"
-
 #include "K_thread_config.h"
 #include "Log.h"
+#include "Navigation.h"
 
 #endif /* ROBOTS_RSP_H_ */

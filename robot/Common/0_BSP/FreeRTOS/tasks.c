@@ -3845,7 +3845,7 @@ TCB_t *pxTCB;
 			}
 
 			/* Free the array again. */
-			vPortFree( pxTaskStatusArray );
+			//ARD : not available with heap1 vPortFree( pxTaskStatusArray );
 		}
 		else
 		{

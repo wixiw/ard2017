@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\generate.bat = ..\generate.bat
 	EndProjectSection
 EndProject
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_AccelStepper", "UT_AccelStepper\UT_AccelStepper.cppproj", "{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -38,6 +40,10 @@ Global
 		{A5BD9A14-FF73-4E04-9D65-863A12A76EEA}.Debug|ARM.Build.0 = Debug|ARM
 		{A5BD9A14-FF73-4E04-9D65-863A12A76EEA}.Release|ARM.ActiveCfg = Release|ARM
 		{A5BD9A14-FF73-4E04-9D65-863A12A76EEA}.Release|ARM.Build.0 = Release|ARM
+		{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}.Debug|ARM.ActiveCfg = Debug|ARM
+		{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}.Debug|ARM.Build.0 = Debug|ARM
+		{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}.Release|ARM.ActiveCfg = Release|ARM
+		{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}.Release|ARM.Build.0 = Release|ARM
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
