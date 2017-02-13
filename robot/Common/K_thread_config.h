@@ -19,10 +19,10 @@ typedef uint16_t ThreadPriority;
 //threads priority lowest value, lowest priority
 static const ThreadPriority PRIO_UNSET          = 0xFFFF;
 static const ThreadPriority PRIO_IDLE           = 0;
-static const ThreadPriority PRIO_HMI            = 1; //HMI is driving LEDS for feedback, it is usefull to see LED period is not stable, hence HMI has a low priority
-static const ThreadPriority PRIO_SDCARD_WRITER  = 2; //This thread is used to do initialization with OS running, it must be the lowest priority task sothat started/configured tasks can run  after changes
-static const ThreadPriority PRIO_REMOTE_CTRL_RX = 3; //Remote control is for debug => lowest prio
-static const ThreadPriority PRIO_REMOTE_CTRL_TX = 4; //Log is for debug but more important than remote control as we can have to read without requesting anything
+static const ThreadPriority PRIO_SDCARD_WRITER  = 1; //Really no critical
+static const ThreadPriority PRIO_REMOTE_CTRL_RX = 2; //Remote control is for debug => lowest prio
+static const ThreadPriority PRIO_REMOTE_CTRL_TX = 3; //Log is for debug but more important than remote control as we can have to read without requesting anything
+static const ThreadPriority PRIO_HMI            = 4; //HMI is driving LEDS for feedback, it is usefull to see LED period is not stable, hence HMI has a low priority but just over "useless" stuff
 static const ThreadPriority PRIO_STRATEGY       = 5; //There is no reason to send commands if the robot is overloaded, hence strategy is the lowest functional priority
 static const ThreadPriority PRIO_ACTUATORS      = 6;
 static const ThreadPriority PRIO_NAVIGATION     = 7; //Navigation has the highest rank because avoidance is the most critical task
@@ -33,7 +33,7 @@ static const ThreadPriority PRIO_NAVIGATION     = 7; //Navigation has the highes
 //adjusted for having around 200 words spare in each task (except Idle which is really tight)
 static const StackSize STACK_SDCARD_WRITER      = 500;
 static const StackSize STACK_HMI                = 300;
-static const StackSize STACK_REMOTE_CTRL_RX     = 500;
+static const StackSize STACK_REMOTE_CTRL_RX     = 700;
 static const StackSize STACK_REMOTE_CTRL_TX     = 500;
 static const StackSize STACK_STRATEGY           =1000; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
 static const StackSize STACK_ACTUATORS          =1000; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space

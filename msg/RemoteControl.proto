@@ -63,6 +63,9 @@ message RemoteControlRequest
 		PointCap			setPosition			= 200;
 		RequestGoto        	requestGoto			= 210;
 		RequestGotoCap      requestGotoCap		= 211;
+
+		//messages from 300 to 399 for design tests
+		EmptyMsg			requestMaxLengthMsg = 300;
 	}
 }
 

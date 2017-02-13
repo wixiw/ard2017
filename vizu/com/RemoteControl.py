@@ -124,6 +124,20 @@ class RemoteControl(QObject):
         msg.requestGoto.direction = dir
         self._sendMsg(msg)
         
+    @pyqtSlot()
+    def requestMaxLengthMsg(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestMaxLengthMsg.SetInParent()
+        self._sendMsg(msg)
+        
+    @pyqtSlot()
+    def testMaxLength(self):
+        #Due to 4 character escapes, it is not possible to send 520 chars. 
+        #Calcul is 520 (max) - 6(header) - 4 (escapes) = 256+254
+        msgMax = bytes(range(256))
+        msgMax += bytes(range(254))
+        self.com.sendMsg(msgMax)
+        
 #---------------------------------------------------------------------------------
 # Private/internal API :
 #---------------------------------------------------------------------------------
@@ -137,7 +151,7 @@ class RemoteControl(QObject):
         except:
             print("Failed to decode protobuf ms : " + str(data))
             print(str(response))
-            traceback.print_exc()
+            #traceback.print_exc()
         else:
             try:
                 #--- DEBUG --- print("RemoteControl message received:")
@@ -166,7 +180,6 @@ class RemoteControl(QObject):
     def _telemetryTick(self):
         #print("tick")
         self.getTelemetry()
-  
         
         
         

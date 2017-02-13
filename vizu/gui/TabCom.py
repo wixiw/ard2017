@@ -39,15 +39,29 @@ class TabCom(QWidget):
         self.btn_connect.setCheckable(True)
         self.btn_connect.toggled[bool].connect(self._connectFromButton)
         
+            #tests
+        self.btn_maxLength = QPushButton('Send max length test payload', self)
+        self.btn_maxLength.clicked.connect(self._maxLength) 
+        self.btn_maxLength.setEnabled(False)
+        self.btn_maxLengthReq = QPushButton('Receive max length test payload', self)
+        self.btn_maxLengthReq.clicked.connect(self._maxLengthReq) 
+        self.btn_maxLengthReq.setEnabled(False)
+        
         layout = QVBoxLayout(self)
         layoutH1 = QHBoxLayout()
+        layoutH2 = QHBoxLayout()
         layout.addLayout(layoutH1)
+        layout.addLayout(layoutH2)
         layout.addStretch()
         
         layoutH1.addWidget(self.combo_COM)
         layoutH1.addWidget(self.combo_Baudrate)
         layoutH1.addWidget(self.btn_connect)      
         layoutH1.addStretch()
+        
+        layoutH2.addWidget(self.btn_maxLength)
+        layoutH2.addWidget(self.btn_maxLengthReq)
+        layoutH2.addStretch()
         
         #keyboard shortcuts
         QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connectFromShorcut)
@@ -76,6 +90,8 @@ class TabCom(QWidget):
             settings.beginGroup("Com")
             settings.setValue("port", port)
             settings.setValue("baudrate", baudrate)
+            self.btn_maxLength.setEnabled(True)
+            self.btn_maxLengthReq.setEnabled(True)
             self.networkStatus.emit(True)
         else:
             print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizy instance...)")
@@ -90,8 +106,20 @@ class TabCom(QWidget):
         self.btn_connect.setChecked(False)
         self.combo_COM.setEnabled(True)
         self.combo_Baudrate.setEnabled(True)
+        self.btn_maxLength.setEnabled(False)
+        self.btn_maxLengthReq.setEnabled(False)
         self.networkStatus.emit(False)
         print("Disconnected")
+        
+    @pyqtSlot()
+    def _maxLength(self): 
+       print("Max HDLC msg payload send.")
+       self.com.testMaxLength()
+      
+    @pyqtSlot()
+    def _maxLengthReq(self): 
+       print("Max HDLC msg payload request.")
+       self.com.requestMaxLengthMsg()
             
 if __name__ == '__main__':
     import sys

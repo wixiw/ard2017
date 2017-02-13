@@ -62,6 +62,12 @@ class UARTClass : public HardwareSerial
 
     operator bool() { return true; }; // UART always active
 
+    //ARD : In case the serial interrupt can't save the char the flag is set
+    bool hasOverflowed()
+    {
+        return overflowError;
+    }
+
   protected:
     void init(const uint32_t dwBaudRate, const uint32_t config);
 
@@ -71,6 +77,9 @@ class UARTClass : public HardwareSerial
     Uart* _pUart;
     IRQn_Type _dwIrq;
     uint32_t _dwId;
+
+    //ARD : In case the serial interrupt can't save the char the flag is set
+    bool overflowError;
 
 };
 

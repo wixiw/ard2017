@@ -25,18 +25,21 @@
 // using a ring buffer, in which head is the index of the location
 // to which to write the next incoming character and tail is the index of the
 // location from which to read.
-#define SERIAL_BUFFER_SIZE 128
+//ARD :: modified to 521 to hold HDLC messages (520 + 1 spare bit to isolate ring tail from head).
+#define RING_BUFFER_SIZE 521
 
 class RingBuffer
 {
   public:
-    volatile uint8_t _aucBuffer[SERIAL_BUFFER_SIZE] ;
+    volatile uint8_t _aucBuffer[RING_BUFFER_SIZE] ;
     volatile int _iHead ;
     volatile int _iTail ;
 
   public:
     RingBuffer( void ) ;
-    void store_char( uint8_t c ) ;
+
+    //return false if the store would overflow
+    bool store_char( uint8_t c ) ;
 } ;
 
 #endif /* _RING_BUFFER_ */

@@ -10,10 +10,9 @@
 
 #include "ComInterfaces.h"
 
-//Note that Python yahdlc binding can't go over 8 (header) + 512
+//Note that Python yahdlc binding can't go over 8 (header, taking addr and ctrl field escape into account) + 512
 #define MSG_SIZE 512
 #define HDLC_HEADER 8
-#define SERIAL_BUF_SIZE (MSG_SIZE+HDLC_HEADER)
 #define HDLC_BUF_SIZE (MSG_SIZE+HDLC_HEADER)
 
 namespace ard
@@ -56,7 +55,7 @@ namespace ard
 
         //reception buffers
         unsigned int serial_index = 0;
-        char serial_recv_buffer[SERIAL_BUF_SIZE];
+        char serial_recv_buffer[HDLC_BUF_SIZE];
         char hdlc_recv_framebuffer[HDLC_BUF_SIZE];
 
         //emission buffers. hdlc buffer are flat buffers

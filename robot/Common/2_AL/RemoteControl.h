@@ -69,12 +69,13 @@ namespace ard
         void getOsStats             (apb_RemoteControlRequest const & request);
         void getOsStatsLogs         (apb_RemoteControlRequest const & request);
         void getTelemetry           (apb_RemoteControlRequest const & request);
+        void reboot                 (apb_RemoteControlRequest const & request);
         void configureMatch         (apb_RemoteControlRequest const & request);
         void startMatch             (apb_RemoteControlRequest const & request);
         void setPosition            (apb_RemoteControlRequest const & request);
         void requestGoto            (apb_RemoteControlRequest const & request);
         void requestGotoCap         (apb_RemoteControlRequest const & request);
-        void reboot                 (apb_RemoteControlRequest const & request);
+        void requestMaxLengthMsg    (apb_RemoteControlRequest const & request);
 
     };
 

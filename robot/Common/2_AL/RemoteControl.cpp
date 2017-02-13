@@ -55,16 +55,20 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(getOsStats)
         HANDLE_MSG(getOsStatsLogs)
         HANDLE_MSG(getTelemetry)
+        HANDLE_MSG(reboot)
         HANDLE_MSG(configureMatch)
         HANDLE_MSG(startMatch)
         HANDLE_MSG(setPosition)
         HANDLE_MSG(requestGoto)
         HANDLE_MSG(requestGotoCap)
-        HANDLE_MSG(reboot)
+        HANDLE_MSG(requestMaxLengthMsg)
+
 
         default:
         {
             LOG_ERROR("Failed to identify message type : " + String((int)request.which_type));
+            //message is sent back to the sender for analysis
+            ASSERT(com.sendMsg(msg, msgLength));
             break;
         }
     }
@@ -137,7 +141,12 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
 
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode Log message.");
-    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: log failed");
+    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get telemetry failed");
+}
+
+void RemoteControl::reboot(apb_RemoteControlRequest const & request)
+{
+    ArdOs::reboot();
 }
 
 void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
@@ -176,10 +185,22 @@ void RemoteControl::requestGotoCap(apb_RemoteControlRequest const & request)
             request.type.requestGotoCap.direction);
 }
 
-void RemoteControl::reboot(apb_RemoteControlRequest const & request)
+void RemoteControl::requestMaxLengthMsg(apb_RemoteControlRequest const & request)
 {
-    ArdOs::reboot();
+    char buf[510];
+    for(int i = 0; i < 256; i++)
+    {
+        buf[i] = i;
+        if( i < 255 )
+        {
+            buf[2*i] = i;
+        }
+    }
+    buf[509] = 253;
+
+    ASSERT_TEXT(com.sendMsg(buf, 510), "RemoteControl: requestMaxLengthMsg failed");
 }
+
 
 /**
  * Send COM API

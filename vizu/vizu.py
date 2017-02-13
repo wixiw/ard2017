@@ -151,7 +151,6 @@ class ConnectScreen(QWidget):
         self.teleop.configureMatch(0,color) #0 for default strat
         
 if __name__ == '__main__':
-    import sys
     import os
     
     #re-generate proto (not optimal, but as they will change a lot at project beginning...)

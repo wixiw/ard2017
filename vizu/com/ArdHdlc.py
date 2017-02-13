@@ -78,9 +78,12 @@ class ArdHdlc(QObject):
         # TODO sequence id is not used yet, as RemoteControl doesn't require any robustness, 
         # in order to use this com with a robot to robot com, it'll be required
         frame = yahdlc.frame_data(msg, yahdlc.FRAME_DATA, self.sendSedNumber)
-        #---DEBUG---- print("HLDC frame : 0x[%s]" % frame.hex())
+        assert len(frame) <= 520, "HDLC payload is too big : " + str(len(frame)) + " since the maximal length is 520"
+        #---DEBUG---- print("HLDC frame (seq=" + str(self.sendSedNumber) + ") (len=" + str(len(frame)) + ") : 0x[%s]" % frame.hex())
         self.sendSedNumber = (self.sendSedNumber + 1) % self.NB_SEQ_NUMBERS
-        return self._physicalLayer.write(frame) == len(frame)
+        bytesWritten = self._physicalLayer.write(frame)
+        #---DEBUG---- print("Bytes written : " + str(bytesWritten))
+        return bytesWritten == len(frame)
 
     # a QT signal is sent by ArdSerial in this slot when data are ready to be read
     @pyqtSlot()
@@ -91,7 +94,7 @@ class ArdHdlc(QObject):
         bytesToRead = len(self.recvBuffer)
         
         #YAHDLC can't manage buffer that are bigger than 520o :
-        if 512 + 8 < bytesToRead:
+        if 512 + 6 < bytesToRead:
             print("Error : receive buffer overshoot, data lost.")
             self.recvBuffer = self.recvBuffer[-520:] #it means : keep the last 520 bytes 
 

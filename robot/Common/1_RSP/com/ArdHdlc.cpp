@@ -56,7 +56,7 @@ bool ArdHdlc::feedReadBuffer()
             serial_index++;
             newBytes = true;
             
-            if(SERIAL_BUF_SIZE < serial_index)
+            if(HDLC_BUF_SIZE < serial_index)
             {
                 LOG_ERROR("Serial framebuffer overshoot");
             }                
@@ -64,6 +64,8 @@ bool ArdHdlc::feedReadBuffer()
 
     }
 
+    //Check that no overflow occured in the serial interrupt
+    ASSERT(!physicalLink.hasOverflowed());
     return newBytes;
 }
 
@@ -88,7 +90,7 @@ void ArdHdlc::parseBuffer()
         {
             //clean input buffer : unused data at the front and decoded frame are deleted
             nbParsedBytes = res + 1; //the result is the index of the last read element in the buffer
-            if (nbParsedBytes == SERIAL_BUF_SIZE)
+            if (nbParsedBytes == HDLC_BUF_SIZE)
             {
                 INIT_TABLE_TO_ZERO(serial_recv_buffer);
                 serial_index = 0;
@@ -115,6 +117,22 @@ void ArdHdlc::parseBuffer()
             if(listener)
                 listener->handleMsg(this, hdlc_recv_framebuffer, hdlc_length);
         }
+//        else
+//        {
+//            ASSERT(res != -EINVAL);
+//            if( res == -EIO)
+//            {
+//                 //EIO mean a CRC check error
+//                LOG_ERROR("CRC error in received msg, data discarded.");
+//                //discard invalid data (up to end index)
+//                yahdlc_state_t serial_buf_state;
+//                yahdlc_get_state(&serial_buf_state);
+//                memset(serial_recv_buffer, 0, serial_buf_state.end_index);
+//                memcpy(serial_recv_buffer, &(serial_recv_buffer[serial_buf_state.end_index]), serial_index - serial_buf_state.end_index );
+//                serial_index = 0;
+//            }
+//
+//        }
     } while (hdlc_length != 0); //there may be several frames, so as long as a frame is found, unpile buffer
 
     //clean dust bytes if an incomplete frame is holder the buffer beginning
