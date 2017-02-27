@@ -8,7 +8,7 @@
 #ifndef ROBOTS_LOGTHREAD_H_
 #define ROBOTS_LOGTHREAD_H_
 
-#include "ArdOs.h"
+#include "BSP.h"
 
 namespace ard
 {

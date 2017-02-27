@@ -44,8 +44,10 @@ extern uint32_t _estack;
 int main(void);
 /** \endcond */
 
-// Arduino: we must setup hardware before doing this
-// void __libc_init_array(void);
+// ARD : function defined elsewhere
+extern void __libc_init_array();
+extern void init();
+extern void delay(uint32_t);
 
 // Arduino: handlers weak symbols moved into main
 
@@ -166,6 +168,7 @@ const DeviceVectors exception_table = {
  * \brief This is the code that gets called on processor reset.
  * To initialize the device, and call the main() routine.
  */
+
 void Reset_Handler(void)
 {
 	uint32_t *pSrc, *pDest;

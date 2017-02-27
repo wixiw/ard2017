@@ -18,57 +18,48 @@ using namespace ard;
 
 #define LED_PIN 13
 // Signal to trigger context switch
-Signal ledSignal;
+Semaphore sem(3, 1);
 
 //------------------------------------------------------------------------------
 // high priority thread to set pin low
-class LedOffThread: public Thread
+class ProducerThread: public Thread
 {
 public:
-    LedOffThread():Thread("TaskHi", tskIDLE_PRIORITY + 3, 2000){};
+    ProducerThread():Thread("Prod", tskIDLE_PRIORITY + 1, 2000){};
 
     void run() override
     {
         for (;;)
         {
-            ledSignal.wait();
-            //xSemaphoreTake(xSemaphore2, portMAX_DELAY);
             digitalWrite(LED_PIN, LOW);
+            sem.give();
         }
     }
 };
 
 //------------------------------------------------------------------------------
 // lower priority thread to toggle LED and trigger thread 1
-class LedOnThread: public Thread
+class ConsummerThread: public Thread
 {
 public:
-    LedOnThread():Thread("TaskLo", tskIDLE_PRIORITY + 2, 2000){};
+    ConsummerThread():Thread("Cons", tskIDLE_PRIORITY + 2, 2000){};
 
     void run() override
     {
-        // first pulse to get time with no context switch
-        digitalWrite(LED_PIN, HIGH);
-        digitalWrite(LED_PIN, LOW);
-
         for (;;)
         {
-            // start second pulse
+            sem.take();
             digitalWrite(LED_PIN, HIGH);
-
-            // trigger context switch for task that ends pulse
-            ledSignal.set();
-            //xSemaphoreGive(xSemaphore2);
         }
     }
 };
 
 //It's VERY important to have those variables out of the main scope, else,
 //they will be destructed when Freertos intialize and destruct the first stack to replace it by OS thread stacks
-LedOnThread ledOnThread;
-LedOffThread ledOffThread;
+ConsummerThread consThread;
+ProducerThread prodThread;
 
-void ard_signal()
+void ard_semaphore()
 {
     pinMode(LED_PIN, OUTPUT);
 

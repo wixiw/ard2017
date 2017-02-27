@@ -129,6 +129,7 @@
         </armgcc.compiler.symbols.DefSymbols>
         <armgcc.compiler.directories.IncludePaths>
           <ListValues>
+            <Value>../../../com</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -166,6 +167,7 @@
         </armgcccpp.compiler.symbols.DefSymbols>
         <armgcccpp.compiler.directories.IncludePaths>
           <ListValues>
+            <Value>../../../com</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -197,12 +199,14 @@
           <ListValues>
             <Value>libm</Value>
             <Value>libARD</Value>
+            <Value>libARDcom</Value>
           </ListValues>
         </armgcccpp.linker.libraries.Libraries>
         <armgcccpp.linker.libraries.LibrarySearchPaths>
           <ListValues>
             <Value>../../Common/Debug</Value>
             <Value>../../Common/0_BSP/ArduinoCore/linker_scripts</Value>
+            <Value>../../../com/Debug</Value>
           </ListValues>
         </armgcccpp.linker.libraries.LibrarySearchPaths>
         <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
@@ -217,6 +221,7 @@
         <armgcccpp.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcccpp.preprocessingassembler.debugging.DebugLevel>
       </ArmGccCpp>
     </ToolchainSettings>
+    <PreBuildEvent>DEL $(OutputDirectory)\UT_AccelStepper* /Q</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="main.cpp">

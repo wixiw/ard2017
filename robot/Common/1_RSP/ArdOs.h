@@ -8,9 +8,10 @@
 #ifndef ROBOTS_ARDOS_H_
 #define ROBOTS_ARDOS_H_
 
-#include "BSP.h"
 #include "core/ArdFramework.h"
 #include "K_thread_config.h"
+#include "FreeRtos/FreeRTOS_ARM.h"
+#include "ArduinoCore/Arduino.h"
 
 namespace ard
 {
@@ -169,6 +170,63 @@ namespace ard
     };
 
     //-------------------------------------------------------------------------------
+    //                      Semaphore
+    //-------------------------------------------------------------------------------
+    /**
+     * Use Semaphore to share a ressource count.
+     * Do not use this for memory protection, use a Mutex aside.
+     * Note that a semaphore is not holding data, it just reference
+     * the number a free/taken ressources
+     */
+    class Semaphore: public OsObject
+    {
+    public:
+        Semaphore(uint16_t maxCount, uint16_t startingCount);
+
+        //Implements ArdObject : creates the OS object
+        //User should not call this, it is automatically called during the ArdOs::init() call
+        void init() override;
+
+        //Take a new resource from the reserve or block until one is available
+        //A timeout of 0 is equivalent of tryTake()
+        void take(DelayMs timeout = portMAX_DELAY);
+
+        //same as take(), but do not block when the reserve is empty, return false instead
+        //USE ONLY IN INTERRUPT CONTEXT
+        bool takeFromISR();
+
+        //Put a new ressource in the reserve or block if no room is available
+        //A timeout of 0 is equivalent of tryGive()
+        //DO NOT USE FROM INTERRUPT CONTEXT
+        void give(DelayMs timeout = portMAX_DELAY);
+
+        //same as give(), but do not block when the reserve is full, return false instead
+        //USE ONLY IN INTERRUPT CONTEXT
+        bool giveFromISR();
+
+        //retrieve the number of item in the semaphore
+        //just for information or debug, you should not require to call this
+        uint32_t getCount();
+
+        //static getter for statistics
+        static uint8_t getOsObjectCount() //const : no-const on a static member
+        {
+            return objectCount;
+        }
+
+    private:
+        SemaphoreHandle_t osHandler;
+
+        //count how many object of that type has been initialized
+        //note that uninitialized object are not considered as they are not used
+        static uint8_t objectCount;
+
+        uint16_t maxCount;
+        uint16_t startingCount;
+    };
+
+
+    //-------------------------------------------------------------------------------
     //                      Queue
     //-------------------------------------------------------------------------------
     /**
@@ -286,6 +344,17 @@ namespace ard
 
         //Implement this function as the Thread main function
         virtual void run() = 0;
+
+        //disable interruption (critical sections)
+        void disableInterrupts()
+        {
+            taskENTER_CRITICAL();
+        }
+
+        void enableInterrupts()
+        {
+            taskEXIT_CRITICAL();
+        }
 
         //We may optionally connect a logger to all threads
         static void setLogger(ILogger* newLogger);
@@ -448,7 +517,10 @@ namespace ard
         static void sleepMs(DelayMs delay);
 
         //SW reset
-        static void reboot();
+        static void reboot()
+        {
+            NVIC_SystemReset();
+        }
 
         //Get the OS initialization state
         static eOsState getState()

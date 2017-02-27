@@ -28,6 +28,11 @@
 #define INIT_STRUCT_TO_ZERO(x) memset(&x, 0, sizeof(x))
 #define ARRAY_SIZE(a)               (sizeof(a)/sizeof(a[0]))
 
+//macro to control optimization
+#define __OPTIMIZE_SIZE__ __attribute__((optimize("-Os")))
+#define __OPTIMIZE_ZERO__ __attribute__((optimize("-O0")))
+#define __OPTIMIZE_SPEED__ __attribute__((optimize("-O3")))
+
 //Uses to disable "unsused param" warnings
 #define UNUSED(x) ((void)(x))
 

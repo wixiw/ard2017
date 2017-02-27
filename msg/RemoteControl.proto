@@ -65,7 +65,10 @@ message RemoteControlRequest
 		RequestGotoCap      requestGotoCap		= 211;
 
 		//messages from 300 to 399 for design tests
+			//communication tests
 		EmptyMsg			requestMaxLengthMsg = 300;
+		EmptyMsg			requestCrcFailMsg 	= 301;
+		EmptyMsg			requestTooLittleMsg = 302;
 	}
 }
 

@@ -161,6 +161,78 @@ void Signal::set()
 }
 
 //-------------------------------------------------------------------------------
+//                      Semaphore
+//-------------------------------------------------------------------------------
+
+//static member instanciation
+uint8_t Semaphore::objectCount = 0;
+
+Semaphore::Semaphore(uint16_t maxCount, uint16_t startingCount):
+        OsObject(),
+        osHandler(NULL),
+        maxCount(maxCount),
+        startingCount(startingCount)
+{
+    ASSERT_TEXT(objectCount < 0xFF , "Too many objects of that type.");
+    objectCount++;
+}
+
+void Semaphore::init()
+{
+    OsObject::init();
+    osHandler = xSemaphoreCreateCounting(maxCount, startingCount);
+}
+
+void Semaphore::take(DelayMs timeout)
+{
+    ASSERT(isInitialized());
+    ASSERT_TEXT(!interruptContext(), "You can't take a resource from an interrupt");
+
+    BaseType_t res = pdFALSE;
+    do
+    {
+        res = xSemaphoreTake(osHandler, timeout);
+    }
+    //retry if delay is set to maximum value
+    while(timeout == portMAX_DELAY && res == pdFALSE );
+}
+
+bool Semaphore::takeFromISR()
+{
+    ASSERT(isInitialized());
+    ASSERT_TEXT(interruptContext(), "Semaphore::giveFromISR is only available from ISR");
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    BaseType_t res = xSemaphoreTakeFromISR(osHandler, &xHigherPriorityTaskWoken);
+    //force context switch if a task with higher priority is awoken
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    return res == pdTRUE;
+}
+
+void Semaphore::give(DelayMs timeout)
+{
+    ASSERT(isInitialized());
+    ASSERT_TEXT(!interruptContext(), "Semaphore::give is not available from ISR");
+
+    xQueueGenericSend( ( QueueHandle_t ) ( osHandler ), NULL, timeout, queueSEND_TO_BACK );
+}
+
+bool Semaphore::giveFromISR()
+{
+    ASSERT(isInitialized());
+    ASSERT_TEXT(interruptContext(), "Semaphore::giveFromISR is only available from ISR");
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    BaseType_t res = xSemaphoreGiveFromISR(osHandler, &xHigherPriorityTaskWoken);
+    //force context switch if a task with higher priority is awoken
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+    return res == pdTRUE;
+}
+
+uint32_t Semaphore::getCount()
+{
+    return ardQueueGetCount(osHandler);
+}
+
+//-------------------------------------------------------------------------------
 //                      Queue
 //-------------------------------------------------------------------------------
 
@@ -495,14 +567,6 @@ void ArdOs::sleepMs(DelayMs delay)
 {
     ASSERT(state==eOsState::RUNNING);
     vTaskDelay(delay);
-}
-
-void ArdOs::reboot()
-{
-    //see https://mcuoneclipse.files.wordpress.com/2015/07/aircr.png
-    //or chapter 4.3.5 on "Application interrupt and reset control register
-    SCB->AIRCR = (uint32_t)0x5FA << SCB_AIRCR_VECTKEY_Pos | SCB_AIRCR_SYSRESETREQ_Msk;
-    while(666);
 }
 
 //-------------------------------------------------------------------------------

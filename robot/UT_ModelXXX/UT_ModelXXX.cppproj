@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.ARMGCC.CPP</ToolchainName>
-    <ProjectGuid>{a5bd9a14-ff73-4e04-9d65-863a12a76eea}</ProjectGuid>
+    <ProjectGuid>{3940c6ff-c6d6-443e-a0c5-f379c38b95ab}</ProjectGuid>
     <avrdevice>ATSAM3X8E</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>UT_FreeRtos</AssemblyName>
-    <Name>UT_FreeRtos</Name>
-    <RootNamespace>UT_FreeRtos</RootNamespace>
+    <AssemblyName>UT_ModelXXX</AssemblyName>
+    <Name>UT_ModelXXX</Name>
+    <RootNamespace>UT_ModelXXX</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -45,16 +45,6 @@
       <ToolOptions>
         <InterfaceProperties>
           <JtagDbgClock>4000000</JtagDbgClock>
-          <JtagEnableExtResetOnStartSession>true</JtagEnableExtResetOnStartSession>
-          <JtagInChain>false</JtagInChain>
-          <JtagDevicesBefore>0</JtagDevicesBefore>
-          <JtagDevicesAfter>0</JtagDevicesAfter>
-          <JtagInstrBitsBefore>0</JtagInstrBitsBefore>
-          <JtagInstrBitsAfter>0</JtagInstrBitsAfter>
-          <JtagSelectedDeviceIndexInChain>
-          </JtagSelectedDeviceIndexInChain>
-          <JtagDaisyChainDevices>
-          </JtagDaisyChainDevices>
         </InterfaceProperties>
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
@@ -128,6 +118,39 @@
         <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
         <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
         <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
+        <armgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>F_CPU=84000000L</Value>
+            <Value>ARDUINO=10612</Value>
+            <Value>ARDUINO_SAM_DUE</Value>
+            <Value>ARDUINO_ARCH_SAM</Value>
+            <Value>USBCON</Value>
+          </ListValues>
+        </armgcc.compiler.symbols.DefSymbols>
+        <armgcc.compiler.directories.IncludePaths>
+          <ListValues>
+		    <Value>../../../com</Value>
+            <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
+            <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
+            <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
+            <Value>../../Common/0_BSP/ArduinoCore/include</Value>
+            <Value>../../Common/0_BSP/ArduinoCore</Value>
+            <Value>../../Common/0_BSP/FreeRtos</Value>
+            <Value>../../Common/0_BSP</Value>
+            <Value>../../Common/0_BSP/Drivers</Value>
+            <Value>../../Common/1_RSP</Value>
+            <Value>../../Common</Value>
+            <Value>../../Common/generated</Value>
+            <Value>../../Common/1_RSP</Value>
+            <Value>../../Common/1_RSP/com</Value>
+            <Value>../../Common/1_RSP/core</Value>
+            <Value>../../Common/1_RSP/serialization</Value>
+            <Value>../../Common/2_AL</Value>
+            <Value>../../Common/2_AL/actuators</Value>
+            <Value>../../Common/2_AL/proto</Value>
+            <Value>../../Common/2_AL/strategies</Value>
+          </ListValues>
+        </armgcc.compiler.directories.IncludePaths>
         <armgcc.compiler.optimization.level>Optimize (-O0)</armgcc.compiler.optimization.level>
         <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
         <armgcc.compiler.optimization.PrepareDataForGarbageCollection>True</armgcc.compiler.optimization.PrepareDataForGarbageCollection>
@@ -144,7 +167,7 @@
         </armgcccpp.compiler.symbols.DefSymbols>
         <armgcccpp.compiler.directories.IncludePaths>
           <ListValues>
-            <Value>../../../com</Value>
+		    <Value>../../../com</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -183,7 +206,7 @@
           <ListValues>
             <Value>../../Common/Debug</Value>
             <Value>../../Common/0_BSP/ArduinoCore/linker_scripts</Value>
-            <Value>../../../com/Debug</Value>
+	    <Value>../../../com/Debug</Value>
           </ListValues>
         </armgcccpp.linker.libraries.LibrarySearchPaths>
         <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
@@ -198,13 +221,13 @@
         <armgcccpp.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcccpp.preprocessingassembler.debugging.DebugLevel>
       </ArmGccCpp>
     </ToolchainSettings>
-    <PreBuildEvent>DEL $(OutputDirectory)\UT_FreeRtos* /Q</PreBuildEvent>
+    <PreBuildEvent>DEL $(OutputDirectory)\UT_ModelXXX* /Q</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="interrupt_mask.cpp">
+    <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="main.cpp">
+    <Compile Include="UT_buffer_tools.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

@@ -22,6 +22,8 @@ namespace ard
 
     /**
      * This function has to be registered somewhere in a thread or an IT
+     * Note that it calls FreeRtos calls, so it shall be configured at a
+     * priority allowed but ISR-safe API of FreeRtos
      */
     void
     gpioToolsIsrCallback(uint32_t period_us);

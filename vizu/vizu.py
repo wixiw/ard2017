@@ -3,11 +3,17 @@
 
 #expand path to find modules :
 import sys
-sys.path.append("com")
-sys.path.append("core")
-sys.path.append("gui")
-sys.path.append("proto")
-sys.path.append("../devenv/nanopb-0.3.7-windows-x86/generator/proto")
+
+#Find the directory in which vizu.py is located
+from os.path import dirname, abspath
+DIR = dirname(abspath(__file__))
+
+sys.path.append(DIR + "/com")
+sys.path.append(DIR + "/core")
+sys.path.append(DIR + "/gui")
+sys.path.append(DIR + "/proto")
+sys.path.append(DIR + "/../devenv/nanopb-0.3.7-windows-x86/generator/proto")
+sys.path.append(DIR + "/../com")
 
 import signal
 
@@ -41,7 +47,7 @@ class ConnectScreen(QWidget):
         layout_main.addWidget(self.tabs)
         
         #connect Com tab
-        self.tab["Com"].networkStatus       .connect(self._handleNetworkStatus)
+        self.tab["Com"].networkStatus         .connect(self._handleNetworkStatus)
         self.tab["Robot"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
         self.tab["Robot"].getTelemetry        .connect(self.teleop.getTelemetry)
         self.tab["Robot"].configureMatch      .connect(self.teleop.configureMatch)

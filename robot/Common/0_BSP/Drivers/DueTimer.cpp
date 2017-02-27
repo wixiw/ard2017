@@ -121,6 +121,7 @@ DueTimer& DueTimer::stop(void){
 	return *this;
 }
 
+
 uint8_t DueTimer::bestClock(double frequency, uint32_t& retRC){
 	/*
 		Pick the best Clock, thanks to Ogle Basil Hall!
@@ -226,6 +227,12 @@ DueTimer& DueTimer::setPeriod(unsigned long microseconds){
 	// Convert period in microseconds to frequency in Hz
 	double frequency = 1000000.0 / microseconds;	
 	setFrequency(frequency);
+	return *this;
+}
+
+DueTimer& DueTimer::setInterruptPriority(unsigned char priority)
+{
+    NVIC_SetPriority(Timers[timer].irq, priority);
 	return *this;
 }
 

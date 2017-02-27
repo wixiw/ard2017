@@ -79,7 +79,7 @@ public:
 	DueTimer& stop(void);
 	DueTimer& setFrequency(double frequency);
 	DueTimer& setPeriod(unsigned long microseconds);
-
+    DueTimer& setInterruptPriority(unsigned char priority);
 	double getFrequency(void) const;
 	long getPeriod(void) const;
 };
