@@ -35,9 +35,6 @@ class HardwareSerial : public Stream
     virtual size_t write(uint8_t) = 0;
     using Print::write; // pull in write(str) and write(buf, size) from Print
     virtual operator bool() = 0;
-    virtual bool hasOverflowed(){return false;};
 };
-
-extern void serialEventRun(void) __attribute__((weak));
 
 #endif

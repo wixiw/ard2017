@@ -54,9 +54,9 @@ public:
     {
         while(1)
         {
-            delayMS(3000);
+            delayMS(1000);
             disableInterrupts();
-            delayMS(3000);
+            delayMS(1000);
             enableInterrupts();
         }
     }
@@ -69,8 +69,8 @@ ItMaskThread consThread;
 
 void interrupt_mask()
 {
-    Timer6.setIrqPriority(PRIORITY_IRQ_SYSCALL - 1);
-    Timer7.setIrqPriority(PRIORITY_IRQ_SYSCALL + 1);
+    Timer6.setInterruptPriority(PRIORITY_IRQ_SYSCALL - 1);
+    Timer7.setInterruptPriority(PRIORITY_IRQ_SYSCALL + 1);
     Timer6.attachInterrupt(ledInterrupt);
     Timer7.attachInterrupt(led2Interrupt);
     Timer6.start(500000);

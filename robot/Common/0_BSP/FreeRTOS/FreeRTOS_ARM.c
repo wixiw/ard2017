@@ -68,7 +68,7 @@ __attribute__((optimize(0))) void prvGetRegistersFromStack( uint32_t *pulFaultSt
  * \param[in] n  number of short pulses
  */
 void errorBlink(int n) {
-	noInterrupts();
+  __disable_irq();
 		
   pinMode(13, OUTPUT);
   for (;;) {

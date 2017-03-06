@@ -76,7 +76,7 @@ void SPIClass::usingInterrupt(uint8_t interruptNumber)
 	uint8_t irestore;
 
 	irestore = interruptsStatus();
-	noInterrupts();
+	__disable_irq();
 	if (interruptMode < 16) {
 		if (interruptNumber > NUM_DIGITAL_PINS) {
 			interruptMode = 16;
@@ -100,7 +100,7 @@ void SPIClass::usingInterrupt(uint8_t interruptNumber)
 			}
 		}
 	}
-	if (irestore) interrupts();
+	if (irestore) __enable_irq();
 }
 
 void SPIClass::beginTransaction(uint8_t pin, SPISettings settings)
@@ -114,7 +114,7 @@ void SPIClass::beginTransaction(uint8_t pin, SPISettings settings)
 			if (mode & 8) PIOD->PIO_IDR = interruptMask[3];
 		} else {
 			interruptSave = interruptsStatus();
-			noInterrupts();
+			__disable_irq();
 		}
 	}
 	uint32_t ch = BOARD_PIN_TO_SPI_CHANNEL(pin);
@@ -135,7 +135,7 @@ void SPIClass::endTransaction(void)
 			if (mode & 4) PIOC->PIO_IER = interruptMask[2];
 			if (mode & 8) PIOD->PIO_IER = interruptMask[3];
 		} else {
-			if (interruptSave) interrupts();
+			if (interruptSave) __enable_irq();
 		}
 	}
 }

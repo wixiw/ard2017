@@ -7,7 +7,7 @@ typedef struct
 {
     uint32_t    timestamp;  //ms from the boot
     char*       eventName;  //a name to help the guy who debug to understand what he's doing at 4h in the morning
-    uint32_t    valueInt;   //a value that can be used to save something related to the event
+    int32_t    valueInt;   //a value that can be used to save something related to the event
     float       valueFloat; //a value that can be used to save something related to the event
 } DebugEvent;
 
@@ -15,7 +15,6 @@ DebugEvent dh_table[NB_DEBUG_EVENTS];
 
 uint16_t dh_index;      //critical var : to be modified only under critical section
 uint8_t dh_overflows;   //critical var : to be modified only under critical section
-uint8_t inprogress = 0;
 
 void _dh_init()
 {
@@ -29,12 +28,10 @@ void _dh_init()
     dh_overflows = 0;
 }
 
-void _dh_publish_event(char const * const name, uint32_t valueInt, float valueFloat)
+void _dh_publish_event(char const * const name, int32_t valueInt, float valueFloat)
 {
     //enter critical section to manipulate indexes (prevent race condition)
-    portENTER_CRITICAL();
-    configASSERT(inprogress == 0);
-    inprogress = 1;
+    __disable_irq();
 
     uint32_t now = millis();
 
@@ -57,18 +54,14 @@ void _dh_publish_event(char const * const name, uint32_t valueInt, float valueFl
     dh_table[dh_index].valueFloat = valueFloat;
 
     //quit critical section
-    configASSERT(inprogress == 1);
-    inprogress = 0;
-    portEXIT_CRITICAL();
+    __enable_irq();
 }
 
 
-void _dh_publish_event_fromISR(char const * const name, uint32_t valueInt, float valueFloat)
+void _dh_publish_event_fromISR(char const * const name, int32_t valueInt, float valueFloat)
 {
     //disable interrupts to prevent race condition
-    portDISABLE_INTERRUPTS();
-    configASSERT(inprogress == false);
-    inprogress = 1;
+    __disable_irq();
     
     uint32_t now = millis();
 
@@ -91,9 +84,7 @@ void _dh_publish_event_fromISR(char const * const name, uint32_t valueInt, float
     dh_table[dh_index].valueFloat = valueFloat;
 
     //quit critical section
-    configASSERT(inprogress == 1);
-    inprogress = 0;
-    portENABLE_INTERRUPTS();
+    __enable_irq();
 }
 
 

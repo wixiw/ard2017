@@ -298,22 +298,6 @@ uint8_t g_pinStatus[PINS_COUNT] = {0};
 }
 #endif
 
-/*
- * UART objects
- */
-RingBuffer rx_buffer1;
-RingBuffer tx_buffer1;
-
-UARTClass Serial(UART, UART_IRQn, ID_UART, &rx_buffer1, &tx_buffer1);
-void serialEvent() __attribute__((weak));
-void serialEvent() { }
-
-// IT handlers
-void UART_Handler(void)
-{
-  Serial.IrqHandler();
-}
-
 // ----------------------------------------------------------------------------
 /*
  * USART objects
@@ -349,16 +333,6 @@ void USART1_Handler(void)
 void USART3_Handler(void)
 {
   Serial3.IrqHandler();
-}
-
-// ----------------------------------------------------------------------------
-
-void serialEventRun(void)
-{
-  if (Serial.available()) serialEvent();
-  if (Serial1.available()) serialEvent1();
-  if (Serial2.available()) serialEvent2();
-  if (Serial3.available()) serialEvent3();
 }
 
 // ----------------------------------------------------------------------------

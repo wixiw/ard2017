@@ -25,8 +25,7 @@
 // using a ring buffer, in which head is the index of the location
 // to which to write the next incoming character and tail is the index of the
 // location from which to read.
-//ARD :: modified to 521 to hold HDLC messages (520 + 1 spare bit to isolate ring tail from head).
-#define RING_BUFFER_SIZE 521
+#define RING_BUFFER_SIZE 128
 
 class RingBuffer
 {

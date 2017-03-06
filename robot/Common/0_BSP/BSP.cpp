@@ -1,8 +1,23 @@
 #include "BSP.h"
 
-void
-init_bsp ()
+using namespace ard;
+
+// IT handlers
+IrqCB UART_Handler_CB = NULL;
+
+void UART_Handler(void)
 {
+    if(UART_Handler_CB)
+        UART_Handler_CB();
+    else
+        ASSERT(false);
+}
+
+BSP::BSP ():
+        serial0(UART, ID_UART, SERIAL_BUF_SIZE /*RX bvuf size*/, SERIAL_BUF_SIZE /*TX bvuf size*/)
+{   
+    UART_Handler_CB = NULL;
+    
     watchdogSetup();
 
     //#if defined(USBCON)
@@ -53,4 +68,28 @@ init_bsp ()
     pinMode (LED_DUE_RX, 		OUTPUT);
     pinMode (LED_DUE_TX, 		OUTPUT);
 
+    digitalWrite(LED_DUE_RX, HIGH);
+    digitalWrite(LED_DUE_TX, HIGH);
+    digitalWrite(LED_DUE_L, LOW);
+
+}
+
+void * operator new( size_t size )
+{
+    return pvPortMalloc( size );
+}
+
+void * operator new[]( size_t size )
+{
+    return pvPortMalloc(size);
+}
+
+void operator delete( void * ptr )
+{
+    vPortFree ( ptr );
+}
+
+void operator delete[]( void * ptr )
+{
+    vPortFree ( ptr );
 }

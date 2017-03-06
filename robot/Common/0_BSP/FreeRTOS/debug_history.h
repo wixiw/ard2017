@@ -18,6 +18,8 @@
 //In order to be able to easily disable the feature, do not use functions
 //directly, use the associated macro
 //
+//Note that interrupts are disabled during event record to prevent IT concurrency issues
+//
 // Usage example :
 //
 //  dh_init(); //in main() or anywhere in the init process
@@ -57,7 +59,7 @@ extern "C"
 #ifdef DH_ENABLE
     #define dh_publish_event(name, valueInt, valueFloat) _dh_publish_event(name, valueInt, valueFloat)
     //private declaration, do not use
-    void _dh_publish_event(char const * const name, uint32_t valueInt, float valueFloat);
+    void _dh_publish_event(char const * const name, int32_t valueInt, float valueFloat);
 #else
     #define dh_publish_event()
 #endif
@@ -67,7 +69,7 @@ extern "C"
 #ifdef DH_ENABLE
     #define dh_publish_event_fromISR(name, valueInt, valueFloat) _dh_publish_event_fromISR(name, valueInt, valueFloat)
     //private declaration, do not use
-    void _dh_publish_event_fromISR(char const * const name, uint32_t valueInt, float valueFloat);
+    void _dh_publish_event_fromISR(char const * const name, int32_t valueInt, float valueFloat);
 #else
     #define dh_publish_event_fromISR()
 #endif

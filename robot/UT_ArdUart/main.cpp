@@ -11,9 +11,17 @@
 using namespace ard;
 
 //Activate the Ard custom driver
-//#define NEW
+#define NEW
 //Activate the Arduino driver
-#define OLD
+//#define OLD
+
+uint8_t trigger = 0;
+
+void ledInterrupt()
+{
+    trigger = 1 - trigger;
+    digitalWrite(LED_DUE_L, trigger);
+}
 
 #ifdef NEW
     BSP bsp;
@@ -68,8 +76,6 @@ public:
 
     void run() override
     {
-        UART_Handler_CB = UT_ArdUART_UART_Handler;
-        bsp.serial0.setInterruptPriority(0);
 #ifdef NEW
         bsp.serial0.start(250000, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
 #else
@@ -133,6 +139,11 @@ public:
                 }
             }
 
+            if(state == 4)
+            {
+                break;
+            }
+
             state = 3;
             for(int i = 0 ; i < 255 ; i++)
             {
@@ -162,7 +173,6 @@ public:
 
     void run() override
     {  
-        UART_Handler_CB = UT_ArdUART_UART_Handler;
 #ifdef NEW
         bsp.serial0.start(250000, SERIAL_8E1 | UART_MR_CHMODE_REMOTE_LOOPBACK);
 #else
@@ -182,20 +192,18 @@ public:
 
     void run() override
     {  
-        UART_Handler_CB = UT_ArdUART_UART_Handler;
 #ifdef NEW
-        bsp.serial0.start(250000, SERIAL_8E1);
+        bsp.serial0.start(250000, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
 #else
-        bsp.serial0.begin(250000, SERIAL_8E1);
+        bsp.serial0.begin(250000, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
         int res = -1;
 #endif
-        uint8_t byte = 0;
  
         while(1)
         {
 #ifdef NEW
             //block until a byte is available
-            bsp.serial0.read(&byte);
+            bsp.serial0.read(&recvByte);
 #else
             //block until a byte is available
             res = -1;
@@ -204,8 +212,8 @@ public:
             recvByte = res;
 #endif
             //loopback (except 0)
-            if(byte)
-                bsp.serial0.write(byte);
+            if(recvByte)
+                bsp.serial0.write(recvByte);
         }            
     }
 };
@@ -220,7 +228,15 @@ int main(void)
     digitalWrite(LED_DUE_RX, HIGH);
     digitalWrite(LED_DUE_TX, HIGH);
     digitalWrite(LED_DUE_L, LOW);
+    Timer6.setInterruptPriority(PRIORITY_IRQ_SYSCALL - 1);
+    Timer6.attachInterrupt(ledInterrupt);
+    Timer6.start(500000);
     dh_init();
+    
+#ifdef NEW
+    UART_Handler_CB = UT_ArdUART_UART_Handler;
+    bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
+#endif
     ArdOs::init();
     ArdOs::start();
 }

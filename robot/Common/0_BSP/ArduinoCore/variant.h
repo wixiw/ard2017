@@ -248,7 +248,6 @@ static const uint8_t CAN1TX = 89;
 
 #ifdef __cplusplus
 
-extern UARTClass Serial;
 extern USARTClass Serial1;
 extern USARTClass Serial2;
 extern USARTClass Serial3;

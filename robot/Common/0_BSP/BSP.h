@@ -14,7 +14,6 @@
 #include "ArduinoCore/variant.h"
 #include "CMSIS/CMSIS/Include/core_cm3.h"
 #include "CMSIS/Device/ATMEL/sam.h"
-#include "FreeRtos/FreeRTOS_ARM.h"
 
 #ifdef __cplusplus
 #include "Drivers/AccelStepper.h"
@@ -22,11 +21,12 @@
 #include "Drivers/SPIArduino.h" //SPI shall be imported before SD
 #include "Drivers/SD.h"
 #include "Drivers/Servo.h"
+#include "Drivers/ArdUART.h"
 #include "Drivers/Adafruit_TCS34725.h"
+
 #endif //C++
 
 #include "K_constants.h"
-
 
 //0/1 : RX/TX 0
 //#define MOSFET1         2
@@ -83,10 +83,25 @@
 
 #define ANA0_VBAT       A0
 
-//Initialize all pins mode. It's best to gather all pin init
-//at the same place to be sure everything is properly initialized
-//whatever if libs re-init them later, it's better to do it twice than to forget
-//and risk an HW prob
-void init_bsp();
+#ifdef __cplusplus
+
+typedef void(*IrqCB)(void);
+extern IrqCB UART_Handler_CB;
+
+class BSP
+{
+    public:
+        //Initialize all pins mode. It's best to gather all pin init
+        //at the same place to be sure everything is properly initialized
+        //whatever if libs re-init them later, it's better to do it twice than to forget
+        //and risk an HW prob
+        BSP();
+       
+
+        //Rx0 / Tx0 serial driver
+        ard::ArdUART serial0;
+};
+
+#endif //C++
 
 #endif /* BSP_H_ */

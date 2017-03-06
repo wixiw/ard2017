@@ -51,7 +51,7 @@ class UT_ArdUart(QWidget):
         self._serial.setStopBits(QSerialPort.OneStop)
         self._serial.setFlowControl(QSerialPort.NoFlowControl)
         self._serial.error.connect(self.handleError)
-        assert self.connect("COM7", 250000, self._dataReceived), "Failed to connect to COM3, 250kbit/s"
+        assert self.connect("COM3", 250000, self._dataReceived), "Failed to connect to COM3, 250kbit/s"
         self.nextAwaitedByte = 1
         self.tickDelay = 10
         QTimer.singleShot(self.tickDelay, self.tick)

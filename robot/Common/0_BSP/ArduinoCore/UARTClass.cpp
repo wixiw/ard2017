@@ -31,21 +31,18 @@ UARTClass::UARTClass( Uart *pUart, IRQn_Type dwIrq, uint32_t dwId, RingBuffer *p
   _pUart=pUart;
   _dwIrq=dwIrq;
   _dwId=dwId;
-
-  overflowError = false;
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
 
 void UARTClass::begin(const uint32_t dwBaudRate)
 {
-  begin(dwBaudRate, Mode_8N1);
+    init(dwBaudRate, Mode_8N1);
 }
 
-void UARTClass::begin(const uint32_t dwBaudRate, const UARTModes config)
+void UARTClass::begin(const uint32_t dwBaudRate, const uint32_t modeReg)
 {
-  uint32_t modeReg = static_cast<uint32_t>(config) & 0x00000E00;
-  init(dwBaudRate, modeReg | UART_MR_CHMODE_NORMAL);
+  init(dwBaudRate, modeReg);
 }
 
 void UARTClass::init(const uint32_t dwBaudRate, const uint32_t modeReg)
@@ -129,8 +126,10 @@ int UARTClass::read( void )
 {
   // if the head isn't ahead of the tail, we don't have any characters
   if ( _rx_buffer->_iHead == _rx_buffer->_iTail )
+  {
     return -1;
-
+  }
+  
   uint8_t uc = _rx_buffer->_aucBuffer[_rx_buffer->_iTail];
   _rx_buffer->_iTail = (unsigned int)(_rx_buffer->_iTail + 1) % RING_BUFFER_SIZE;
   return uc;
@@ -175,11 +174,7 @@ void UARTClass::IrqHandler( void )
   // Did we receive data?
   if ((status & UART_SR_RXRDY) == UART_SR_RXRDY)
   {
-      //if the store failed, the buffer is overflown, save the error
-    if(!_rx_buffer->store_char(_pUart->UART_RHR))
-    {
-        overflowError = true;
-    }
+    _rx_buffer->store_char(_pUart->UART_RHR);
   }
 
   // Do we need to keep sending data?
@@ -197,7 +192,7 @@ void UARTClass::IrqHandler( void )
   }
 
   // Acknowledge errors
-  if ((status & UART_SR_OVRE) == UART_SR_OVRE || (status & UART_SR_FRAME) == UART_SR_FRAME)
+  if ((status & UART_SR_OVRE) == UART_SR_OVRE || (status & UART_SR_FRAME) == UART_SR_FRAME || (status & UART_SR_PARE) == UART_SR_PARE)
   {
     // TODO: error reporting outside ISR
     _pUart->UART_CR |= UART_CR_RSTSTA;

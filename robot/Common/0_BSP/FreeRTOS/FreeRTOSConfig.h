@@ -148,30 +148,33 @@ to exclude the API function. */
 #define INCLUDE_xTimerPendFunctionCall	        0 //ARD : SW timers not used
 #define INCLUDE_uxTaskGetStackHighWaterMark     1 //ARD : required by getOsStats()
 
+/**
+ * Interrupts with priority between 0 and PRIORITY_IRQ_SYSCALL can be used if you
+ * wish that the OS doesn't mask your interruption, this is
+ * only possible if you do not use any freertos API call
+ * (calls to BSP layer, like CMIS is obviously still possible)
+ *
+ * On the opposite side, if you wish to use the FreeRtos API (likely to use a semaphore
+ * or signal), you need to have a priority between PRIORITY_IRQ_SYSCALL and PRIORITY_IRQ_KERNEL
+ *
+ * Take care, priorities are coded on the 4 highest bits, and NVIC_SetPriority is doing the job
+ * of left shifting.
+ */
 /* Cortex-M specific definitions. */
 #ifdef __NVIC_PRIO_BITS
-	/* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
-	#define configPRIO_BITS       		__NVIC_PRIO_BITS
+    /* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
+    #define configPRIO_BITS            __NVIC_PRIO_BITS
 #else
-	#define configPRIO_BITS       		4        /* 15 priority levels */  
+    #define configPRIO_BITS            4        /* 15 priority levels */
 #endif
 
-/* The lowest interrupt priority that can be used in a call to a "set priority"
-function. */
-#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY			0x0f
+//FreeRtos is using the raw priority byte value, hence we do the shifting
+//that is normaly done by NVIC_SetPriority
+//See K_thread_config.h for PRIORITY_IRQ_xxx defines
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY    (PRIORITY_IRQ_SYSCALL << (8 - configPRIO_BITS))
+#define configKERNEL_INTERRUPT_PRIORITY         (PRIORITY_IRQ_KERNEL << (8 - configPRIO_BITS))
 
-/* The highest interrupt priority that can be used by any interrupt service
-routine that makes calls to interrupt safe FreeRTOS API functions.  DO NOT CALL
-INTERRUPT SAFE FREERTOS API FUNCTIONS FROM ANY INTERRUPT THAT HAS A HIGHER
-PRIORITY THAN THIS! (higher priorities are lower numeric values. */
-#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY	1//10  WHG
 
-/* Interrupt priorities used by the kernel port layer itself.  These are generic
-to all Cortex-M ports, and do not rely on any particular library functions. */
-#define configKERNEL_INTERRUPT_PRIORITY 		( configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
-/* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!
-See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY 	( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
@@ -195,10 +198,13 @@ void exitIdleCB();
 
 //ARD : configure the timer used to compute CPU statistics
 // see http://www.freertos.org/rtos-run-time-stats.html
+extern void ardConfigureCpuStatTimer();
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() ardConfigureCpuStatTimer()
 
 //ARD : read the timer used to compute CPU statistics
 // see http://www.freertos.org/rtos-run-time-stats.html
 #define portGET_RUN_TIME_COUNTER_VALUE() TC_ReadCV(TC0,0)
+
+#define portRESET_TIMER_FOR_RUN_TIME_STATS()
 
 #endif /* FREERTOS_CONFIG_H */

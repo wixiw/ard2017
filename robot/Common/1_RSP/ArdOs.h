@@ -345,17 +345,6 @@ namespace ard
         //Implement this function as the Thread main function
         virtual void run() = 0;
 
-        //disable interruption (critical sections)
-        void disableInterrupts()
-        {
-            taskENTER_CRITICAL();
-        }
-
-        void enableInterrupts()
-        {
-            taskEXIT_CRITICAL();
-        }
-
         //We may optionally connect a logger to all threads
         static void setLogger(ILogger* newLogger);
 
@@ -520,6 +509,30 @@ namespace ard
         static void reboot()
         {
             NVIC_SystemReset();
+        }
+
+        //disable interruption (all interruptions, even the one that are not managed by FreeRtos)
+        static void disableAllInterrupts()
+        {
+            __disable_irq();
+        }
+
+        //enable interruption (all interruptions, even the one that are not managed by FreeRtos)
+        static void enableAllInterrupts()
+        {
+            __enable_irq();
+        }
+
+        //disable interruption (all interruptions, even the one that are not managed by FreeRtos)
+        static void disableOSLvlInterrupts()
+        {
+            portDISABLE_INTERRUPTS();
+        }
+
+        //enable interruption (all interruptions, even the one that are not managed by FreeRtos)
+        static void enableOSLvlInterrupts()
+        {
+            portENABLE_INTERRUPTS();
         }
 
         //Get the OS initialization state
