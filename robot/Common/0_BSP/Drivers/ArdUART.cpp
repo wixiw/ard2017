@@ -32,6 +32,7 @@ ArdUART::ArdUART(Uart* pUart, uint32_t dwId, size_t const rxSize, size_t const t
     rxSem(rxSize, 0),
     txSem(txSize, txSize),
     firstByteReceived(false),
+    prioritySet(false),
     baseAddr(pUart),
     deviceId(dwId),
     irqId(static_cast<IRQn_Type>(dwId)),
@@ -53,6 +54,9 @@ ArdUART::ArdUART(Uart* pUart, uint32_t dwId, size_t const rxSize, size_t const t
 
 void ArdUART::start(const uint32_t dwBaudRate, uint32_t config)
 {
+    //Ensure that a priority has been defined (see setInterruptPriority())
+    ASSERT(prioritySet);
+
     // Make sure both ring buffers are initialized back to empty.
     circular_reset(&rxBuf);
     circular_reset(&txBuf);

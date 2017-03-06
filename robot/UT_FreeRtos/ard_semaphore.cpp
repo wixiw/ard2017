@@ -25,7 +25,7 @@ Semaphore sem(3, 1);
 class ProducerThread: public Thread
 {
 public:
-    ProducerThread():Thread("Prod", tskIDLE_PRIORITY + 1, 2000){};
+    ProducerThread():Thread("Prod", tskIDLE_PRIORITY + 1, STACK_UNIT_TEST){};
 
     void run() override
     {
@@ -42,7 +42,7 @@ public:
 class ConsummerThread: public Thread
 {
 public:
-    ConsummerThread():Thread("Cons", tskIDLE_PRIORITY + 2, 2000){};
+    ConsummerThread():Thread("Cons", tskIDLE_PRIORITY + 2, STACK_UNIT_TEST){};
 
     void run() override
     {

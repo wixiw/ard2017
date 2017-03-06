@@ -47,6 +47,7 @@ static const StackSize STACK_REMOTE_CTRL_TX     = 500;
 static const StackSize STACK_STRATEGY           =1000; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
 static const StackSize STACK_ACTUATORS          =1000; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
 static const StackSize STACK_NAVIGATION         = 500;
+static const StackSize STACK_UNIT_TEST          = 2000;
 
 //Periods :
 #define PERIOD_ACTUATORS         100 //ms

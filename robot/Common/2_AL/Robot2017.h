@@ -84,6 +84,9 @@ namespace ard
         //Utility function to get version info
         String const& getVersion(){return buildDate;};
 
+        //hardware layer
+        BSP bsp;
+
         //Applicative layer
         ActuatorThread actuators;
         StrategyThread strategy;

@@ -55,7 +55,13 @@ void fast_interrupt()
     //  digitalWrite(DEBUG_2, 0); //uncomment to check period and delay with oscilloscope
 }
 
+void Robot2017_UART_Handler()
+{
+    Robot2017::getInstance().bsp.serial0.IrqHandler();
+}
+
 Robot2017::Robot2017():
+    bsp(),
     actuators(),
     strategy(),
     nav(),
@@ -75,9 +81,6 @@ Robot2017::Robot2017():
 
 void Robot2017::bootOs()
 {
-    //Init drivers
-    init_bsp();
-
     //Connect the log service
     Thread::setLogger(&log);
     log.addLogger(fileLogger);
@@ -89,9 +92,16 @@ void Robot2017::bootOs()
     //Timer1 is used for CPU stats, see FreeRTOSConfig.h and FreeRTOS_ARM.c
     Timer6.attachInterrupt(veryFast_interrupt);
     Timer7.attachInterrupt(fast_interrupt);
+    
+    //Configure interrupts priorities
+    Timer6.setInterruptPriority     (PRIORITY_IRQ_STEPPERS);
+    Timer7.setInterruptPriority     (PRIORITY_IRQ_GPIO_FILTERS);
+    bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
 
     //Init debug serial link
-    Serial.begin(/*baurate = */250000);
+    UART_Handler_CB = Robot2017_UART_Handler;
+    bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
+    bsp.serial0.start(SERIAL_BAUDRATE);
 
     //init all OS objects (including threads),
     //which should call all init() function

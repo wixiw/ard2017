@@ -25,7 +25,7 @@ Signal ledSignal;
 class LedOffThread: public Thread
 {
 public:
-    LedOffThread():Thread("TaskHi", tskIDLE_PRIORITY + 3, 2000){};
+    LedOffThread():Thread("TaskHi", tskIDLE_PRIORITY + 3, STACK_UNIT_TEST){};
 
     void run() override
     {
@@ -43,7 +43,7 @@ public:
 class LedOnThread: public Thread
 {
 public:
-    LedOnThread():Thread("TaskLo", tskIDLE_PRIORITY + 2, 2000){};
+    LedOnThread():Thread("TaskLo", tskIDLE_PRIORITY + 2, STACK_UNIT_TEST){};
 
     void run() override
     {

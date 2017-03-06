@@ -169,7 +169,7 @@ public:
 class RemoteLoopbackThread: public Thread
 {
 public:
-    RemoteLoopbackThread():Thread("UART", tskIDLE_PRIORITY + 1, 2000){};
+    RemoteLoopbackThread():Thread("UART", tskIDLE_PRIORITY + 1, STACK_UNIT_TEST){};
 
     void run() override
     {  
@@ -188,7 +188,7 @@ public:
 class SwLoopbackThread: public Thread
 {
 public:
-    SwLoopbackThread():Thread("UART", tskIDLE_PRIORITY + 1, 2000){};
+    SwLoopbackThread():Thread("UART", tskIDLE_PRIORITY + 1, STACK_UNIT_TEST){};
 
     void run() override
     {  

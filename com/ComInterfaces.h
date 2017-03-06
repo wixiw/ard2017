@@ -29,8 +29,28 @@ namespace ard
 
 
             virtual ~ISerialDriver(){};
+
+            /**
+             * Read a byte from the serial line (byte have been received previsouly and buffered in RAM)
+             */
             virtual void read(uint8_t * const byte) = 0;
+
+            /**
+             * Write the byte on the serial line (byte may be buffered in RAM before being send later)
+             */
             virtual void write(uint8_t byte) = 0;
+
+            /**
+             * Wait until the content of the tx buffer is sent the serial line. It's a blocking call
+             */
+            virtual void flush(void) = 0;
+
+            /**
+             * Print an ascii text finished by a null character on serial line
+             */
+            void print(char const * text);
+            void println(char const * text);
+
 
             /**
              * Get the number of received bytes in the rxBuf

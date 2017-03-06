@@ -1,11 +1,30 @@
 #include "ComInterfaces.h"
 
+using namespace ard;
+
+void ISerialDriver::print(char const * text)
+{
+    while(*text)
+    {
+        write(*text);
+        text++;
+    }
+}
+
+void ISerialDriver::println(char const * text)
+{
+    print(text);
+    write('\r');
+    write('\n');
+}
+
 //required to have a proper linkage with some options ... weird ...
-ard::IComListener::~IComListener()
+IComListener::~IComListener()
 {
 }
 
 //required to have a proper linkage with some options ... weird ...
-ard::ICom::~ICom()
+ICom::~ICom()
 {
 }
+

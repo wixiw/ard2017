@@ -62,6 +62,8 @@ class ArdUART: public ISerialDriver
     /**
      * Start operating the serial line : device is configured and interrupt activated
      * After the call, the interrupt will begin to feed the rxBuf
+     * You must have previously set an interrupt priority or the call with assert
+     * in order to prevent dummy errors
      * @param dwBaudRate : line baudrate in bits/s
      * @param config     : the parity configuration/loopback configuration
      */
@@ -76,7 +78,7 @@ class ArdUART: public ISerialDriver
     void stop(void);
 
     /**
-     * Wait until the content of the tx buffer is sent the serial line. It's a blocking call
+     * Implements ISerialDriver
      */
     void flush(void);
 
@@ -93,6 +95,9 @@ class ArdUART: public ISerialDriver
      * blocks until a data is available
      */
     void write(uint8_t byte) override;
+
+    void printString(String text){print(text.c_str());}
+    void printStringln(String text){println(text.c_str());}
 
     /**
      * Function to be called in the interrupt handler
@@ -127,6 +132,7 @@ class ArdUART: public ISerialDriver
 
     void setInterruptPriority(uint32_t priority)
     {
+        prioritySet = true;
         NVIC_SetPriority(irqId, priority & 0x0F);
     }
 
@@ -143,6 +149,7 @@ class ArdUART: public ISerialDriver
     ard::Semaphore rxSem; //counts the number of received bytes in the rxBuf
     ard::Semaphore txSem; //counts the number of free space in the txBuf
     bool firstByteReceived; //keeps in mind if a first byte has been received to mask some frame error at connection
+    bool prioritySet;
 
     Uart* baseAddr;
     uint32_t deviceId;

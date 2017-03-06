@@ -48,16 +48,16 @@ void led2Interrupt()
 class ItMaskThread: public Thread
 {
 public:
-    ItMaskThread():Thread("ItMask", tskIDLE_PRIORITY + 1, 2000){};
+    ItMaskThread():Thread("ItMask", tskIDLE_PRIORITY + 1, STACK_UNIT_TEST){};
 
     void run() override
     {
         while(1)
         {
             delayMS(1000);
-            disableInterrupts();
+            ArdOs::disableOSLvlInterrupts();
             delayMS(1000);
-            enableInterrupts();
+            ArdOs::enableOSLvlInterrupts();
         }
     }
 };
