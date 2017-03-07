@@ -121,6 +121,7 @@ void RemoteControl::getOsStatsLogs(apb_RemoteControlRequest const & request)
 
     LOG_INFO("-----------------------------------------");
     LOG_INFO(String("  Heap         : ") + (100*(configTOTAL_HEAP_SIZE - xPortGetFreeHeapSize()))/configTOTAL_HEAP_SIZE + "% (" + String(configTOTAL_HEAP_SIZE - xPortGetFreeHeapSize()) + "o / " + configTOTAL_HEAP_SIZE + "o)");
+    LOG_INFO(String("           (including stack : ") + STACK_TOTAL + "o)");
     LOG_INFO(String("  Nb mutexes   : ") + Mutex::getOsObjectCount());
     LOG_INFO(String("  Nb signals   : ") + Signal::getOsObjectCount());
     LOG_INFO(String("  Nb queues    : ") + Queue::getOsObjectCount());

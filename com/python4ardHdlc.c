@@ -61,24 +61,24 @@ static PyObject *decodeFrame(PyObject *self, PyObject *args)
 
         return t;
     }
-    else if (ret == -EINVAL)
+    else if (ret == -ARDHDLC_EINVAL)
     {
         PyErr_SetString(PyExc_ValueError, "invalid parameter");
         return NULL;
     }
-    else if (ret == -ENOMSG)
+    else if (ret == -ARDHDLC_ENOMSG)
     {
         PyErr_SetString(ardHdlc_NoMessage, "no message found");
         return NULL;
     }
-    else if (ret == -ETOOSHORT)
+    else if (ret == -ARDHDLC_ETOOSHORT)
     {
         PyObject* cleanedBuff = PyBytes_FromStringAndSize(frame_data+recv_length, buf_length-recv_length);
         PyObject_SetAttrString(ardHdlc_TooShort, "buffer", cleanedBuff);
         PyErr_SetString(ardHdlc_TooShort, "message too short");
         return NULL;
     }
-    else if (ret == -EFCS)
+    else if (ret == -ARDHDLC_EFCS)
     {
         PyObject* cleanedBuff = PyBytes_FromStringAndSize(frame_data+recv_length, buf_length-recv_length);
         PyObject_SetAttrString(ardHdlc_FCSError, "buffer", cleanedBuff);
@@ -100,7 +100,10 @@ static PyObject *createDataFrame(PyObject *self, PyObject *args)
 	int ret;
 	const char *send_data;
 	char frame_data[HDLC_FRAME_LENGTH];
-	unsigned int data_length = 0, frame_length = 0, frame_type = ARDHDLC_FRAME_DATA, seq_no = 0;
+	unsigned int data_length = 0;
+	unsigned int frame_length = HDLC_FRAME_LENGTH;
+	unsigned int frame_type = ARDHDLC_FRAME_DATA;
+	unsigned int seq_no = 0;
 	ardHdlc_control_t control;
     ardHdlc_state_t state;
     ardHdlc_getState(&state);
@@ -130,10 +133,20 @@ static PyObject *createDataFrame(PyObject *self, PyObject *args)
 
 	if (ret == 0)
 		return PyBytes_FromStringAndSize(frame_data, frame_length);
+	else if( ret == -ARDHDLC_EINVAL)
+	{
+        PyErr_SetString(PyExc_ValueError, "invalid parameter");
+        return NULL;
+	}
+	else if( ret == -ARDHDLC_ETOOSHORT)
+	{
+        PyErr_SetString(ardHdlc_TooShort, "destination buffer too short");
+        return NULL;
+	}
 	else
 	{
-		PyErr_SetString(PyExc_ValueError, "invalid parameter");
-		return NULL;
+        PyErr_SetString(PyExc_RuntimeError, "unknown error");
+        return NULL;
 	}
 }
 

@@ -3,6 +3,8 @@
 #include <string.h>
 #include "ArduinoCore/Arduino.h"
 
+#ifdef DH_ENABLE
+
 typedef struct
 {
     uint32_t    timestamp;  //ms from the boot
@@ -15,6 +17,7 @@ DebugEvent dh_table[NB_DEBUG_EVENTS];
 
 uint16_t dh_index;      //critical var : to be modified only under critical section
 uint8_t dh_overflows;   //critical var : to be modified only under critical section
+static bool initialized = false;
 
 void _dh_init()
 {
@@ -26,10 +29,14 @@ void _dh_init()
     }
     dh_index = NB_DEBUG_EVENTS;
     dh_overflows = 0;
+    initialized = true;
 }
 
 void _dh_publish_event(char const * const name, int32_t valueInt, float valueFloat)
 {
+    if(!initialized)
+        ASSERT(false);
+
     //enter critical section to manipulate indexes (prevent race condition)
     __disable_irq();
 
@@ -60,6 +67,9 @@ void _dh_publish_event(char const * const name, int32_t valueInt, float valueFlo
 
 void _dh_publish_event_fromISR(char const * const name, int32_t valueInt, float valueFloat)
 {
+    if(!initialized)
+        ASSERT(false);
+
     //disable interrupts to prevent race condition
     __disable_irq();
     
@@ -87,4 +97,4 @@ void _dh_publish_event_fromISR(char const * const name, int32_t valueInt, float 
     __enable_irq();
 }
 
-
+#endif

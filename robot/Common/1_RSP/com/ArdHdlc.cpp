@@ -149,18 +149,18 @@ void ArdHdlc::parseBuffer()
         else
         {
             //EINVAL should never happen as it's a dev error
-            ASSERT(res != -EINVAL);
+            ASSERT(res != -ARDHDLC_EINVAL);
 
             //EFCS : message is checksum malformed, to be discarded
             //ETOOSHORT : message is too short, to be discarded
-            if( res == -EFCS || res == -ETOOSHORT )
+            if( res == -ARDHDLC_EFCS || res == -ARDHDLC_ETOOSHORT )
             {
                 size_t startOfRemainingData = hdlc_length;
                 ASSERT(startOfRemainingData <= bytesInRecvBuf);
                 size_t remainingBytesNb = bytesInRecvBuf - startOfRemainingData;
                 throwUnusedBytes(startOfRemainingData, remainingBytesNb);
                 bytesInRecvBuf = remainingBytesNb;
-                if( res == -EFCS )
+                if( res == -ARDHDLC_EFCS )
                     LOG_ERROR("Msg CRC error in received msg, data discarded.");
                 else
                     LOG_ERROR("Msg too short in received msg, data discarded.");
@@ -193,16 +193,15 @@ bool ArdHdlc::sendMsg(char const * msg, size_t msgLength)
 
     ASSERT_TEXT(msgLength <= SERIAL_BUF_SIZE, "Too many bytes in encoded messages, send buffer overshoot.");
 
-    unsigned int hdlcByteToWrite = 0;
+    unsigned int hdlcByteToWrite = SERIAL_BUF_SIZE;
     int res = ardHdlc_createDataFrame(&control, msg, msgLength, hdlc_send_framebuffer, &hdlcByteToWrite);
-    ASSERT_TEXT(hdlcByteToWrite <= SERIAL_BUF_SIZE, "Too many bytes in encoded hldc buffer, send buffer overshoot.");
     for(unsigned int i = 0 ; i < hdlcByteToWrite ; i++)
     {
         physicalLink.write(hdlc_send_framebuffer[i]);
     }
     INIT_TABLE_TO_ZERO(hdlc_send_framebuffer);
     
-    return res == ESUCCESS;
+    return res == ARDHDLC_ESUCCESS;
 }
 
 bool ArdHdlc::isConnected() const

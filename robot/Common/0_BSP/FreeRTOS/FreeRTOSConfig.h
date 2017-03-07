@@ -121,7 +121,7 @@
 #define configNUM_THREAD_LOCAL_STORAGE_POINTERS 0 // ARD : we do not use it
 #define configSUPPORT_STATIC_ALLOCATION         1 // ARD : <3 <3 <3
 #define configSUPPORT_DYNAMIC_ALLOCATION        0 // ARD : all static ! fuck off new()
-#define configTOTAL_HEAP_SIZE					50000U
+#define configTOTAL_HEAP_SIZE					80000U
 #define configGENERATE_RUN_TIME_STATS           1 // ARD : required to collect CPU stats
 #define configUSE_APPLICATION_TASK_TAG          0 // ARD : TODO see what we can do with this, it could help to trace what's happening with context switches
 /* Co-routine definitions : NOT USED*/

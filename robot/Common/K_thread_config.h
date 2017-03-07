@@ -40,14 +40,21 @@ static const ThreadPriority PRIO_NAVIGATION     = 7; //Navigation has the highes
 
 //Take care config is in words, not bytes. 100 = 400o
 //adjusted for having around 200 words spare in each task (except Idle which is really tight)
-static const StackSize STACK_SDCARD_WRITER      = 500;
-static const StackSize STACK_HMI                = 300;
-static const StackSize STACK_REMOTE_CTRL_RX     = 700;
-static const StackSize STACK_REMOTE_CTRL_TX     = 500;
-static const StackSize STACK_STRATEGY           =1000; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
-static const StackSize STACK_ACTUATORS          =1000; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
-static const StackSize STACK_NAVIGATION         = 500;
+static const StackSize STACK_SDCARD_WRITER      =  500;
+static const StackSize STACK_HMI                =  300;
+static const StackSize STACK_REMOTE_CTRL_RX     = 1000;
+static const StackSize STACK_REMOTE_CTRL_TX     =  500;
+static const StackSize STACK_STRATEGY           = 1000; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
+static const StackSize STACK_ACTUATORS          = 1000; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
+static const StackSize STACK_NAVIGATION         =  500;
 static const StackSize STACK_UNIT_TEST          = 2000;
+#define STACK_TOTAL 4*(STACK_SDCARD_WRITER    \
+                +STACK_HMI                  \
+                +STACK_REMOTE_CTRL_RX       \
+                +STACK_REMOTE_CTRL_TX       \
+                +STACK_STRATEGY             \
+                +STACK_ACTUATORS            \
+                +STACK_NAVIGATION)
 
 //Periods :
 #define PERIOD_ACTUATORS         100 //ms

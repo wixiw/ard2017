@@ -79,8 +79,20 @@ class ArdHdlc(QObject):
         #---DEBUG---- print("msg to send : 0x[%s]" % msg.hex())
         # TODO sequence id is not used yet, as RemoteControl doesn't require any robustness, 
         # in order to use this com with a robot to robot com, it'll be required
-        frame = ardHdlc.createDataFrame(msg, ardHdlc.FRAME_DATA, self.sendSedNumber)
-        assert len(frame) <= self.MAX_HDLC_SIZE, "HDLC payload is too big : " + str(len(frame)) + " since the maximal length is " + str(self.MAX_HDLC_SIZE)
+        try:
+            frame = ardHdlc.createDataFrame(msg, ardHdlc.FRAME_DATA, self.sendSedNumber)
+        #destination buffer is too short
+        except ardHdlc.TooShort:
+            print("Destination buffer is too short : " + str(msg))
+            return False
+        
+        #Input parameters are incorrect
+        except ValueError:
+            assert False
+        #Unknown error
+        except:
+            assert False
+            
         #---DEBUG---- print("HLDC frame (seq=" + str(self.sendSedNumber) + ") (len=" + str(len(frame)) + ") : 0x[%s]" % frame.hex())
         self.sendSedNumber = (self.sendSedNumber + 1) % self.NB_SEQ_NUMBERS
         bytesWritten = self._physicalLayer.write(frame)

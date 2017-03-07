@@ -3736,7 +3736,7 @@ TCB_t *pxTCB;
 
 	void vTaskGetRunTimeStats( char *pcWriteBuffer )
 	{
-	TaskStatus_t *pxTaskStatusArray;
+	static TaskStatus_t *pxTaskStatusArray = NULL;
 	volatile UBaseType_t uxArraySize, x;
 	uint32_t ulTotalTime, ulStatsAsPercentage;
 
@@ -3778,8 +3778,9 @@ TCB_t *pxTCB;
 		function is executing. */
 		uxArraySize = uxCurrentNumberOfTasks;
 
-		/* Allocate an array index for each task. */
-		pxTaskStatusArray = pvPortMalloc( uxCurrentNumberOfTasks * sizeof( TaskStatus_t ) );
+		/* Allocate an array index for each task, first time only. */
+		if( pxTaskStatusArray == NULL )
+		    pxTaskStatusArray = pvPortMalloc( uxCurrentNumberOfTasks * sizeof( TaskStatus_t ) );
 
 		if( pxTaskStatusArray != NULL )
 		{

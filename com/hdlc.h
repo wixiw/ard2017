@@ -9,11 +9,11 @@
 //take care when you change this to also change your serial buffer size
 #define HDLC_FRAME_LENGTH       512
 
-#define ESUCCESS 0
-#define EINVAL 1
-#define ENOMSG 2
-#define ETOOSHORT 3
-#define EFCS 4
+#define ARDHDLC_ESUCCESS    0
+#define ARDHDLC_EINVAL      1
+#define ARDHDLC_ENOMSG      2
+#define ARDHDLC_ETOOSHORT   3
+#define ARDHDLC_EFCS        4
 
 /** Supported HDLC frame types */
 typedef enum {

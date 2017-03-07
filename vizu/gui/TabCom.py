@@ -136,12 +136,12 @@ class TabCom(QWidget):
     @pyqtSlot()
     def _crcErr(self): 
        print("Send message with erroneous CRC")
-       #self.com.com.sendMsg()
+       self.com.com._physicalLayer.write(b"~\ff\10\06\e1~")
        
     @pyqtSlot()
     def _tooLittle(self): 
        print("Send a too little msg")
-       self.com.com.sendMsg(b"~\ff\10~")
+       self.com.com._physicalLayer.write(b"~\ff\10~")
       
     @pyqtSlot()
     def _maxLengthReq(self): 

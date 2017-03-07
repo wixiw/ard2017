@@ -153,7 +153,7 @@ class RemoteControl(QObject):
         try:
             response.ParseFromString(data)
         except:
-            print("Failed to decode protobuf ms : " + str(data))
+            print("Failed to decode protobuf msg : " + str(data))
             print(str(response))
             #traceback.print_exc()
         else:
