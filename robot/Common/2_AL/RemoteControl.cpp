@@ -18,8 +18,8 @@ case apb_RemoteControlRequest_##msg##_tag:     \
     break;                              \
 }
 
-RemoteControl::RemoteControl():
-    com("RemCtl", LOG_QUEUE_SIZE)
+RemoteControl::RemoteControl(ISerialDriver& serialDriver):
+    com("RemCtl", serialDriver, LOG_QUEUE_SIZE)
 {
     INIT_TABLE_TO_ZERO(msg_send_buffer);
     com.setListener(this);
@@ -62,11 +62,14 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(requestGoto)
         HANDLE_MSG(requestGotoCap)
         HANDLE_MSG(requestMaxLengthMsg)
+        HANDLE_MSG(requestCrcFailMsg)
+        HANDLE_MSG(requestTooLittleMsg)
 
 
         default:
         {
             LOG_ERROR("Failed to identify message type : " + String((int)request.which_type));
+            ASSERT(msg[1] != 0);//TODO a virer
             //message is sent back to the sender for analysis
             ASSERT(com.sendMsg(msg, msgLength));
             break;
@@ -187,18 +190,29 @@ void RemoteControl::requestGotoCap(apb_RemoteControlRequest const & request)
 
 void RemoteControl::requestMaxLengthMsg(apb_RemoteControlRequest const & request)
 {
-    char buf[510];
+    char buf[502];
     for(int i = 0; i < 256; i++)
     {
         buf[i] = i;
-        if( i < 255 )
-        {
-            buf[2*i] = i;
-        }
     }
-    buf[509] = 253;
+    for(int i = 0; i < 246; i++)
+    {
+        buf[255 + i] = i;
+    }
 
-    ASSERT_TEXT(com.sendMsg(buf, 510), "RemoteControl: requestMaxLengthMsg failed");
+    ASSERT_TEXT(com.sendMsg(buf, 502), "RemoteControl: requestMaxLengthMsg failed");
+}
+
+void RemoteControl::requestCrcFailMsg(apb_RemoteControlRequest const & request)
+{
+    char buf[6] = { '~', 0xFF, 0x10, 6, 0xE1, '~' };
+    ASSERT_TEXT(com.sendMsg(buf, 6), "RemoteControl: requestCrcFailMsg failed");
+}
+
+void RemoteControl::requestTooLittleMsg(apb_RemoteControlRequest const & request)
+{
+    char buf[4] = { '~', 0xFF, 0x10, '~' };
+    ASSERT_TEXT(com.sendMsg(buf, 4), "RemoteControl: requestTooLittleMsg failed");
 }
 
 

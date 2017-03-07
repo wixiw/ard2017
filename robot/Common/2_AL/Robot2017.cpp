@@ -68,7 +68,7 @@ Robot2017::Robot2017():
     hmi(50 /*ms*/),
     log(LogDispatcher::getInstance()),
 #ifdef BUILD_REMOTE_CONTROL
-    remoteControl(),
+    remoteControl(bsp.serial0),
 #endif
     fileLogger(LOG_QUEUE_SIZE)
 {
@@ -101,7 +101,7 @@ void Robot2017::bootOs()
     //Init debug serial link
     UART_Handler_CB = Robot2017_UART_Handler;
     bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
-    bsp.serial0.start(SERIAL_BAUDRATE);
+    bsp.serial0.start(SERIAL_BAUDRATE, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
 
     //init all OS objects (including threads),
     //which should call all init() function

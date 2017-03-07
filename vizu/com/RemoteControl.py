@@ -131,12 +131,16 @@ class RemoteControl(QObject):
         self._sendMsg(msg)
         
     @pyqtSlot()
-    def testMaxLength(self):
-        #Due to 4 character escapes, it is not possible to send 520 chars. 
-        #Calcul is 520 (max) - 6(header) - 4 (escapes) = 256+254
-        msgMax = bytes(range(256))
-        msgMax += bytes(range(254))
-        self.com.sendMsg(msgMax)
+    def requestCrcFailMsg(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestCrcFailMsg.SetInParent()
+        self._sendMsg(msg)
+        
+    @pyqtSlot()
+    def requestTooLittleMsg(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestTooLittleMsg.SetInParent()
+        self._sendMsg(msg)
         
 #---------------------------------------------------------------------------------
 # Private/internal API :
@@ -164,7 +168,7 @@ class RemoteControl(QObject):
         
             
     #serialize and send the message on communication link
-    #do not use this function directly, use TELEOP API below
+    #do not use this function directly, use TELEOP API above
     def _sendMsg(self, msg):
         assert isinstance(msg, RemoteControl_pb2.RemoteControlRequest), "RemoteControl_pb2._sendMsg expects to receive a RemoteControlRequest class"
         #---DEBUG--- print("RemoteControl request : " + str(msg))
@@ -180,6 +184,7 @@ class RemoteControl(QObject):
     def _telemetryTick(self):
         #print("tick")
         self.getTelemetry()
+        pass
         
         
         

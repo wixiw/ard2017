@@ -40,16 +40,24 @@ class TabCom(QWidget):
         self.btn_connect.toggled[bool].connect(self._connectFromButton)
         
             #tests
-        self.btn_maxLength = QPushButton('Send max length test payload', self)
+        self.buttonsGroup = QWidget()
+        self.buttonsGroup.setEnabled(False)
+        self.btn_maxLength = QPushButton('Send max length test payload', self.buttonsGroup)
         self.btn_maxLength.clicked.connect(self._maxLength) 
-        self.btn_maxLength.setEnabled(False)
-        self.btn_maxLengthReq = QPushButton('Receive max length test payload', self)
+        self.btn_crcErr = QPushButton('Send msg with erroneous CRC', self.buttonsGroup)
+        self.btn_crcErr.clicked.connect(self._crcErr) 
+        self.btn_tooLittle = QPushButton('Send too little errouneous msg', self.buttonsGroup)
+        self.btn_tooLittle.clicked.connect(self._tooLittle) 
+        self.btn_maxLengthReq = QPushButton('Receive max length test payload', self.buttonsGroup)
         self.btn_maxLengthReq.clicked.connect(self._maxLengthReq) 
-        self.btn_maxLengthReq.setEnabled(False)
+        self.btn_crcErrReq = QPushButton('Receive msg with erroneous CRC', self.buttonsGroup)
+        self.btn_crcErrReq.clicked.connect(self._crcErrReq) 
+        self.btn_tooLittleReq = QPushButton('Receive too little errouneous msg', self.buttonsGroup)
+        self.btn_tooLittleReq.clicked.connect(self._tooLittleReq) 
         
-        layout = QVBoxLayout(self)
-        layoutH1 = QHBoxLayout()
-        layoutH2 = QHBoxLayout()
+        layout    = QVBoxLayout(self)
+        layoutH1  = QHBoxLayout()
+        layoutH2  = QHBoxLayout()
         layout.addLayout(layoutH1)
         layout.addLayout(layoutH2)
         layout.addStretch()
@@ -59,9 +67,16 @@ class TabCom(QWidget):
         layoutH1.addWidget(self.btn_connect)      
         layoutH1.addStretch()
         
-        layoutH2.addWidget(self.btn_maxLength)
-        layoutH2.addWidget(self.btn_maxLengthReq)
+        layoutH2.addWidget(self.buttonsGroup)
         layoutH2.addStretch()
+        
+        layoutBtnGroup = QVBoxLayout(self.buttonsGroup)
+        layoutBtnGroup.addWidget(self.btn_maxLength)
+        layoutBtnGroup.addWidget(self.btn_crcErr)
+        layoutBtnGroup.addWidget(self.btn_tooLittle)
+        layoutBtnGroup.addWidget(self.btn_maxLengthReq)
+        layoutBtnGroup.addWidget(self.btn_crcErrReq)
+        layoutBtnGroup.addWidget(self.btn_tooLittleReq)
         
         #keyboard shortcuts
         QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connectFromShorcut)
@@ -90,8 +105,7 @@ class TabCom(QWidget):
             settings.beginGroup("Com")
             settings.setValue("port", port)
             settings.setValue("baudrate", baudrate)
-            self.btn_maxLength.setEnabled(True)
-            self.btn_maxLengthReq.setEnabled(True)
+            self.buttonsGroup.setEnabled(True)
             self.networkStatus.emit(True)
         else:
             print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizy instance...)")
@@ -106,20 +120,43 @@ class TabCom(QWidget):
         self.btn_connect.setChecked(False)
         self.combo_COM.setEnabled(True)
         self.combo_Baudrate.setEnabled(True)
-        self.btn_maxLength.setEnabled(False)
-        self.btn_maxLengthReq.setEnabled(False)
+        self.buttonsGroup.setEnabled(False)
         self.networkStatus.emit(False)
         print("Disconnected")
         
     @pyqtSlot()
     def _maxLength(self): 
-       print("Max HDLC msg payload send.")
-       self.com.testMaxLength()
+       print("Send a msg with the heaviest payload.")
+       #Due to 4 character escapes, it is not possible to send 512 chars. 
+       #Calcul is 512 (max) - 6(header) - 4 (escapes) = 256+246
+       msgMax = bytes(range(256))
+       msgMax += bytes(range(246))
+       self.com.com.sendMsg(msgMax)
+       
+    @pyqtSlot()
+    def _crcErr(self): 
+       print("Send message with erroneous CRC")
+       #self.com.com.sendMsg()
+       
+    @pyqtSlot()
+    def _tooLittle(self): 
+       print("Send a too little msg")
+       self.com.com.sendMsg(b"~\ff\10~")
       
     @pyqtSlot()
     def _maxLengthReq(self): 
-       print("Max HDLC msg payload request.")
+       print("Receive a msg with the heaviest payload.")
        self.com.requestMaxLengthMsg()
+       
+    @pyqtSlot()
+    def _crcErrReq(self): 
+       print("Receive message with erroneous CRC")
+       self.com.requestCrcFailMsg()
+       
+    @pyqtSlot()
+    def _tooLittleReq(self): 
+       print("Receive a too little msg")
+       self.com.requestTooLittleMsg()
             
 if __name__ == '__main__':
     import sys

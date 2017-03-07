@@ -9,11 +9,9 @@
 #define ROBOT_COMMON_1_RSP_COM_ARDHDLC_H_
 
 #include "ComInterfaces.h"
-
-//Note that Python yahdlc binding can't go over 8 (header, taking addr and ctrl field escape into account) + 512
-#define MSG_SIZE 512
-#define HDLC_HEADER 8
-#define HDLC_BUF_SIZE (MSG_SIZE+HDLC_HEADER)
+#include "K_constants.h"
+#include "WString.h"
+#include <hdlc.h>
 
 namespace ard
 {
@@ -21,7 +19,7 @@ namespace ard
     class ArdHdlc: public ICom
     {
     public:
-        ArdHdlc(String name, HardwareSerial& serialDriver);
+        ArdHdlc(String name, ISerialDriver& serialDriver);
         virtual ~ArdHdlc() = default;
 
         //Implements ICom interface.
@@ -39,30 +37,39 @@ namespace ard
         //Implements ICom interface : create an hdlc frame from msg buffer and send it byte by bytes
         virtual bool sendMsg(char const * msg, size_t msgLength) override;
 
-        //read bytes one by one on the serial link and store them in the serial buffer
-        //@return true is new bytes has been read
-        bool feedReadBuffer();
-
-        //parse input buffer and search for an hdlc frame
-        void parseBuffer();
+        //Implements ICom interface : read all received bytes and call listener when payload is detected
+        virtual void readAll() override;
 
     private:
         String name;
         IComListener* listener;
 
         //The serial link on which ArdHdlc is mapped
-        HardwareSerial& physicalLink;
+        ISerialDriver& physicalLink;
 
         //reception buffers
-        unsigned int serial_index = 0;
-        char serial_recv_buffer[HDLC_BUF_SIZE];
-        char hdlc_recv_framebuffer[HDLC_BUF_SIZE];
+        unsigned int bytesInRecvBuf = 0;
+        char serial_recv_buffer[SERIAL_BUF_SIZE];
+        char hdlc_recv_framebuffer[SERIAL_BUF_SIZE];
+        
+        //hdlc buffer tracking state
+        ardHdlc_state_t hdlcState;
+
+        //statistic to count dropped messages (in fact it's the number of time we reseted the buffer, it may be more than that, but who care ?)
+        uint32_t dropMsgCount;
 
         //emission buffers. hdlc buffer are flat buffers
         //because yahdlc is not able to read from ring buffers
         size_t nbParsedBytes = 0;//nb bytes parsed by yahdlc that can be thrown away
         size_t hdlc_length = 0;
-        char hdlc_send_framebuffer[HDLC_BUF_SIZE];
+        char hdlc_send_framebuffer[SERIAL_BUF_SIZE];
+
+        //translate bytes from serial_recv_buffer to the left and replace old data with 0
+        //Usefull data start from serial_recv_buffer[indexOfUsefullData] and goes up to serial_recv_buffer[indexOfUsefullData+sizeOfUsefullData-1]
+        void throwUnusedBytes(size_t indexOfUsefullData, size_t sizeOfUsefullData);
+
+        //parse input buffer and search for an hdlc frame
+        void parseBuffer();
     };
 
 } /* namespace ard */

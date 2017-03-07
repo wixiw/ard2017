@@ -10,7 +10,7 @@
 
 #include "RSP.h"
 #include "RemoteControl.pb.h"
-#include "com/ComInterfaces.h"
+#include "ComInterfaces.h"
 
 namespace ard
 {
@@ -32,7 +32,7 @@ namespace ard
     class RemoteControl: public ILogChannel, public IComListener
     {
     public:
-        RemoteControl();
+        RemoteControl(ISerialDriver& serialDriver);
         virtual ~RemoteControl() = default;
 
         //Get any teleop event (non-const on purpose)
@@ -61,7 +61,7 @@ namespace ard
         Event<1> events[EVT_MAX];
         
         ComOnUart com;
-        char msg_send_buffer[MSG_SIZE];
+        char msg_send_buffer[HDLC_FRAME_LENGTH];
 
         /**------------------------------
          * Receive COM API
@@ -76,6 +76,8 @@ namespace ard
         void requestGoto            (apb_RemoteControlRequest const & request);
         void requestGotoCap         (apb_RemoteControlRequest const & request);
         void requestMaxLengthMsg    (apb_RemoteControlRequest const & request);
+        void requestCrcFailMsg      (apb_RemoteControlRequest const & request);
+        void requestTooLittleMsg    (apb_RemoteControlRequest const & request);
 
     };
 

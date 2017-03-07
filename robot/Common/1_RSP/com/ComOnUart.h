@@ -8,6 +8,7 @@
 #ifndef ROBOT_COMMON_1_RSP_COMMUNICATION_H_
 #define ROBOT_COMMON_1_RSP_COMMUNICATION_H_
 
+#include "BSP.h"
 #include "ComInterfaces.h"
 #include "ArdHdlc.h"
 
@@ -21,15 +22,16 @@ namespace ard
     {
     public:
         typedef struct{
-            const char msg[MSG_SIZE];
+            const char msg[HDLC_FRAME_LENGTH];
             size_t length;
         } MsgBuffer;
 
         /**
          * @param : the prefix for Rx and Tx threads name
+         * @param : the reference to the serial driver
          * @param : the length of the queue where log producers pile messages until the TX thread unpiles it
          */
-        ComOnUart(String const & name, uint8_t recvQueueSize);
+        ComOnUart(String const & name, ISerialDriver& serialDriver, uint8_t recvQueueSize);
         virtual ~ComOnUart() = default;
 
         //Init threads
@@ -52,6 +54,12 @@ namespace ard
         virtual bool sendMsg(char const * msg, size_t msgLength) override
         {
             return txThread.sendMsg(msg, msgLength);
+        }
+
+        //Read operation is done by an internal thread
+        void readAll() override
+        {
+            ASSERT(false);
         }
 
     private:

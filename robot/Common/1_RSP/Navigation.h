@@ -42,7 +42,7 @@ namespace ard
     void
     setPosition (PointCap newPose);
     void
-    setPosition(float x/*mm*/, float y/*mm*/, float h/*rad*/){setPosition(PointCap(x,y,h));};
+    setPosition(float x/*mm*/, float y/*mm*/, float h/*deg*/){setPosition(PointCap(x,y,DEG_TO_RAD*h));};
 
     /**
      * Get the current robot position
@@ -137,7 +137,7 @@ namespace ard
      * This is the non blocking version of wait()
      */
     bool
-    targetReached ();
+    targetReached();
 
     /**---------------------------------
      * Nav configuration
@@ -163,11 +163,11 @@ namespace ard
     void
     compute_odom ();
 
-    //used to send a straight line trajectory to the motors
+    //used to send a straight line trajectory to the motors, it's a relative order
     void
     straight (float distInMm);
 
-    //used to send an on place rotation trajectory to the motors
+    //used to send an on place rotation trajectory to the motors, its a relative order
     void
     turn (float angle);
 
@@ -212,7 +212,7 @@ namespace ard
     float m_speed;
     float m_speed_virage;
 
-    Mutex m_mutex;
+    FakeMutex m_mutex;
     Signal m_targetReached;
     
     long oldStepG;
