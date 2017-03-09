@@ -69,7 +69,7 @@ void ArdHdlc::readAll()
             bytesInRecvBuf = 0;
             INIT_TABLE_TO_ZERO(hdlc_recv_framebuffer);
             dropMsgCount++;
-            LOG_ERROR("Serial HW error : one or more bytes lots, buffer reseted.");
+            LOG_ERROR("Serial HW error : one or more bytes lost, buffer reseted.");
         }
         else
         {
@@ -161,9 +161,9 @@ void ArdHdlc::parseBuffer()
                 throwUnusedBytes(startOfRemainingData, remainingBytesNb);
                 bytesInRecvBuf = remainingBytesNb;
                 if( res == -ARDHDLC_EFCS )
-                    LOG_ERROR("Msg CRC error in received msg, data discarded.");
+                    LOG_ERROR(String("Msg CRC error in received msg, data discarded : ") + hdlc_recv_framebuffer);
                 else
-                    LOG_ERROR("Msg too short in received msg, data discarded.");
+                    LOG_ERROR(String("Msg too short in received msg, data discarded : ") + hdlc_recv_framebuffer);
                     
                 //clean output buffer
                 INIT_TABLE_TO_ZERO(hdlc_recv_framebuffer);

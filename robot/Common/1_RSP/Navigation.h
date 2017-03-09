@@ -146,9 +146,9 @@ namespace ard
     void
     setColor (eColor c);
     void
-    setSpeed (float speed);
+    setSpeed (float speed); //in mm/s
     void
-    setSpeedVir (float s);
+    setSpeedVir (float s); //in °/s
 
     /**---------------------------------
      * Publish state
@@ -165,11 +165,11 @@ namespace ard
 
     //used to send a straight line trajectory to the motors, it's a relative order
     void
-    straight (float distInMm);
+    applyCmdToGoStraight (float distInMm);
 
     //used to send an on place rotation trajectory to the motors, its a relative order
     void
-    turn (float angle);
+    applyCmdToTurn (float angleInRad);
 
     //interrupt the current movement
     void interruptCurrentMove();
@@ -197,8 +197,8 @@ namespace ard
     float m_distanceToTarget;
 
     //HW interface
-    AccelStepper stepperG;
-    AccelStepper stepperD;
+    AccelStepper stepperL;
+    AccelStepper stepperR;
     FilteredInput omronFrontLeft;
     FilteredInput omronFrontRight;
     FilteredInput omronRearLeft;
@@ -209,14 +209,14 @@ namespace ard
 
     //speed is reduced in turns to prevent drifting
     //hence we need 2 vars to switch from one to the other
-    float m_speed;
-    float m_speed_virage;
+    float m_speed;//mm/s
+    float m_speed_virage; //rad/s
 
     FakeMutex m_mutex;
     Signal m_targetReached;
     
-    long oldStepG;
-    long oldStepD;
+    long oldStepL;
+    long oldStepR;
   };
 }    //end namespace
 

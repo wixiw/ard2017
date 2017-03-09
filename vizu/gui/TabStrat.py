@@ -42,10 +42,12 @@ class TabStrat(QWidget):
         
         #build info tab
         self.label = dict()
+        self.buildGeneralInfo()
         self.buildPosInfo()
         self.buildMotionInfo()
         self.buildSensorsInfo()
         self.layoutInfo = QVBoxLayout()
+        self.layoutInfo.addWidget(self.box_general)
         self.layoutInfo.addWidget(self.box_pos)
         self.layoutInfo.addWidget(self.box_motion)
         self.layoutInfo.addWidget(self.box_sensors)
@@ -57,7 +59,14 @@ class TabStrat(QWidget):
         
         self.robotState = RemoteControl_pb2.Telemetry()
         
-    
+    def buildGeneralInfo(self):
+        self.box_general = QGroupBox("General")
+        self.label["bootTime"] = QLabel("0")
+        self.label["bootTime"].setAlignment(Qt.AlignRight)
+        box_layout = QFormLayout()
+        box_layout.addRow("boot time (s): ", self.label["bootTime"])
+        self.box_general.setLayout(box_layout)
+            
     def buildPosInfo(self):
         self.box_pos = QGroupBox("Position")
         self.label["x"] = QLabel("0")
@@ -93,13 +102,10 @@ class TabStrat(QWidget):
         box_layout.addRow("RGB : ", self.label["RGBL"])
         box_layout.addRow("Color : ", self.label["objColor"])
         self.box_sensors.setLayout(box_layout)
-    
+       
     #@return Pose2D : the last received telemetry position
     def getRobotPosition(self):
         return Pose2D.fromPoseMsg(self.robotState.nav.pos)
-    
-    def getRobotSensors(self):
-        return self.robotState.actuators
     
     def getMotionStateStr(self):
         return Types_pb2.eNavState.Name(self.robotState.nav.state)
@@ -108,7 +114,7 @@ class TabStrat(QWidget):
         return Types_pb2.eNavOrder.Name(self.robotState.nav.order)
     
     def getObjectColorStr(self):
-        return Types_pb2.eObjectColor.Name(self.getRobotSensors().colorSensor.color)
+        return Types_pb2.eObjectColor.Name(self.robotState.actuators.colorSensor.color)
     
     #telemetry reply data callback
     @pyqtSlot(RemoteControl_pb2.Telemetry)     
@@ -118,17 +124,18 @@ class TabStrat(QWidget):
             #--- DEBUG --- print(str(msg))
             self.robotState = msg
             pose = self.getRobotPosition()
-            col = self.getRobotSensors().colorSensor
-            colStr = self.getObjectColorStr()
+            color = self.robotState.actuators.colorSensor
+            colorStr = self.getObjectColorStr()
             self.overview.robotPose = pose
+            self.label["bootTime"].setText("%0.1f" % (self.robotState.date/1000.))
             self.label["x"].setText("%0.0f" %pose.x)
             self.label["y"].setText("%0.0f" %pose.y)
             self.label["h"].setText("%0.0f" % math.degrees(pose.h))
             self.label["state"].setText(self.getMotionStateStr())
             self.label["order"].setText(self.getMotionOrderStr())
-            self.label["RGBL"].setText("(%d,%d,%d,%d)" % (col.r, col.g, col.b, col.l))
-            self.label["RGBL"].setStyleSheet("QLabel { color : white; background-color: rgba(%d,%d,%d,%d); }" % (col.r, col.g, col.b, 255))
-            self.label["objColor"].setText(colStr)
+            self.label["RGBL"].setText("(%d,%d,%d,%d)" % (color.r, color.g, color.b, color.l))
+            self.label["RGBL"].setStyleSheet("QLabel { color : white; background-color: rgba(%d,%d,%d,%d); }" % (color.r, color.g, color.b, 255))
+            self.label["objColor"].setText(colorStr)
             self.update()
 
 #
@@ -189,7 +196,7 @@ class RobotWidget():
         self.p.save()
         self.p.setRenderHint(QPainter.Antialiasing)
         self.p.translate(pose.x, pose.y)
-        self.p.rotate(math.degrees(pose.h))
+        self.p.rotate(180 - math.degrees(pose.h))
         self.drawCarriage()
         self.drawWheels()
         self.drawMarks()

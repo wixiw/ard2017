@@ -348,6 +348,18 @@ namespace ard
         //We may optionally connect a logger to all threads
         static void setLogger(ILogger* newLogger);
 
+        //disable OS interruptions, this call is protected against nested calls
+        static void enterCriticalSection()
+        {
+            taskENTER_CRITICAL();
+        }
+
+        //enable OS interruption, this call is protected against nested calls
+        static void exitCriticalSection()
+        {
+            taskEXIT_CRITICAL();
+        }
+
         //Implements ILogger interface
         void logFromThread(eLogLevel lvl, String const& text);
 
@@ -512,27 +524,18 @@ namespace ard
         }
 
         //disable interruption (all interruptions, even the one that are not managed by FreeRtos)
+        //this call is NOT protected against nested calls, so be sure that no one re-enable interrupts
         static void disableAllInterrupts()
         {
             __disable_irq();
         }
 
         //enable interruption (all interruptions, even the one that are not managed by FreeRtos)
+        //this call is NOT protected against nested calls, so be sure that you are not fooling someone by
+        //re-enabling interrupts in his back
         static void enableAllInterrupts()
         {
             __enable_irq();
-        }
-
-        //disable interruption (all interruptions, even the one that are not managed by FreeRtos)
-        static void disableOSLvlInterrupts()
-        {
-            portDISABLE_INTERRUPTS();
-        }
-
-        //enable interruption (all interruptions, even the one that are not managed by FreeRtos)
-        static void enableOSLvlInterrupts()
-        {
-            portENABLE_INTERRUPTS();
         }
 
         //Get the OS initialization state

@@ -260,6 +260,9 @@ AccelStepper::AccelStepper(void (*forward)(), void (*backward)())
 
 void AccelStepper::setMaxSpeed(float speed)
 {
+    if( speed < 0 )
+        speed *= -1;
+
 	if (_maxSpeed != speed)
 	{
 		_maxSpeed = speed;
@@ -276,6 +279,9 @@ void AccelStepper::setMaxSpeed(float speed)
 
 void AccelStepper::setAcceleration(float acceleration)
 {
+    if( acceleration < 0 )
+        acceleration *= -1;
+
 	if (acceleration == 0.0)
 		return;
 	if (_acceleration != acceleration)

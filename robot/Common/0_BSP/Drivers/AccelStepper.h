@@ -337,14 +337,14 @@ public:
     /// Sets the maximum permitted speed. The run() function will accelerate
     /// up to the speed set by this function.
     /// Caution: the maximum speed achievable depends on your processor and clock speed.
-    /// \param[in] speed The desired maximum speed in steps per second. Must
-    /// be > 0. Caution: Speeds that exceed the maximum speed supported by the processor may
+    /// \param[in] speed The desired maximum speed in steps per second.
+    /// Caution: Speeds that exceed the maximum speed supported by the processor may
     /// Result in non-linear accelerations and decelerations.
     void    setMaxSpeed(float speed);
 
     /// Sets the acceleration/deceleration rate.
     /// \param[in] acceleration The desired acceleration in steps per second
-    /// per second. Must be > 0.0. This is an expensive call since it requires a square 
+    /// per second. This is an expensive call since it requires a square
     /// root to be calculated. Dont call more ofthen than needed
     void    setAcceleration(float acceleration);
 

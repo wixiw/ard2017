@@ -771,6 +771,30 @@
     <Compile Include="0_BSP\BSP.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_cos_f32.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_cos_q15.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_cos_q31.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_sin_f32.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_sin_q15.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_sin_q31.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_sqrt_q15.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_sqrt_q31.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="0_BSP\CMSIS\CMSIS\Include\arm_common_tables.h">
       <SubType>compile</SubType>
     </Compile>
@@ -1350,6 +1374,9 @@
     <Folder Include="0_BSP\ArduinoCore\USB\" />
     <Folder Include="0_BSP\CMSIS\" />
     <Folder Include="0_BSP\CMSIS\CMSIS\" />
+    <Folder Include="0_BSP\CMSIS\CMSIS\DSP_Lib\" />
+    <Folder Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\" />
+    <Folder Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\" />
     <Folder Include="0_BSP\CMSIS\CMSIS\Include\" />
     <Folder Include="0_BSP\CMSIS\CMSIS\Lib\" />
     <Folder Include="0_BSP\CMSIS\CMSIS\Lib\ARM\" />

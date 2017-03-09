@@ -55,9 +55,9 @@ public:
         while(1)
         {
             delayMS(1000);
-            ArdOs::disableOSLvlInterrupts();
+            ArdOs::disableAllInterrupts();
             delayMS(1000);
-            ArdOs::enableOSLvlInterrupts();
+            ArdOs::enableAllInterrupts();
         }
     }
 };

@@ -120,9 +120,9 @@ void ArdUART::read(uint8_t * const byte)
 //    dh_publish_event("read:take", *byte, 0);
     rxSem.take();
 
-    taskENTER_CRITICAL();
+    Thread::enterCriticalSection();
     bool byteReceived = circular_popByte(&rxBuf, byte);
-    taskEXIT_CRITICAL();
+    Thread::exitCriticalSection();
 
     ASSERT(byteReceived);
 //    dh_publish_event("read:done", *byte, 0);
@@ -133,9 +133,9 @@ void ArdUART::write(uint8_t byte)
 //    dh_publish_event("write:take", byte, 0);
     txSem.take();
 
-    taskENTER_CRITICAL();
+    Thread::enterCriticalSection();
     bool roomAvailable = circular_appendByte(&txBuf, byte);
-    taskEXIT_CRITICAL();
+    Thread::exitCriticalSection();
 
     ASSERT(roomAvailable);
 //    dh_publish_event("write:done", byte, 0);

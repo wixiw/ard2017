@@ -16,16 +16,19 @@ ard::Strategy_Alpha ()
 {
 	LOG_INFO("STRAT : Strategy_Alpha.");
 
-	ROBOT.nav.setPosition(610,820,-90);
+	//ROBOT.nav.setPosition(610,820,-90);
+	ROBOT.nav.setPosition(0,0,0);
 
-    LOG_INFO("STRAT : Move order sent");
-    ROBOT.nav.goTo(300, 0, eDir_FORWARD);
-    LOG_INFO("STRAT : Return to start pos");
-    ROBOT.nav.goTo(0, 0, eDir_FORWARD);
-    LOG_INFO("waiting...");
-    ROBOT.nav.wait();
-    LOG_INFO("STRAT : Finished.");
-    ArdOs::sleepMs(3000);
+	while(1)
+	{
+        LOG_INFO("STRAT : Move order sent");
+        ROBOT.nav.goTo(300, 300, eDir_FORWARD);
+        LOG_INFO("STRAT : Return to start pos");
+        ROBOT.nav.goTo(0, 0, eDir_FORWARD);
+        LOG_INFO("waiting...");
+        ROBOT.nav.wait();
+        LOG_INFO("STRAT : Finished.");
+	}
 
 	ROBOT.dieMotherFucker();
 }
