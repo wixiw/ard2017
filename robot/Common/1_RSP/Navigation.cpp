@@ -6,6 +6,10 @@
 
 using namespace ard;
 
+/* Angle delta under which we consider target is reached 2.5mm on 5m */
+#define NO_TURN_DELTA 0.0005
+#define NO_MOVE_DELTA 1
+
 Navigation::Navigation()
         :
                 Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
@@ -14,8 +18,6 @@ Navigation::Navigation()
                 m_target(),
                 m_sensTarget(eDir_UNDEFINED),
                 m_order(eNavOrder_NOTHING),
-                m_angleToTarget(0),
-                m_distanceToTarget(0),
                 stepperL(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
                 stepperR(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
                 omronFrontLeft(OMRON1, 50, 50, FilteredInput::INVERTED),
@@ -61,31 +63,7 @@ void Navigation::run()
                 case eNavOrder_GOTO:
                 case eNavOrder_GOTO_CAP:
                 {
-                    LOG_INFO(
-                            "new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
-                    //TODO et en marche AR ?
-                    float relTargetHeading = atan2((m_target.y - m_pose.y), (m_target.x - m_pose.x));
-                    if (relTargetHeading - m_pose.h < -M_PI)
-                        m_angleToTarget = relTargetHeading - m_pose.h + 2 * M_PI;
-                    else if (relTargetHeading - m_pose.h > M_PI)
-                        m_angleToTarget = relTargetHeading - m_pose.h - 2 * M_PI;
-                    else
-                        m_angleToTarget = relTargetHeading - m_pose.h;
-
-                    //Do not turn if already facing right direction
-                    if (fabs(m_angleToTarget) < 0.00015 /*0.01deg */)
-                    {
-                        //Request straight line
-                        m_distanceToTarget = m_sensTarget * m_pose.distanceTo(m_target);
-                        m_angleToTarget = 0;
-                        applyCmdToGoStraight(m_distanceToTarget);
-                        m_state = eNavState_GOING_TO_TARGET;
-                    }
-                    else
-                    {
-                        applyCmdToTurn(m_angleToTarget);
-                        m_state = eNavState_FACING_DEST;
-                    }
+                    action_startOrder();
                     break;
                 }
             }
@@ -97,13 +75,7 @@ void Navigation::run()
             if (subOrderFinished())
             {
                 //Request straight line
-                m_distanceToTarget = m_sensTarget * m_pose.distanceTo(m_target);
-                applyCmdToGoStraight(m_distanceToTarget);
-
-                //Change state
-                m_angleToTarget = 0;
-                m_state = eNavState_GOING_TO_TARGET;
-                LOG_DEBUG("target destination heading reached, beginning line to reach target.");
+                action_goingToTarget();
             }
             break;
         }
@@ -113,21 +85,7 @@ void Navigation::run()
             if (subOrderFinished())
             {
                 //Request rotation to final heading
-                if (m_order == eNavOrder_GOTO_CAP)
-                {
-                    if (m_target.h - m_pose.h < -M_PI)
-                        m_angleToTarget = m_target.h - m_pose.h + 2 * M_PI;
-                    else if (m_target.h - m_pose.h > M_PI)
-                        m_angleToTarget = m_target.h - m_pose.h - 2 * M_PI;
-                    else
-                        m_angleToTarget = m_target.h - m_pose.h;
-                    applyCmdToTurn(m_angleToTarget);
-                    LOG_DEBUG("target destination reached, facing end move heading.");
-                }
-
-                //Change state
-                m_distanceToTarget = 0;
-                m_state = eNavState_TURNING_AT_TARGET;
+                action_turningAtTarget();
             }
             break;
         }
@@ -136,11 +94,8 @@ void Navigation::run()
         {
             if (subOrderFinished())
             {
-                m_angleToTarget = 0;
-                m_state = eNavState_IDLE;
-                m_order = eNavOrder_NOTHING;
-                m_targetReached.set();
-                LOG_INFO("order finished.");
+                //Change state to terminate order
+                action_finishOrder();
             }
             break;
         }
@@ -149,7 +104,9 @@ void Navigation::run()
         {
             if (subOrderFinished())
             {
+                //Change state to terminate order
                 m_state = eNavState_IDLE;
+                m_order = eNavOrder_NOTHING;
                 LOG_INFO("stopped.");
             }
             break;
@@ -200,6 +157,7 @@ void Navigation::goTo(Point target, eDir sens)
     m_order = eNavOrder_GOTO;
     m_target = target.toAmbiPose(m_color);
     m_sensTarget = sens;
+    action_startOrder();
 
     m_mutex.unlock();
 }
@@ -220,6 +178,7 @@ void Navigation::goToCap(PointCap target, eDir sens)
     m_order = eNavOrder_GOTO_CAP;
     m_target = target.toAmbiPose(m_color);
     m_sensTarget = sens;
+    action_startOrder();
 
     m_mutex.unlock();
 }
@@ -400,8 +359,8 @@ void Navigation::compute_odom()
     long dxR = newStepR - oldStepR;
     oldStepL = newStepL;
     oldStepR = newStepR;
-    float ds = (dxR * GAIN_STEPS_2_MM_RIGHT + dxL * GAIN_STEPS_2_MM_LEFT) / 2.;
-    float dh = (dxR * GAIN_STEPS_2_MM_RIGHT - dxL * GAIN_STEPS_2_MM_LEFT) / (2. * VOIE);
+    double ds = (dxR * GAIN_STEPS_2_MM_RIGHT + dxL * GAIN_STEPS_2_MM_LEFT) / 2.;
+    double dh = (dxR * GAIN_STEPS_2_MM_RIGHT - dxL * GAIN_STEPS_2_MM_LEFT) / VOIE;
 
     //prevent conflicts with m_pose usage
     m_mutex.lock();
@@ -414,8 +373,111 @@ void Navigation::compute_odom()
     m_mutex.unlock();
 }
 
-void Navigation::applyCmdToGoStraight(float mm)
+
+void Navigation::action_startOrder()
 {
+    LOG_INFO("new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
+    double angleToTarget = atan2((m_target.y - m_pose.y), (m_target.x - m_pose.x));
+    if (m_sensTarget == eDir_BACKWARD)
+    {
+        angleToTarget = moduloPiPi(angleToTarget + M_PI);
+    }
+    double angleDelta = moduloPiPi(angleToTarget - m_pose.h);
+    //Do not turn if already facing right direction
+    if (fabs(angleDelta) <= NO_TURN_DELTA)
+    {
+        double distDelta = m_sensTarget * m_pose.distanceTo(m_target);
+        //Do no move if already on target
+        if (fabs(distDelta) <= NO_MOVE_DELTA)
+        {
+            action_turningAtTarget();
+        }
+        else
+        {
+            //Request straight line
+            action_goingToTarget();
+        }
+    }
+    else
+    {
+        //Request turn
+        applyCmdToTurn(angleDelta);
+        //Change state
+        m_state = eNavState_FACING_DEST;
+    }
+}
+
+void Navigation::action_goingToTarget()
+{
+    //Request straight line
+    applyCmdToGoStraight(m_sensTarget * m_pose.distanceTo(m_target));
+    //Change state
+    m_state = eNavState_GOING_TO_TARGET;
+}
+
+void Navigation::action_turningAtTarget()
+{
+    //Request rotation to final heading
+    if (m_order == eNavOrder_GOTO_CAP)
+    {
+        double angleDelta = moduloPiPi(m_target.h - m_pose.h);
+        //Do not turn if already facing right direction
+        if (fabs(angleDelta) <= NO_TURN_DELTA)
+        {
+            //Change state to terminate order
+            action_finishOrder();
+        }
+        else
+        {
+            //Request turn
+            applyCmdToTurn(angleDelta);
+            LOG_DEBUG("target destination reached, facing end move heading.");
+            //Change state
+            m_state = eNavState_TURNING_AT_TARGET;
+        }
+    }
+    else
+    {
+        //Change state to terminate order
+        action_finishOrder();
+    }
+}
+
+
+void Navigation::action_finishOrder()
+{
+    //As move is expected to be perfect, correct any numerical instability by forcing position to be exactly the target
+    enterCriticalSection();
+    switch(m_order)
+    {
+        default:
+        case eNavOrder_NOTHING:
+            ASSERT(false);
+            break;
+
+        case eNavOrder_GOTO:
+            m_pose.x = m_target.x;
+            m_pose.y = m_target.y;
+            break;
+
+        case eNavOrder_GOTO_CAP:
+            m_pose.x = m_target.x;
+            m_pose.y = m_target.y;
+            m_pose.h = m_target.h;
+            break;
+    }
+    exitCriticalSection();
+    
+    m_state = eNavState_IDLE;
+    m_order = eNavOrder_NOTHING;
+    m_targetReached.set();
+    LOG_INFO("order finished.");
+}
+
+void Navigation::applyCmdToGoStraight(double mm)
+{
+    LOG_DEBUG(String("applyCmdToGoStraight : ") + mm + " mm");
+
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
     stepperL.setMaxSpeed(m_speed * GAIN_MM_2_STEPS_LEFT);
@@ -425,14 +487,16 @@ void Navigation::applyCmdToGoStraight(float mm)
     exitCriticalSection();
 }
 
-void Navigation::applyCmdToTurn(float angleInRad)
+void Navigation::applyCmdToTurn(double angleInRad)
 {
+    LOG_DEBUG(String("applyCmdToTurn : ") + angleInRad + " rad");
+
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
     stepperL.setMaxSpeed(m_speed_virage * GAIN_DEG_2_MM_LEFT);
     stepperR.setMaxSpeed(m_speed_virage * GAIN_DEG_2_MM_RIGHT);
-    stepperL.move(angleInRad * GAIN_RAD_2_MM_LEFT);
-    stepperR.move(angleInRad * GAIN_RAD_2_MM_RIGHT);
+    stepperL.move(-angleInRad * GAIN_RAD_2_MM_LEFT/2.); //half contribution on each wheel
+    stepperR.move(angleInRad * GAIN_RAD_2_MM_RIGHT/2.);
     exitCriticalSection();
 }
 

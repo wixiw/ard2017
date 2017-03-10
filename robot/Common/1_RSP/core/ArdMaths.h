@@ -14,31 +14,31 @@
 
 namespace ard
 {
-    float
-    moduloPiPi(float a);
+    double
+    moduloPiPi(double a);
 
     //Represent a geometric point in a 2D space
     class Point
     {
     public:
-        float x;/*mm*/
-        float y;/*mm*/
+        double x;/*mm*/
+        double y;/*mm*/
 
         virtual ~Point()
         {
         }
         ;
         Point();
-        Point(float x /*mm*/, float y/*mm*/);
+        Point(double x /*mm*/, double y/*mm*/);
 
         //return the symetric from the x axis
         Point toAmbiPose(eColor c) const;
 
         //return the angle from the x-axis to the target point in rad
-        float angleTo(Point p) const;
+        double angleTo(Point p) const;
 
         //return the distance to the other point in mm
-        float distanceTo(Point p) const;
+        double distanceTo(Point p) const;
 
         String virtual toString() const;
 
@@ -54,7 +54,7 @@ namespace ard
 
         PointCap();
         PointCap(Point p);
-        PointCap(float x /*mm*/, float y/*mm*/, double h/*degree*/);
+        PointCap(double x /*mm*/, double y/*mm*/, double h/*degree*/);
 
         //return the symetric from the x axis
         PointCap toAmbiPose(eColor c) const;

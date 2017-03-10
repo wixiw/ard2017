@@ -11,7 +11,7 @@
 
 using namespace ard;
 
-float ard::moduloPiPi(float a)
+double ard::moduloPiPi(double a)
 {
     if (a <= -M_PI)
         return a + 2 * M_PI;
@@ -27,7 +27,7 @@ Point::Point()
 }
 ;
 
-Point::Point(float _x, float _y)
+Point::Point(double _x, double _y)
         : x(_x), y(_y)
 {
 }
@@ -50,12 +50,12 @@ Point Point::toAmbiPose(eColor c) const
     return res;
 }
 
-float Point::angleTo(Point p) const
+double Point::angleTo(Point p) const
 {
     return atan2(p.y - y, p.x - x);
 }
 
-float Point::distanceTo(Point p) const
+double Point::distanceTo(Point p) const
 {
     return sqrt((p.y - y) * (p.y - y) + (p.x - x) * (p.x - x));
 }
@@ -85,7 +85,7 @@ PointCap::PointCap(Point p)
 }
 ;
 
-PointCap::PointCap(float x, float y, double h)
+PointCap::PointCap(double x, double y, double h)
         : Point(x, y), h(h)
 {
 }

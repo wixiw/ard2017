@@ -116,8 +116,7 @@ void ArdHdlc::parseBuffer()
             //checksum set to zero so that it's not displayed
             hdlc_recv_framebuffer[hdlc_length] = 0;
             hdlc_recv_framebuffer[hdlc_length + 1] = 0;
-            //treat the decoded frame
-            LOG_DEBUG("HDLC frame received size=" + String(hdlc_length));
+            //LOG_DEBUG("HDLC frame received size=" + String(hdlc_length));
 #endif
             //A message has been found
             msgFound = true;

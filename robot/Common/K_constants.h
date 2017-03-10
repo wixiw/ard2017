@@ -25,7 +25,7 @@
 //Debug config
     //Configure build
 #define BUILD_REMOTE_CONTROL
-//#define ARD_DEBUG
+#define ARD_DEBUG
 #define LOG_QUEUE_SIZE 20
 #define LOG_MAX_SIZE 200
     //Baudrate : from 600 bits/s to 250kbits/s
@@ -51,7 +51,7 @@ constexpr float GAIN_STEPS_2_MM_RIGHT = (RIGHT_WHEEL_DIAMETER * M_PI) /  STEP_BY
 constexpr float GAIN_DEG_2_MM_LEFT = DEG_TO_RAD * VOIE * GAIN_MM_2_STEPS_LEFT;
 constexpr float GAIN_DEG_2_MM_RIGHT = DEG_TO_RAD * VOIE * GAIN_MM_2_STEPS_LEFT;
 constexpr float GAIN_RAD_2_MM_LEFT = VOIE * GAIN_MM_2_STEPS_LEFT;
-constexpr float GAIN_RAD_2_MM_RIGHT = VOIE * GAIN_MM_2_STEPS_LEFT;
+constexpr float GAIN_RAD_2_MM_RIGHT = VOIE * GAIN_MM_2_STEPS_RIGHT;
 #endif //__cplusplus
 
 

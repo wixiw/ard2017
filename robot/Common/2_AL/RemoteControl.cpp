@@ -13,7 +13,6 @@ using namespace ard;
 #define HANDLE_MSG(msg)                 \
 case apb_RemoteControlRequest_##msg##_tag:     \
 {                                       \
-    LOG_DEBUG(#msg " request received."); \
     msg(request);                        \
     break;                              \
 }

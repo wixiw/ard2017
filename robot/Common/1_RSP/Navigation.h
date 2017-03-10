@@ -89,7 +89,7 @@ namespace ard
     void
     goToCap (PointCap target, eDir sens = eDir_FORWARD);
     void
-    goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD){goToCap(PointCap(x,y,h), sens);};
+    goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD){goToCap(PointCap(x,y,h*DEG_TO_RAD), sens);};
 
     /**
      * The robot will go ahead of the distance in parameter
@@ -163,13 +163,20 @@ namespace ard
     void
     compute_odom ();
 
+    //State machine transition actions
+    void action_startOrder();
+    void action_goingToTarget();
+    void action_turningAtTarget();
+    void action_finishOrder();
+
+
     //used to send a straight line trajectory to the motors, it's a relative order
     void
-    applyCmdToGoStraight (float distInMm);
+    applyCmdToGoStraight (double distInMm);
 
     //used to send an on place rotation trajectory to the motors, its a relative order
     void
-    applyCmdToTurn (float angleInRad);
+    applyCmdToTurn (double angleInRad);
 
     //interrupt the current movement
     void interruptCurrentMove();
@@ -186,19 +193,18 @@ namespace ard
     stateToString (eNavState state);
 
     //status
-    PointCap m_pose;
+    PointCap m_pose; //critical section
     eNavState m_state;
 
     //target definition
     PointCap m_target;
     eDir m_sensTarget;
     eNavOrder m_order;
-    float m_angleToTarget;
-    float m_distanceToTarget;
 
     //HW interface
-    AccelStepper stepperL;
-    AccelStepper stepperR;
+    AccelStepper stepperL; //critical section
+    AccelStepper stepperR; //critical section
+
     FilteredInput omronFrontLeft;
     FilteredInput omronFrontRight;
     FilteredInput omronRearLeft;
@@ -215,8 +221,8 @@ namespace ard
     FakeMutex m_mutex;
     Signal m_targetReached;
     
-    long oldStepL;
-    long oldStepR;
+    long oldStepL; //critical section
+    long oldStepR; //critical section
   };
 }    //end namespace
 
