@@ -18,7 +18,7 @@
 #ifdef __cplusplus
 #include "Drivers/AccelStepper.h"
 #include "Drivers/DueTimer.h"
-#include "Drivers/SPIArduino.h" //SPI shall be imported before SD
+#include "Drivers/SPI.h" //SPI shall be imported before SD
 #include "Drivers/SD.h"
 #include "Drivers/Servo.h"
 #include "Drivers/ArdUART.h"

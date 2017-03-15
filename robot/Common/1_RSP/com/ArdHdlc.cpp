@@ -11,7 +11,6 @@
 using namespace ard;
 
 ArdHdlc::ArdHdlc(String name, ISerialDriver& serialDriver):
-        name(name),
         listener(NULL),
         physicalLink(serialDriver),
         bytesInRecvBuf(0),

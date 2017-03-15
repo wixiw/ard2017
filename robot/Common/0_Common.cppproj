@@ -525,12 +525,6 @@
     <Compile Include="0_BSP\ArduinoCore\libraries\HID.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\libraries\SPI.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\libraries\SPI.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\libraries\Wire.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1092,10 +1086,10 @@
     <Compile Include="0_BSP\Drivers\ServoTimers.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\SPIArduinoI.cpp">
+    <Compile Include="0_BSP\Drivers\SPI.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\SPIArduino.h">
+    <Compile Include="0_BSP\Drivers\SPI.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\Drivers\utility\buffer_tools.c">
@@ -1323,9 +1317,6 @@
     <Compile Include="2_AL\strategies\StrategyAlpha.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\strategies\StrategyAlpha.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\strategies\StrategyThread.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1333,9 +1324,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\strategies\TestStrategies.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\strategies\TestStrategies.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="generated\CommonMsg.pb.c">

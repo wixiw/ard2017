@@ -23,7 +23,7 @@
 //------------------------------------------------------------------------------
 #ifndef SOFTWARE_SPI
 #ifdef USE_SPI_LIB
-#include "../SPIArduino.h"
+#include "../SPI.h"
 static SPISettings settings;
 #endif
 // functions for hardware SPI

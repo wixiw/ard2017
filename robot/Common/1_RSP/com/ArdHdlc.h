@@ -41,7 +41,6 @@ namespace ard
         virtual void readAll() override;
 
     private:
-        String name;
         IComListener* listener;
 
         //The serial link on which ArdHdlc is mapped
