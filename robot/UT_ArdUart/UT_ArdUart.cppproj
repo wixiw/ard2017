@@ -151,7 +151,9 @@
         </armgcc.compiler.symbols.DefSymbols>
         <armgcc.compiler.directories.IncludePaths>
           <ListValues>
-            <Value>../../../com</Value>
+			<Value>../../../com</Value>
+			<Value>../../../com/generated</Value>
+			<Value>../../../com/nanopb</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -162,15 +164,13 @@
             <Value>../../Common/0_BSP/Drivers</Value>
             <Value>../../Common/1_RSP</Value>
             <Value>../../Common</Value>
-            <Value>../../Common/generated</Value>
             <Value>../../Common/1_RSP</Value>
-            <Value>../../Common/1_RSP/com</Value>
-            <Value>../../Common/1_RSP/core</Value>
+            <Value>../../Common/1_RSP/ComStack</Value>
+            <Value>../../Common/1_RSP/Core</Value>
             <Value>../../Common/1_RSP/serialization</Value>
             <Value>../../Common/2_AL</Value>
-            <Value>../../Common/2_AL/actuators</Value>
-            <Value>../../Common/2_AL/proto</Value>
-            <Value>../../Common/2_AL/strategies</Value>
+            <Value>../../Common/2_AL/ActuatorsCtrl</Value>
+            <Value>../../Common/2_AL/Strategies</Value>
           </ListValues>
         </armgcc.compiler.directories.IncludePaths>
         <armgcc.compiler.optimization.level>Optimize (-O0)</armgcc.compiler.optimization.level>
@@ -189,7 +189,9 @@
         </armgcccpp.compiler.symbols.DefSymbols>
         <armgcccpp.compiler.directories.IncludePaths>
           <ListValues>
-            <Value>../../../com</Value>
+			<Value>../../../com</Value>
+			<Value>../../../com/generated</Value>
+			<Value>../../../com/nanopb</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -200,15 +202,13 @@
             <Value>../../Common/0_BSP/Drivers</Value>
             <Value>../../Common/1_RSP</Value>
             <Value>../../Common</Value>
-            <Value>../../Common/generated</Value>
             <Value>../../Common/1_RSP</Value>
-            <Value>../../Common/1_RSP/com</Value>
-            <Value>../../Common/1_RSP/core</Value>
+            <Value>../../Common/1_RSP/ComStack</Value>
+            <Value>../../Common/1_RSP/Core</Value>
             <Value>../../Common/1_RSP/serialization</Value>
             <Value>../../Common/2_AL</Value>
-            <Value>../../Common/2_AL/actuators</Value>
-            <Value>../../Common/2_AL/proto</Value>
-            <Value>../../Common/2_AL/strategies</Value>
+            <Value>../../Common/2_AL/ActuatorsCtrl</Value>
+            <Value>../../Common/2_AL/Strategies</Value>
           </ListValues>
         </armgcccpp.compiler.directories.IncludePaths>
         <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>

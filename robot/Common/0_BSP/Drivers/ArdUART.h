@@ -21,7 +21,7 @@
 
 #include <sam.h>
 #include "ComInterfaces.h"
-#include "utility/buffer_tools.h"
+#include <buffer_tools.h> //from ard com library
 #include "ArdOs.h"
 
 namespace ard

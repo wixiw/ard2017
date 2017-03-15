@@ -25,7 +25,7 @@
 //Debug config
     //Configure build
 #define BUILD_REMOTE_CONTROL
-#define ARD_DEBUG
+//#define ARD_DEBUG
 #define LOG_QUEUE_SIZE 20
 #define LOG_MAX_SIZE 200
     //Baudrate : from 600 bits/s to 250kbits/s
