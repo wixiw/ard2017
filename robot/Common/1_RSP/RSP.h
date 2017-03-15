@@ -8,13 +8,14 @@
 #ifndef ROBOTS_RSP_H_
 #define ROBOTS_RSP_H_
 
-//from com
-#include "ComInterfaces.h"
+//from ard com library
+#include <ComInterfaces.h>
+#include <pb.h>
+#include <pb_decode.h>
+#include <pb_encode.h>
 
-#include "com/ComOnUart.h"
-#include "serialization/pb.h"
-#include "serialization/pb_decode.h"
-#include "serialization/pb_encode.h"
+
+#include "ComStack/ComOnUart.h"
 
 #include "core/ArdFramework.h"
 #include "core/ArdMaths.h"

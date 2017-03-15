@@ -3,12 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Atmel Studio Solution File, Format Version 11.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "0_Common", "Common\0_Common.cppproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "1_Common", "Common\1_Common.cppproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DA4F1581-646B-4293-8BF6-81869867C585} = {DA4F1581-646B-4293-8BF6-81869867C585}
 	EndProjectSection
 EndProject
-Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "1_RobotA", "RobotA\1_RobotA.cppproj", "{B6A9CF4B-977F-4B0A-8CA7-57339A23C55E}"
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "2_RobotA", "RobotA\2_RobotA.cppproj", "{B6A9CF4B-977F-4B0A-8CA7-57339A23C55E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DA4F1581-646B-4293-8BF6-81869867C585} = {DA4F1581-646B-4293-8BF6-81869867C585}
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897} = {DCE6C7E3-EE26-4D79-826B-08594B9AD897}
@@ -37,7 +37,7 @@ Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_Helpers", "UT_Helpers\UT
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897} = {DCE6C7E3-EE26-4D79-826B-08594B9AD897}
 	EndProjectSection
 EndProject
-Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "com", "..\com\com.cppproj", "{DA4F1581-646B-4293-8BF6-81869867C585}"
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "0_Com", "..\com\0_Com.cppproj", "{DA4F1581-646B-4293-8BF6-81869867C585}"
 EndProject
 Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_ArdUart", "UT_ArdUart\UT_ArdUart.cppproj", "{22F7317F-407D-40DD-9251-28FFE91B2082}"
 	ProjectSection(ProjectDependencies) = postProject
