@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='Types.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\x0bTypes.proto*9\n\x04\x65\x44ir\x12\r\n\tUNDEFINED\x10\x00\x12\x0b\n\x07\x46ORWARD\x10\x01\x12\x15\n\x08\x42\x41\x43KWARD\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01*(\n\x06\x65\x43olor\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x08\n\x04PREF\x10\x01\x12\x07\n\x03SYM\x10\x02*`\n\teNavState\x12\x08\n\x04IDLE\x10\x00\x12\x0f\n\x0b\x46\x41\x43ING_DEST\x10\x01\x12\x13\n\x0fGOING_TO_TARGET\x10\x02\x12\x15\n\x11TURNING_AT_TARGET\x10\x03\x12\x0c\n\x08STOPPING\x10\x04*:\n\teNavOrder\x12\x0b\n\x07NOTHING\x10\x00\x12\x08\n\x04GOTO\x10\x01\x12\x0c\n\x08GOTO_CAP\x10\x02\x12\x08\n\x04STOP\x10\x03*+\n\teLogLevel\x12\t\n\x05\x44\x45\x42UG\x10\x00\x12\x08\n\x04INFO\x10\x01\x12\t\n\x05\x45RROR\x10\x02')
+  serialized_pb=_b('\n\x0bTypes.proto*9\n\x04\x65\x44ir\x12\r\n\tUNDEFINED\x10\x00\x12\x0b\n\x07\x46ORWARD\x10\x01\x12\x15\n\x08\x42\x41\x43KWARD\x10\xff\xff\xff\xff\xff\xff\xff\xff\xff\x01*(\n\x06\x65\x43olor\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x08\n\x04PREF\x10\x01\x12\x07\n\x03SYM\x10\x02*`\n\teNavState\x12\x08\n\x04IDLE\x10\x00\x12\x0f\n\x0b\x46\x41\x43ING_DEST\x10\x01\x12\x13\n\x0fGOING_TO_TARGET\x10\x02\x12\x15\n\x11TURNING_AT_TARGET\x10\x03\x12\x0c\n\x08STOPPING\x10\x04*:\n\teNavOrder\x12\x0b\n\x07NOTHING\x10\x00\x12\x08\n\x04GOTO\x10\x01\x12\x0c\n\x08GOTO_CAP\x10\x02\x12\x08\n\x04STOP\x10\x03*:\n\x0c\x65ObjectColor\x12\t\n\x05UNDEF\x10\x00\x12\x08\n\x04\x42LUE\x10\x01\x12\n\n\x06YELLOW\x10\x02\x12\t\n\x05WHITE\x10\x03*7\n\teLogLevel\x12\t\n\x05\x44\x45\x42UG\x10\x00\x12\x08\n\x04INFO\x10\x01\x12\t\n\x05\x45RROR\x10\x02\x12\n\n\x06\x41SSERT\x10\x03')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -144,6 +144,37 @@ _ENAVORDER = _descriptor.EnumDescriptor(
 _sym_db.RegisterEnumDescriptor(_ENAVORDER)
 
 eNavOrder = enum_type_wrapper.EnumTypeWrapper(_ENAVORDER)
+_EOBJECTCOLOR = _descriptor.EnumDescriptor(
+  name='eObjectColor',
+  full_name='eObjectColor',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='UNDEF', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BLUE', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='YELLOW', index=2, number=2,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='WHITE', index=3, number=3,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=274,
+  serialized_end=332,
+)
+_sym_db.RegisterEnumDescriptor(_EOBJECTCOLOR)
+
+eObjectColor = enum_type_wrapper.EnumTypeWrapper(_EOBJECTCOLOR)
 _ELOGLEVEL = _descriptor.EnumDescriptor(
   name='eLogLevel',
   full_name='eLogLevel',
@@ -162,11 +193,15 @@ _ELOGLEVEL = _descriptor.EnumDescriptor(
       name='ERROR', index=2, number=2,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ASSERT', index=3, number=3,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=274,
-  serialized_end=317,
+  serialized_start=334,
+  serialized_end=389,
 )
 _sym_db.RegisterEnumDescriptor(_ELOGLEVEL)
 
@@ -186,15 +221,21 @@ NOTHING = 0
 GOTO = 1
 GOTO_CAP = 2
 STOP = 3
+UNDEF = 0
+BLUE = 1
+YELLOW = 2
+WHITE = 3
 DEBUG = 0
 INFO = 1
 ERROR = 2
+ASSERT = 3
 
 
 DESCRIPTOR.enum_types_by_name['eDir'] = _EDIR
 DESCRIPTOR.enum_types_by_name['eColor'] = _ECOLOR
 DESCRIPTOR.enum_types_by_name['eNavState'] = _ENAVSTATE
 DESCRIPTOR.enum_types_by_name['eNavOrder'] = _ENAVORDER
+DESCRIPTOR.enum_types_by_name['eObjectColor'] = _EOBJECTCOLOR
 DESCRIPTOR.enum_types_by_name['eLogLevel'] = _ELOGLEVEL
 
 

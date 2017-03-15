@@ -298,22 +298,6 @@ uint8_t g_pinStatus[PINS_COUNT] = {0};
 }
 #endif
 
-/*
- * UART objects
- */
-RingBuffer rx_buffer1;
-RingBuffer tx_buffer1;
-
-UARTClass Serial(UART, UART_IRQn, ID_UART, &rx_buffer1, &tx_buffer1);
-void serialEvent() __attribute__((weak));
-void serialEvent() { }
-
-// IT handlers
-void UART_Handler(void)
-{
-  Serial.IrqHandler();
-}
-
 // ----------------------------------------------------------------------------
 /*
  * USART objects
@@ -353,16 +337,6 @@ void USART3_Handler(void)
 
 // ----------------------------------------------------------------------------
 
-void serialEventRun(void)
-{
-  if (Serial.available()) serialEvent();
-  if (Serial1.available()) serialEvent1();
-  if (Serial2.available()) serialEvent2();
-  if (Serial3.available()) serialEvent3();
-}
-
-// ----------------------------------------------------------------------------
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -371,18 +345,6 @@ void __libc_init_array(void);
 
 void init( void )
 {
-  SystemInit();
-
-  // Set Systick to 1ms interval, common to all SAM3 variants
-  if (SysTick_Config(SystemCoreClock / 1000))
-  {
-    // Capture error
-    while (true);
-  }
-
-  // Initialize C library
-  __libc_init_array();
-
   // Disable pull-up on every pin
   for (unsigned i = 0; i < PINS_COUNT; i++)
 	  digitalWrite(i, LOW);

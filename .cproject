@@ -29,39 +29,28 @@
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.870807650" name="autogen.sh" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen"/>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.710219481" name="GCC C Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc">
 								<option id="gnu.c.compiler.option.include.paths.1184868839" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/AccelStepper}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/FreeRTOS_ARM/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/MockStd}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/cores/arduino}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/variants/arduino_due_x}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/Servo/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/system/libsam/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/SD/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/DueTimer}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\Python36\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include-fixed&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.901879017" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
+									<listOptionValue builtIn="false" value="__SAM3X8E__"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.207876122" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp.160755823" name="GCC C++ Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp">
 								<option id="gnu.cpp.compiler.option.include.paths.880162314" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/AccelStepper}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/FreeRTOS_ARM/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/MockStd}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/cores/arduino}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/variants/arduino_due_x}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/Servo/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/system/libsam/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;C:\Users\wix\AppData\Local\Arduino15\packages\arduino\tools\arm-none-eabi-gcc\4.8.3-2014q1\arm-none-eabi\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/sam/libraries/SPI}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/SD/src}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/DueTimer}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\Python36\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include-fixed&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\c++\5.3.1&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.412119373" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
+									<listOptionValue builtIn="false" value="__SAM3X8E__"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1238219010" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -116,9 +105,14 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/avr/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/SD}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/DueTimer}&quot;"/>
+									<listOptionValue builtIn="false" value="F:/Programs/AtmelStudio/7.0/toolchain/arm/arm-gnu-toolchain/lib/gcc/arm-none-eabi/5.3.1/include"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\Python36\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include-fixed&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.388087960" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
+									<listOptionValue builtIn="false" value="__SAM3X8E__"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1811675465" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -138,9 +132,14 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/hardware/arduino/avr/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/processing-head/libraries/SD}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/arduino_libs/DueTimer}&quot;"/>
+									<listOptionValue builtIn="false" value="F:/Programs/AtmelStudio/7.0/toolchain/arm/arm-gnu-toolchain/lib/gcc/arm-none-eabi/5.3.1/include"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\Python36\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include-fixed&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.620732522" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
+									<listOptionValue builtIn="false" value="__SAM3X8E__"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1538990903" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -171,4 +170,13 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Debug (GNU)">
+			<resource resourceType="PROJECT" workspacePath="/ard2017_master"/>
+		</configuration>
+		<configuration configurationName="Build (GNU)">
+			<resource resourceType="PROJECT" workspacePath="/ard2017_master"/>
+		</configuration>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

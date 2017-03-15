@@ -200,48 +200,48 @@ void SdFile::dirName(const dir_t& dir, char* name) {
  * \param[in] indent Amount of space before file name. Used for recursive
  * list to indicate subdirectory level.
  */
-void SdFile::ls(uint8_t flags, uint8_t indent) {
-  dir_t* p;
-
-  rewind();
-  while ((p = readDirCache())) {
-    // done if past last used entry
-    if (p->name[0] == DIR_NAME_FREE) break;
-
-    // skip deleted entry and entries for . and  ..
-    if (p->name[0] == DIR_NAME_DELETED || p->name[0] == '.') continue;
-
-    // only list subdirectories and files
-    if (!DIR_IS_FILE_OR_SUBDIR(p)) continue;
-
-    // print any indent spaces
-    for (int8_t i = 0; i < indent; i++) Serial.print(' ');
-
-    // print file name with possible blank fill
-    printDirName(*p, flags & (LS_DATE | LS_SIZE) ? 14 : 0);
-
-    // print modify date/time if requested
-    if (flags & LS_DATE) {
-       printFatDate(p->lastWriteDate);
-       Serial.print(' ');
-       printFatTime(p->lastWriteTime);
-    }
-    // print size if requested
-    if (!DIR_IS_SUBDIR(p) && (flags & LS_SIZE)) {
-      Serial.print(' ');
-      Serial.print(p->fileSize);
-    }
-    Serial.println();
-
-    // list subdirectory content if requested
-    if ((flags & LS_R) && DIR_IS_SUBDIR(p)) {
-      uint16_t index = curPosition()/32 - 1;
-      SdFile s;
-      if (s.open(this, index, O_READ)) s.ls(flags, indent + 2);
-      seekSet(32 * (index + 1));
-    }
-  }
-}
+// void SdFile::ls(uint8_t flags, uint8_t indent) {
+//   dir_t* p;
+// 
+//   rewind();
+//   while ((p = readDirCache())) {
+//     // done if past last used entry
+//     if (p->name[0] == DIR_NAME_FREE) break;
+// 
+//     // skip deleted entry and entries for . and  ..
+//     if (p->name[0] == DIR_NAME_DELETED || p->name[0] == '.') continue;
+// 
+//     // only list subdirectories and files
+//     if (!DIR_IS_FILE_OR_SUBDIR(p)) continue;
+// 
+//     // print any indent spaces
+//     for (int8_t i = 0; i < indent; i++) Serial.print(' ');
+// 
+//     // print file name with possible blank fill
+//     printDirName(*p, flags & (LS_DATE | LS_SIZE) ? 14 : 0);
+// 
+//     // print modify date/time if requested
+//     if (flags & LS_DATE) {
+//        printFatDate(p->lastWriteDate);
+//        Serial.print(' ');
+//        printFatTime(p->lastWriteTime);
+//     }
+//     // print size if requested
+//     if (!DIR_IS_SUBDIR(p) && (flags & LS_SIZE)) {
+//       Serial.print(' ');
+//       Serial.print(p->fileSize);
+//     }
+//     Serial.println();
+// 
+//     // list subdirectory content if requested
+//     if ((flags & LS_R) && DIR_IS_SUBDIR(p)) {
+//       uint16_t index = curPosition()/32 - 1;
+//       SdFile s;
+//       if (s.open(this, index, O_READ)) s.ls(flags, indent + 2);
+//       seekSet(32 * (index + 1));
+//     }
+//   }
+// }
 //------------------------------------------------------------------------------
 // format directory name field from a 8.3 name string
 uint8_t SdFile::make83Name(const char* str, uint8_t* name) {
@@ -590,26 +590,26 @@ uint8_t SdFile::openRoot(SdVolume* vol) {
  * \param[in] dir The directory structure containing the name.
  * \param[in] width Blank fill name if length is less than \a width.
  */
-void SdFile::printDirName(const dir_t& dir, uint8_t width) {
-  uint8_t w = 0;
-  for (uint8_t i = 0; i < 11; i++) {
-    if (dir.name[i] == ' ')continue;
-    if (i == 8) {
-      Serial.print('.');
-      w++;
-    }
-    Serial.write(dir.name[i]);
-    w++;
-  }
-  if (DIR_IS_SUBDIR(&dir)) {
-    Serial.print('/');
-    w++;
-  }
-  while (w < width) {
-    Serial.print(' ');
-    w++;
-  }
-}
+// void SdFile::printDirName(const dir_t& dir, uint8_t width) {
+//   uint8_t w = 0;
+//   for (uint8_t i = 0; i < 11; i++) {
+//     if (dir.name[i] == ' ')continue;
+//     if (i == 8) {
+//       Serial.print('.');
+//       w++;
+//     }
+//     Serial.write(dir.name[i]);
+//     w++;
+//   }
+//   if (DIR_IS_SUBDIR(&dir)) {
+//     Serial.print('/');
+//     w++;
+//   }
+//   while (w < width) {
+//     Serial.print(' ');
+//     w++;
+//   }
+// }
 //------------------------------------------------------------------------------
 /** %Print a directory date field to Serial.
  *
@@ -617,13 +617,13 @@ void SdFile::printDirName(const dir_t& dir, uint8_t width) {
  *
  * \param[in] fatDate The date field from a directory entry.
  */
-void SdFile::printFatDate(uint16_t fatDate) {
-  Serial.print(FAT_YEAR(fatDate));
-  Serial.print('-');
-  printTwoDigits(FAT_MONTH(fatDate));
-  Serial.print('-');
-  printTwoDigits(FAT_DAY(fatDate));
-}
+// void SdFile::printFatDate(uint16_t fatDate) {
+//   Serial.print(FAT_YEAR(fatDate));
+//   Serial.print('-');
+//   printTwoDigits(FAT_MONTH(fatDate));
+//   Serial.print('-');
+//   printTwoDigits(FAT_DAY(fatDate));
+// }
 //------------------------------------------------------------------------------
 /** %Print a directory time field to Serial.
  *
@@ -631,25 +631,25 @@ void SdFile::printFatDate(uint16_t fatDate) {
  *
  * \param[in] fatTime The time field from a directory entry.
  */
-void SdFile::printFatTime(uint16_t fatTime) {
-  printTwoDigits(FAT_HOUR(fatTime));
-  Serial.print(':');
-  printTwoDigits(FAT_MINUTE(fatTime));
-  Serial.print(':');
-  printTwoDigits(FAT_SECOND(fatTime));
-}
+// void SdFile::printFatTime(uint16_t fatTime) {
+//   printTwoDigits(FAT_HOUR(fatTime));
+//   Serial.print(':');
+//   printTwoDigits(FAT_MINUTE(fatTime));
+//   Serial.print(':');
+//   printTwoDigits(FAT_SECOND(fatTime));
+// }
 //------------------------------------------------------------------------------
 /** %Print a value as two digits to Serial.
  *
  * \param[in] v Value to be printed, 0 <= \a v <= 99
  */
-void SdFile::printTwoDigits(uint8_t v) {
-  char str[3];
-  str[0] = '0' + v/10;
-  str[1] = '0' + v % 10;
-  str[2] = 0;
-  Serial.print(str);
-}
+// void SdFile::printTwoDigits(uint8_t v) {
+//   char str[3];
+//   str[0] = '0' + v/10;
+//   str[1] = '0' + v % 10;
+//   str[2] = 0;
+//   Serial.print(str);
+// }
 //------------------------------------------------------------------------------
 /**
  * Read data from a file starting at the current position.
@@ -904,7 +904,7 @@ uint8_t SdFile::rmRfStar(void) {
       if (!f.remove()) return false;
     }
     // position to next entry if required
-    if (curPosition_ != (32*(index + 1))) {
+    if (curPosition_ != (32U*(index + 1U))) {
       if (!seekSet(32*(index + 1))) return false;
     }
   }

@@ -3,9 +3,17 @@
 
 #expand path to find modules :
 import sys
-sys.path.append("com")
-sys.path.append("gui")
-sys.path.append("proto")
+
+#Find the directory in which vizu.py is located
+from os.path import dirname, abspath
+DIR = dirname(abspath(__file__))
+
+sys.path.append(DIR + "/com")
+sys.path.append(DIR + "/core")
+sys.path.append(DIR + "/gui")
+sys.path.append(DIR + "/proto")
+sys.path.append(DIR + "/../devenv/nanopb-0.3.7-windows-x86/generator/proto")
+sys.path.append(DIR + "/../com")
 
 import signal
 
@@ -20,35 +28,36 @@ class ConnectScreen(QWidget):
     
     def __init__(self):
         super().__init__()             
-        self.resize(640, 480)
-        self.move(300, 300)
+        self.readSettings()
         self.setWindowTitle('8=> Vizu')  
         
-        self.teleop = Teleop()
+        self.teleop = RemoteControl()
         
         self.tab = dict()
         self.tab["Com"]   = TabCom(self.teleop)
         self.tab["Log"]   = TabLog()
-        self.tab["Strat"] = self.buildTabTable()
+        self.tab["Strat"] = TabStrat()
         self.tab["Robot"] = TabRobot()
         
         
         self.tabs = QTabWidget(self)
         for tabName, tab in self.tab.items():
             self.tabs.addTab(tab, tabName)
-        #disable tabs requiring a network connection
-        self._handleNetworkStatus(False)
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
         
         #connect Com tab
-        self.tab["Com"].networkStatus       .connect(self._handleNetworkStatus)
-        self.tab["Com"].getOsStats          .connect(self.teleop.getOsStats)
-        self.tab["Com"].configureMatch      .connect(self.teleop.configureMatch)
-        self.tab["Com"].startMatch          .connect(self.teleop.startMatch)
+        self.tab["Com"].networkStatus         .connect(self._handleNetworkStatus)
+        self.tab["Robot"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
+        self.tab["Robot"].getTelemetry        .connect(self.teleop.getTelemetry)
+        self.tab["Robot"].configureMatch      .connect(self.teleop.configureMatch)
+        self.tab["Robot"].startMatch          .connect(self.teleop.startMatch)
+        self.tab["Robot"].resetCpu            .connect(self.teleop.resetCpu)
         #connect Log tab
         self.teleop.log.connect(self.tab["Log"].log)
-        #conenct Robot tab
+        #connect Strat tab
+        self.teleop.telemetry.connect(self.tab["Strat"]._telemetryDataCb)
+        #connect Robot tab
         for cmd, widget in self.tab["Robot"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  #getattr is used to get a method reference from name, hence automatically binding signals ;p
         
@@ -72,11 +81,34 @@ class ConnectScreen(QWidget):
         self.shortcuts["F3"] = QShortcut(QKeySequence(Qt.Key_F3), self)
         self.shortcuts["F3"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F3"], 2)
-            #F4 for Log tab
+            #F4 for Robot tab
         self.shortcuts["F4"] = QShortcut(QKeySequence(Qt.Key_F4), self)
         self.shortcuts["F4"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F4"], 3)
 
+        #add shortcut to manage match
+        self.configureMap = QSignalMapper()
+        self.configureMap.mapped.connect(self._configShortcut)
+            #YELLOW config with "y"
+        self.shortcuts["y"] = QShortcut(QKeySequence(Qt.Key_Y), self)
+        self.shortcuts["y"].activated.connect(self.configureMap.map)
+        self.configureMap.setMapping(self.shortcuts["y"], Types_pb2.PREF)
+            #BLUE config with "b"        
+        self.shortcuts["b"] = QShortcut(QKeySequence(Qt.Key_B), self)
+        self.shortcuts["b"].activated.connect(self.configureMap.map)
+        self.configureMap.setMapping(self.shortcuts["b"], Types_pb2.SYM)
+            #Start match with s
+        self.shortcuts["s"] = QShortcut(QKeySequence(Qt.Key_S), self)
+        self.shortcuts["s"].activated.connect(self.teleop.startMatch)
+            #reset with r
+        self.shortcuts["r"] = QShortcut(QKeySequence(Qt.Key_R), self)
+        self.shortcuts["r"].activated.connect(self.teleop.resetCpu)
+        
+            #disable tabs and shortcuts requiring a network connection
+        self._handleNetworkStatus(False)
+    
+    def __del__(self):
+        self.writeSettings()
     
     @pyqtSlot(bool)
     def _handleNetworkStatus(self, connected):
@@ -85,29 +117,66 @@ class ConnectScreen(QWidget):
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), True)
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), True)
             #self.tabs.setCurrentWidget(self.tab["Strat"])
+            
+            self.shortcuts["F1"].setEnabled(True)
+            self.shortcuts["F2"].setEnabled(True)
+            self.shortcuts["F3"].setEnabled(True)
+            self.shortcuts["F4"].setEnabled(True)
+            
         else:
             self.tab["Log"].appendLog(("----------disconnected-----------"))
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), False)
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), False)
             self.tabs.setCurrentWidget(self.tab["Com"])
+            
+            self.shortcuts["F1"].setEnabled(True)
+            self.shortcuts["F2"].setEnabled(True)
+            self.shortcuts["F3"].setEnabled(False)
+            self.shortcuts["F4"].setEnabled(False)
     
     @pyqtSlot(int)
     def selectTab(self, tabId):
         self.tabs.setCurrentIndex(tabId)
         
-    def buildTabTable(self):
-        tab_Table = QWidget(self)        
-        return tab_Table
-            
+    def readSettings(self):
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("MainWindow")
+        self.resize(settings.value("size", QSize(640, 480)))
+        self.move(settings.value("pos", QPoint(300, 300)))
+        settings.endGroup();
+    
+    def writeSettings(self):
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("MainWindow")
+        settings.setValue("size", self.size())
+        settings.setValue("pos", self.pos())
+        settings.endGroup()
+        
+    @pyqtSlot(int)
+    def _configShortcut(self, color):
+        self.teleop.configureMatch(0,color) #0 for default strat
+        
 if __name__ == '__main__':
-    import sys
     import os
     
     #re-generate proto (not optimal, but as they will change a lot at project beginning...)
-    os.system("..\generateCom.bat ..\\ off")
+    #os.system("..\generateCom.bat ..\\ off")
     
     signal.signal(signal.SIGINT, signal.SIG_DFL)
+    
     app = QApplication(sys.argv)
+    app.setApplicationName("Vizu")
+    app.setOrganizationName("A.R.D.")
+    app.setOrganizationDomain("team-ard.com")
+    
+    #Start application
     screen = ConnectScreen()
     screen.show()
-    sys.exit(app.exec_())
+    res = app.exec_()
+    
+    #save settings
+    del screen
+    print("Settings saved")
+    
+    
+    sys.exit(res)

@@ -24,7 +24,7 @@ extern "C" {
 
 uint32_t millis( void )
 {
-// todo: ensure no interrupts
+    //there is nothing to do because the tick is every 1ms, but we would have to do something if it were changed
     return GetTickCount() ;
 }
 

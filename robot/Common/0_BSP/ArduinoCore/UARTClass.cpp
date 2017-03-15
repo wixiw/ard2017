@@ -37,13 +37,12 @@ UARTClass::UARTClass( Uart *pUart, IRQn_Type dwIrq, uint32_t dwId, RingBuffer *p
 
 void UARTClass::begin(const uint32_t dwBaudRate)
 {
-  begin(dwBaudRate, Mode_8N1);
+    init(dwBaudRate, Mode_8N1);
 }
 
-void UARTClass::begin(const uint32_t dwBaudRate, const UARTModes config)
+void UARTClass::begin(const uint32_t dwBaudRate, const uint32_t modeReg)
 {
-  uint32_t modeReg = static_cast<uint32_t>(config) & 0x00000E00;
-  init(dwBaudRate, modeReg | UART_MR_CHMODE_NORMAL);
+  init(dwBaudRate, modeReg);
 }
 
 void UARTClass::init(const uint32_t dwBaudRate, const uint32_t modeReg)
@@ -104,14 +103,14 @@ uint32_t UARTClass::getInterruptPriority()
 
 int UARTClass::available( void )
 {
-  return (uint32_t)(SERIAL_BUFFER_SIZE + _rx_buffer->_iHead - _rx_buffer->_iTail) % SERIAL_BUFFER_SIZE;
+  return (uint32_t)(RING_BUFFER_SIZE + _rx_buffer->_iHead - _rx_buffer->_iTail) % RING_BUFFER_SIZE;
 }
 
 int UARTClass::availableForWrite(void)
 {
   int head = _tx_buffer->_iHead;
   int tail = _tx_buffer->_iTail;
-  if (head >= tail) return SERIAL_BUFFER_SIZE - 1 - head + tail;
+  if (head >= tail) return RING_BUFFER_SIZE - 1 - head + tail;
   return tail - head - 1;
 }
 
@@ -127,10 +126,12 @@ int UARTClass::read( void )
 {
   // if the head isn't ahead of the tail, we don't have any characters
   if ( _rx_buffer->_iHead == _rx_buffer->_iTail )
+  {
     return -1;
-
+  }
+  
   uint8_t uc = _rx_buffer->_aucBuffer[_rx_buffer->_iTail];
-  _rx_buffer->_iTail = (unsigned int)(_rx_buffer->_iTail + 1) % SERIAL_BUFFER_SIZE;
+  _rx_buffer->_iTail = (unsigned int)(_rx_buffer->_iTail + 1) % RING_BUFFER_SIZE;
   return uc;
 }
 
@@ -149,7 +150,7 @@ size_t UARTClass::write( const uint8_t uc_data )
       (_tx_buffer->_iTail != _tx_buffer->_iHead))
   {
     // If busy we buffer
-    int nextWrite = (_tx_buffer->_iHead + 1) % SERIAL_BUFFER_SIZE;
+    int nextWrite = (_tx_buffer->_iHead + 1) % RING_BUFFER_SIZE;
     while (_tx_buffer->_iTail == nextWrite)
       ; // Spin locks if we're about to overwrite the buffer. This continues once the data is sent
 
@@ -172,14 +173,16 @@ void UARTClass::IrqHandler( void )
 
   // Did we receive data?
   if ((status & UART_SR_RXRDY) == UART_SR_RXRDY)
+  {
     _rx_buffer->store_char(_pUart->UART_RHR);
+  }
 
   // Do we need to keep sending data?
   if ((status & UART_SR_TXRDY) == UART_SR_TXRDY) 
   {
     if (_tx_buffer->_iTail != _tx_buffer->_iHead) {
       _pUart->UART_THR = _tx_buffer->_aucBuffer[_tx_buffer->_iTail];
-      _tx_buffer->_iTail = (unsigned int)(_tx_buffer->_iTail + 1) % SERIAL_BUFFER_SIZE;
+      _tx_buffer->_iTail = (unsigned int)(_tx_buffer->_iTail + 1) % RING_BUFFER_SIZE;
     }
     else
     {
@@ -189,7 +192,7 @@ void UARTClass::IrqHandler( void )
   }
 
   // Acknowledge errors
-  if ((status & UART_SR_OVRE) == UART_SR_OVRE || (status & UART_SR_FRAME) == UART_SR_FRAME)
+  if ((status & UART_SR_OVRE) == UART_SR_OVRE || (status & UART_SR_FRAME) == UART_SR_FRAME || (status & UART_SR_PARE) == UART_SR_PARE)
   {
     // TODO: error reporting outside ISR
     _pUart->UART_CR |= UART_CR_RSTSTA;

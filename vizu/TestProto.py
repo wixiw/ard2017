@@ -21,14 +21,14 @@ if __name__ == '__main__':
     os.system("..\generateCom.bat ..\\ off")
     
     #message filling
-    msgLog = Teleop_pb2.TeleopResponse()
+    msgLog = RemoteControl_pb2.RemoteControlResponse()
     msgLog.log.date = 1234
     msgLog.log.level = Types_pb2.DEBUG
     msgLog.log.text = "abcd"
     
     #serialization
     logPayload = msgLog.SerializeToString()
-    msgLogUnser = Teleop_pb2.TeleopResponse()
+    msgLogUnser = RemoteControl_pb2.RemoteControlResponse()
     msgLogUnser.ParseFromString(logPayload)
     #display
     print("text       =" + ":".join("{:02x}".format()) for c in "abcd")

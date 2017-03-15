@@ -1,7 +1,7 @@
 syntax = "proto2";
 package apb;
 
-//import "Types.proto";
+import "Types.proto";
 
 
 //This is a generic message when you have no parameters to set
@@ -10,13 +10,35 @@ message EmptyMsg {
 
 message Point
 {
-	required float x = 1; //mm
-	required float y = 2; //mm
+    required float x = 1; //mm
+    required float y = 2; //mm
 }
 
 message PointCap
 {
-	required float x = 1; //mm
-	required float y = 2; //mm
-	required float h = 3; //°
+    required float x = 1; //mm
+    required float y = 2; //mm
+    required float h = 3; //°
+}
+
+message NavState {
+    required eNavState       state                  = 10; //current motion state
+    required eNavOrder       order                  = 11; //current motion order
+    required PointCap        pos                    = 12; //robot position
+    required bool            omronFL                = 21; //front left omron, true = presence
+    required bool            omronFR                = 22; //front right omron, true = presence
+    required bool            omronRL                = 23; //rear left omron, true = presence
+    required bool            omronRR                = 24; //rear right omron, true = presence
+}
+
+message ColorSensorState {
+    required uint32            r                    = 1;
+    required uint32            g                    = 2;
+    required uint32            b                    = 3;
+    required uint32            l                    = 4;
+    required eObjectColor      color                = 5;
+}
+
+message ActuatorsState {
+    required ColorSensorState colorSensor        = 1;
 }

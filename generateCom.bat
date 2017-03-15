@@ -1,3 +1,6 @@
+REM you may uncomment this to desactivate proto generation, it may speed up the build
+REM exit 0
+
 @echo off
 echo ------------- generating com --------------------------
 
@@ -23,7 +26,7 @@ REM Configure script
 set PROTOC=%ARD_PATH%\devenv\nanopb-0.3.7-windows-x86\generator-bin\protoc.exe
 set MSG_PATH=%ARD_PATH%\msg
 set PYTHON_OUT_PATH=%ARD_PATH%\vizu\proto
-set C_OUT_PATH=%ARD_PATH%\robot\Common\2_AL\proto
+set C_OUT_PATH=%ARD_PATH%\robot\Common\generated
 
 REM inform user about configuration
 echo Running from folder       : %ARD_PATH% 
@@ -37,15 +40,7 @@ echo -------------------------------------------------------
 REM List all files in the MSG_PATH folder and execute protoc on them for both C and python
 for /F %%i in ('dir /B/D %MSG_PATH%\*.proto') do (
 	echo Processing %%i
-	
-	REM If the file is Types.proto, a special treatment is operated as the generation goes elsewhere
-	if [%%i] == [Types.proto] (
-		call %PROTOC% --nanopb_out=%ARD_PATH%\robot\Common\1_RSP --python_out=%PYTHON_OUT_PATH% -I %ARD_PATH%\devenv\nanopb-0.3.7-windows-x86\generator\proto --proto_path=%MSG_PATH% %MSG_PATH%\%%i
-	) else (
-		call %PROTOC% --nanopb_out=%C_OUT_PATH% --python_out=%PYTHON_OUT_PATH% -I %ARD_PATH%\devenv\nanopb-0.3.7-windows-x86\generator\proto --proto_path=%MSG_PATH% %MSG_PATH%\%%i
-	)
-	
-	
+	call %PROTOC% --nanopb_out=%C_OUT_PATH% --python_out=%PYTHON_OUT_PATH% -I %ARD_PATH%\devenv\nanopb-0.3.7-windows-x86\generator\proto --proto_path=%MSG_PATH% %MSG_PATH%\%%i
 )
 
 echo

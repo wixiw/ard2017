@@ -537,15 +537,6 @@ static TCB_t *prvAllocateTCBAndStack( const uint16_t usStackDepth, StackType_t *
  */
 static void prvResetNextTaskUnblockTime( void );
 
-#if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
-
-	/*
-	 * Helper function used to pad task names with spaces when printing out
-	 * human readable tables of task information.
-	 */
-	static char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName );
-
-#endif
 /*-----------------------------------------------------------*/
 
 BaseType_t xTaskGenericCreate( TaskFunction_t pxTaskCode, const char * const pcName, const uint16_t usStackDepth, void * const pvParameters, UBaseType_t uxPriority, TaskHandle_t * const pxCreatedTask, StackType_t * const puxStackBuffer, const MemoryRegion_t * const xRegions ) /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
@@ -3625,7 +3616,7 @@ TCB_t *pxTCB;
 
 #if ( ( configUSE_TRACE_FACILITY == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS > 0 ) )
 
-	static char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName )
+	char *prvWriteNameToBuffer( char *pcBuffer, const char *pcTaskName )
 	{
 	size_t x;
 
@@ -3745,7 +3736,7 @@ TCB_t *pxTCB;
 
 	void vTaskGetRunTimeStats( char *pcWriteBuffer )
 	{
-	TaskStatus_t *pxTaskStatusArray;
+	static TaskStatus_t *pxTaskStatusArray = NULL;
 	volatile UBaseType_t uxArraySize, x;
 	uint32_t ulTotalTime, ulStatsAsPercentage;
 
@@ -3787,8 +3778,9 @@ TCB_t *pxTCB;
 		function is executing. */
 		uxArraySize = uxCurrentNumberOfTasks;
 
-		/* Allocate an array index for each task. */
-		pxTaskStatusArray = pvPortMalloc( uxCurrentNumberOfTasks * sizeof( TaskStatus_t ) );
+		/* Allocate an array index for each task, first time only. */
+		if( pxTaskStatusArray == NULL )
+		    pxTaskStatusArray = pvPortMalloc( uxCurrentNumberOfTasks * sizeof( TaskStatus_t ) );
 
 		if( pxTaskStatusArray != NULL )
 		{
@@ -3854,7 +3846,7 @@ TCB_t *pxTCB;
 			}
 
 			/* Free the array again. */
-			vPortFree( pxTaskStatusArray );
+			//ARD : not available with heap1 vPortFree( pxTaskStatusArray );
 		}
 		else
 		{
@@ -4474,10 +4466,4 @@ TickType_t uxReturn;
 #ifdef FREERTOS_MODULE_TEST
 	#include "tasks_test_access_functions.h"
 #endif
-
-//ARD specific
-void ard_getTaskName(char* name)
-{
-	strcpy(name, pxCurrentTCB->pcTaskName);
-}
 

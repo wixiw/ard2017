@@ -1,0 +1,41 @@
+/*
+ * UT_ModelXXX.cpp
+ *
+ */ 
+
+int main(void)
+{
+    bool res = true;
+
+    //Init drivers
+    init_bsp();
+    digitalWrite(LED_DUE_L, HIGH);
+    serial0.start(/*baurate = */115200);
+
+    //TODO test
+    //...
+    //...
+    res &= XX;
+
+    //No led on on success (only the GREEN on led)
+    if( res )
+    {
+        digitalWrite(LED_DUE_RX, HIGH);
+        digitalWrite(LED_DUE_TX, HIGH);
+        digitalWrite(LED_DUE_L, LOW);
+    }
+    //All led on on failure (all ORANGE)
+    else
+    {
+        digitalWrite(LED_DUE_RX, LOW);
+        digitalWrite(LED_DUE_TX, LOW);
+        digitalWrite(LED_DUE_L, HIGH);
+    }
+
+    while(1){};
+}
+
+extern String getExeVersion()
+{
+    return String("Version test : ") + __DATE__ + " " + __TIME__;
+}

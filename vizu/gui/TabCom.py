@@ -8,9 +8,6 @@ class TabCom(QWidget):
     
     #QT emitted signals :
     networkStatus = pyqtSignal(bool)
-    getOsStats = pyqtSignal()
-    configureMatch = pyqtSignal(int, int)
-    startMatch = pyqtSignal()
     
     #@param ArdSerial : a reference on the object managing the serial line
     def __init__(self, comMdw):
@@ -18,35 +15,49 @@ class TabCom(QWidget):
         self.com = comMdw
         ports, baudrates = self.com.getSerialPortInfo()
         
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("Com")
+        defaultPort = settings.value("port", "COM1")
+        defaultBaudrate = settings.value("baudrate", "250000")
+        
         #Serial port configuration
+            #COM port selector
         self.combo_COM = QComboBox(self)
         self.combo_COM.addItems(ports)
-        #---DEBUG ---- pour simplifier la vie a cette feignasse de Lambert
-        self.combo_COM.setCurrentIndex(1)
+        i = self.combo_COM.findText(defaultPort)
+        if i != -1 :
+            self.combo_COM.setCurrentIndex(i)
+            #Baudrate selector
         self.combo_Baudrate = QComboBox(self)
         for baudrate in baudrates:
             self.combo_Baudrate.addItem(str(baudrate), baudrate)
-        
+        i = self.combo_Baudrate.findData(defaultBaudrate)
+        if i != -1 :
+            self.combo_Baudrate.setCurrentIndex(i)
+            #connection button
         self.btn_connect = QPushButton('Connect', self)
         self.btn_connect.setCheckable(True)
         self.btn_connect.toggled[bool].connect(self._connectFromButton)
         
-        self.connected_btn = dict()
-        self.connected_btn["getOsStats"] = QPushButton('Get Stats', self)
-        self.connected_btn["getOsStats"].hide()
-        self.connected_btn["getOsStats"].clicked.connect(self._getOsStats) 
+            #tests
+        self.buttonsGroup = QWidget()
+        self.buttonsGroup.setEnabled(False)
+        self.btn_maxLength = QPushButton('Send max length test payload', self.buttonsGroup)
+        self.btn_maxLength.clicked.connect(self._maxLength) 
+        self.btn_crcErr = QPushButton('Send msg with erroneous CRC', self.buttonsGroup)
+        self.btn_crcErr.clicked.connect(self._crcErr) 
+        self.btn_tooLittle = QPushButton('Send too little errouneous msg', self.buttonsGroup)
+        self.btn_tooLittle.clicked.connect(self._tooLittle) 
+        self.btn_maxLengthReq = QPushButton('Receive max length test payload', self.buttonsGroup)
+        self.btn_maxLengthReq.clicked.connect(self._maxLengthReq) 
+        self.btn_crcErrReq = QPushButton('Receive msg with erroneous CRC', self.buttonsGroup)
+        self.btn_crcErrReq.clicked.connect(self._crcErrReq) 
+        self.btn_tooLittleReq = QPushButton('Receive too little errouneous msg', self.buttonsGroup)
+        self.btn_tooLittleReq.clicked.connect(self._tooLittleReq) 
         
-        self.connected_btn["configureMatch"] = QPushButton('Configure Match', self)
-        self.connected_btn["configureMatch"].hide()
-        self.connected_btn["configureMatch"].clicked.connect(self._configureMatch) 
-        
-        self.connected_btn["startMatch"] = QPushButton('Start Match', self)
-        self.connected_btn["startMatch"].hide()
-        self.connected_btn["startMatch"].clicked.connect(self._startMatch) 
-        
-        layout = QVBoxLayout(self)
-        layoutH1 = QHBoxLayout()
-        layoutH2 = QVBoxLayout()
+        layout    = QVBoxLayout(self)
+        layoutH1  = QHBoxLayout()
+        layoutH2  = QHBoxLayout()
         layout.addLayout(layoutH1)
         layout.addLayout(layoutH2)
         layout.addStretch()
@@ -56,9 +67,16 @@ class TabCom(QWidget):
         layoutH1.addWidget(self.btn_connect)      
         layoutH1.addStretch()
         
-        for button in self.connected_btn:    
-            layoutH2.addWidget(self.connected_btn[button])
+        layoutH2.addWidget(self.buttonsGroup)
         layoutH2.addStretch()
+        
+        layoutBtnGroup = QVBoxLayout(self.buttonsGroup)
+        layoutBtnGroup.addWidget(self.btn_maxLength)
+        layoutBtnGroup.addWidget(self.btn_crcErr)
+        layoutBtnGroup.addWidget(self.btn_tooLittle)
+        layoutBtnGroup.addWidget(self.btn_maxLengthReq)
+        layoutBtnGroup.addWidget(self.btn_crcErrReq)
+        layoutBtnGroup.addWidget(self.btn_tooLittleReq)
         
         #keyboard shortcuts
         QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connectFromShorcut)
@@ -73,21 +91,6 @@ class TabCom(QWidget):
     def _connectFromShorcut(self):
         self.btn_connect.toggle()            
         
-    @pyqtSlot()
-    def _getOsStats(self): 
-       print("Stats request")
-       self.getOsStats.emit()
-       
-    @pyqtSlot()
-    def _configureMatch(self): 
-       print("Configure match request")
-       self.configureMatch.emit(1, 2)
-       
-    @pyqtSlot()
-    def _startMatch(self): 
-       print("Start match request")
-       self.startMatch.emit()
-        
     def _connect(self):
         port = self.combo_COM.currentText()
         baudrate = self.combo_Baudrate.currentData()
@@ -98,17 +101,18 @@ class TabCom(QWidget):
         
         if self.com.connect(port, baudrate):
             print("Connected")
-            for button in self.connected_btn:
-                self.connected_btn[button].show()
+            settings = QSettings("config.ini", QSettings.IniFormat)
+            settings.beginGroup("Com")
+            settings.setValue("port", port)
+            settings.setValue("baudrate", baudrate)
+            self.buttonsGroup.setEnabled(True)
             self.networkStatus.emit(True)
         else:
-            print("Connection error")
+            print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizy instance...)")
             self.btn_connect.setText("Connect")
             self.btn_connect.setChecked(False)
             self.combo_COM.setEnabled(True)
             self.combo_Baudrate.setEnabled(True)
-            for button in self.connected_btn:
-                self.connected_btn[button].hide()
             
     def _disconnect(self):
         self.com.disconnect()
@@ -116,10 +120,43 @@ class TabCom(QWidget):
         self.btn_connect.setChecked(False)
         self.combo_COM.setEnabled(True)
         self.combo_Baudrate.setEnabled(True)
-        for button in self.connected_btn:
-            self.connected_btn[button].hide()
+        self.buttonsGroup.setEnabled(False)
         self.networkStatus.emit(False)
         print("Disconnected")
+        
+    @pyqtSlot()
+    def _maxLength(self): 
+       print("Send a msg with the heaviest payload.")
+       #Due to 4 character escapes, it is not possible to send 512 chars. 
+       #Calcul is 512 (max) - 6(header) - 4 (escapes) = 256+246
+       msgMax = bytes(range(256))
+       msgMax += bytes(range(246))
+       self.com.com.sendMsg(msgMax)
+       
+    @pyqtSlot()
+    def _crcErr(self): 
+       print("Send message with erroneous CRC")
+       self.com.com._physicalLayer.write(b"~\ff\10\06\e1~")
+       
+    @pyqtSlot()
+    def _tooLittle(self): 
+       print("Send a too little msg")
+       self.com.com._physicalLayer.write(b"~\ff\10~")
+      
+    @pyqtSlot()
+    def _maxLengthReq(self): 
+       print("Receive a msg with the heaviest payload.")
+       self.com.requestMaxLengthMsg()
+       
+    @pyqtSlot()
+    def _crcErrReq(self): 
+       print("Receive message with erroneous CRC")
+       self.com.requestCrcFailMsg()
+       
+    @pyqtSlot()
+    def _tooLittleReq(self): 
+       print("Receive a too little msg")
+       self.com.requestTooLittleMsg()
             
 if __name__ == '__main__':
     import sys

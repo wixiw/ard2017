@@ -7,89 +7,126 @@
 
 #include "Robot2017.h"
 #include "BSP.h"
-#include "TestStrategies.h"
-#include "StrategyAlpha.h"
+#include "strategies/Strategies.h"
 
 using namespace ard;
 
+extern "C"
+{
+    extern void errorBlink(int n);
+}
+
+//check for Interrupt context !
+//check for C++ demangling problems
+void ardAssertImpl(bool condition, char const* file, unsigned int line, char const* text)
+{
+    if(!condition)
+    {
+        if( ArdOs::getState() == ArdOs::RUNNING && !Thread::interruptContext() )
+        {
+            LOG_ASSERT(String(file) +":" + line + String(text));
+            ROBOT.dieMotherFucker();
+        }
+        else
+        {
+            errorBlink(3);
+        }
+    }
+}
+
 //singleton instanciation
-Robot2017 Robot2017::instance = Robot2017();
+Robot2017* Robot2017::instance = NULL;
 
 //Use this interrupt to execute periodic stuff that shall run at a very high frequency (typically steppers)
 //Obviously at such a frequence a Thread is too heavy as the context-switch duration would be higher than the period
 void veryFast_interrupt()
 {
-//  digitalWrite(DEBUG_1, 1); //uncomment to check period and delay with oscilloscope
+    //  digitalWrite(DEBUG_1, 1); //uncomment to check period and delay with oscilloscope
     Robot2017::getInstance().nav.updateFromInterrupt();
-//  digitalWrite(DEBUG_1, 0); //uncomment to check period and delay with oscilloscope
+    //  digitalWrite(DEBUG_1, 0); //uncomment to check period and delay with oscilloscope
 }
 
 //Use this interrupt to execute period stuff that shall run at a high frequency
 //At this frequence a Thread is quite heavy as the context-switch duration would be roughtly equal to the period
 void fast_interrupt()
 {
-//  digitalWrite(DEBUG_2, 1); //uncomment to check period and delay with oscilloscope
+    //  digitalWrite(DEBUG_2, 1); //uncomment to check period and delay with oscilloscope
     gpioToolsIsrCallback(PERIOD_FAST_IT_US);
-//  digitalWrite(DEBUG_2, 0); //uncomment to check period and delay with oscilloscope
+    //  digitalWrite(DEBUG_2, 0); //uncomment to check period and delay with oscilloscope
 }
 
-Robot2017::Robot2017()
-        : actuators(), strategy(), claws(), nav(), hmi(50 /*ms*/), log(LogThread::getInstance())
-#ifdef BUILD_TELEOP
-                , teleop()
+void Robot2017_UART_Handler()
+{
+    Robot2017::getInstance().bsp.serial0.IrqHandler();
+}
+
+Robot2017::Robot2017():
+    bsp(),
+    actuators(),
+    strategy(),
+    nav(),
+    hmi(50 /*ms*/),
+    log(LogDispatcher::getInstance()),
+#ifdef BUILD_REMOTE_CONTROL
+    remoteControl(bsp.serial0),
 #endif
+    fileLogger(LOG_QUEUE_SIZE)
 {
-    buildDate =String(__DATE__) + " " + __TIME__;
-    actuators.addMiniThread(&nav);
-    actuators.addMiniThread(&claws);
-    strategy.registerStrategy("Alpha", Strategy_Alpha);
-    strategy.registerStrategy("Led Test", Strategy_LedTest);
-    strategy.registerStrategy("Button Test", Strategy_ButtonTest);
-    strategy.registerStrategy("Omron Test", Strategy_OmronTest);
+    buildDate = String(__DATE__) + " " + __TIME__;
+    strategy.registerStrategy("Alpha",          Strategy_Alpha);
+    strategy.registerStrategy("Led Test",       Strategy_LedTest);
+    strategy.registerStrategy("Button Test",    Strategy_ButtonTest);
+    strategy.registerStrategy("Omron Test",     Strategy_OmronTest);
 }
 
-void Robot2017::boot()
+void Robot2017::bootOs()
 {
-    //the listener registration is lost if it is done in the constructor,
-    //I don't know why ... So it's done here because it works
-    log.setComLogger(&teleop);
-    init_bsp();
+    //Connect the log service
+    Thread::setLogger(&log);
+    log.addLogger(fileLogger);
+#ifdef BUILD_REMOTE_CONTROL
+    log.addLogger(remoteControl);
+#endif
 
     //Map fast periodic functions to timers interrupts
+    //Timer1 is used for CPU stats, see FreeRTOSConfig.h and FreeRTOS_ARM.c
     Timer6.attachInterrupt(veryFast_interrupt);
     Timer7.attachInterrupt(fast_interrupt);
+    
+    //Configure interrupts priorities
+    Timer6.setInterruptPriority     (PRIORITY_IRQ_STEPPERS);
+    Timer7.setInterruptPriority     (PRIORITY_IRQ_GPIO_FILTERS);
+    bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
 
     //Init debug serial link
-    Serial.begin(/*baurate = */250000);
+    UART_Handler_CB = Robot2017_UART_Handler;
+    bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
+    bsp.serial0.start(SERIAL_BAUDRATE, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
 
-    //Configure OS
-    g_ArdOs.STDOUT = NULL;//If you wish to get debug texts, you need a serial terminal and g_ArdOs.STDOUT = &Serial;
-    g_ArdOs.HEARTBEAT_PIN = LED_DUE_RX;
+    //init all OS objects (including threads),
+    //which should call all init() function
+    //in the order of member declaration in the header file
+    ArdOs::init();
 
-    //Threads init
-    hmi.init();
-    hmi.ledDue_Tx.slowBlink(); //pour le debug pour verifier que le thread est vivant
-
-    log.init();
-#ifdef BUILD_TELEOP
-    teleop.init();
-#endif
-    actuators.init();
-    strategy.init();
+    //heartbeat pour le debug pour verifier que le thread est vivant
+    hmi.ledDue_Tx.slowBlink();
 
     //Start everything
     Timer6.start(PERIOD_VERY_FAST_IT_US);
     Timer7.start(PERIOD_FAST_IT_US);
 
-    //init OS
-    g_ArdOs.init(); //this function never ends
+    //Start all SW activities
+    ArdOs::start();//this function never ends
 }
 
 void Robot2017::dieMotherFucker()
 {
-    nav.stop();
+    //Ask the robot to stop moving and wait for it to be at rest
+    nav.stopMoving();
     nav.wait();
-    g_ArdOs.die();
+
+    //last action as strategy thread is certainly called^^
+    ROBOT.strategy.stopThread();
 }
 
 Robot2017& Robot2017::operator=(const Robot2017& p)
@@ -98,10 +135,10 @@ Robot2017& Robot2017::operator=(const Robot2017& p)
     return *this;
 }
 
-IEvent* ard::Robot2017::getTeleopEvt(eTeleopEvtId id)
+IEvent* ard::Robot2017::getRemoteControlEvt(eRemoteControlEvtId id)
 {
-#ifdef BUILD_TELEOP
-    return teleop.getEvent(id);
+#ifdef BUILD_REMOTE_CONTROL
+    return remoteControl.getEvent(id);
 #else
     static Event<1> defaultEvent;
     return &defaultEvent;
@@ -109,23 +146,23 @@ IEvent* ard::Robot2017::getTeleopEvt(eTeleopEvtId id)
 }
 
 Robot2017::Robot2017(const Robot2017& p)
-        : Robot2017()
+: Robot2017()
 {
 }
 
 bool Robot2017::isStartPlugged()
 {
-    return hmi.start.read();
+    return hmi.tirette.read();
 }
 
 IEvent* Robot2017::getStartInEvt()
 {
-    return hmi.start.getEvent(RISING_EDGE);
+    return hmi.tirette.getEvent(RISING_EDGE);
 }
 
 IEvent* Robot2017::getStartOutEvt()
 {
-    return hmi.start.getEvent(FALLING_EDGE);
+    return hmi.tirette.getEvent(FALLING_EDGE);
 }
 
 bool Robot2017::isPreferedColor()
@@ -163,7 +200,7 @@ void Robot2017::setLed(uint8_t led, eLedState blink)
         hmi.led4.set(blink);
         break;
     default:
-        ardAssert(false, "Unexpected value in setLed()");
+        ASSERT_TEXT(false, "Unexpected value in setLed()");
         break;
     }
 }

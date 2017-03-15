@@ -72,8 +72,6 @@ protected:
 
 public:
 
-	static DueTimer getAvailable(void);
-
 	DueTimer(unsigned short _timer);
 	DueTimer& attachInterrupt(void (*isr)());
 	DueTimer& detachInterrupt(void);
@@ -81,7 +79,7 @@ public:
 	DueTimer& stop(void);
 	DueTimer& setFrequency(double frequency);
 	DueTimer& setPeriod(unsigned long microseconds);
-
+    DueTimer& setInterruptPriority(unsigned char priority);
 	double getFrequency(void) const;
 	long getPeriod(void) const;
 };

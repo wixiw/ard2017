@@ -1683,6 +1683,9 @@ UBaseType_t uxQueueGetQueueNumber( QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
 uint8_t ucQueueGetQueueType( QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
 
 
+//ARD for debug
+UBaseType_t ardQueueGetCount(QueueHandle_t xQueue);
+
 #ifdef __cplusplus
 }
 #endif

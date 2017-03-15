@@ -2596,8 +2596,11 @@ BaseType_t xReturn;
 #endif /* configUSE_QUEUE_SETS */
 
 
-
-
+UBaseType_t ardQueueGetCount(QueueHandle_t xQueue)
+{
+    Queue_t * queue = xQueue;
+    return queue->uxMessagesWaiting;
+}
 
 
 

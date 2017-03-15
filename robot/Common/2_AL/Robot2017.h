@@ -10,10 +10,9 @@
 
 #include "BSP.h"
 #include "RSP.h"
-#include "ActuatorThread.h"
-#include "ActuatorX.h"
-#include "StrategyThread.h"
-#include "TeleopThread.h"
+#include "actuators/ActuatorThread.h"
+#include "strategies/StrategyThread.h"
+#include "RemoteControl.h"
 
 #define ROBOT Robot2017::getInstance()
 
@@ -36,7 +35,7 @@ namespace ard
 
         //Freeze the robot so we are sure it doesn't do
         //anything until the end of the match
-        //Note : it will still do the funny action
+        // Caution : cannot be called from interrupt.
         void dieMotherFucker();
 
         //answer true if the start is plugged
@@ -62,7 +61,7 @@ namespace ard
         void setLed(uint8_t led, eLedState blink);
 
         //Retrive any of the teleop events
-        IEvent* getTeleopEvt(eTeleopEvtId id);
+        IEvent* getRemoteControlEvt(eRemoteControlEvtId id);
 
         //-------------------------------------------------------------------
         // End of Strategy API
@@ -72,35 +71,41 @@ namespace ard
         static Robot2017&
         getInstance()
         {
-            return instance;
-        }
-        ;
+            if(instance==NULL)
+                instance = new Robot2017();
 
-        //Initialize instances and start the robot
-        //This function never ends
-        void boot();
+            return *instance;
+        };
+
+        //Initialize instances and start the robot OS
+        //This function never ends, you may continue initialization in run()
+        void bootOs();
 
         //Utility function to get version info
         String const& getVersion(){return buildDate;};
 
+        //hardware layer
+        BSP bsp;
+
         //Applicative layer
         ActuatorThread actuators;
         StrategyThread strategy;
-        ActuatorX claws;
 
-        //Public RSP interface : because i'm too lazy to hide it
+        //Public RSP interface : because i'm too lazy to hide it, please feel free to implement the decorator
         Navigation nav;
 
     private:
         //RSP implementation
         HmiThread hmi;
-        LogThread& log;
-#ifdef BUILD_TELEOP
-        TeleopThread teleop;
+        LogDispatcher& log;
+#ifdef BUILD_REMOTE_CONTROL
+        RemoteControl remoteControl;
 #endif
+        SdCardLogger fileLogger;
         //singleton instance
-        static Robot2017 instance;
+        static Robot2017* instance;
 
+        //Save the ARD library build date in the binary
         String buildDate;
 
         //Assemble all object instances

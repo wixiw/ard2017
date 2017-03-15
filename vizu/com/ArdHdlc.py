@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import yahdlc
+import ardHdlc
 import traceback
 from PyQt5.Qt import *
 from ArdSerial import * 
@@ -20,6 +20,8 @@ class ArdHdlc(QObject):
     
     #This is enforced by hdlc as sequence number are coded on 3 bits
     NB_SEQ_NUMBERS = 8
+    
+    MAX_HDLC_SIZE = 512
     
     def __init__(self):
         super().__init__() 
@@ -74,88 +76,90 @@ class ArdHdlc(QObject):
     # @return bool : True if message sent successfully
     def sendMsg(self, msg):
         assert self._connected
-        # TODO sequence id is not used yet, as Teleop doesn't require any robustness, 
+        #---DEBUG---- print("msg to send : 0x[%s]" % msg.hex())
+        # TODO sequence id is not used yet, as RemoteControl doesn't require any robustness, 
         # in order to use this com with a robot to robot com, it'll be required
-        frame = yahdlc.frame_data(msg, yahdlc.FRAME_DATA, self.sendSedNumber)
-        #---DEBUG---- print("HLDC frame : 0x[%s]" % frame.hex())
+        try:
+            frame = ardHdlc.createDataFrame(msg, ardHdlc.FRAME_DATA, self.sendSedNumber)
+        #destination buffer is too short
+        except ardHdlc.TooShort:
+            print("Destination buffer is too short : " + str(msg))
+            return False
+        
+        #Input parameters are incorrect
+        except ValueError:
+            assert False
+        #Unknown error
+        except:
+            assert False
+            
+        #---DEBUG---- print("HLDC frame (seq=" + str(self.sendSedNumber) + ") (len=" + str(len(frame)) + ") : 0x[%s]" % frame.hex())
         self.sendSedNumber = (self.sendSedNumber + 1) % self.NB_SEQ_NUMBERS
-        return self._physicalLayer.write(frame) == len(frame)
+        bytesWritten = self._physicalLayer.write(frame)
+        #---DEBUG---- print("Bytes written : " + str(bytesWritten))
+        return bytesWritten == len(frame)
 
     # a QT signal is sent by ArdSerial in this slot when data are ready to be read
     @pyqtSlot()
     def _dataReceived(self):
         assert self._connected
-            #---DEBUG--- print("ArdHdlc received data")
-        self.recvBuffer += self._physicalLayer.readAll()
-        
-        #YAHDLC can't manage buffer that are bigger than 520o :
-        if 512 + 8 < len(self.recvBuffer):
-            print("Error : receive buffer overshoot, data lost.")
-            self.recvBuffer = self.recvBuffer[-520:] #it means : keep the last 520 bytes 
-
-        #read input buffer until it's cleared
         bytesToRead = 666
-        while 0 < bytesToRead:
-            bytesToRead = self._readOneHdlcFrame()
+        
+        #read serail line until no data is available        
+        while self._physicalLayer.bytesAvailable(): 
+            #print("-> Data available : " + str(self._physicalLayer.bytesAvailable()))
+            assert len(self.recvBuffer) <= self.MAX_HDLC_SIZE, str(len(self.recvBuffer)) + "<=" + str(self.MAX_HDLC_SIZE)
+            #print("-> Room for read : " + str(self.MAX_HDLC_SIZE - len(self.recvBuffer)))
+            self.recvBuffer += self._physicalLayer.read(self.MAX_HDLC_SIZE - len(self.recvBuffer))
+            bytesToRead = len(self.recvBuffer)
+            #---DEBUG--- 
+            #print("-> ArdHdlc received data " + str(bytesToRead) + " " + str(self.recvBuffer))
+            
+            #read input buffer until it's cleared
+            while 0 < bytesToRead:
+                bytesToRead = self._readOneHdlcFrame()
+                #print("-> after parsing " + str(bytesToRead) + " " + str(self.recvBuffer))
+                
+        #print("-> quit "  + str(bytesToRead) + str(self.recvBuffer))
                 
             
     #read one hdlc frame and delete read data from self.recvBuffer
     #@return int : remaining bytes to read (you should call the function once again), or 0 in case of error
     def _readOneHdlcFrame(self):
-                # Try to decode the data recevied from the serial line
+        #---DEBUG--- print("recv buf (" + str(len(self.recvBuffer)) + ")=" + str(self.recvBuffer)) 
+        
+        # Try to decode the data recevied from the serial line
         try:
-            data, type, seq_no = yahdlc.get_data(self.recvBuffer)
+            data, self.recvBuffer, type, seq_no = ardHdlc.decodeFrame(self.recvBuffer)
+            #---DEBUG--- print("hdlc type=" + str(type) + " seq=" + str(seq_no) + " frame=[" + str(data) + "]")
+            #finally, inform the listener a message has been received.
+            if type == ardHdlc.FRAME_DATA:
+                self._newFrame.emit(data) 
+            return len(self.recvBuffer)
+        
+        #the message is not complete, wait next data to retry to parse the buffer, it's a normal condition (and a bad hdlc python binding design ...)
+        except ardHdlc.NoMessage:
+            #---DEBUG--- print("hdlc message decoding in progress.")
+            return 0
+        
+        #a message has been detected but it is too short : msg to send to dustbin
+        except ardHdlc.TooShort as e:
+            print("hdlc error in decoding frame : msg too little.")
+            self.recvBuffer = e.buffer
+            return len(self.recvBuffer)
             
-        
-        #the message is not complete, wait next data to retry to parse the buffer, it's a normal condition (and a bad yahdlc python binding design ...)
-        except yahdlc.MessageError:
-            return 0
-        
-        #checksum failed, message is ignored
-        except yahdlc.FCSError:
-            print("yahdlc error in decoding frame : checksum failed.")
-            #print("hdlc type=" + str(type) + " seq=" + str(seq_no) + " frame=[" + str(data) + "]") 
-            #TODO : clean the recv buffer and adapt the return code
-            return 0
+        #a message has been detected but with an erronous checksum : msg to send to dustbin
+        except ardHdlc.FCSError as e:
+            print("hdlc error in decoding frame : checksum failed.")
+            self.recvBuffer = e.buffer
+            return len(self.recvBuffer)
+            
+        #the input buffer is too long for the C wrapper
+        except ValueError:
+            assert False
             
         #unknown error, this is really bad. Input buffer is cleaned
-        except:
-            print("yahdlc error in decoding frame : unknown error, received buffer reset, possible data loss.")
-            self.recvBuffer = bytes()
-            yahdlc.get_data_reset()
-            print("--- SIZE --- : " + str(len(self.recvBuffer)))
-            return 0
-            
-        #this is the normal case where an hdlc frame has been successfully decoded
-        else:
-            try:
-                    #---DEBUG--- print(" XXXX Frame decoded success !!!! XXXX")
-                #as yahdlc python bindings hide some data we are force to use DYI a lot ...
-                #recompose the raw frame (decause some escape char may provoke differences in in and out buffers ...)
-                originalData = yahdlc.frame_data(data, type, seq_no)
-            except:
-                traceback.print_exc()
-                print("Failed to recompose originalData : type=" + str(type) + " seq_no=" +str(seq_no) + ", received buffer reset, possible data loss.")
-                self.recvBuffer = bytes()
-                yahdlc.get_data_reset()
-                return 0
-            else:
-                    #---DEBUG--- print("originalData : " + str(originalData))
-                    #---DEBUG--- print("before : " + str(self.recvBuffer))
-                    #---DEBUG--- print("recv len=" + str(len(self.recvBuffer)) + " find at index : " + str(self.recvBuffer.find(originalData)) + " data len=" + str(len(originalData)))
-                #find in the input buf for the 'decoded original frame'
-                #remove read data before the 'decoded original frame' and the decoded original frame' from the input buffer 
-                nbBytesUsed = self.recvBuffer.find(originalData) + len(originalData)
-                unreadBytes = len(self.recvBuffer) - nbBytesUsed
-                self.recvBuffer = self.recvBuffer[nbBytesUsed:]
-                yahdlc.get_data_reset()
-                    #---DEBUG--- print(" after : " + str(self.recvBuffer))
-                    #---DEBUG--- print("hdlc type=" + str(type) + " seq=" + str(seq_no) + " frame=[" + str(data) + "]") 
-                
-                #finally, inform the listener a message has been received.
-                if type == yahdlc.FRAME_DATA:
-                    self._newFrame.emit(data)
-                    
-                return unreadBytes
-        
+        except Exception as e: 
+            print(str(e))
+            assert False
 

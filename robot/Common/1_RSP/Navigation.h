@@ -3,39 +3,32 @@
 #define NAVIGATION_H
 
 #include "BSP.h"
-#include "ArdMaths.h"
+#include "ArdOs.h"
+#include "core/ArdMaths.h"
 #include "GpioTools.h"
-#include "Types.pb.h"
+#include "CommonMsg.pb.h"
 
 namespace ard
 {
   /**
-   * This class manage the robot position and movements.
-   * It is expected to be embedded in a periodic thread
-   * Hence, the strategy will access it from another thread
-   * Thus, introducing thread safety issue (so a mutex is present)
+   * This class manage the robot position movements, and avoidance
+   * It is isolated from the rest of the code to prevent something
+   * to block the avoidance/localisation part.
    */
-  class Navigation : public IMiniPeriodicThread
+  class Navigation : public Thread
   {
   public:
     Navigation ();
 
     /**---------------------------------
-     * Container thread interface
+     * Thread interface
      ---------------------------------*/
 
-    //Implements IMiniThread
-    void
-    init() override;
-
-    //Implements IMiniThread : method to be called by the container thread
-    //                         it's expected to be called periodically
-    void
-    update (TimeMs sinceLastCall) override;
+    //Implements Thread
+    void run() override;
 
     //As the motor lib needs to be called
-    void
-    updateFromInterrupt();
+    void updateFromInterrupt();
 
     /**---------------------------------
      * User (= strategy) interface
@@ -49,7 +42,7 @@ namespace ard
     void
     setPosition (PointCap newPose);
     void
-    setPosition(float x/*mm*/, float y/*mm*/, float h/*°*/){setPosition(PointCap(x,y,h));};
+    setPosition(float x/*mm*/, float y/*mm*/, float h/*deg*/){setPosition(PointCap(x,y,DEG_TO_RAD*h));};
 
     /**
      * Get the current robot position
@@ -96,7 +89,7 @@ namespace ard
     void
     goToCap (PointCap target, eDir sens = eDir_FORWARD);
     void
-    goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD){goToCap(PointCap(x,y,h), sens);};
+    goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD){goToCap(PointCap(x,y,h*DEG_TO_RAD), sens);};
 
     /**
      * The robot will go ahead of the distance in parameter
@@ -132,7 +125,7 @@ namespace ard
      * Stops the robot. It interrupts current order.
      */
     void 
-    stop();
+    stopMoving();
 
     /**
      * This is a blocking call until the current order is finished
@@ -144,7 +137,7 @@ namespace ard
      * This is the non blocking version of wait()
      */
     bool
-    targetReached ();
+    targetReached();
 
     /**---------------------------------
      * Nav configuration
@@ -153,39 +146,37 @@ namespace ard
     void
     setColor (eColor c);
     void
-    setSpeed (float speed);
+    setSpeed (float speed); //in mm/s
     void
-    setSpeedVir (float s);
+    setSpeedVir (float s); //in °/s
 
-    eGpioLevel getOmronState_FL(){return omronFrontLeft.readRaw();};
-    eGpioLevel getOmronState_FR(){return omronFrontRight.readRaw();};
-    eGpioLevel getOmronState_RL(){return omronRearLeft.readRaw();};
-    eGpioLevel getOmronState_RR(){return omronRearRight.readRaw();};
+    /**---------------------------------
+     * Publish state
+     ---------------------------------*/
+
+    apb_NavState getState() const;
 
   private:
-    typedef enum class eNavState
-    {
-      IDLE, FACING_DEST, GOING_TO_TARGET, TURNING_AT_TARGET, STOPPING
-    } eNavState;
-
-    typedef enum class eNavOrder
-    {
-      NOTHING, GOTO, GOTO_CAP, STOP
-    } eNavOrder;
-
     //Integrates the new displacement mesures with current position
     //This function modifies critical section variables with no protection
     //It's the caller responsibility to protect the call with portENTER_CRITICAL/portEXIT_CRITICAL from a thread, or call it in an interrupt context
     void
     compute_odom ();
 
-    //used to send a straight line trajectory to the motors
-    void
-    straight (float distInMm);
+    //State machine transition actions
+    void action_startOrder();
+    void action_goingToTarget();
+    void action_turningAtTarget();
+    void action_finishOrder();
 
-    //used to send an on place rotation trajectory to the motors
+
+    //used to send a straight line trajectory to the motors, it's a relative order
     void
-    turn (float angle);
+    applyCmdToGoStraight (double distInMm);
+
+    //used to send an on place rotation trajectory to the motors, its a relative order
+    void
+    applyCmdToTurn (double angleInRad);
 
     //interrupt the current movement
     void interruptCurrentMove();
@@ -202,19 +193,18 @@ namespace ard
     stateToString (eNavState state);
 
     //status
-    PointCap m_pose;
+    PointCap m_pose; //critical section
     eNavState m_state;
 
     //target definition
     PointCap m_target;
     eDir m_sensTarget;
     eNavOrder m_order;
-    float m_angleToTarget;
-    float m_distanceToTarget;
 
     //HW interface
-    AccelStepper stepperG;
-    AccelStepper stepperD;
+    AccelStepper stepperL; //critical section
+    AccelStepper stepperR; //critical section
+
     FilteredInput omronFrontLeft;
     FilteredInput omronFrontRight;
     FilteredInput omronRearLeft;
@@ -225,14 +215,14 @@ namespace ard
 
     //speed is reduced in turns to prevent drifting
     //hence we need 2 vars to switch from one to the other
-    float m_speed;
-    float m_speed_virage;
+    float m_speed;//mm/s
+    float m_speed_virage; //rad/s
 
-    Mutex m_mutex;
+    FakeMutex m_mutex;
     Signal m_targetReached;
     
-    long oldStepG;
-    long oldStepD;
+    long oldStepL; //critical section
+    long oldStepR; //critical section
   };
 }    //end namespace
 

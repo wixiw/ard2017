@@ -3,6 +3,7 @@
 
 import signal
 import math
+from ArdMath import *
 from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -74,10 +75,14 @@ class FloatInput(QLineEdit):
 
 #
 # This widget is a restricted text field usable to select a heading/angle value.
+# User sets its value in degree, but SW get it in rads
 #
 class HeadingInput(FloatInput):
     def __init__(self, parent):
         super().__init__(parent, -180., 180., 1)
+        
+    def getValue(self):
+        return normalizeAngle(math.radians(FloatInput.getValue(self)))
         
 #
 # This widget is a restricted combobox to select a direction forward/backward
@@ -92,43 +97,8 @@ class DirectionInput(QComboBox):
         self.lineEdit().setReadOnly(True)
         self.lineEdit().setAlignment(Qt.AlignHCenter)
         
-        #@return int : return the numeric value of the field (or 0==Undefined if not set)
+    #@return int : return the numeric value of the field (or 0==Undefined if not set)
     def getValue(self):
         return self.currentData()
-    
-
-class __Test__ArdWidgets(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.intInput = IntegerInput(self, -100, 100)
-        self.floatInput = FloatInput(self, -1. , 1., 3)
-        self.hInput = HeadingInput(self)
-        self.dirInput = DirectionInput(self)
-        self.read = QPushButton('Read', self)
-        layout = QFormLayout(self)
-        layout.addRow("intInput", self.intInput)
-        layout.addRow("floatInput", self.floatInput)
-        layout.addRow("hInput", self.hInput)
-        layout.addRow("dirInput", self.dirInput)
-        layout.addRow("", self.read) 
-        self.read.pressed.connect(self.readCB)
-        
-    @pyqtSlot()
-    def readCB(self):
-            print("int : "      + str(self.intInput.getValue()))
-            print("float : "    + str(self.floatInput.getValue()))
-            print("h : "        + str(self.hInput.getValue()))
-            print("dir : "      + str(self.dirInput.getValue()))
-
-if __name__ == '__main__':
-    import sys
-    app = QApplication(sys.argv)
-    main = __Test__ArdWidgets()
-    main.show()
-    
-
-    
-    sys.exit(app.exec_())
-    
     
     

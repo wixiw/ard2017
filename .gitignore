@@ -1,8 +1,6 @@
 devenv
-
-
-
-
+*.log
+.settings/org.eclipse.core.resources.prefs
 
 # Windows image file caches
 Thumbs.db
@@ -52,19 +50,11 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.b##
-robot/RobotA/jlink.log
-.vs
-Debug
-robot/UT_FreeRtos/jlink.config
-*.log
-robot/UT_FreeRtos/UT_FreeRtos.componentinfo.xml
-robot/UT_AccelStepper/UT_AccelStepper.componentinfo.xml
-robot/RobotA/1_RobotA.componentinfo.xml
-robot/Common/0_Common.componentinfo.xml
-robot/upload_robotA.bat
-robot/RobotA/jlink.log
-robot/Common/2_AL/proto/*
-.settings/org.eclipse.core.resources.prefs
-__pycache__
-*.pb.*
-*_pb2.*
+
+robot/Common/1_RSP/Types.pb.h
+robot/Common/1_RSP/Types.pb.c
+*.ini
+*jlink.config
+*.componentinfo.xml
+*.pyd
+

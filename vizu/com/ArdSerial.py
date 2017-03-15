@@ -13,7 +13,7 @@ class ArdSerial():
     def __init__(self):
         self._serial = QSerialPort()
         self._serial.setDataBits(8)
-        self._serial.setParity(QSerialPort.NoParity)
+        self._serial.setParity(QSerialPort.EvenParity)
         self._serial.setStopBits(QSerialPort.OneStop)
         self._serial.setFlowControl(QSerialPort.NoFlowControl)
         
@@ -28,8 +28,15 @@ class ArdSerial():
     # Get the list of available baudrates
     # @return list[str]
     def getAvailableBaudrates(self):
-        blist = QSerialPortInfo.standardBaudRates()
-        blist.insert(0,250000)
+        #blist = QSerialPortInfo.standardBaudRates()
+        blist = list()
+        blist.insert(0, 250000)
+        blist.insert(0, 125000)
+        blist.insert(0,  83333)
+        blist.insert(0,  62500)
+        blist.insert(0,  50000)
+        blist.insert(0,  19230)
+        blist.insert(0,    600)
         return blist
     
     # Connect to the specified port at the specified baudrate
@@ -49,11 +56,15 @@ class ArdSerial():
         self._serial.close()
         self._serial.readyRead.disconnect()
         
-    # Read all available data
-    # @return QByteArray
-    def readAll(self):
-        return bytes(self._serial.readAll())
+    # Read up to nbBytesToRead bytes on the serial line, all bytes if set to 0
+    # @return bytes : the read bytes array
+    def read(self, nbBytesToRead = 0):
+        return bytes(self._serial.read(nbBytesToRead))
     
+    # @return int : the number of bytes available to read
+    def bytesAvailable(self):
+        return self._serial.bytesAvailable()
+   
     # Write a bunch of data
     # @param str : the data to send on the serial line
     # @return int : nb bytes written

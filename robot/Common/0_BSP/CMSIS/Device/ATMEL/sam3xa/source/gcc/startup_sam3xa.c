@@ -44,8 +44,10 @@ extern uint32_t _estack;
 int main(void);
 /** \endcond */
 
-// Arduino: we must setup hardware before doing this
-// void __libc_init_array(void);
+// ARD : function defined elsewhere
+extern void __libc_init_array();
+extern void init();
+extern void delay(uint32_t);
 
 // Arduino: handlers weak symbols moved into main
 
@@ -166,6 +168,7 @@ const DeviceVectors exception_table = {
  * \brief This is the code that gets called on processor reset.
  * To initialize the device, and call the main() routine.
  */
+
 void Reset_Handler(void)
 {
 	uint32_t *pSrc, *pDest;
@@ -193,10 +196,21 @@ void Reset_Handler(void)
 		SCB->VTOR |= (1UL) << SCB_VTOR_TBLBASE_Pos;
 	}
 
-	/* Initialize the C library */
+    SystemInit();
 
-	// Arduino: we must setup hardware before doing this
-	//__libc_init_array();
+    // Set Systick to 1ms interval, common to all SAM3 variants
+    if (SysTick_Config(SystemCoreClock / 1000))
+    {
+      // Capture error
+      while (1);
+    }
+
+    // Initialize board
+    init();
+    delay(1);
+
+    // Initialize C library
+    __libc_init_array();
 
 	/* Branch to main function */
 	main();
