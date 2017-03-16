@@ -25,15 +25,6 @@
 #include <string.h>
 #include <math.h>
 
-// some libraries and sketches depend on this
-// AVR stuff, assuming Arduino.h or WProgram.h
-// automatically includes it...
-#include <avr/pgmspace.h>
-#include <avr/interrupt.h>
-
-#include "binary.h"
-#include "itoa.h"
-
 #ifdef __cplusplus
 extern "C"{
 #endif // __cplusplus
@@ -188,9 +179,8 @@ extern const PinDescription g_APinDescription[] ;
 #ifdef __cplusplus
 } // extern "C"
 
-#include "WCharacter.h"
-#include "WString.h"
-#include "Tone.h"
+#include "string/WCharacter.h"
+#include "string/WString.h"
 #include "WMath.h"
 #include "HardwareSerial.h"
 #include "wiring_pulse.h"
@@ -216,9 +206,5 @@ extern const PinDescription g_APinDescription[] ;
 #ifndef USB_PID
 #define USB_PID 0x003E // arduino Due pid
 #endif
-
-#include "USB/USBDesc.h"
-#include "USB/USBCore.h"
-#include "USB/USBAPI.h"
 
 #endif // Arduino_h

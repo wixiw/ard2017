@@ -385,31 +385,25 @@
     </PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="0_BSP\ArduinoCore\abi.cpp">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\Arduino.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\avr\dtostrf.c">
+    <Compile Include="0_BSP\ArduinoCore\string\dtostrf.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\avr\dtostrf.h">
+    <Compile Include="0_BSP\ArduinoCore\string\dtostrf.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\avr\interrupt.h">
+    <Compile Include="0_BSP\ArduinoCore\string\itoa.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\avr\pgmspace.h">
+    <Compile Include="0_BSP\ArduinoCore\string\itoa.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\binary.h">
+    <Compile Include="0_BSP\ArduinoCore\string\pgmspace.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\chip.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\Client.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\cortex_handlers.c">
@@ -419,9 +413,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\hooks.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\iar_calls_sam3.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\adc.h">
@@ -434,9 +425,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\efc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\emac.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\gpbr.h">
@@ -484,52 +472,10 @@
     <Compile Include="0_BSP\ArduinoCore\include\twi.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\udp.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\udphs.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\uotghs_device.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\uotghs_host.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\usart.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\USB_device.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\USB_host.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\wdt.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\IPAddress.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\IPAddress.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\itoa.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\itoa.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\libraries\HID.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\libraries\HID.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\libraries\Wire.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\libraries\Wire.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\Print.cpp">
@@ -539,21 +485,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\Printable.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\Reset.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\Reset.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\RingBuffer.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\RingBuffer.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\Server.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\source\adc.c">
@@ -569,9 +500,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\source\efc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\emac.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\source\gpbr.c">
@@ -616,21 +544,6 @@
     <Compile Include="0_BSP\ArduinoCore\source\twi.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\udp.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\udphs.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\uotghs.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\uotghs_device.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\uotghs_host.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\source\usart.c">
       <SubType>compile</SubType>
     </Compile>
@@ -643,64 +556,19 @@
     <Compile Include="0_BSP\ArduinoCore\Stream.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\syscalls.h">
+    <Compile Include="0_BSP\ArduinoCore\string\WCharacter.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\syscalls_sam3.c">
+    <Compile Include="0_BSP\ArduinoCore\string\WString.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\Tone.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\UARTClass.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\UARTClass.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\Udp.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\USARTClass.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\USARTClass.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\USB\CDC.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\USB\PluggableUSB.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\USB\PluggableUSB.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\USB\USBAPI.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\USB\USBCore.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\USB\USBCore.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\USB\USBDesc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\variant.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\variant.h">
+    <Compile Include="0_BSP\ArduinoCore\string\WString.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\watchdog.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\watchdog.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\WCharacter.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\WInterrupts.c">
@@ -752,12 +620,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\WMath.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\WString.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\WString.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\BSP.cpp">
@@ -1072,6 +934,24 @@
     <Compile Include="0_BSP\Drivers\File.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="0_BSP\Drivers\legacy_uart\RingBuffer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\Drivers\legacy_uart\RingBuffer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\Drivers\legacy_uart\UARTClass.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\Drivers\legacy_uart\UARTClass.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\Drivers\legacy_uart\USARTClass.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\Drivers\legacy_uart\USARTClass.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="0_BSP\Drivers\SD.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1091,6 +971,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\Drivers\SPI.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\Drivers\TWI_I2C.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\Drivers\TWI_I2C.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\Drivers\utility\FatStructs.h">
@@ -1201,16 +1087,16 @@
     <Compile Include="0_BSP\FreeRTOS\timers.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="0_BSP\variant.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\variant.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\ArdOs.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\ArdOs.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\ColorSensor.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\ColorSensor.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\ComStack\ArdHdlc.cpp">
@@ -1225,6 +1111,9 @@
     <Compile Include="1_RSP\ComStack\ComOnUart.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\Core\abi.cpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\Core\ArdFramework.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1235,12 +1124,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\Core\ArdMaths.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\GpioTools.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\GpioTools.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\HmiThread.cpp">
@@ -1262,6 +1145,18 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\RSP.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Sensors\ColorSensor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Sensors\ColorSensor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Sensors\GpioTools.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Sensors\GpioTools.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\ActuatorsCtrl\ActuatorThread.cpp">
@@ -1310,12 +1205,10 @@
   <ItemGroup>
     <Folder Include="0_BSP\" />
     <Folder Include="0_BSP\ArduinoCore\" />
-    <Folder Include="0_BSP\ArduinoCore\avr\" />
+    <Folder Include="0_BSP\ArduinoCore\string" />
     <Folder Include="0_BSP\ArduinoCore\include\" />
-    <Folder Include="0_BSP\ArduinoCore\libraries\" />
     <Folder Include="0_BSP\ArduinoCore\linker_scripts\" />
     <Folder Include="0_BSP\ArduinoCore\source\" />
-    <Folder Include="0_BSP\ArduinoCore\USB\" />
     <Folder Include="0_BSP\CMSIS\" />
     <Folder Include="0_BSP\CMSIS\CMSIS\" />
     <Folder Include="0_BSP\CMSIS\CMSIS\DSP_Lib\" />
@@ -1335,11 +1228,14 @@
     <Folder Include="0_BSP\CMSIS\Device\ATMEL\sam3xa\source\" />
     <Folder Include="0_BSP\CMSIS\Device\ATMEL\sam3xa\source\gcc\" />
     <Folder Include="0_BSP\Drivers\" />
+    <Folder Include="0_BSP\Drivers\legacy_uart" />
     <Folder Include="0_BSP\Drivers\utility\" />
     <Folder Include="0_BSP\FreeRTOS" />
     <Folder Include="1_RSP" />
     <Folder Include="1_RSP\ComStack" />
     <Folder Include="1_RSP\Core" />
+    <Folder Include="1_RSP\Actuators" />
+    <Folder Include="1_RSP\Sensors" />
     <Folder Include="2_AL" />
     <Folder Include="2_AL\ActuatorsCtrl" />
     <Folder Include="2_AL\Strategies" />
@@ -1349,9 +1245,6 @@
       <SubType>compile</SubType>
     </None>
     <None Include="0_BSP\ArduinoCore\linker_scripts\sram.ld">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="0_BSP\ArduinoCore\Tone.cpp.disabled">
       <SubType>compile</SubType>
     </None>
     <None Include="0_BSP\CMSIS\CMSIS\Lib\ARM\arm_cortexM3l_math.lib">

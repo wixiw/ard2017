@@ -101,7 +101,7 @@ void Robot2017::bootOs()
     //Init debug serial link
     UART_Handler_CB = Robot2017_UART_Handler;
     bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
-    bsp.serial0.start(SERIAL_BAUDRATE, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
+    bsp.serial0.start(SERIAL_BAUDRATE, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
 
     //init all OS objects (including threads),
     //which should call all init() function

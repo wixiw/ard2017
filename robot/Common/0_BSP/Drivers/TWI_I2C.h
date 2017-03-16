@@ -32,9 +32,9 @@
  // WIRE_HAS_END means Wire has end()
 #define WIRE_HAS_END 1
 
-class TwoWire : public Stream {
+class TWI_I2C : public Stream {
 public:
-	TwoWire(Twi *twi, void(*begin_cb)(void), void(*end_cb)(void));
+	TWI_I2C(Twi *twi, void(*begin_cb)(void), void(*end_cb)(void));
 	void begin();
 	void begin(uint8_t);
 	void begin(int);
@@ -117,10 +117,10 @@ private:
 };
 
 #if WIRE_INTERFACES_COUNT > 0
-extern TwoWire Wire;
+extern TWI_I2C I2C_0;
 #endif
 #if WIRE_INTERFACES_COUNT > 1
-extern TwoWire Wire1;
+extern TWI_I2C I2C_1;
 #endif
 
 #endif

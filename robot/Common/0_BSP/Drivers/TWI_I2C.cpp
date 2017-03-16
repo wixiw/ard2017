@@ -1,3 +1,4 @@
+
 /*
  * TwoWire.h - TWI/I2C library for Arduino Due
  * Copyright (c) 2011 Cristian Maglie <c.maglie@arduino.cc>
@@ -22,7 +23,7 @@ extern "C" {
 #include <string.h>
 }
 
-#include "Wire.h"
+#include "TWI_I2C.h"
 
 static inline bool TWI_FailedAcknowledge(Twi *pTwi) {
 	return pTwi->TWI_SR & TWI_SR_NACK;
@@ -92,7 +93,7 @@ static inline bool TWI_STATUS_NACK(uint32_t status) {
 	return (status & TWI_SR_NACK) == TWI_SR_NACK;
 }
 
-TwoWire::TwoWire(Twi *_twi, void(*_beginCb)(void), void(*_endCb)(void)) : 
+TWI_I2C::TWI_I2C(Twi *_twi, void(*_beginCb)(void), void(*_endCb)(void)) : 
 	rxBufferIndex(0), 
 	rxBufferLength(0), 
 	txAddress(0),
@@ -107,7 +108,7 @@ TwoWire::TwoWire(Twi *_twi, void(*_beginCb)(void), void(*_endCb)(void)) :
 {
 }
 
-void TwoWire::begin(void) {
+void TWI_I2C::begin(void) {
 	if (onBeginCallback)
 		onBeginCallback();
 
@@ -118,7 +119,7 @@ void TwoWire::begin(void) {
 	status = MASTER_IDLE;
 }
 
-void TwoWire::begin(uint8_t address) {
+void TWI_I2C::begin(uint8_t address) {
 	if (onBeginCallback)
 		onBeginCallback();
 
@@ -131,11 +132,11 @@ void TwoWire::begin(uint8_t address) {
 	//| TWI_IER_RXRDY | TWI_IER_TXRDY	| TWI_IER_TXCOMP);
 }
 
-void TwoWire::begin(int address) {
+void TWI_I2C::begin(int address) {
 	begin((uint8_t) address);
 }
 
-void TwoWire::end(void) {
+void TWI_I2C::end(void) {
 	TWI_Disable(twi);
 
 	// Enable PDC channel
@@ -145,12 +146,12 @@ void TwoWire::end(void) {
 		onEndCallback();
 }
 
-void TwoWire::setClock(uint32_t frequency) {
+void TWI_I2C::setClock(uint32_t frequency) {
 	twiClock = frequency;
 	TWI_SetClock(twi, twiClock, VARIANT_MCK);
 }
 
-uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity, uint32_t iaddress, uint8_t isize, uint8_t sendStop) {
+uint8_t TWI_I2C::requestFrom(uint8_t address, uint8_t quantity, uint32_t iaddress, uint8_t isize, uint8_t sendStop) {
 	if (quantity > BUFFER_LENGTH)
 		quantity = BUFFER_LENGTH;
 
@@ -176,23 +177,23 @@ uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity, uint32_t iaddres
 	return readed;
 }
 
-uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity, uint8_t sendStop) {
+uint8_t TWI_I2C::requestFrom(uint8_t address, uint8_t quantity, uint8_t sendStop) {
 	return requestFrom((uint8_t) address, (uint8_t) quantity, (uint32_t) 0, (uint8_t) 0, (uint8_t) sendStop);
 }
 
-uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity) {
+uint8_t TWI_I2C::requestFrom(uint8_t address, uint8_t quantity) {
 	return requestFrom((uint8_t) address, (uint8_t) quantity, (uint8_t) true);
 }
 
-uint8_t TwoWire::requestFrom(int address, int quantity) {
+uint8_t TWI_I2C::requestFrom(int address, int quantity) {
 	return requestFrom((uint8_t) address, (uint8_t) quantity, (uint8_t) true);
 }
 
-uint8_t TwoWire::requestFrom(int address, int quantity, int sendStop) {
+uint8_t TWI_I2C::requestFrom(int address, int quantity, int sendStop) {
 	return requestFrom((uint8_t) address, (uint8_t) quantity, (uint8_t) sendStop);
 }
 
-void TwoWire::beginTransmission(uint8_t address) {
+void TWI_I2C::beginTransmission(uint8_t address) {
 	status = MASTER_SEND;
 
 	// save address of target and empty buffer
@@ -200,7 +201,7 @@ void TwoWire::beginTransmission(uint8_t address) {
 	txBufferLength = 0;
 }
 
-void TwoWire::beginTransmission(int address) {
+void TWI_I2C::beginTransmission(int address) {
 	beginTransmission((uint8_t) address);
 }
 
@@ -217,7 +218,7 @@ void TwoWire::beginTransmission(int address) {
 //	no call to endTransmission(true) is made. Some I2C
 //	devices will behave oddly if they do not see a STOP.
 //
-uint8_t TwoWire::endTransmission(uint8_t sendStop) {
+uint8_t TWI_I2C::endTransmission(uint8_t sendStop) {
 	uint8_t error = 0;
 	// transmit buffer (blocking)
 	TWI_StartWrite(twi, txAddress, 0, 0, txBuffer[0]);
@@ -247,12 +248,12 @@ uint8_t TwoWire::endTransmission(uint8_t sendStop) {
 //	This provides backwards compatibility with the original
 //	definition, and expected behaviour, of endTransmission
 //
-uint8_t TwoWire::endTransmission(void)
+uint8_t TWI_I2C::endTransmission(void)
 {
 	return endTransmission(true);
 }
 
-size_t TwoWire::write(uint8_t data) {
+size_t TWI_I2C::write(uint8_t data) {
 	if (status == MASTER_SEND) {
 		if (txBufferLength >= BUFFER_LENGTH)
 			return 0;
@@ -266,7 +267,7 @@ size_t TwoWire::write(uint8_t data) {
 	}
 }
 
-size_t TwoWire::write(const uint8_t *data, size_t quantity) {
+size_t TWI_I2C::write(const uint8_t *data, size_t quantity) {
 	if (status == MASTER_SEND) {
 		for (size_t i = 0; i < quantity; ++i) {
 			if (txBufferLength >= BUFFER_LENGTH)
@@ -283,36 +284,36 @@ size_t TwoWire::write(const uint8_t *data, size_t quantity) {
 	return quantity;
 }
 
-int TwoWire::available(void) {
+int TWI_I2C::available(void) {
 	return rxBufferLength - rxBufferIndex;
 }
 
-int TwoWire::read(void) {
+int TWI_I2C::read(void) {
 	if (rxBufferIndex < rxBufferLength)
 		return rxBuffer[rxBufferIndex++];
 	return -1;
 }
 
-int TwoWire::peek(void) {
+int TWI_I2C::peek(void) {
 	if (rxBufferIndex < rxBufferLength)
 		return rxBuffer[rxBufferIndex];
 	return -1;
 }
 
-void TwoWire::flush(void) {
+void TWI_I2C::flush(void) {
 	// Do nothing, use endTransmission(..) to force
 	// data transfer.
 }
 
-void TwoWire::onReceive(void(*function)(int)) {
+void TWI_I2C::onReceive(void(*function)(int)) {
 	onReceiveCallback = function;
 }
 
-void TwoWire::onRequest(void(*function)(void)) {
+void TWI_I2C::onRequest(void(*function)(void)) {
 	onRequestCallback = function;
 }
 
-void TwoWire::onService(void) {
+void TWI_I2C::onService(void) {
 	// Retrieve interrupt status
 	uint32_t sr = TWI_GetStatus(twi);
 
@@ -409,10 +410,10 @@ static void Wire_Deinit(void) {
 	// and pullups were not enabled
 }
 
-TwoWire Wire = TwoWire(WIRE_INTERFACE, Wire_Init, Wire_Deinit);
+TWI_I2C I2C_0 = TWI_I2C(WIRE_INTERFACE, Wire_Init, Wire_Deinit);
 
 void WIRE_ISR_HANDLER(void) {
-	Wire.onService();
+	I2C_0.onService();
 }
 #endif
 
@@ -447,9 +448,9 @@ static void Wire1_Deinit(void) {
 	// and pullups were not enabled
 }
 
-TwoWire Wire1 = TwoWire(WIRE1_INTERFACE, Wire1_Init, Wire1_Deinit);
+TWI_I2C I2C_1 = TWI_I2C(WIRE1_INTERFACE, Wire1_Init, Wire1_Deinit);
 
 void WIRE1_ISR_HANDLER(void) {
-	Wire1.onService();
+	I2C_1.onService();
 }
 #endif

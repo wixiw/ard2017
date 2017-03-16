@@ -13,6 +13,28 @@ void UART_Handler(void)
         ASSERT(false);
 }
 
+/*
+// IT handlers
+void USART0_Handler(void)
+{
+    Serial1.IrqHandler();
+}
+
+void USART1_Handler(void)
+{
+    Serial2.IrqHandler();
+}
+
+void USART3_Handler(void)
+{
+    Serial3.IrqHandler();
+}
+
+USARTClass Serial1(USART0, USART0_IRQn, ID_USART0, &rx_buffer2, &tx_buffer2);
+USARTClass Serial2(USART1, USART1_IRQn, ID_USART1, &rx_buffer3, &tx_buffer3);
+USARTClass Serial3(USART3, USART3_IRQn, ID_USART3, &rx_buffer4, &tx_buffer4);
+*/
+
 BSP::BSP ():
         serial0(UART, ID_UART, SERIAL_BUF_SIZE /*RX bvuf size*/, SERIAL_BUF_SIZE /*TX bvuf size*/)
 {   

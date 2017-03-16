@@ -9,9 +9,7 @@
 #define BSP_H_
 
 #include "ArduinoCore/Arduino.h"
-#include "ArduinoCore/USB/USBAPI.h"
 #include "ArduinoCore/Stream.h"
-#include "ArduinoCore/variant.h"
 #include "CMSIS/CMSIS/Include/core_cm3.h"
 #include "CMSIS/Device/ATMEL/sam.h"
 
@@ -26,6 +24,7 @@
 
 #endif //C++
 
+#include "variant.h"
 #include "K_constants.h"
 
 //0/1 : RX/TX 0

@@ -10,7 +10,7 @@
 
 #include "ComInterfaces.h"
 #include "K_constants.h"
-#include "WString.h"
+#include "string/WString.h"
 #include <hdlc.h>
 
 namespace ard

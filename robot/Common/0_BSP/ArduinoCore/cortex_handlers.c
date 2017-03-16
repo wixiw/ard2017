@@ -17,7 +17,6 @@
 */
 
 #include "Arduino.h"
-#include "Reset.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,8 +46,6 @@ void SysTick_Handler(void)
 {
 	if (sysTickHook())
 		return;
-
-	tickReset();
 
 	// Increment tick count each ms
 	TimeTick_Increment();

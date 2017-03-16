@@ -38,7 +38,7 @@
 
 #include <Arduino.h>
 
-#include "ArduinoCore/libraries/Wire.h"
+#include "TWI_I2C.h"
 
 #define TCS34725_ADDRESS          (0x29)
 
