@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include "ArdOs.h"
-#include "GpioTools.h"
+#include "Sensors/GpioTools.h"
 
 namespace ard
 {

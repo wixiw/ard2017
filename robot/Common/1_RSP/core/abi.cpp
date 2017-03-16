@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2012 Arduino.  All right reserved.
+  Copyright (c) 2014 Arduino.  All right reserved.
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -16,19 +16,21 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef RESET_H
-#define RESET_H
+#include <stdlib.h>
+#include "ArdFramework.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+extern "C" void __cxa_pure_virtual(void) __attribute__ ((__noreturn__));
+extern "C" void __cxa_deleted_virtual(void) __attribute__ ((__noreturn__));
 
-void initiateReset(int ms);
-void tickReset();
-void cancelReset();
-
-#ifdef __cplusplus
+void __cxa_pure_virtual(void) {
+  // We might want to write some diagnostics to uart in this case
+  //std::terminate();
+  ASSERT_TEXT(false, "Pure virtual function called");
 }
-#endif
 
-#endif
+void __cxa_deleted_virtual(void) {
+  // We might want to write some diagnostics to uart in this case
+  //std::terminate();
+  ASSERT(false);
+}
+

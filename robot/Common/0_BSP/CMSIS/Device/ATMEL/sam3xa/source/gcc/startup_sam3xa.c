@@ -207,7 +207,12 @@ void Reset_Handler(void)
 
     // Initialize board
     init();
-    delay(1);
+
+    //Wait 1 ms
+    uint32_t start = GetTickCount();
+    do {
+        yield();
+    } while (GetTickCount() - start < 1);
 
     // Initialize C library
     __libc_init_array();

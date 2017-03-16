@@ -77,9 +77,9 @@ public:
     void run() override
     {
 #ifdef NEW
-        bsp.serial0.start(250000, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
+        bsp.serial0.start(250000, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
 #else
-        bsp.serial0.begin(250000, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
+        bsp.serial0.begin(250000, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
         int res = -1;
 #endif
         
@@ -174,9 +174,9 @@ public:
     void run() override
     {  
 #ifdef NEW
-        bsp.serial0.start(250000, SERIAL_8E1 | UART_MR_CHMODE_REMOTE_LOOPBACK);
+        bsp.serial0.start(250000, SerialMode_8E1 | UART_MR_CHMODE_REMOTE_LOOPBACK);
 #else
-        bsp.serial0.begin(250000, SERIAL_8E1 | UART_MR_CHMODE_REMOTE_LOOPBACK);
+        bsp.serial0.begin(250000, SerialMode_8E1 | UART_MR_CHMODE_REMOTE_LOOPBACK);
 #endif
     }
 };
@@ -193,9 +193,9 @@ public:
     void run() override
     {  
 #ifdef NEW
-        bsp.serial0.start(250000, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
+        bsp.serial0.start(250000, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
 #else
-        bsp.serial0.begin(250000, SERIAL_8E1 | UART_MR_CHMODE_NORMAL);
+        bsp.serial0.begin(250000, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
         int res = -1;
 #endif
  

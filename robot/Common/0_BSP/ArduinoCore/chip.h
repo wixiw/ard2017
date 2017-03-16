@@ -65,15 +65,11 @@
 #include "include/wdt.h"
 
 #include "include/timetick.h"
-#include "include/USB_device.h"
-#include "include/USB_host.h"
 
 #if (SAM3XA_SERIES)
 #include "include/can.h"
 #include "include/emac.h"
 #include "include/trng.h"
-#include "include/uotghs_device.h"
-#include "include/uotghs_host.h"
 #endif /* (SAM3XA_SERIES) */
 
 #endif /* _LIB_SAM_ */

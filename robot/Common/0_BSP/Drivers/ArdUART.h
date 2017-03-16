@@ -27,6 +27,14 @@
 namespace ard
 {
     
+enum UARTModes {
+    SerialMode_8N1 = US_MR_CHRL_8_BIT | US_MR_NBSTOP_1_BIT | UART_MR_PAR_NO,
+    SerialMode_8E1 = US_MR_CHRL_8_BIT | US_MR_NBSTOP_1_BIT | UART_MR_PAR_EVEN,
+    SerialMode_8O1 = US_MR_CHRL_8_BIT | US_MR_NBSTOP_1_BIT | UART_MR_PAR_ODD,
+    SerialMode_8M1 = US_MR_CHRL_8_BIT | US_MR_NBSTOP_1_BIT | UART_MR_PAR_MARK,
+    SerialMode_8S1 = US_MR_CHRL_8_BIT | US_MR_NBSTOP_1_BIT | UART_MR_PAR_SPACE,
+};
+    
 /**
  * The ArdUART class is a driver to send/receive chars on a serial line of UART type
  */
@@ -39,7 +47,7 @@ class ArdUART: public ISerialDriver
      */
     enum UARTModes {
       Mode_8N1 = UART_MR_PAR_NO,
-      Mode_8E1 = UART_MR_PAR_EVEN,
+      SerialMode_8E1 = UART_MR_PAR_EVEN,
       Mode_8O1 = UART_MR_PAR_ODD,
       Mode_8M1 = UART_MR_PAR_MARK,
       Mode_8S1 = UART_MR_PAR_SPACE,

@@ -5,7 +5,7 @@
 #include "BSP.h"
 #include "ArdOs.h"
 #include "core/ArdMaths.h"
-#include "GpioTools.h"
+#include "Sensors/GpioTools.h"
 #include "CommonMsg.pb.h"
 
 namespace ard
