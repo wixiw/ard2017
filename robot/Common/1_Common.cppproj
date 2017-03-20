@@ -565,6 +565,12 @@
     <Compile Include="0_BSP\ArduinoCore\string\WString.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="0_BSP\ArduinoCore\syscalls.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\ArduinoCore\syscalls_sam3.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="0_BSP\ArduinoCore\watchdog.cpp">
       <SubType>compile</SubType>
     </Compile>

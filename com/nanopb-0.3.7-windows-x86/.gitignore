@@ -6,7 +6,6 @@
 *.pb.h
 *.pb
 *.pyc
-*_pb2.py
 *~
 *.tar.gz
 .sconsign.dblite

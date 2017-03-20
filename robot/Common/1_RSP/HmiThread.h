@@ -129,6 +129,8 @@ namespace ard
         FilteredInput matchColor;
         FilteredInput user1; //user1 is on the left (1/2 choice)
         FilteredInput user2; //user2 is on the right (test/master choice)
+
+        //Buzzer buzzer;
     };
 
 } /* namespace ard */

@@ -252,9 +252,10 @@ namespace ard
         //the call will not block more than timeout
         //using a 0 value is equivalent to a "tryLock()"
         //@return false if the queue is full, true on success
-        bool push(void* queuedObject, DelayMs timeout = portMAX_DELAY);
+        bool push(void const * const queuedObject, DelayMs timeout = portMAX_DELAY);
 
         //using a 0 value is equivalent to a "tryLock()"
+        //may be used either from ISR or from thread
         //@return false if the queue is empty, true on success
         bool pop(void* unqueuedObject, DelayMs timeout = portMAX_DELAY);
 

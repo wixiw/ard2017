@@ -256,7 +256,7 @@ void Queue::init()
     osHandler = xQueueCreate(nbItems, itemSize);
 }
 
-bool Queue::push(void* queuedObject, DelayMs timeout)
+bool Queue::push(void const * const queuedObject, DelayMs timeout)
 {
     ASSERT(isInitialized());
     BaseType_t res = pdFALSE;
@@ -288,16 +288,28 @@ bool Queue::push(void* queuedObject, DelayMs timeout)
 
 bool Queue::pop(void* unqueuedObject, DelayMs timeout)
 {
-    ASSERT(isInitialized());
-    ASSERT_TEXT(!interruptContext(), "A queue pop() shall not be used from ISR");
-
     BaseType_t res = pdFALSE;
-    do
+    ASSERT(isInitialized());
+
+    if( interruptContext() )
     {
-        res = xQueueReceive(osHandler, unqueuedObject, timeout);
+        ASSERT_TEXT(timeout==0, "You cannot configure a queue to pop with a delay from an interrupt");
+        BaseType_t xTaskWokenByReceive = pdFALSE;
+        res = xQueueReceiveFromISR( osHandler, ( void * ) unqueuedObject, &xTaskWokenByReceive);
+        if( xTaskWokenByReceive != pdFALSE)
+        {
+            taskYIELD ();
+        }
     }
-    //retry if delay is set to maximum value
-    while(timeout == portMAX_DELAY && res == pdFALSE );
+    else
+    {
+        do
+        {
+            res = xQueueReceive(osHandler, unqueuedObject, timeout);
+        }
+        //retry if delay is set to maximum value
+        while(timeout == portMAX_DELAY && res == pdFALSE );
+    }
 
     return res == pdTRUE;
 }
