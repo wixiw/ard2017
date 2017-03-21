@@ -8,6 +8,7 @@
 #ifndef ROBOTS_TELEOPTHREAD_H_
 #define ROBOTS_TELEOPTHREAD_H_
 
+#include <Com.h>
 #include "RSP.h"
 #include "RemoteControl.pb.h"
 #include "ComInterfaces.h"

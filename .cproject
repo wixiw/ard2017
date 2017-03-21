@@ -22,17 +22,17 @@
 					<folderInfo id="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.108325004." name="/" resourcePath="">
 						<toolChain id="org.eclipse.linuxtools.cdt.autotools.core.toolChain.1913516420" name="GNU Autotools Toolchain" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolChain">
 							<targetPlatform id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform.1424444869" isAbstract="false" name="GNU Autotools Target Platform" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform"/>
-							<builder id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.1192580858" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Autotools Makefile Generator" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder"/>
+							<builder id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.1192580858" keepEnvironmentInBuildfile="false" managedBuildOn="true" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder"/>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.1466376858" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure">
 								<option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.1029017006" name="Name" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.108325004" valueType="string"/>
 							</tool>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.870807650" name="autogen.sh" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen"/>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.710219481" name="GCC C Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc">
 								<option id="gnu.c.compiler.option.include.paths.1184868839" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;F:\Programs\Python36\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include-fixed&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${env_var:ATMEL_STUDIO_PATH}\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${env_var:ATMEL_STUDIO_PATH}\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${env_var:ATMEL_STUDIO_PATH}\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include-fixed&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${env_var:PYTHON36_PATH}\include&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.901879017" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
@@ -42,11 +42,11 @@
 							</tool>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp.160755823" name="GCC C++ Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp">
 								<option id="gnu.cpp.compiler.option.include.paths.880162314" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;F:\Programs\Python36\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include-fixed&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;F:\Programs\AtmelStudio\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\c++\5.3.1&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${env_var:PYTHON36_PATH}\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${env_var:ATMEL_STUDIO_PATH}\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${env_var:ATMEL_STUDIO_PATH}\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${env_var:ATMEL_STUDIO_PATH}\7.0\toolchain\arm\arm-gnu-toolchain\lib\gcc\arm-none-eabi\5.3.1\include-fixed&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${env_var:ATMEL_STUDIO_PATH}\7.0\toolchain\arm\arm-gnu-toolchain\arm-none-eabi\include\c++\5.3.1&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.412119373" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
@@ -66,11 +66,6 @@
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.debug.2118617647" moduleId="org.eclipse.cdt.core.settings" name="Debug (GNU)">
 				<externalSettings/>
 				<extensions>
-					<extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser"/>
-					<extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser"/>
-					<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser"/>
-					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>

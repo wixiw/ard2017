@@ -10,8 +10,8 @@
 
 #include "BSP.h"
 #include "RSP.h"
-#include "actuators/ActuatorThread.h"
-#include "strategies/StrategyThread.h"
+#include "ActuatorsCtrl/ActuatorThread.h"
+#include "Strategies/StrategyThread.h"
 #include "RemoteControl.h"
 
 #define ROBOT Robot2017::getInstance()

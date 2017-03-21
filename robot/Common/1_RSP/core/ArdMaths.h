@@ -8,7 +8,7 @@
 #ifndef ROBOTS_ARDMATHS_H_
 #define ROBOTS_ARDMATHS_H_
 
-#include "WString.h"
+#include "string/WString.h"
 #include <math.h>
 #include "CommonMsg.pb.h"
 

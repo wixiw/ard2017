@@ -8,12 +8,13 @@ import sys
 from os.path import dirname, abspath
 DIR = dirname(abspath(__file__))
 
+sys.path.append(DIR + "/../com")
+sys.path.append(DIR + "/../com/generated")
+sys.path.append(DIR + "/../com/nanopb-0.3.7-windows-x86/generator/proto")
 sys.path.append(DIR + "/com")
 sys.path.append(DIR + "/core")
 sys.path.append(DIR + "/gui")
 sys.path.append(DIR + "/proto")
-sys.path.append(DIR + "/../devenv/nanopb-0.3.7-windows-x86/generator/proto")
-sys.path.append(DIR + "/../com")
 
 import signal
 

@@ -18,5 +18,9 @@ Adafruit_TCS34725 (color sensor module) :
 https://github.com/adafruit/Adafruit_TCS34725.git
 12be4c6937df5f09b04a6540e1b3c00ce5fe93ac
 
+SPI:
+I2C:
+from arduino 1.6.x libs
+
 UART :
 ARD own dev from Arduino UARTClass

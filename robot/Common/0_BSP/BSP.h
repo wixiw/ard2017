@@ -9,23 +9,26 @@
 #define BSP_H_
 
 #include "ArduinoCore/Arduino.h"
-#include "ArduinoCore/USB/USBAPI.h"
 #include "ArduinoCore/Stream.h"
-#include "ArduinoCore/variant.h"
 #include "CMSIS/CMSIS/Include/core_cm3.h"
 #include "CMSIS/Device/ATMEL/sam.h"
 
 #ifdef __cplusplus
 #include "Drivers/AccelStepper.h"
+#include "Drivers/Adafruit_TCS34725.h"
+#include "Drivers/ArdUART.h"
+#include "Drivers/Buzzer.h"
 #include "Drivers/DueTimer.h"
-#include "Drivers/SPIArduino.h" //SPI shall be imported before SD
+#include "Drivers/SPI.h" //SPI shall be imported before SD
 #include "Drivers/SD.h"
 #include "Drivers/Servo.h"
-#include "Drivers/ArdUART.h"
-#include "Drivers/Adafruit_TCS34725.h"
+#include "Drivers/TWI_I2C.h"
+
+
 
 #endif //C++
 
+#include "variant.h"
 #include "K_constants.h"
 
 //0/1 : RX/TX 0
