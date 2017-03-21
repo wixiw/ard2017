@@ -16,8 +16,22 @@ namespace ard
     struct Tone
     {
         uint16_t frequency; //Hz
-        uint8_t lengthMs; //Ms
+        uint16_t lengthMs; //Ms
+
+        Tone(uint16_t frequency, uint16_t lengthMs):
+            frequency(frequency),
+            lengthMs(lengthMs)
+        {};
+            
+        Tone():Tone(0,0){};
     };
+
+    struct ToneSilence : public Tone
+    {
+        ToneSilence(uint16_t lengthMs): Tone(0,lengthMs){};
+    };
+
+    typedef Tone* Melody;
 
     class Buzzer
     {       
@@ -35,11 +49,11 @@ namespace ard
         void bip(uint8_t nb);
 
         //Send a tone to the buzzer
-        void playTone(uint16_t frequency, uint8_t lengthMs);
+        void playTone(uint16_t frequency, uint16_t lengthMs);
         void playTone(Tone const& tone);
 
         //Play a series a notes
-        void playMelody(Tone const* melody, uint16_t nbTones);
+        void playMelody(Melody melody, uint16_t nbTones);
 
         //wait until all sounds has been processed
         void wait();
@@ -53,9 +67,11 @@ namespace ard
         uint8_t pin;
         DueTimer& timer;
         Queue queue;
+        Signal empty;
         uint32_t currentToneCpt;
     };
 
 } /* namespace ard */
+
 
 #endif /* ROBOT_COMMON_0_BSP_DRIVERS_BUZZER_H_ */

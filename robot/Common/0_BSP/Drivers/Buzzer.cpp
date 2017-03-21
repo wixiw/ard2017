@@ -20,11 +20,9 @@ using namespace ard;
 //The default freq is adjusted to be the louder freq in Hz
 #define DEFAULT_FREQ 3000U
 //The default tone duration in ms
-#define DEFAULT_DURATION 1000U
+#define DEFAULT_DURATION 10000U
 //The default duration between two bips in ms
-#define DEFAULT_INTERTONE 300U
-//Silence is a 0 frenquency sound
-#define SILENCE 0U
+#define DEFAULT_INTERTONE 200000U
 
 //In order to map an interrupt to a C++ class
 static Buzzer* buzInst = NULL;
@@ -39,7 +37,8 @@ Buzzer::Buzzer(DueTimer& timer, uint8_t pin, uint16_t queueSize)
         : pin(pin), timer(timer),queue(queueSize, sizeof(Tone)), currentToneCpt(0)
 {
     ASSERT(buzInst == NULL);
-    timer.attachInterrupt(BusFault_Handler);
+    buzInst = this;
+    timer.attachInterrupt(Buzzer_Handler);
 }
 
 void Buzzer::buzz(bool on)
@@ -52,11 +51,14 @@ void Buzzer::buzz(bool on)
 
 void Buzzer::bip(uint8_t nb)
 {
-    playTone(DEFAULT_FREQ, DEFAULT_DURATION);
-    playTone(SILENCE, DEFAULT_INTERTONE);
+    for(int i = 0 ; i < nb ; i++)
+    {
+        playTone(DEFAULT_FREQ, DEFAULT_DURATION);
+        playTone(ToneSilence(DEFAULT_INTERTONE));
+    }
 }
 
-void Buzzer::playTone(uint16_t frequency, uint8_t lengthMs)
+void Buzzer::playTone(uint16_t frequency, uint16_t lengthMs)
 {
     Tone newTone;
     newTone.frequency = frequency;
@@ -64,13 +66,13 @@ void Buzzer::playTone(uint16_t frequency, uint8_t lengthMs)
     playTone(newTone);
 }
 
-void Buzzer::playTone(Tone& tone)
+void Buzzer::playTone(Tone const& tone)
 {
-    timer.start();
     queue.push(&tone, 0);
+    timer.start(1);
 }
 
-void Buzzer::playMelody(Tone const* melody, uint16_t nbTones)
+void Buzzer::playMelody(Melody melody, uint16_t nbTones)
 {
     for(int i = 0 ; i < nbTones ; ++i)
     {
@@ -80,12 +82,13 @@ void Buzzer::playMelody(Tone const* melody, uint16_t nbTones)
 
 void Buzzer::wait()
 {
- //TODO
+    empty.wait();
 }
 
 void Buzzer::emptyQueue()
 {
     //TODO empty queue
+    ASSERT(false);
 }
 
 void Buzzer::interrupt()
@@ -117,6 +120,7 @@ void Buzzer::interrupt()
             //queue vide
             timer.stop();
             digitalWrite(pin, 0);
+            empty.set();
         }
     }
 }

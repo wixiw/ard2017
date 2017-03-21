@@ -13,9 +13,13 @@
 //Interrupts priorities
 #define PRIORITY_IRQ_HIGHEST          0
 #define PRIORITY_IRQ_SYSCALL          5   //Bugs if set to anything different than 1
-#define PRIORITY_IRQ_STEPPERS         7   //Steppers requires high frequencies and do not use FreeRtos API
 #define PRIORITY_IRQ_UART0            6   //The UART is used for debug purposes, so priority is relatively low, but an UART has to unpile char quickly enougth to prevent losses
-#define PRIORITY_IRQ_GPIO_FILTERS     8   //It's not a drama if we miss some IT, timing will just have a little jitter
+#define PRIORITY_IRQ_STEPPERS         7   //Steppers requires high frequencies and do not use FreeRtos API
+#define PRIORITY_IRQ_BUZZER           8
+#define PRIORITY_IRQ_SERVO            9
+#define PRIORITY_IRQ_GPIO_FILTERS    10   //It's not a drama if we miss some IT, timing will just have a little jitter
+#define PRIORITY_IRQ_CPU_STATS       11
+
 #define PRIORITY_IRQ_KERNEL          15   //OS request to be last level
 #define PRIORITY_IRQ_LOWEST          15
 

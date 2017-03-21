@@ -293,7 +293,7 @@ bool Queue::pop(void* unqueuedObject, DelayMs timeout)
 
     if( interruptContext() )
     {
-        ASSERT_TEXT(timeout==0, "You cannot configure a queue to pop with a delay from an interrupt");
+        ASSERT_TEXT(timeout==portMAX_DELAY, "You cannot configure a queue to pop with a delay from an interrupt");
         BaseType_t xTaskWokenByReceive = pdFALSE;
         res = xQueueReceiveFromISR( osHandler, ( void * ) unqueuedObject, &xTaskWokenByReceive);
         if( xTaskWokenByReceive != pdFALSE)

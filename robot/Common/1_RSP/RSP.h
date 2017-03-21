@@ -14,7 +14,7 @@
 #include "Sensors/ColorSensor.h"
 #include "Sensors/GpioTools.h"
 #include "ArdOs.h"
-#include "HmiThread.h"
+#include "Hmi.h"
 #include "Log.h"
 #include "Navigation.h"
 

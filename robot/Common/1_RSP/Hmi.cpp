@@ -5,7 +5,7 @@
  *      Author: wix
  */
 
-#include "HmiThread.h"
+#include "Hmi.h"
 #include "BSP.h"
 
 using namespace ard;
@@ -160,8 +160,7 @@ void ard::Led::set(eLedState state)
 /*--------------------------------------------------------------------- */
 /*   HMI                                                                */
 /*--------------------------------------------------------------------- */
-
-HmiThread::HmiThread(uint16_t period):
+HmiThread::HmiThread(uint16_t period, DueTimer& timer):
     Thread("Hmi", PRIO_HMI, STACK_HMI, PERIOD_HMI),
     ledRGB(LED_RGB_R, LED_RGB_G, LED_RGB_B),
     led1(LED1),
@@ -174,8 +173,10 @@ HmiThread::HmiThread(uint16_t period):
     tirette(BUTTON_START, HMI_DEBOUNCE, HMI_DEBOUNCE),
     matchColor(BUTTON_COLOR, HMI_DEBOUNCE, HMI_DEBOUNCE),
     user1(BUTTON_USER1, HMI_DEBOUNCE, HMI_DEBOUNCE),
-    user2(BUTTON_USER2, HMI_DEBOUNCE, HMI_DEBOUNCE)
-{}
+    user2(BUTTON_USER2, HMI_DEBOUNCE, HMI_DEBOUNCE),
+    buzzer(timer, BUZZER, 200)
+{
+}
 
 void HmiThread::run()
 {
@@ -188,3 +189,7 @@ void HmiThread::run()
     ledDue_Tx.run();
     ledDue_L.run();
 }
+
+Tone melody_imperialMarch[10]{
+    {100, 100}
+};

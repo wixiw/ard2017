@@ -85,13 +85,9 @@ public:
 };
 
 // Just to call Timer.getAvailable instead of Timer::getAvailable() :
-extern DueTimer Timer;
-extern DueTimer Timer1;
 extern DueTimer Timer0;
-// Fix for compatibility with Servo library
-#ifndef USING_SERVO_LIB
+extern DueTimer Timer1;
 extern DueTimer Timer2;
-#endif
 extern DueTimer Timer3;
 extern DueTimer Timer4;
 extern DueTimer Timer5;

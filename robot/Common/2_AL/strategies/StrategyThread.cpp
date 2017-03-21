@@ -45,6 +45,9 @@ void StrategyThread::displayIntroduction()
     {
         LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
     }
+
+    ROBOT.bip(3);
+    ROBOT.waitBuzzer();
 }
 
 void StrategyThread::run()

@@ -60,6 +60,22 @@ namespace ard
         //for param led see BSH.h : LED1, LED2, LED3, LED4
         void setLed(uint8_t led, eLedState blink);
 
+        //Start or stop the buzzer (continous sound), it also empty the sound queue
+        void buzz(bool on);
+
+        //Send a train of bips to the sound queue
+        void bip(uint8_t nb);
+
+        //Send a tone to the buzzer
+        void playTone(uint16_t frequency, uint16_t lengthMs);
+        void playTone(Tone const& tone);
+
+        //Play a series a notes
+        void playMelody(Melody melody, uint16_t nbTones);
+
+        //wait until all sounds has been processed
+        void waitBuzzer();
+
         //Retrive any of the teleop events
         IEvent* getRemoteControlEvt(eRemoteControlEvtId id);
 

@@ -9,6 +9,17 @@
 #include "BSP.h"
 #include "strategies/Strategies.h"
 
+//Timer 0 reserved for ARD cpu stats, instanciated for IRQ priority config
+#define TIMER_CPU           Timer0
+//Timer 1 reserved for the Servo lib, instanciated for IRQ priority config
+#define TIMER_SERVO         Timer5
+
+//Timer available for Duetimer lib
+#define TIMER_NAV_STEPPER   Timer2
+#define TIMER_GPIO          Timer3
+#define TIMER_BUZZER        Timer4
+
+
 using namespace ard;
 
 extern "C"
@@ -65,7 +76,7 @@ Robot2017::Robot2017():
     actuators(),
     strategy(),
     nav(),
-    hmi(50 /*ms*/),
+    hmi(50 /*ms*/, TIMER_BUZZER),
     log(LogDispatcher::getInstance()),
 #ifdef BUILD_REMOTE_CONTROL
     remoteControl(bsp.serial0),
@@ -89,14 +100,17 @@ void Robot2017::bootOs()
 #endif
 
     //Map fast periodic functions to timers interrupts
-    //Timer1 is used for CPU stats, see FreeRTOSConfig.h and FreeRTOS_ARM.c
-    Timer6.attachInterrupt(veryFast_interrupt);
-    Timer7.attachInterrupt(fast_interrupt);
+    //GPIO_TIMER is used for CPU stats, see FreeRTOSConfig.h and FreeRTOS_ARM.c
+    TIMER_NAV_STEPPER.attachInterrupt(veryFast_interrupt);
+    TIMER_GPIO.attachInterrupt(fast_interrupt);
     
     //Configure interrupts priorities
-    Timer6.setInterruptPriority     (PRIORITY_IRQ_STEPPERS);
-    Timer7.setInterruptPriority     (PRIORITY_IRQ_GPIO_FILTERS);
-    bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
+    TIMER_CPU.setInterruptPriority              (PRIORITY_IRQ_CPU_STATS);
+    TIMER_SERVO.setInterruptPriority            (PRIORITY_IRQ_SERVO);
+    TIMER_NAV_STEPPER.setInterruptPriority      (PRIORITY_IRQ_STEPPERS);
+    TIMER_GPIO.setInterruptPriority             (PRIORITY_IRQ_GPIO_FILTERS);
+    TIMER_BUZZER.setInterruptPriority           (PRIORITY_IRQ_BUZZER);
+    bsp.serial0.setInterruptPriority            (PRIORITY_IRQ_UART0);
 
     //Init debug serial link
     UART_Handler_CB = Robot2017_UART_Handler;
@@ -112,8 +126,8 @@ void Robot2017::bootOs()
     hmi.ledDue_Tx.slowBlink();
 
     //Start everything
-    Timer6.start(PERIOD_VERY_FAST_IT_US);
-    Timer7.start(PERIOD_FAST_IT_US);
+    TIMER_NAV_STEPPER.start(PERIOD_VERY_FAST_IT_US);
+    TIMER_GPIO.start(PERIOD_FAST_IT_US);
 
     //Start all SW activities
     ArdOs::start();//this function never ends
@@ -143,6 +157,36 @@ IEvent* ard::Robot2017::getRemoteControlEvt(eRemoteControlEvtId id)
     static Event<1> defaultEvent;
     return &defaultEvent;
 #endif
+}
+
+void ard::Robot2017::buzz(bool on)
+{
+    hmi.buzzer.buzz(on);
+}
+
+void ard::Robot2017::bip(uint8_t nb)
+{
+    hmi.buzzer.bip(nb);
+}
+
+void ard::Robot2017::playTone(uint16_t frequency, uint16_t lengthMs)
+{
+    hmi.buzzer.playTone(frequency, lengthMs);
+}
+
+void ard::Robot2017::playTone(const Tone& tone)
+{
+    hmi.buzzer.playTone(tone);
+}
+
+void ard::Robot2017::playMelody(Melody melody, uint16_t nbTones)
+{
+    hmi.buzzer.playMelody(melody, nbTones);
+}
+
+void ard::Robot2017::waitBuzzer()
+{
+    hmi.buzzer.wait();
 }
 
 Robot2017::Robot2017(const Robot2017& p)

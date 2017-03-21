@@ -931,6 +931,12 @@
     <Compile Include="0_BSP\Drivers\ArdUART.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="0_BSP\Drivers\Buzzer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\Drivers\Buzzer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="0_BSP\Drivers\DueTimer.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1132,10 +1138,10 @@
     <Compile Include="1_RSP\Core\ArdMaths.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\HmiThread.cpp">
+    <Compile Include="1_RSP\Hmi.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\HmiThread.h">
+    <Compile Include="1_RSP\Hmi.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\Log.cpp">

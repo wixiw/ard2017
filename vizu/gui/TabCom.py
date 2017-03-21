@@ -13,13 +13,12 @@ class TabCom(QWidget):
     def __init__(self, comMdw):
         super().__init__()
         self.com = comMdw
-        ports, baudrates = self.com.getSerialPortInfo()
-        
         settings = QSettings("config.ini", QSettings.IniFormat)
         settings.beginGroup("Com")
         defaultPort = settings.value("port", "COM1")
         defaultBaudrate = settings.value("baudrate", "250000")
-        
+        ports, baudrates = self.com.getSerialPortInfo()
+          
         #Serial port configuration
             #COM port selector
         self.combo_COM = QComboBox(self)
@@ -34,6 +33,7 @@ class TabCom(QWidget):
         i = self.combo_Baudrate.findData(defaultBaudrate)
         if i != -1 :
             self.combo_Baudrate.setCurrentIndex(i)
+            
             #connection button
         self.btn_connect = QPushButton('Connect', self)
         self.btn_connect.setCheckable(True)
@@ -108,11 +108,13 @@ class TabCom(QWidget):
             self.buttonsGroup.setEnabled(True)
             self.networkStatus.emit(True)
         else:
-            print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizy instance...)")
+            print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizu instance...)")
             self.btn_connect.setText("Connect")
             self.btn_connect.setChecked(False)
             self.combo_COM.setEnabled(True)
             self.combo_Baudrate.setEnabled(True)
+            self.combo_COM.removeItem(self.combo_COM.findText(port))
+            self._updateComInfo()
             
     def _disconnect(self):
         self.com.disconnect()
@@ -122,7 +124,15 @@ class TabCom(QWidget):
         self.combo_Baudrate.setEnabled(True)
         self.buttonsGroup.setEnabled(False)
         self.networkStatus.emit(False)
+        self._updateComInfo()
         print("Disconnected")
+        
+    def _updateComInfo(self):
+        ports, baudrates = self.com.getSerialPortInfo()
+        for port in ports:
+            i = self.combo_COM.findText(port)
+            if i == -1 :
+                self.combo_COM.addItem(port)
         
     @pyqtSlot()
     def _maxLength(self): 

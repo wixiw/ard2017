@@ -218,7 +218,7 @@ namespace ard
     float m_speed;//mm/s
     float m_speed_virage; //rad/s
 
-    FakeMutex m_mutex;
+    Mutex m_mutex;
     Signal m_targetReached;
     
     long oldStepL; //critical section
