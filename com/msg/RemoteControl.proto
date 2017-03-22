@@ -54,6 +54,7 @@ message RemoteControlRequest
 		EmptyMsg 			getOsStatsLogs		= 2;
 		EmptyMsg 			getTelemetry		= 3;
 		EmptyMsg			reboot				= 4;
+		Melody				requestPlaySound	= 5;
 
 		//messages from 100 to 199 are reserved fo strategy
 		ConfigureMatch 		configureMatch 		= 100;

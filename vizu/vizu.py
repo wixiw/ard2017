@@ -14,7 +14,6 @@ sys.path.append(DIR + "/../com/nanopb-0.3.7-windows-x86/generator/proto")
 sys.path.append(DIR + "/com")
 sys.path.append(DIR + "/core")
 sys.path.append(DIR + "/gui")
-sys.path.append(DIR + "/proto")
 
 import signal
 
@@ -39,6 +38,7 @@ class ConnectScreen(QWidget):
         self.tab["Log"]   = TabLog()
         self.tab["Strat"] = TabStrat()
         self.tab["Robot"] = TabRobot()
+        self.tab["Help"] = TabHelp()
         
         
         self.tabs = QTabWidget(self)
@@ -49,6 +49,7 @@ class ConnectScreen(QWidget):
         
         #connect Com tab
         self.tab["Com"].networkStatus         .connect(self._handleNetworkStatus)
+        self.tab["Robot"].requestPlaySound    .connect(self.teleop.requestPlaySound)
         self.tab["Robot"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
         self.tab["Robot"].getTelemetry        .connect(self.teleop.getTelemetry)
         self.tab["Robot"].configureMatch      .connect(self.teleop.configureMatch)
@@ -86,7 +87,11 @@ class ConnectScreen(QWidget):
         self.shortcuts["F4"] = QShortcut(QKeySequence(Qt.Key_F4), self)
         self.shortcuts["F4"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F4"], 3)
-
+            #F5 for Help tab
+        self.shortcuts["F5"] = QShortcut(QKeySequence(Qt.Key_F5), self)
+        self.shortcuts["F5"].activated.connect(self.tabShortcutMap.map)
+        self.tabShortcutMap.setMapping(self.shortcuts["F5"], 4)
+        
         #add shortcut to manage match
         self.configureMap = QSignalMapper()
         self.configureMap.mapped.connect(self._configShortcut)
@@ -117,12 +122,13 @@ class ConnectScreen(QWidget):
             self.tab["Log"].appendLog(("-----------connected-------------"))
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), True)
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), True)
-            #self.tabs.setCurrentWidget(self.tab["Strat"])
+            self.tabs.setCurrentWidget(self.tab["Strat"])
             
             self.shortcuts["F1"].setEnabled(True)
             self.shortcuts["F2"].setEnabled(True)
             self.shortcuts["F3"].setEnabled(True)
             self.shortcuts["F4"].setEnabled(True)
+            self.shortcuts["F5"].setEnabled(True)
             
         else:
             self.tab["Log"].appendLog(("----------disconnected-----------"))
@@ -134,6 +140,7 @@ class ConnectScreen(QWidget):
             self.shortcuts["F2"].setEnabled(True)
             self.shortcuts["F3"].setEnabled(False)
             self.shortcuts["F4"].setEnabled(False)
+            self.shortcuts["F5"].setEnabled(True)
     
     @pyqtSlot(int)
     def selectTab(self, tabId):
@@ -161,7 +168,7 @@ if __name__ == '__main__':
     import os
     
     #re-generate proto (not optimal, but as they will change a lot at project beginning...)
-    #os.system("..\generateCom.bat ..\\ off")
+    #os.system("..\com\generateCom.bat .. off")
     
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     

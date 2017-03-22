@@ -16,14 +16,15 @@ class TabRobot(QWidget):
     
     getOsStatsLogs = pyqtSignal()
     getTelemetry = pyqtSignal()
+    requestPlaySound = pyqtSignal(Melody)
+    resetCpu = pyqtSignal()
     configureMatch = pyqtSignal(int, int)
     startMatch = pyqtSignal()
-    resetCpu = pyqtSignal()
+
     
     def __init__(self):
         super().__init__()
         
-        self.btns = dict()
         self.layout=dict()
 
         #Navigation order widgets   
@@ -39,6 +40,11 @@ class TabRobot(QWidget):
         self.navCombo.lineEdit().setAlignment(Qt.AlignHCenter)
         self.navCombo.highlighted[int].connect(self._navCmdChanged)
         self.navCombo.currentIndexChanged[int].connect(self._navCmdChanged)
+        
+        #Sound
+        self.btn_sound = dict()
+        self.btn_sound["bips"] = ToneWidget(self)
+        self.btn_sound["bips"].toneRequest.connect(self._requestPlayTone)
         
         #Buttons widgets
         self.btn_cmds = dict()
@@ -65,6 +71,11 @@ class TabRobot(QWidget):
             self.layout["Commands"].addWidget(self.btn_cmds[button])
         self.layout["Commands"].addStretch()
         
+        self.layout["Sound"] = QVBoxLayout()
+        for button in self.btn_sound:    
+            self.layout["Sound"].addWidget(self.btn_sound[button])
+        self.layout["Sound"].addStretch()
+        
         #populate layouts
         self.layout["NavOrder"].addWidget(self.navCombo)
         self.layout["NavStack"] = QStackedLayout()
@@ -79,8 +90,12 @@ class TabRobot(QWidget):
         self.box_cmd = QGroupBox("Commands")
         self.box_cmd.setLayout(self.layout["Commands"])
         
+        self.box_sound = QGroupBox("Sound")
+        self.box_sound.setLayout(self.layout["Sound"])
+        
         self.layout["Top"].addWidget(self.box_nav)
         self.layout["Top"].addWidget(self.box_cmd)
+        self.layout["Top"].addWidget(self.box_sound)
         self.layout["Top"].addStretch(1)
         
     @pyqtSlot(int)
@@ -89,6 +104,15 @@ class TabRobot(QWidget):
         for name, widget in self.navTab.items():
             widget.reset()
         self.layout["NavStack"].setCurrentIndex(comboId)
+        
+    @pyqtSlot(Tone, int)
+    def _requestPlayTone(self, tone, counts):    
+        print("Play tone request freq=" + str(tone.frequency) + "Hz duration=" + str(tone.duration) + "ms count=" + str(counts))
+        melody = Melody()
+        for i in range(counts):
+            print("bite")
+            melody.add(tone)
+        self.requestPlaySound.emit(melody)
         
     @pyqtSlot()
     def _getOsStatsLogs(self): 

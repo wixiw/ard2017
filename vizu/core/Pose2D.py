@@ -4,7 +4,7 @@
 from math import *
 from Point import *
 from ArdMath import *
-from proto import *
+from generated import *
 
 class Pose2D(Point):
     def __init__(self, x=0., y=0., h=0.):
@@ -72,7 +72,7 @@ class Pose2D(Point):
         p.h = poseMsg.h
         return p
     
-    #Convert a Pose2D to a PoseMsg ros message
+    #Convert a Pose2D to a PoseMsg protobuf message
     #@param CommonMsg_pb2.PointCap msg : the msg which receive the data
     def toPoseMsg(self, msg):
         msg.x = self.x

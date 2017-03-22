@@ -71,6 +71,7 @@ namespace ard
         void getOsStatsLogs         (apb_RemoteControlRequest const & request);
         void getTelemetry           (apb_RemoteControlRequest const & request);
         void reboot                 (apb_RemoteControlRequest const & request);
+        void requestPlaySound       (apb_RemoteControlRequest const & request);
         void configureMatch         (apb_RemoteControlRequest const & request);
         void startMatch             (apb_RemoteControlRequest const & request);
         void setPosition            (apb_RemoteControlRequest const & request);

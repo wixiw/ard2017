@@ -55,6 +55,7 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(getOsStatsLogs)
         HANDLE_MSG(getTelemetry)
         HANDLE_MSG(reboot)
+        HANDLE_MSG(requestPlaySound)
         HANDLE_MSG(configureMatch)
         HANDLE_MSG(startMatch)
         HANDLE_MSG(setPosition)
@@ -150,6 +151,17 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
 void RemoteControl::reboot(apb_RemoteControlRequest const & request)
 {
     ArdOs::reboot();
+}
+
+void RemoteControl::requestPlaySound(apb_RemoteControlRequest const & request)
+{
+    LOG_INFO("Playing melody...");
+    for(int i = 0 ; i < request.type.requestPlaySound.tones_count ; i++)
+    {
+        apb_Tone tone = request.type.requestPlaySound.tones[i];
+        ROBOT.playTone(tone.frequency, tone.duration);
+    }
+
 }
 
 void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
