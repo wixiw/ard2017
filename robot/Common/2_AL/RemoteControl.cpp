@@ -156,7 +156,7 @@ void RemoteControl::reboot(apb_RemoteControlRequest const & request)
 void RemoteControl::requestPlaySound(apb_RemoteControlRequest const & request)
 {
     LOG_INFO("Playing melody...");
-    for(int i = 0 ; i < request.type.requestPlaySound.tones_count ; i++)
+    for(unsigned int i = 0 ; i < request.type.requestPlaySound.tones_count ; i++)
     {
         apb_Tone tone = request.type.requestPlaySound.tones[i];
         ROBOT.playTone(tone.frequency, tone.duration);

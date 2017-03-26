@@ -54,6 +54,7 @@ namespace ard
 {
     typedef uint32_t TimeMs;
     typedef uint32_t DelayMs;
+    typedef uint32_t DelayUs;
 
     /**
      * An ILogger can generate a log and send it the a log stack

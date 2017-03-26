@@ -46,6 +46,9 @@ void StrategyThread::displayIntroduction()
         LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
     }
 
+    ROBOT.setLed(LED1, SLOW_BLINK);
+    ROBOT.setLed(LED2, FAST_BLINK);
+    ROBOT.setLed(LED3, ON);
     ROBOT.bip(3);
     ROBOT.waitBuzzer();
 }

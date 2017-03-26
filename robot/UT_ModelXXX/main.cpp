@@ -3,14 +3,17 @@
  *
  */ 
 
+#include "BSP.h"
+BSP bsp;
+
 int main(void)
 {
     bool res = true;
 
     //Init drivers
-    init_bsp();
     digitalWrite(LED_DUE_L, HIGH);
-    serial0.start(/*baurate = */115200);
+    bsp.serial0.setInterruptPriority(0);
+    bsp.serial0.start(/*baurate = */115200);
 
     //TODO test
     //...

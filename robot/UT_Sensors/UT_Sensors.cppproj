@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.ARMGCC.CPP</ToolchainName>
-    <ProjectGuid>{3940c6ff-c6d6-443e-a0c5-f379c38b95ab}</ProjectGuid>
+    <ProjectGuid>{f8398d18-d053-42e4-a3db-ff8a55940c1e}</ProjectGuid>
     <avrdevice>ATSAM3X8E</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>UT_ModelXXX</AssemblyName>
-    <Name>UT_ModelXXX</Name>
-    <RootNamespace>UT_ModelXXX</RootNamespace>
+    <AssemblyName>UT_Sensors</AssemblyName>
+    <Name>UT_Sensors</Name>
+    <RootNamespace>UT_Sensors</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -129,9 +129,9 @@
         </armgcc.compiler.symbols.DefSymbols>
         <armgcc.compiler.directories.IncludePaths>
           <ListValues>
-			<Value>../../../com</Value>
-			<Value>../../../com/generated</Value>
-			<Value>../../../com/nanopb</Value>
+            <Value>../../../com</Value>
+            <Value>../../../com/generated</Value>
+            <Value>../../../com/nanopb</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -166,9 +166,9 @@
         </armgcccpp.compiler.symbols.DefSymbols>
         <armgcccpp.compiler.directories.IncludePaths>
           <ListValues>
-			<Value>../../../com</Value>
-			<Value>../../../com/generated</Value>
-			<Value>../../../com/nanopb</Value>
+            <Value>../../../com</Value>
+            <Value>../../../com/generated</Value>
+            <Value>../../../com/nanopb</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -204,7 +204,7 @@
           <ListValues>
             <Value>../../Common/Debug</Value>
             <Value>../../Common/0_BSP/ArduinoCore/linker_scripts</Value>
-	    <Value>../../../com/Debug</Value>
+            <Value>../../../com/Debug</Value>
           </ListValues>
         </armgcccpp.linker.libraries.LibrarySearchPaths>
         <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
@@ -219,7 +219,7 @@
         <armgcccpp.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcccpp.preprocessingassembler.debugging.DebugLevel>
       </ArmGccCpp>
     </ToolchainSettings>
-    <PreBuildEvent>DEL $(OutputDirectory)\UT_ModelXXX* /Q</PreBuildEvent>
+    <PreBuildEvent>DEL $(OutputDirectory)\UT_Sensors* /Q</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="main.cpp">

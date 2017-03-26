@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>UT_ModelXXX</AssemblyName>
-    <Name>UT_ModelXXX</Name>
-    <RootNamespace>UT_ModelXXX</RootNamespace>
+    <AssemblyName>UT_Actuators</AssemblyName>
+    <Name>UT_Actuators</Name>
+    <RootNamespace>UT_Actuators</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -129,9 +129,9 @@
         </armgcc.compiler.symbols.DefSymbols>
         <armgcc.compiler.directories.IncludePaths>
           <ListValues>
-			<Value>../../../com</Value>
-			<Value>../../../com/generated</Value>
-			<Value>../../../com/nanopb</Value>
+            <Value>../../../com</Value>
+            <Value>../../../com/generated</Value>
+            <Value>../../../com/nanopb</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -166,9 +166,9 @@
         </armgcccpp.compiler.symbols.DefSymbols>
         <armgcccpp.compiler.directories.IncludePaths>
           <ListValues>
-			<Value>../../../com</Value>
-			<Value>../../../com/generated</Value>
-			<Value>../../../com/nanopb</Value>
+            <Value>../../../com</Value>
+            <Value>../../../com/generated</Value>
+            <Value>../../../com/nanopb</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -204,7 +204,7 @@
           <ListValues>
             <Value>../../Common/Debug</Value>
             <Value>../../Common/0_BSP/ArduinoCore/linker_scripts</Value>
-	    <Value>../../../com/Debug</Value>
+            <Value>../../../com/Debug</Value>
           </ListValues>
         </armgcccpp.linker.libraries.LibrarySearchPaths>
         <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
@@ -219,10 +219,16 @@
         <armgcccpp.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcccpp.preprocessingassembler.debugging.DebugLevel>
       </ArmGccCpp>
     </ToolchainSettings>
-    <PreBuildEvent>DEL $(OutputDirectory)\UT_ModelXXX* /Q</PreBuildEvent>
+    <PreBuildEvent>DEL $(OutputDirectory)\UT_Actuators* /Q</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="leds.cpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="stepper.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

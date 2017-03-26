@@ -76,7 +76,7 @@ Robot2017::Robot2017():
     actuators(),
     strategy(),
     nav(),
-    hmi(50 /*ms*/, TIMER_BUZZER),
+    hmi(TIMER_BUZZER),
     log(LogDispatcher::getInstance()),
 #ifdef BUILD_REMOTE_CONTROL
     remoteControl(bsp.serial0),
@@ -135,12 +135,19 @@ void Robot2017::bootOs()
 
 void Robot2017::dieMotherFucker()
 {
+    LOG_INFO("Die mother fucker !!");
+
     //Ask the robot to stop moving and wait for it to be at rest
     nav.stopMoving();
     nav.wait();
 
     //last action as strategy thread is certainly called^^
     ROBOT.strategy.stopThread();
+    ROBOT.setRGBled(RED, FAST_BLINK);
+    ROBOT.setLed(LED1, OFF);
+    ROBOT.setLed(LED2, OFF);
+    ROBOT.setLed(LED3, OFF);
+    ROBOT.setLed(LED4, OFF);
 }
 
 Robot2017& Robot2017::operator=(const Robot2017& p)

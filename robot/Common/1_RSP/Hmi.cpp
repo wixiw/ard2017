@@ -6,7 +6,6 @@
  */
 
 #include "Hmi.h"
-#include "BSP.h"
 
 using namespace ard;
 
@@ -14,20 +13,20 @@ using namespace ard;
  * Configure the HMI buttons debounce time in ms.
  */
 #define HMI_DEBOUNCE 50
-
+#define RGB_PWM_PERIOD_US (10*1E3)
+#define RGB_PWM_SO_YOU_KEEP_YOUR_EYES 110
 /*--------------------------------------------------------------------- */
 /*   OUTPUT                                                             */
 /*--------------------------------------------------------------------- */
 
-RgbLed::RgbLed(int pin_r, int pin_g, int pin_b)
+RgbLed::RgbLed(int pin_r, int pin_g, int pin_b):
+        pwm_r(pin_r, RGB_PWM_PERIOD_US, true),
+        pwm_g(pin_g, RGB_PWM_PERIOD_US, true),
+        pwm_b(pin_b, RGB_PWM_PERIOD_US, true)
 {
-    m_r = pin_r;
-    m_g = pin_g;
-    m_b = pin_b;
-
     m_color = eRgb::WHITE;
     m_blink = eLedState::OFF;
-
+    output(m_blink);
     lastState = 0;
     m_on = false;
 }
@@ -63,39 +62,60 @@ void RgbLed::output(bool _on)
         switch (m_color)
         {
         case eRgb::RED:
-            digitalWrite(m_r, LOW);
-            digitalWrite(m_g, HIGH);
-            digitalWrite(m_b, HIGH);
+            pwm_r.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
+            pwm_g.setPWM(  0);
+            pwm_b.setPWM(  0);
             break;
         case eRgb::GREEN:
-            digitalWrite(m_r, HIGH);
-            digitalWrite(m_g, LOW);
-            digitalWrite(m_b, HIGH);
+            pwm_r.setPWM(  0);
+            pwm_g.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
+            pwm_b.setPWM(  0);
             break;
         case eRgb::BLUE:
-            digitalWrite(m_r, HIGH);
-            digitalWrite(m_g, HIGH);
-            digitalWrite(m_b, LOW);
+            pwm_r.setPWM(  0);
+            pwm_g.setPWM(  0);
+            pwm_b.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
             break;
         case eRgb::YELLOW:
-            digitalWrite(m_r, LOW);
-            digitalWrite(m_g, LOW);
-            digitalWrite(m_b, HIGH);
+            pwm_r.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
+            pwm_g.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
+            pwm_b.setPWM(  0);
             break;
         case eRgb::CYAN:
-            digitalWrite(m_r, HIGH);
-            digitalWrite(m_g, LOW);
-            digitalWrite(m_b, LOW);
+            pwm_r.setPWM(  0);
+            pwm_g.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
+            pwm_b.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
             break;
         case eRgb::PURPLE:
-            digitalWrite(m_r, LOW);
-            digitalWrite(m_g, HIGH);
-            digitalWrite(m_b, LOW);
+            pwm_r.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
+            pwm_g.setPWM(  0);
+            pwm_b.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
             break;
         case eRgb::WHITE:
-            digitalWrite(m_r, LOW);
-            digitalWrite(m_g, LOW);
-            digitalWrite(m_b, LOW);
+            pwm_r.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
+            pwm_g.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
+            pwm_b.setPWM(RGB_PWM_SO_YOU_KEEP_YOUR_EYES);
+            break;
+        case eRgb::MULTI:
+            static uint16_t multi_R = 0;
+            static uint16_t multi_G = 0;
+            static uint16_t multi_B = 0;
+            multi_R += 100;
+            if( 1000 < multi_R )
+            {
+                multi_R = 0;
+                multi_G += 100;
+                if( 1000 < multi_G )
+                {
+                    multi_G = 0;
+                    multi_B += 100;
+                    if( 1000 < multi_B )
+                        multi_B = 0;
+                }
+            }
+            pwm_r.setPWM(multi_R);
+            pwm_g.setPWM(multi_G);
+            pwm_b.setPWM(multi_B);
             break;
         default:
             ;
@@ -103,9 +123,9 @@ void RgbLed::output(bool _on)
     }
     else
     {
-        digitalWrite(m_r, HIGH);
-        digitalWrite(m_g, HIGH);
-        digitalWrite(m_b, HIGH);
+        pwm_r.setPWM(0);
+        pwm_g.setPWM(0);
+        pwm_b.setPWM(0);
     }
 }
 
@@ -160,7 +180,7 @@ void ard::Led::set(eLedState state)
 /*--------------------------------------------------------------------- */
 /*   HMI                                                                */
 /*--------------------------------------------------------------------- */
-HmiThread::HmiThread(uint16_t period, DueTimer& timer):
+HmiThread::HmiThread(DueTimer& timer):
     Thread("Hmi", PRIO_HMI, STACK_HMI, PERIOD_HMI),
     ledRGB(LED_RGB_R, LED_RGB_G, LED_RGB_B),
     led1(LED1),

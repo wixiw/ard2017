@@ -70,13 +70,23 @@ __attribute__((optimize(0))) void prvGetRegistersFromStack( uint32_t *pulFaultSt
 void errorBlink(int n) {
   __disable_irq();
 		
-  pinMode(13, OUTPUT);
+  pinMode(ERROR_PIN, OUTPUT);
+  pinMode(LED_RGB_R, OUTPUT);
+  pinMode(LED_RGB_G, OUTPUT);
+  pinMode(LED_RGB_B, OUTPUT);
+
   for (;;) {
     int i;
     for (i = 0; i < n; i++) {
       digitalWrite(ERROR_PIN, 1);
+      digitalWrite(LED_RGB_R, 0);
+      digitalWrite(LED_RGB_G, 1);
+      digitalWrite(LED_RGB_B, 1);
       delayMS(300);
       digitalWrite(ERROR_PIN, 0);
+      digitalWrite(LED_RGB_R, 1);
+      digitalWrite(LED_RGB_G, 1);
+      digitalWrite(LED_RGB_B, 1);
       delayMS(300);
     }
     delayMS(2000);

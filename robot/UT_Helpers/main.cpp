@@ -16,6 +16,7 @@ int main(void)
     bool res = true;
 
     digitalWrite(LED_DUE_L, HIGH);
+    bsp.serial0.setInterruptPriority(0);
     bsp.serial0.start(/*baurate = */115200);
 
 

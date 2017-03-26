@@ -385,6 +385,12 @@
     </PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="0_BSP\ArdOs.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\ArdOs.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="0_BSP\ArduinoCore\Arduino.h">
       <SubType>compile</SubType>
     </Compile>
@@ -913,112 +919,91 @@
     <Compile Include="0_BSP\CMSIS\Device\ATMEL\sam4.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\AccelStepper.cpp">
+    <Compile Include="0_BSP\CpuIo\ArdUART.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\AccelStepper.h">
+    <Compile Include="0_BSP\CpuIo\ArdUART.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\Adafruit_TCS34725.cpp">
+    <Compile Include="0_BSP\CpuIo\DueTimer.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\Adafruit_TCS34725.h">
+    <Compile Include="0_BSP\CpuIo\DueTimer.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\ArdUART.cpp">
+    <Compile Include="0_BSP\CpuIo\File.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\ArdUART.h">
+    <Compile Include="0_BSP\CpuIo\GpioTools.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\Buzzer.cpp">
+    <Compile Include="0_BSP\CpuIo\GpioTools.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\Buzzer.h">
+    <Compile Include="0_BSP\CpuIo\legacy_uart\RingBuffer.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\DueTimer.cpp">
+    <Compile Include="0_BSP\CpuIo\legacy_uart\RingBuffer.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\DueTimer.h">
+    <Compile Include="0_BSP\CpuIo\legacy_uart\UARTClass.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\File.cpp">
+    <Compile Include="0_BSP\CpuIo\legacy_uart\UARTClass.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\legacy_uart\RingBuffer.cpp">
+    <Compile Include="0_BSP\CpuIo\legacy_uart\USARTClass.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\legacy_uart\RingBuffer.h">
+    <Compile Include="0_BSP\CpuIo\legacy_uart\USARTClass.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\legacy_uart\UARTClass.cpp">
+    <Compile Include="0_BSP\CpuIo\SD.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\legacy_uart\UARTClass.h">
+    <Compile Include="0_BSP\CpuIo\SD.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\legacy_uart\USARTClass.cpp">
+    <Compile Include="0_BSP\CpuIo\SPI.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\legacy_uart\USARTClass.h">
+    <Compile Include="0_BSP\CpuIo\SPI.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\SD.cpp">
+    <Compile Include="0_BSP\CpuIo\TWI_I2C.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\SD.h">
+    <Compile Include="0_BSP\CpuIo\TWI_I2C.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\Servo.cpp">
+    <Compile Include="0_BSP\CpuIo\utility\FatStructs.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\Servo.h">
+    <Compile Include="0_BSP\CpuIo\utility\Sd2Card.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\ServoTimers.h">
+    <Compile Include="0_BSP\CpuIo\utility\Sd2Card.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\SPI.cpp">
+    <Compile Include="0_BSP\CpuIo\utility\Sd2PinMap.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\SPI.h">
+    <Compile Include="0_BSP\CpuIo\utility\SdFat.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\TWI_I2C.cpp">
+    <Compile Include="0_BSP\CpuIo\utility\SdFatmainpage.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\TWI_I2C.h">
+    <Compile Include="0_BSP\CpuIo\utility\SdFatUtil.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\utility\FatStructs.h">
+    <Compile Include="0_BSP\CpuIo\utility\SdFile.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\utility\Sd2Card.cpp">
+    <Compile Include="0_BSP\CpuIo\utility\SdInfo.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\Drivers\utility\Sd2Card.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\Drivers\utility\Sd2PinMap.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\Drivers\utility\SdFat.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\Drivers\utility\SdFatmainpage.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\Drivers\utility\SdFatUtil.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\Drivers\utility\SdFile.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\Drivers\utility\SdInfo.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\Drivers\utility\SdVolume.cpp">
+    <Compile Include="0_BSP\CpuIo\utility\SdVolume.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\FreeRTOS\croutine.c">
@@ -1105,10 +1090,25 @@
     <Compile Include="0_BSP\variant.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\ArdOs.cpp">
+    <Compile Include="1_RSP\Actuators\AccelStepper.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\ArdOs.h">
+    <Compile Include="1_RSP\Actuators\AccelStepper.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Actuators\Buzzer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Actuators\Buzzer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Actuators\Servo.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Actuators\Servo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Actuators\ServoTimers.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\ComStack\ArdHdlc.cpp">
@@ -1159,16 +1159,16 @@
     <Compile Include="1_RSP\RSP.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\Sensors\Adafruit_TCS34725.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Sensors\Adafruit_TCS34725.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\Sensors\ColorSensor.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\Sensors\ColorSensor.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\Sensors\GpioTools.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\Sensors\GpioTools.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\ActuatorsCtrl\ActuatorThread.cpp">
@@ -1193,6 +1193,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Robot2017.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\Strategies.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Strategies\StrategyAlpha.cpp">
@@ -1239,9 +1242,9 @@
     <Folder Include="0_BSP\CMSIS\Device\ATMEL\sam3xa\include\pio\" />
     <Folder Include="0_BSP\CMSIS\Device\ATMEL\sam3xa\source\" />
     <Folder Include="0_BSP\CMSIS\Device\ATMEL\sam3xa\source\gcc\" />
-    <Folder Include="0_BSP\Drivers\" />
-    <Folder Include="0_BSP\Drivers\legacy_uart" />
-    <Folder Include="0_BSP\Drivers\utility\" />
+    <Folder Include="0_BSP\CpuIo\" />
+    <Folder Include="0_BSP\CpuIo\legacy_uart\" />
+    <Folder Include="0_BSP\CpuIo\utility\" />
     <Folder Include="0_BSP\FreeRTOS" />
     <Folder Include="1_RSP" />
     <Folder Include="1_RSP\ComStack" />
@@ -1263,9 +1266,6 @@
       <SubType>compile</SubType>
     </None>
     <None Include="0_BSP\CMSIS\CMSIS\Lib\GCC\libarm_cortexM3l_math.a">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="0_BSP\Drivers\origine.txt">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>

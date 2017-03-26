@@ -3,9 +3,8 @@
 #define NAVIGATION_H
 
 #include "BSP.h"
-#include "ArdOs.h"
-#include "core/ArdMaths.h"
-#include "Sensors/GpioTools.h"
+#include "Core/ArdMaths.h"
+#include "Actuators/AccelStepper.h"
 #include "CommonMsg.pb.h"
 
 namespace ard
