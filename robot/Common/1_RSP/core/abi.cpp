@@ -26,11 +26,13 @@ void __cxa_pure_virtual(void) {
   // We might want to write some diagnostics to uart in this case
   //std::terminate();
   ASSERT_TEXT(false, "Pure virtual function called");
+  while(1);
 }
 
 void __cxa_deleted_virtual(void) {
   // We might want to write some diagnostics to uart in this case
   //std::terminate();
   ASSERT(false);
+  while(1);
 }
 

@@ -111,6 +111,8 @@ void Robot2017::bootOs()
     TIMER_GPIO.setInterruptPriority             (PRIORITY_IRQ_GPIO_FILTERS);
     TIMER_BUZZER.setInterruptPriority           (PRIORITY_IRQ_BUZZER);
     bsp.serial0.setInterruptPriority            (PRIORITY_IRQ_UART0);
+    NVIC_SetPriority(WIRE_ISR_ID,                PRIORITY_IRQ_I2C0);
+
 
     //Init debug serial link
     UART_Handler_CB = Robot2017_UART_Handler;

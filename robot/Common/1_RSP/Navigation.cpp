@@ -13,6 +13,7 @@ using namespace ard;
 Navigation::Navigation()
         :
                 Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
+                fakeRobot(false),
                 m_pose(),
                 m_state(eNavState_IDLE),
                 m_target(),
@@ -30,7 +31,8 @@ Navigation::Navigation()
                 m_mutex(),
                 m_targetReached(),
                 oldStepL(0),
-                oldStepR(0)
+                oldStepR(0),
+                oppTimer()
 {
     stepperL.setAcceleration(ACC_MAX * GAIN_MM_2_STEPS_LEFT);
     stepperR.setAcceleration(ACC_MAX * GAIN_MM_2_STEPS_RIGHT);
@@ -87,6 +89,14 @@ void Navigation::run()
                 //Request rotation to final heading
                 action_turningAtTarget();
             }
+
+            //check for opponent presence
+            if( (m_sensTarget == eDir_FORWARD && isOpponentAhead())
+            || (m_sensTarget == eDir_BACKWARD && isOpponentBehind()) )
+            {
+                action_waitOppMove();
+            }
+
             break;
         }
 
@@ -109,6 +119,28 @@ void Navigation::run()
                 m_order = eNavOrder_NOTHING;
                 LOG_INFO("stopped.");
             }
+            break;
+        }
+
+        case eNavState_WAIT_OPP_MOVE:
+        {
+            if(oppTimer.isFired())
+            {
+                //Check if opponent has left
+                if( (m_sensTarget == eDir_FORWARD && !isOpponentAhead())
+                || (m_sensTarget == eDir_BACKWARD && !isOpponentBehind()) )
+                {
+                    LOG_INFO("Opponent has moved away, continuing order.");
+                    setSpeed(m_speed);
+                    m_state = eNavState_GOING_TO_TARGET;
+                }
+                //If opponent is still present, continue to wait
+                else
+                {
+                    action_waitOppMove();
+                }
+            }
+
             break;
         }
     }
@@ -474,6 +506,18 @@ void Navigation::action_finishOrder()
     LOG_INFO("order finished.");
 }
 
+void Navigation::action_waitOppMove()
+{
+    enterCriticalSection();
+    stepperL.setMaxSpeed(0);
+    stepperR.setMaxSpeed(0);
+    exitCriticalSection();
+
+    oppTimer.arm(WAIT_FOR_OPP_MOVE);
+    m_state = eNavState_WAIT_OPP_MOVE;
+    LOG_INFO("Waiting that opponent moves away...");
+}
+
 void Navigation::applyCmdToGoStraight(double mm)
 {
     LOG_DEBUG(String("applyCmdToGoStraight : ") + mm + " mm");
@@ -521,6 +565,16 @@ bool Navigation::subOrderFinished()
     bool res = stepperL.distanceToGo() == 0 || stepperR.distanceToGo() == 0;
     exitCriticalSection();
     return res;
+}
+
+bool Navigation::isOpponentAhead()
+{
+    return fakeRobot || omronFrontLeft.read() == GPIO_HIGH || omronFrontLeft.read() == GPIO_HIGH;
+}
+
+bool Navigation::isOpponentBehind()
+{
+    return fakeRobot || omronRearLeft.read() == GPIO_HIGH || omronRearLeft.read() == GPIO_HIGH;
 }
 
 String Navigation::sensToString(eDir sens)

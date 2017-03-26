@@ -154,6 +154,18 @@ class RemoteControl(QObject):
         msg.requestTooLittleMsg.SetInParent()
         self._sendMsg(msg)
         
+    @pyqtSlot(bool)
+    def requestBlockRobot(self, blocked):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestBlockRobot = blocked
+        self._sendMsg(msg)
+        
+    @pyqtSlot()
+    def requestTooLittleMsg(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestTooLittleMsg.SetInParent()
+        self._sendMsg(msg)
+        
 #---------------------------------------------------------------------------------
 # Private/internal API :
 #---------------------------------------------------------------------------------

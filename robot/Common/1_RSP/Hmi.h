@@ -131,9 +131,9 @@ namespace ard
         FilteredInput user1; //user1 is on the left (1/2 choice)
         FilteredInput user2; //user2 is on the right (test/master choice)
 
-        //Buzzer2017 buzzer;
+        Buzzer2017 buzzer;
         //TODO mute buzzer
-        FakeBuzzer buzzer;
+        //FakeBuzzer buzzer;
     };
 
 } /* namespace ard */

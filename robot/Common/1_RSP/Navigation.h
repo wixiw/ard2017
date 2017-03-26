@@ -18,6 +18,7 @@ namespace ard
   {
   public:
     Navigation ();
+    bool fakeRobot; //is true when a fake robot is simulated
 
     /**---------------------------------
      * Thread interface
@@ -167,6 +168,7 @@ namespace ard
     void action_goingToTarget();
     void action_turningAtTarget();
     void action_finishOrder();
+    void action_waitOppMove();
 
 
     //used to send a straight line trajectory to the motors, it's a relative order
@@ -190,6 +192,12 @@ namespace ard
     orderToString (eNavOrder order);
     String
     stateToString (eNavState state);
+
+    //Test if opponent is ahead of robot
+    bool isOpponentAhead();
+
+    //Test if opponent is behind robot
+    bool isOpponentBehind();
 
     //status
     PointCap m_pose; //critical section
@@ -222,6 +230,9 @@ namespace ard
     
     long oldStepL; //critical section
     long oldStepR; //critical section
+
+    //opponent management
+    SwTimer oppTimer;
   };
 }    //end namespace
 

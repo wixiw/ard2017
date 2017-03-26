@@ -20,6 +20,7 @@ class TabRobot(QWidget):
     resetCpu = pyqtSignal()
     configureMatch = pyqtSignal(int, int)
     startMatch = pyqtSignal()
+    blocked = pyqtSignal(bool)
 
     
     def __init__(self):
@@ -40,6 +41,10 @@ class TabRobot(QWidget):
         self.navCombo.lineEdit().setAlignment(Qt.AlignHCenter)
         self.navCombo.highlighted[int].connect(self._navCmdChanged)
         self.navCombo.currentIndexChanged[int].connect(self._navCmdChanged)
+        self.btn_nav = dict()
+        self.btn_nav["Block"] = QPushButton('Block', self)
+        self.btn_nav["Block"].toggled[bool].connect(self._blockFromButton)
+        self.btn_nav["Block"].setCheckable(True)
         
         #Sound
         self.btn_sound = dict()
@@ -82,6 +87,7 @@ class TabRobot(QWidget):
         self.layout["NavOrder"].addLayout(self.layout["NavStack"])
         for tabName, tab in self.navTab.items():
             self.layout["NavStack"].addWidget(tab)
+        self.layout["NavOrder"].addWidget(self.btn_nav["Block"])
         self.layout["NavOrder"].addStretch(1)
         
         self.box_nav = QGroupBox("Navigation")
@@ -104,7 +110,21 @@ class TabRobot(QWidget):
         for name, widget in self.navTab.items():
             widget.reset()
         self.layout["NavStack"].setCurrentIndex(comboId)
-        
+
+    @pyqtSlot(bool)
+    def _blockFromButton(self, pressed): 
+        if pressed:
+            print("Block request") 
+            self.btn_nav["Block"].setText("Unblock")
+        else:
+            print("Unblock request") 
+            self.btn_nav["Block"].setText("Block")
+        self.blocked.emit(pressed)
+
+    @pyqtSlot()
+    def _blockFromShortcut(self): 
+        self.btn_nav["Block"].toggle()
+      
     @pyqtSlot(Tone, int)
     def _requestPlayTone(self, tone, counts):    
         print("Play tone request freq=" + str(tone.frequency) + "Hz duration=" + str(tone.duration) + "ms count=" + str(counts))

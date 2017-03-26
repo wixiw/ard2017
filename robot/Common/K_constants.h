@@ -42,6 +42,8 @@
 #define SPEED_MAX 	 	 700.0          //in mm /s
 #define DURATION_MATCH_MS 90000         //in ms
 
+//Avoidance config
+#define WAIT_FOR_OPP_MOVE 2000          //in ms
 
 #ifdef __cplusplus //const keyword is not available for C
 constexpr float GAIN_MM_2_STEPS_LEFT = - STEP_BY_TURN / (LEFT_WHEEL_DIAMETER * M_PI); // *-1 because left motor is inverted

@@ -64,6 +64,7 @@ message RemoteControlRequest
 		PointCap			setPosition			= 200;
 		RequestGoto        	requestGoto			= 210;
 		RequestGotoCap      requestGotoCap		= 211;
+		bool				requestBlockRobot   = 230;
 
 		//messages from 300 to 399 for design tests
 			//communication tests

@@ -55,6 +55,7 @@ class ConnectScreen(QWidget):
         self.tab["Robot"].configureMatch      .connect(self.teleop.configureMatch)
         self.tab["Robot"].startMatch          .connect(self.teleop.startMatch)
         self.tab["Robot"].resetCpu            .connect(self.teleop.resetCpu)
+        self.tab["Robot"].blocked             .connect(self.teleop.requestBlockRobot)
         #connect Log tab
         self.teleop.log.connect(self.tab["Log"].log)
         #connect Strat tab
@@ -109,6 +110,10 @@ class ConnectScreen(QWidget):
             #reset with r
         self.shortcuts["r"] = QShortcut(QKeySequence(Qt.Key_R), self)
         self.shortcuts["r"].activated.connect(self.teleop.resetCpu)
+            #reset with x
+        self.shortcuts["x"] = QShortcut(QKeySequence(Qt.Key_X), self)
+        self.shortcuts["x"].activated.connect(self.tab["Robot"]._blockFromShortcut)
+        
         
             #disable tabs and shortcuts requiring a network connection
         self._handleNetworkStatus(False)

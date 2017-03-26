@@ -22,6 +22,7 @@ enum eNavState {
 	GOING_TO_TARGET = 2;
 	TURNING_AT_TARGET = 3;
 	STOPPING 		= 4;
+	WAIT_OPP_MOVE 	= 5;
 }
 
 enum eNavOrder {
