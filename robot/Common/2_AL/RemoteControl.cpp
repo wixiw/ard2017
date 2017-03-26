@@ -159,7 +159,7 @@ void RemoteControl::requestPlaySound(apb_RemoteControlRequest const & request)
     for(unsigned int i = 0 ; i < request.type.requestPlaySound.tones_count ; i++)
     {
         apb_Tone tone = request.type.requestPlaySound.tones[i];
-        ROBOT.playTone(tone.frequency, tone.duration);
+        ROBOT.buzzer().playTone(tone.frequency, tone.duration);
     }
 
 }

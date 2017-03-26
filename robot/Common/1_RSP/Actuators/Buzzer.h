@@ -42,15 +42,15 @@ namespace ard
         //@param queueSize : maximal nb tunes to queue
         Buzzer(DueTimer& timer, uint8_t pin, uint16_t queueSize);
 
-        //Start or stop the buzzer (continous sound), it also empty the sound queue
-        void buzz(bool on);
-
         //Send a train of bips to the sound queue
         void bip(uint8_t nb);
 
         //Send a tone to the buzzer
         void playTone(uint16_t frequency, uint16_t lengthMs);
         void playTone(Tone const& tone);
+
+        //insert a silence of lenghMs milliseconds duration
+        void silence(uint16_t lengthMs);
 
         //Play a series a notes
         void playMelody(Melody melody, uint16_t nbTones);
@@ -60,15 +60,24 @@ namespace ard
 
         void interrupt();
         
-    protected:
-        void emptyQueue();
-        
     private:
         uint8_t pin;
         DueTimer& timer;
         Queue queue;
         Signal empty;
         uint32_t currentToneCpt;
+    };
+
+    class FakeBuzzer
+    {
+    public:
+        FakeBuzzer(DueTimer& timer, uint8_t pin, uint16_t queueSize){};
+        void bip(uint8_t nb){};
+        void playTone(uint16_t frequency, uint16_t lengthMs){};
+        void playTone(Tone const& tone){};
+        void silence(uint16_t lengthMs){};
+        void playMelody(Melody melody, uint16_t nbTones){};
+        void wait(){};
     };
 
 } /* namespace ard */

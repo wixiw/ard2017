@@ -46,11 +46,8 @@ void StrategyThread::displayIntroduction()
         LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
     }
 
-    ROBOT.setLed(LED1, SLOW_BLINK);
-    ROBOT.setLed(LED2, FAST_BLINK);
-    ROBOT.setLed(LED3, ON);
-    ROBOT.bip(3);
-    ROBOT.waitBuzzer();
+    ROBOT.buzzer().bip(2);
+    ROBOT.buzzer().wait();
 }
 
 void StrategyThread::run()
@@ -68,6 +65,7 @@ void StrategyThread::run()
         IEvent* evts[] =
         {   evt_startIn, evt_teleopConfigure};
         auto triggeredEvent = waitEvents(evts, 2);
+        ROBOT.buzzer().bip(1);
 
         //In case the start is inserted, read the HMI switches to configure the strat
         if( triggeredEvent == evt_startIn )
@@ -85,6 +83,7 @@ void StrategyThread::run()
         waitEvents(evts, 2); //returned event is not read as we don't care, result will be the same
 
         //Execute selected strategy
+        ROBOT.buzzer().bip(1);
         strategies[strategyId].functor();
     }
 }

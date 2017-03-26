@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include "BSP.h"
-#include "Actuators/Buzzer.h"
+#include "Actuators/Buzzer2017.h"
 
 namespace ard
 {
@@ -131,11 +131,10 @@ namespace ard
         FilteredInput user1; //user1 is on the left (1/2 choice)
         FilteredInput user2; //user2 is on the right (test/master choice)
 
-        Buzzer buzzer;
+        //Buzzer2017 buzzer;
+        //TODO mute buzzer
+        FakeBuzzer buzzer;
     };
-
-    //Music
-    extern Tone melody_imperialMarch[10];
 
 } /* namespace ard */
 

@@ -20,9 +20,9 @@ using namespace ard;
 //The default freq is adjusted to be the louder freq in Hz
 #define DEFAULT_FREQ 3000U
 //The default tone duration in ms
-#define DEFAULT_DURATION 10000U
+#define DEFAULT_DURATION 100U
 //The default duration between two bips in ms
-#define DEFAULT_INTERTONE 20000U
+#define DEFAULT_INTERTONE 100U
 
 //In order to map an interrupt to a C++ class
 static Buzzer* buzInst = NULL;
@@ -39,14 +39,6 @@ Buzzer::Buzzer(DueTimer& timer, uint8_t pin, uint16_t queueSize)
     ASSERT(buzInst == NULL);
     buzInst = this;
     timer.attachInterrupt(Buzzer_Handler);
-}
-
-void Buzzer::buzz(bool on)
-{
-    emptyQueue();
-
-    if(on)
-        playTone(DEFAULT_FREQ, DEFAULT_DURATION);
 }
 
 void Buzzer::bip(uint8_t nb)
@@ -69,7 +61,12 @@ void Buzzer::playTone(uint16_t frequency, uint16_t lengthMs)
 void Buzzer::playTone(Tone const& tone)
 {
     queue.push(&tone, 0);
-    timer.start(1);
+    timer.start(10000);//start timer 10ms after having received data.
+}
+
+void Buzzer::silence(uint16_t lengthMs)
+{
+    playTone(ToneSilence(lengthMs));
 }
 
 void Buzzer::playMelody(Melody melody, uint16_t nbTones)
@@ -83,12 +80,6 @@ void Buzzer::playMelody(Melody melody, uint16_t nbTones)
 void Buzzer::wait()
 {
     empty.wait();
-}
-
-void Buzzer::emptyQueue()
-{
-    //TODO empty queue
-    ASSERT(false);
 }
 
 void Buzzer::interrupt()
@@ -108,17 +99,23 @@ void Buzzer::interrupt()
             if(tone.frequency)
             {
                 currentToneCpt = (2 * tone.frequency * tone.lengthMs) / 1000; // calculate no of waveform edges (rises/falls) for the tone burst
-                timer.setFrequency(tone.frequency);
+                timer.stop();
+                timer.setFrequency(2*tone.frequency);
+                timer.start();
             }
             else
             {
+                timer.stop();
                 timer.setPeriod(tone.lengthMs*1000);
+                timer.start();
             }
         }
         else
         {
             //queue vide
             timer.stop();
+            timer.setPeriod(10000);
+            timer.start();
             digitalWrite(pin, 0);
             empty.set();
         }

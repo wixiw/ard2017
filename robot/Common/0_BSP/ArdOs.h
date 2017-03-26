@@ -259,6 +259,9 @@ namespace ard
         //@return false if the queue is empty, true on success
         bool pop(void* unqueuedObject, DelayMs timeout = portMAX_DELAY);
 
+        //empty queue
+        void empty();
+
         //Return the number of objects in the queue
         uint8_t getAvailableSpace();
 

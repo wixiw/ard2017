@@ -6,10 +6,6 @@
 #include "Arduino.h"
 #include "BSP.h"
 
-//ARD map LED to blink
-#define ERROR_PIN       LED_DUE_L
-#define HEARTBEAT_PIN    LED_DUE_RX
-
 //------------------------------------------------------------------------------
 /** calibration factor for delayMS */
 #define CAL_FACTOR (F_CPU/7000)
@@ -70,7 +66,7 @@ __attribute__((optimize(0))) void prvGetRegistersFromStack( uint32_t *pulFaultSt
 void errorBlink(int n) {
   __disable_irq();
 		
-  pinMode(ERROR_PIN, OUTPUT);
+  pinMode(LED_DUE_L, OUTPUT);
   pinMode(LED_RGB_R, OUTPUT);
   pinMode(LED_RGB_G, OUTPUT);
   pinMode(LED_RGB_B, OUTPUT);
@@ -78,12 +74,12 @@ void errorBlink(int n) {
   for (;;) {
     int i;
     for (i = 0; i < n; i++) {
-      digitalWrite(ERROR_PIN, 1);
+      digitalWrite(LED_DUE_L, 1);
       digitalWrite(LED_RGB_R, 0);
       digitalWrite(LED_RGB_G, 1);
       digitalWrite(LED_RGB_B, 1);
       delayMS(300);
-      digitalWrite(ERROR_PIN, 0);
+      digitalWrite(LED_DUE_L, 0);
       digitalWrite(LED_RGB_R, 1);
       digitalWrite(LED_RGB_G, 1);
       digitalWrite(LED_RGB_B, 1);
@@ -158,13 +154,15 @@ void UsageFault_Handler() {errorBlink(6);}
 //ARD : see FreeRTOSConfig.h
 void enterIdleCB()
 {
-    digitalWrite(HEARTBEAT_PIN, LOW);
+    digitalWrite(LED_DUE_RX, LOW);
+    digitalWrite(LED1, LOW);
 }
 
 //ARD : see FreeRTOSConfig.h
 void exitIdleCB()
 {
-    digitalWrite(HEARTBEAT_PIN, HIGH);
+    digitalWrite(LED_DUE_RX, HIGH);
+    digitalWrite(LED1, HIGH);
 }
 
 //ARD : configure the timer used to compute CPU statistics Timer 0 chan 0 is used

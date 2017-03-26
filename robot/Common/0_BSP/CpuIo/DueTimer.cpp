@@ -56,7 +56,7 @@ DueTimer Timer6(6);
 DueTimer Timer7(7);
 DueTimer Timer8(8);
 
-DueTimer::DueTimer(unsigned short _timer) : timer(_timer){
+DueTimer::DueTimer(unsigned short _timer) : timer(_timer), started(false){
 	/*
 		The constructor of the class DueTimer 
 	*/
@@ -85,6 +85,9 @@ DueTimer& DueTimer::detachInterrupt(void){
 }
 
 DueTimer& DueTimer::start(long microseconds){
+    if( started )
+        return *this;
+
 	/*
 		Start the timer
 		If a period is set, then sets the period and start the timer
@@ -100,11 +103,15 @@ DueTimer& DueTimer::start(long microseconds){
 	NVIC_EnableIRQ(Timers[timer].irq);
 	
 	TC_Start(Timers[timer].tc, Timers[timer].channel);
+	started = true;
 
 	return *this;
 }
 
 DueTimer& DueTimer::stop(void){
+    if( !started )
+        return *this;
+
 	/*
 		Stop the timer
 	*/
@@ -113,6 +120,7 @@ DueTimer& DueTimer::stop(void){
 	
 	TC_Stop(Timers[timer].tc, Timers[timer].channel);
 
+	started = false;
 	return *this;
 }
 

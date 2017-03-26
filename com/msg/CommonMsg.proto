@@ -52,5 +52,5 @@ message Tone
 
 message Melody
 {
-	repeated Tone tones = 1 [(nanopb).max_count = 100];
+	repeated Tone tones = 1 [(nanopb).max_count = 150]; //size to be adjusted with Buzzer2017.cpp
 }

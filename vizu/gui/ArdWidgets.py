@@ -108,7 +108,7 @@ class ToneWidget(QWidget):
     
     def __init__(self, parent):
         super().__init__(parent)
-        self.frequencyWidget = IntegerInput(self, 0, 5000)
+        self.frequencyWidget = IntegerInput(self, 0, 20000)
         self.durationWidget = IntegerInput(self, 0, 10000)
         self.countWidget = IntegerInput(self, 0, 10)
         

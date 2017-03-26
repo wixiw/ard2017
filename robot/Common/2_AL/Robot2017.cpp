@@ -114,7 +114,6 @@ void Robot2017::bootOs()
 
     //Init debug serial link
     UART_Handler_CB = Robot2017_UART_Handler;
-    bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
     bsp.serial0.start(SERIAL_BAUDRATE, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
 
     //init all OS objects (including threads),
@@ -124,6 +123,7 @@ void Robot2017::bootOs()
 
     //heartbeat pour le debug pour verifier que le thread est vivant
     hmi.ledDue_Tx.slowBlink();
+    hmi.led2.slowBlink();
 
     //Start everything
     TIMER_NAV_STEPPER.start(PERIOD_VERY_FAST_IT_US);
@@ -164,36 +164,6 @@ IEvent* ard::Robot2017::getRemoteControlEvt(eRemoteControlEvtId id)
     static Event<1> defaultEvent;
     return &defaultEvent;
 #endif
-}
-
-void ard::Robot2017::buzz(bool on)
-{
-    hmi.buzzer.buzz(on);
-}
-
-void ard::Robot2017::bip(uint8_t nb)
-{
-    hmi.buzzer.bip(nb);
-}
-
-void ard::Robot2017::playTone(uint16_t frequency, uint16_t lengthMs)
-{
-    hmi.buzzer.playTone(frequency, lengthMs);
-}
-
-void ard::Robot2017::playTone(const Tone& tone)
-{
-    hmi.buzzer.playTone(tone);
-}
-
-void ard::Robot2017::playMelody(Melody melody, uint16_t nbTones)
-{
-    hmi.buzzer.playMelody(melody, nbTones);
-}
-
-void ard::Robot2017::waitBuzzer()
-{
-    hmi.buzzer.wait();
 }
 
 Robot2017::Robot2017(const Robot2017& p)

@@ -40,6 +40,9 @@ protected:
 	// Represents the timer id (index for the array of Timer structs)
 	const unsigned short timer;
 
+	//save the started stated
+	bool started;
+
 	// Stores the object timer frequency
 	// (allows to access current timer period and frequency):
 	static double _frequency[NUM_TIMERS];
@@ -82,6 +85,7 @@ public:
     DueTimer& setInterruptPriority(unsigned char priority);
 	double getFrequency(void) const;
 	long getPeriod(void) const;
+	bool isStarted() const{return started;};
 };
 
 // Just to call Timer.getAvailable instead of Timer::getAvailable() :

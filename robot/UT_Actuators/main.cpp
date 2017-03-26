@@ -14,6 +14,9 @@ int main(void)
 {
     UT_LEDs();
     //UT_Steppers();
+    
+    // should never return
+	while(1);
 }
 
 extern String getExeVersion()

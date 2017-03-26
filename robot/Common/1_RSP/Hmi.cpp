@@ -194,7 +194,7 @@ HmiThread::HmiThread(DueTimer& timer):
     matchColor(BUTTON_COLOR, HMI_DEBOUNCE, HMI_DEBOUNCE),
     user1(BUTTON_USER1, HMI_DEBOUNCE, HMI_DEBOUNCE),
     user2(BUTTON_USER2, HMI_DEBOUNCE, HMI_DEBOUNCE),
-    buzzer(timer, BUZZER, 100) //queue size to be adjusted with CommonMsg.proto Melody size
+    buzzer(timer)
 {
 }
 
@@ -210,6 +210,3 @@ void HmiThread::run()
     ledDue_L.run();
 }
 
-Tone melody_imperialMarch[10]{
-    {100, 100}
-};

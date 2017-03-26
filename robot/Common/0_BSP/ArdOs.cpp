@@ -314,6 +314,12 @@ bool Queue::pop(void* unqueuedObject, DelayMs timeout)
     return res == pdTRUE;
 }
 
+void Queue::empty()
+{
+    void* tone;
+    while(pop(&tone, 0)){};
+}
+
 uint8_t Queue::getAvailableSpace()
 {
     return uxQueueSpacesAvailable(osHandler);
