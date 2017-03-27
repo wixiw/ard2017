@@ -1108,6 +1108,12 @@
     <Compile Include="1_RSP\Actuators\Buzzer2017.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\Actuators\MultiStepper.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Actuators\MultiStepper.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\Actuators\Servo.cpp">
       <SubType>compile</SubType>
     </Compile>

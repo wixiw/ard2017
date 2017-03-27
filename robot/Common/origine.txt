@@ -1,6 +1,5 @@
 AccelStepper:
-https://github.com/qnux/AccelStepper.git
-392c56dbbc336811f5ad8d9cf6f408437545d92f
+http://www.airspayce.com/mikem/arduino/AccelStepper/AccelStepper-1.56.zip
 
 Due timer :
 https://github.com/ivanseidel/DueTimer.git

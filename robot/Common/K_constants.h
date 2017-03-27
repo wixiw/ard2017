@@ -25,7 +25,7 @@
 //Debug config
     //Configure build
 #define BUILD_REMOTE_CONTROL
-//#define ARD_DEBUG
+#define ARD_DEBUG
 #define LOG_QUEUE_SIZE 20
 #define LOG_MAX_SIZE 200
     //Baudrate : from 600 bits/s to 250kbits/s
@@ -43,7 +43,7 @@
 #define DURATION_MATCH_MS 90000         //in ms
 
 //Avoidance config
-#define WAIT_FOR_OPP_MOVE 2000          //in ms
+#define WAIT_FOR_OPP_MOVE 1000          //in ms
 
 #ifdef __cplusplus //const keyword is not available for C
 constexpr float GAIN_MM_2_STEPS_LEFT = - STEP_BY_TURN / (LEFT_WHEEL_DIAMETER * M_PI); // *-1 because left motor is inverted

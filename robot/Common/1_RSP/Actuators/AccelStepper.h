@@ -3,7 +3,7 @@
 /// \mainpage AccelStepper library for Arduino
 ///
 /// This is the Arduino AccelStepper library.
-/// It provides an object-oriented interface for 2, 3 or 4 pin stepper motors.
+/// It provides an object-oriented interface for 2, 3 or 4 pin stepper motors and motor drivers.
 ///
 /// The standard Arduino IDE includes the Stepper library
 /// (http://arduino.cc/en/Reference/Stepper) for stepper motors. It is
@@ -23,14 +23,17 @@
 /// The latest version of this documentation can be downloaded from 
 /// http://www.airspayce.com/mikem/arduino/AccelStepper
 /// The version of the package that this documentation refers to can be downloaded 
-/// from http://www.airspayce.com/mikem/arduino/AccelStepper/AccelStepper-1.45.zip
+/// from http://www.airspayce.com/mikem/arduino/AccelStepper/AccelStepper-1.56.zip
 ///
 /// Example Arduino programs are included to show the main modes of use.
 ///
 /// You can also find online help and discussion at http://groups.google.com/group/accelstepper
 /// Please use that group for all questions and discussions on this topic. 
 /// Do not contact the author directly, unless it is to discuss commercial licensing.
-/// Before asking a question or reporting a bug, please read http://www.catb.org/esr/faqs/smart-questions.html
+/// Before asking a question or reporting a bug, please read 
+/// - http://en.wikipedia.org/wiki/Wikipedia:Reference_desk/How_to_ask_a_software_question
+/// - http://www.catb.org/esr/faqs/smart-questions.html
+/// - http://www.chiark.greenend.org.uk/~shgtatham/bugs.html
 ///
 /// Tested on Arduino Diecimila and Mega with arduino-0018 & arduino-0021 
 /// on OpenSuSE 11.1 and avr-libc-1.6.1-1.15,
@@ -47,12 +50,19 @@
 ///
 /// This code uses speed calculations as described in 
 /// "Generate stepper-motor speed profiles in real time" by David Austin 
-/// http://fab.cba.mit.edu/classes/MIT/961.09/projects/i0/Stepper_Motor_Speed_Profile.pdf
+/// http://fab.cba.mit.edu/classes/MIT/961.09/projects/i0/Stepper_Motor_Speed_Profile.pdf or
+/// http://www.embedded.com/design/mcus-processors-and-socs/4006438/Generate-stepper-motor-speed-profiles-in-real-time or
+/// http://web.archive.org/web/20140705143928/http://fab.cba.mit.edu/classes/MIT/961.09/projects/i0/Stepper_Motor_Speed_Profile.pdf
 /// with the exception that AccelStepper uses steps per second rather than radians per second
 /// (because we dont know the step angle of the motor)
 /// An initial step interval is calculated for the first step, based on the desired acceleration
 /// On subsequent steps, shorter step intervals are calculated based 
 /// on the previous step until max speed is achieved.
+///
+/// \par Adafruit Motor Shield V2
+///
+/// The included examples AFMotor_* are for Adafruit Motor Shield V1 and do not work with Adafruit Motor Shield V2.
+/// See https://github.com/adafruit/Adafruit_Motor_Shield_V2_Library for examples that work with Adafruit Motor Shield V2.
 /// 
 /// \par Donations
 ///
@@ -80,12 +90,12 @@
 /// the right to share who uses it. If you wish to use this software under Open
 /// Source Licensing, you must contribute all your source code to the open source
 /// community in accordance with the GPL Version 2 when your application is
-/// distributed. See http://www.gnu.org/copyleft/gpl.html
+/// distributed. See https://www.gnu.org/licenses/gpl-2.0.html
 /// 
 /// \par Commercial Licensing
 /// This is the appropriate option if you are creating proprietary applications
 /// and you are not prepared to distribute and share the source code of your
-/// application. Contact info@airspayce.com for details.
+/// application. Purchase commercial licenses at http://airspayce.binpress.com/product/accelstepper/3846
 ///
 /// \par Revision History
 /// \version 1.0 Initial release
@@ -187,11 +197,50 @@
 /// \version 1.44  examples/DualMotorShield/DualMotorShield.ino examples/DualMotorShield/DualMotorShield.pde
 ///                was missing from the distribution.<br>
 /// \version 1.45  Fixed a problem where if setAcceleration was not called, there was no default
-///                acceleration. Reported by Michael Newman.
+///                acceleration. Reported by Michael Newman.<br>
+/// \version 1.45  Fixed inaccuracy in acceleration rate by using Equation 15, suggested by Sebastian Gracki.<br>
+///                Performance improvements in runSpeed suggested by Jaakko Fagerlund.<br>
+/// \version 1.46  Fixed error in documentation for runToPosition().
+///                Reinstated time calculations in runSpeed() since new version is reported 
+///                not to work correctly under some circumstances. Reported by Oleg V Gavva.<br>
+/// \version 1.48  2015-08-25
+///                Added new class MultiStepper that can manage multiple AccelSteppers, 
+///                and cause them all to move
+///                to selected positions at such a (constant) speed that they all arrive at their
+///                target position at the same time. Suitable for X-Y flatbeds etc.<br>
+///                Added new method maxSpeed() to AccelStepper to return the currently configured maxSpeed.<br>
+/// \version 1.49  2016-01-02
+///                Testing with VID28 series instrument stepper motors and EasyDriver.
+///                OK, although with light pointers
+///                and slow speeds like 180 full steps per second the motor movement can be erratic, 
+///                probably due to some mechanical resonance. Best to accelerate through this speed.<br>
+///                Added isRunning().<br>
+/// \version 1.50 2016-02-25
+///                AccelStepper::disableOutputs now sets the enable pion to OUTPUT mode if the enable pin is defined.
+///                Patch from Piet De Jong.<br>
+///                Added notes about the fact that AFMotor_* examples do not work with Adafruit Motor Shield V2.<br>
+/// \version 1.51 2016-03-24
+///                Fixed a problem reported by gregor: when resetting the stepper motor position using setCurrentPosition() the 
+///                stepper speed is reset by setting _stepInterval to 0, but _speed is not 
+///                reset. this results in the stepper motor not starting again when calling 
+///                setSpeed() with the same speed the stepper was set to before.
+/// \version 1.52 2016-08-09
+///                Added MultiStepper to keywords.txt.
+///                Improvements to efficiency of AccelStepper::runSpeed() as suggested by David Grayson.
+///                Improvements to speed accuracy as suggested by David Grayson.
+/// \version 1.53 2016-08-14
+///                Backed out Improvements to speed accuracy from 1.52 as it did not work correctly.
+/// \version 1.54 2017-01-24
+///                Fixed some warnings about unused arguments.
+/// \version 1.55 2017-01-25
+///                Fixed another warning in MultiStepper.cpp
+/// \version 1.56 2017-02-03
+///                Fixed minor documentation error with DIRECTION_CCW and DIRECTION_CW. Reported by David Mutterer.
+///                Added link to Binpress commercial license purchasing.
 ///
 /// \author  Mike McCauley (mikem@airspayce.com) DO NOT CONTACT THE AUTHOR DIRECTLY: USE THE LISTS
 // Copyright (C) 2009-2013 Mike McCauley
-// $Id: AccelStepper.h,v 1.21 2014/10/31 06:05:30 mikem Exp mikem $
+// $Id: AccelStepper.h,v 1.27 2016/08/14 10:26:54 mikem Exp mikem $
 
 #ifndef AccelStepper_h
 #define AccelStepper_h
@@ -248,6 +297,10 @@
 /// whenever required for the speed set.
 /// Calling setAcceleration() is expensive,
 /// since it requires a square root to be calculated.
+///
+/// Gregor Christandl reports that with an Arduino Due and a simple test program, 
+/// he measured 43163 steps per second using runSpeed(), 
+/// and 16214 steps per second using run();
 class AccelStepper
 {
 public:
@@ -272,7 +325,7 @@ public:
     /// position is set to 0. MaxSpeed and Acceleration default to 1.0.
     /// The motor pins will be initialised to OUTPUT mode during the
     /// constructor by a call to enableOutputs().
-    /// \param[in] interface Number of pins to interface to. 1, 2, 4 or 8 are
+    /// \param[in] interface Number of pins to interface to. Integer values are
     /// supported, but it is preferred to use the \ref MotorInterfaceType symbolic names. 
     /// AccelStepper::DRIVER (1) means a stepper driver (with Step and Direction pins).
     /// If an enable line is also needed, call setEnablePin() after construction.
@@ -337,14 +390,19 @@ public:
     /// Sets the maximum permitted speed. The run() function will accelerate
     /// up to the speed set by this function.
     /// Caution: the maximum speed achievable depends on your processor and clock speed.
-    /// \param[in] speed The desired maximum speed in steps per second.
-    /// Caution: Speeds that exceed the maximum speed supported by the processor may
+    /// \param[in] speed The desired maximum speed in steps per second. Must
+    /// be > 0. Caution: Speeds that exceed the maximum speed supported by the processor may
     /// Result in non-linear accelerations and decelerations.
     void    setMaxSpeed(float speed);
 
+    /// returns the maximum speed configured for this stepper
+    /// that was previously set by setMaxSpeed();
+    /// \return The currently configured maximum speed
+    float   maxSpeed();
+
     /// Sets the acceleration/deceleration rate.
     /// \param[in] acceleration The desired acceleration in steps per second
-    /// per second. This is an expensive call since it requires a square
+    /// per second. Must be > 0.0. This is an expensive call since it requires a square 
     /// root to be calculated. Dont call more ofthen than needed
     void    setAcceleration(float acceleration);
 
@@ -384,7 +442,7 @@ public:
     /// happens to be right now.
     void    setCurrentPosition(long position);  
     
-    /// Moves the motor at the currently selected constant speed (forward or reverse) 
+    /// Moves the motor (with acceleration/deceleration) 
     /// to the target position and blocks until it is at
     /// position. Dont use this in event loops, since it blocks.
     void    runToPosition();
@@ -394,7 +452,8 @@ public:
     /// \return true if it stepped
     boolean runSpeedToPosition();
 
-    /// Moves the motor to the new target position and blocks until it is at
+    /// Moves the motor (with acceleration/deceleration)
+    /// to the new target position and blocks until it is at
     /// position. Dont use this in event loops, since it blocks.
     /// \param[in] position The new target position.
     void    runToNewPosition(long position);
@@ -409,10 +468,12 @@ public:
     /// This is useful to support Arduino low power modes: disable the outputs
     /// during sleep and then reenable with enableOutputs() before stepping
     /// again.
+    /// If the enable Pin is defined, sets it to OUTPUT mode and clears the pin to disabled.
     virtual void    disableOutputs();
 
     /// Enable motor pin outputs by setting the motor pins to OUTPUT
     /// mode. Called automatically by the constructor.
+    /// If the enable Pin is defined, sets it to OUTPUT mode and sets the pin to enabled.
     virtual void    enableOutputs();
 
     /// Sets the minimum pulse width allowed by the stepper driver. The minimum practical pulse width is 
@@ -444,14 +505,18 @@ public:
     /// \param[in] enableInvert    True for inverted enable pin, false (default) for non-inverted
     void    setPinsInverted(bool pin1Invert, bool pin2Invert, bool pin3Invert, bool pin4Invert, bool enableInvert);
 
+    /// Checks to see if the motor is currently running to a target
+    /// \return true if the speed is not zero or not at the target position
+    bool    isRunning();
+
 protected:
 
     /// \brief Direction indicator
     /// Symbolic names for the direction the motor is turning
     typedef enum
     {
-	DIRECTION_CCW = 0,  ///< Clockwise
-        DIRECTION_CW  = 1   ///< Counter-Clockwise
+	DIRECTION_CCW = 0,  ///< Counter-Clockwise
+        DIRECTION_CW  = 1   ///< Clockwise
     } Direction;
 
     /// Forces the library to compute a new instantaneous speed and set that as
@@ -610,7 +675,7 @@ private:
 /// which sets a new target position and then waits until the stepper has 
 /// achieved it. This is used for testing the handling of overshoots
 
-/// @example MultiStepper.pde
+/// @example MultipleSteppers.pde
 /// Shows how to multiple simultaneous steppers
 /// Runs one stepper forwards and backwards, accelerating and decelerating
 /// at the limits. Runs other steppers at the same time
