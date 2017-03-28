@@ -13,6 +13,7 @@ using namespace ard;
 Navigation::Navigation()
         :
                 Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
+                fakeRobot(false),
                 m_pose(),
                 m_state(eNavState_IDLE),
                 m_target(),
@@ -20,20 +21,22 @@ Navigation::Navigation()
                 m_order(eNavOrder_NOTHING),
                 stepperL(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
                 stepperR(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
-                omronFrontLeft(OMRON1, 50, 50, FilteredInput::INVERTED),
-                omronFrontRight(OMRON2, 50, 50, FilteredInput::INVERTED),
-                omronRearLeft(OMRON3, 50, 50, FilteredInput::INVERTED),
-                omronRearRight(OMRON4, 50, 50, FilteredInput::INVERTED),
+                omronFrontLeft(OMRON1, 50, 50),
+                omronFrontRight(OMRON2, 50, 50),
+                omronRearLeft(OMRON3, 50, 50),
+                omronRearRight(OMRON4, 50, 50),
                 m_color(eColor_PREF),
                 m_speed(SPEED_MAX),
                 m_speed_virage(SPEED_MAX_VIR),
                 m_mutex(),
                 m_targetReached(),
                 oldStepL(0),
-                oldStepR(0)
+                oldStepR(0),
+                oppTimer(),
+                avoidanceActive(false)//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
 {
-    stepperL.setAcceleration(ACC_MAX * GAIN_MM_2_STEPS_LEFT);
-    stepperR.setAcceleration(ACC_MAX * GAIN_MM_2_STEPS_RIGHT);
+    stepperL.setAcceleration(fabs(ACC_MAX * GAIN_MM_2_STEPS_LEFT));
+    stepperR.setAcceleration(fabs(ACC_MAX * GAIN_MM_2_STEPS_RIGHT));
 }
 
 /**---------------------------------
@@ -87,6 +90,16 @@ void Navigation::run()
                 //Request rotation to final heading
                 action_turningAtTarget();
             }
+            else
+            {
+                //check for opponent presence (if avoidance system is active)
+                if( (m_sensTarget == eDir_FORWARD && isOpponentAhead())
+                || (m_sensTarget == eDir_BACKWARD && isOpponentBehind()) )
+                {
+                    action_waitOppMove();
+                }
+            }
+
             break;
         }
 
@@ -109,6 +122,28 @@ void Navigation::run()
                 m_order = eNavOrder_NOTHING;
                 LOG_INFO("stopped.");
             }
+            break;
+        }
+
+        case eNavState_WAIT_OPP_MOVE:
+        {
+            if(oppTimer.isFired() || (!avoidanceActive  && !fakeRobot))
+            {
+                //Check if opponent has left
+                if( (m_sensTarget == eDir_FORWARD && !isOpponentAhead())
+                || (m_sensTarget == eDir_BACKWARD && !isOpponentBehind()) )
+                {
+                    LOG_INFO("Opponent has moved away, continuing order.");
+                    LOG_DEBUG(String("Speed=") + m_speed + " togoL=" + stepperL.distanceToGo() + " togoR=" + stepperR.distanceToGo());
+                    action_goingToTarget();
+                }
+                //If opponent is still present, continue to wait
+                else
+                {
+                    oppTimer.arm(WAIT_FOR_OPP_MOVE);
+                }
+            }
+
             break;
         }
     }
@@ -297,14 +332,14 @@ void Navigation::setSpeed(float s)
     enterCriticalSection();
     if (s > 0)
     {
-        stepperL.setMaxSpeed(s * GAIN_MM_2_STEPS_LEFT);
-        stepperR.setMaxSpeed(s * GAIN_MM_2_STEPS_RIGHT);
+        stepperL.setMaxSpeed(fabs(s * GAIN_MM_2_STEPS_LEFT));
+        stepperR.setMaxSpeed(fabs(s * GAIN_MM_2_STEPS_RIGHT));
         m_speed = s;
     }
     else
     {
-        stepperL.setMaxSpeed(SPEED_MAX * GAIN_MM_2_STEPS_LEFT);
-        stepperR.setMaxSpeed(SPEED_MAX * GAIN_MM_2_STEPS_RIGHT);
+        stepperL.setMaxSpeed(fabs(SPEED_MAX * GAIN_MM_2_STEPS_LEFT));
+        stepperR.setMaxSpeed(fabs(SPEED_MAX * GAIN_MM_2_STEPS_RIGHT));
         m_speed = SPEED_MAX;
     }
     exitCriticalSection();
@@ -474,14 +509,26 @@ void Navigation::action_finishOrder()
     LOG_INFO("order finished.");
 }
 
+void Navigation::action_waitOppMove()
+{
+    enterCriticalSection();
+    stepperL.stop();
+    stepperR.stop();
+    exitCriticalSection();
+
+    oppTimer.arm(WAIT_FOR_OPP_MOVE);
+    m_state = eNavState_WAIT_OPP_MOVE;
+    LOG_INFO("Waiting that opponent moves away...");
+}
+
 void Navigation::applyCmdToGoStraight(double mm)
 {
     LOG_DEBUG(String("applyCmdToGoStraight : ") + mm + " mm");
 
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
-    stepperL.setMaxSpeed(m_speed * GAIN_MM_2_STEPS_LEFT);
-    stepperR.setMaxSpeed(m_speed * GAIN_MM_2_STEPS_RIGHT);
+    stepperL.setMaxSpeed(fabs(m_speed * GAIN_MM_2_STEPS_LEFT));
+    stepperR.setMaxSpeed(fabs(m_speed * GAIN_MM_2_STEPS_RIGHT));
     stepperL.move(mm * GAIN_MM_2_STEPS_LEFT);
     stepperR.move(mm * GAIN_MM_2_STEPS_RIGHT);
     exitCriticalSection();
@@ -493,8 +540,8 @@ void Navigation::applyCmdToTurn(double angleInRad)
 
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
-    stepperL.setMaxSpeed(m_speed_virage * GAIN_DEG_2_MM_LEFT);
-    stepperR.setMaxSpeed(m_speed_virage * GAIN_DEG_2_MM_RIGHT);
+    stepperL.setMaxSpeed(fabs(m_speed_virage * GAIN_DEG_2_MM_LEFT));
+    stepperR.setMaxSpeed(fabs(m_speed_virage * GAIN_DEG_2_MM_RIGHT));
     stepperL.move(-angleInRad * GAIN_RAD_2_MM_LEFT/2.); //half contribution on each wheel
     stepperR.move(angleInRad * GAIN_RAD_2_MM_RIGHT/2.);
     exitCriticalSection();
@@ -523,11 +570,39 @@ bool Navigation::subOrderFinished()
     return res;
 }
 
+bool Navigation::isOpponentAhead()
+{
+    if( fakeRobot ||
+        (avoidanceActive && (omronFrontLeft.read() == GPIO_HIGH || omronFrontRight.read() == GPIO_HIGH)) )
+    {
+        LOG_DEBUG(String("Opponent ahead : L=") + omronFrontLeft.read() + " R=" + omronFrontRight.read()
+                + " Lraw=" + omronFrontLeft.readRaw() + " Rraw=" + omronFrontRight.readRaw());
+        return true;
+    }
+    else
+        return false;
+}
+
+bool Navigation::isOpponentBehind()
+{
+    if( fakeRobot ||
+        (avoidanceActive && (omronRearLeft.read() == GPIO_HIGH || omronRearRight.read() == GPIO_HIGH)) )
+    {
+        LOG_DEBUG(String("Opponent behind : L=") + omronRearLeft.read() + " R=" + omronRearRight.read());
+        return true;
+    }
+    else
+        return false;
+}
+
 String Navigation::sensToString(eDir sens)
 {
     switch (sens)
     {
     default:
+        ASSERT(false);
+        return "";
+        break;
     ENUM2STR(eDir_UNDEFINED)
 ;        ENUM2STR(eDir_FORWARD);
         ENUM2STR(eDir_BACKWARD);
@@ -539,6 +614,9 @@ String Navigation::orderToString(eNavOrder order)
     switch (order)
     {
     default:
+        ASSERT(false);
+        return "";
+        break;
     ENUM2STR(eNavOrder_NOTHING)
 ;        ENUM2STR(eNavOrder_GOTO);
         ENUM2STR(eNavOrder_GOTO_CAP);
@@ -550,10 +628,24 @@ String Navigation::stateToString(eNavState state)
     switch (state)
     {
     default:
+        ASSERT(false);
+        return "";
+        break;
     ENUM2STR(eNavState_IDLE)
 ;        ENUM2STR(eNavState_FACING_DEST);
         ENUM2STR(eNavState_GOING_TO_TARGET);
         ENUM2STR(eNavState_TURNING_AT_TARGET);
         ENUM2STR(eNavState_STOPPING);
+        ENUM2STR(eNavState_WAIT_OPP_MOVE);
     }
+}
+
+void ard::Navigation::enableAvoidance(bool on)
+{
+    if( on && !avoidanceActive )
+        LOG_INFO("Avoidance system activated.");
+    if( !on && avoidanceActive )
+        LOG_INFO("Avoidance system deactivated.");
+
+    avoidanceActive = on;
 }

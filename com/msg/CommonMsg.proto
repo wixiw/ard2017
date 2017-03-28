@@ -1,6 +1,7 @@
 syntax = "proto2";
 package apb;
 
+import "nanopb.proto";
 import "Types.proto";
 
 
@@ -41,4 +42,15 @@ message ColorSensorState {
 
 message ActuatorsState {
     required ColorSensorState colorSensor        = 1;
+}
+
+message Tone
+{
+	required uint32 frequency = 1; //Hz
+	required uint32 duration = 2; //ms
+}
+
+message Melody
+{
+	repeated Tone tones = 1 [(nanopb).max_count = 150]; //size to be adjusted with Buzzer2017.cpp
 }

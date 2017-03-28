@@ -3,8 +3,15 @@
 
 from PyQt5.Qt import *
 from ArdHdlc import *
-from proto import *
 from core import *
+
+#expand path to find modules :
+import sys
+#Find the directory in which vizu.py is located
+from os.path import dirname, abspath
+DIR = dirname(abspath(__file__))
+sys.path.append(DIR + "../../com")
+from generated import *
 
 #
 # This class is a network middleware allowing SW to call RPC method 
@@ -65,7 +72,6 @@ class RemoteControl(QObject):
 #---------------------------------------------------------------------------------
 # TELEOP SEND/Request API : any of the method below send a msg with the same name in RemoteControl_pb2.py
 #---------------------------------------------------------------------------------
-    
     @pyqtSlot()
     def getOsStats(self):
         msg = RemoteControl_pb2.RemoteControlRequest()
@@ -84,6 +90,18 @@ class RemoteControl(QObject):
         msg.getTelemetry.SetInParent()
         self._sendMsg(msg)
     
+    @pyqtSlot(Melody)
+    def requestPlaySound(self, melody):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        melody.toMsg(msg.requestPlaySound)
+        self._sendMsg(msg)
+    
+    @pyqtSlot()
+    def resetCpu(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.reboot.SetInParent()
+        self._sendMsg(msg)
+        
     @pyqtSlot(int, int)
     def configureMatch(self, strategy, color):
         msg = RemoteControl_pb2.RemoteControlRequest()
@@ -95,12 +113,6 @@ class RemoteControl(QObject):
     def startMatch(self):
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.startMatch.SetInParent()
-        self._sendMsg(msg)
-        
-    @pyqtSlot()
-    def resetCpu(self):
-        msg = RemoteControl_pb2.RemoteControlRequest()
-        msg.reboot.SetInParent()
         self._sendMsg(msg)
         
     @pyqtSlot(Pose2D)
@@ -134,6 +146,18 @@ class RemoteControl(QObject):
     def requestCrcFailMsg(self):
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestCrcFailMsg.SetInParent()
+        self._sendMsg(msg)
+        
+    @pyqtSlot()
+    def requestTooLittleMsg(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestTooLittleMsg.SetInParent()
+        self._sendMsg(msg)
+        
+    @pyqtSlot(bool)
+    def requestBlockRobot(self, blocked):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestBlockRobot = blocked
         self._sendMsg(msg)
         
     @pyqtSlot()

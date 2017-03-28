@@ -1,0 +1,25 @@
+AccelStepper:
+http://www.airspayce.com/mikem/arduino/AccelStepper/AccelStepper-1.56.zip
+
+Due timer :
+https://github.com/ivanseidel/DueTimer.git
+6a7dcd08c585548d4e25a8bcfd06bbf44e5433ac
+
+Servo:
+https://github.com/arduino/Arduino.git
+31a9029c1d89e394f4f8d6948504127120177756
+
+SD:
+https://github.com/arduino/Arduino.git
+31a9029c1d89e394f4f8d6948504127120177756
+
+Adafruit_TCS34725 (color sensor module) :
+https://github.com/adafruit/Adafruit_TCS34725.git
+12be4c6937df5f09b04a6540e1b3c00ce5fe93ac
+
+SPI:
+I2C:
+from arduino 1.6.x libs
+
+UART :
+ARD own dev from Arduino UARTClass

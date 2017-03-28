@@ -60,6 +60,9 @@ namespace ard
         //for param led see BSH.h : LED1, LED2, LED3, LED4
         void setLed(uint8_t led, eLedState blink);
 
+        //buzzer accessor
+        Buzzer2017& buzzer(){return hmi.buzzer;};
+
         //Retrive any of the teleop events
         IEvent* getRemoteControlEvt(eRemoteControlEvtId id);
 

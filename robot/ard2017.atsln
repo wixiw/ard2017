@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\generate.bat = ..\generate.bat
 	EndProjectSection
 EndProject
-Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_AccelStepper", "UT_AccelStepper\UT_AccelStepper.cppproj", "{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}"
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_Actuators", "UT_Actuators\UT_Actuators.cppproj", "{3940C6FF-C6D6-443E-A0C5-F379C38B95AB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DA4F1581-646B-4293-8BF6-81869867C585} = {DA4F1581-646B-4293-8BF6-81869867C585}
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897} = {DCE6C7E3-EE26-4D79-826B-08594B9AD897}
@@ -44,6 +44,8 @@ Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_ArdUart", "UT_ArdUart\UT
 		{DA4F1581-646B-4293-8BF6-81869867C585} = {DA4F1581-646B-4293-8BF6-81869867C585}
 		{DCE6C7E3-EE26-4D79-826B-08594B9AD897} = {DCE6C7E3-EE26-4D79-826B-08594B9AD897}
 	EndProjectSection
+EndProject
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_Sensors", "UT_Sensors\UT_Sensors.cppproj", "{F8398D18-D053-42E4-A3DB-FF8A55940C1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +81,10 @@ Global
 		{22F7317F-407D-40DD-9251-28FFE91B2082}.Debug|ARM.Build.0 = Debug|ARM
 		{22F7317F-407D-40DD-9251-28FFE91B2082}.Release|ARM.ActiveCfg = Release|ARM
 		{22F7317F-407D-40DD-9251-28FFE91B2082}.Release|ARM.Build.0 = Release|ARM
+		{F8398D18-D053-42E4-A3DB-FF8A55940C1E}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F8398D18-D053-42E4-A3DB-FF8A55940C1E}.Debug|ARM.Build.0 = Debug|ARM
+		{F8398D18-D053-42E4-A3DB-FF8A55940C1E}.Release|ARM.ActiveCfg = Release|ARM
+		{F8398D18-D053-42E4-A3DB-FF8A55940C1E}.Release|ARM.Build.0 = Release|ARM
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

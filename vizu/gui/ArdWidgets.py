@@ -4,10 +4,11 @@
 import signal
 import math
 from ArdMath import *
+from Music import *
 from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from proto import *
+from generated import *
 
 #
 # This widget is a restricted text field usable to select an integer value in a range
@@ -101,4 +102,29 @@ class DirectionInput(QComboBox):
     def getValue(self):
         return self.currentData()
     
+class ToneWidget(QWidget):
+    #signal(Tone)
+    toneRequest = pyqtSignal(Tone, int)
     
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.frequencyWidget = IntegerInput(self, 0, 20000)
+        self.durationWidget = IntegerInput(self, 0, 10000)
+        self.countWidget = IntegerInput(self, 0, 10)
+        
+        self.play = QPushButton('Play', self)
+        self.play.clicked.connect(self._play) 
+        
+        layout = QHBoxLayout(self)
+        layoutForm = QFormLayout()
+        layout.addLayout(layoutForm)
+        layout.addWidget(self.play)
+        
+        layoutForm.addRow("frequency (Hz)", self.frequencyWidget)
+        layoutForm.addRow("duration (ms)", self.durationWidget)
+        layoutForm.addRow("count", self.countWidget)
+    
+    @pyqtSlot()
+    def _play(self):
+        self.toneRequest.emit(Tone(self.frequencyWidget.getValue(), self.durationWidget.getValue()), self.countWidget.getValue())
+        

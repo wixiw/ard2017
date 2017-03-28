@@ -3,227 +3,246 @@
 #define NAVIGATION_H
 
 #include "BSP.h"
-#include "ArdOs.h"
-#include "core/ArdMaths.h"
-#include "Sensors/GpioTools.h"
+#include "Core/ArdMaths.h"
+#include "Actuators/AccelStepper.h"
 #include "CommonMsg.pb.h"
 
 namespace ard
 {
-  /**
-   * This class manage the robot position movements, and avoidance
-   * It is isolated from the rest of the code to prevent something
-   * to block the avoidance/localisation part.
-   */
-  class Navigation : public Thread
-  {
-  public:
-    Navigation ();
-
-    /**---------------------------------
-     * Thread interface
-     ---------------------------------*/
-
-    //Implements Thread
-    void run() override;
-
-    //As the motor lib needs to be called
-    void updateFromInterrupt();
-
-    /**---------------------------------
-     * User (= strategy) interface
-     ---------------------------------*/
-
     /**
-     * Force a new robot position
-     * the position is automatically symetrized depending
-     * on the value configured with setColor()
+     * This class manage the robot position movements, and avoidance
+     * It is isolated from the rest of the code to prevent something
+     * to block the avoidance/localisation part.
      */
-    void
-    setPosition (PointCap newPose);
-    void
-    setPosition(float x/*mm*/, float y/*mm*/, float h/*deg*/){setPosition(PointCap(x,y,DEG_TO_RAD*h));};
-
-    /**
-     * Get the current robot position
-     */
-    PointCap
-    getPosition ()
+    class Navigation: public Thread
     {
-      return m_pose;
-    }
+    public:
+        Navigation();
+        bool fakeRobot; //is true when a fake robot is simulated
 
-    /**
-     Send a Goto (x,y) request, the robot will turn to face the target
-     and use a straight line to go to it.
-     If an order is already present the call is blocking as if a wait() where done.
+        /**---------------------------------
+         * Thread interface
+         ---------------------------------*/
 
-     Note that the target is automatically symetrized depending
-     on the color configured with setColor()
+        //Implements Thread
+        void run() override;
 
-     In order to wait until the order is complete, use the wait()/targetReached() functions
+        //As the motor lib needs to be called
+        void updateFromInterrupt();
 
-     x,y in mm
+        /**---------------------------------
+         * User (= strategy) interface
+         ---------------------------------*/
 
-     */
-    void
-    goTo (Point target, eDir sens = eDir_FORWARD);
-    void
-    goTo (float x /*mm*/, float y/*mm*/, eDir sens = eDir_FORWARD){goTo(Point(x,y), sens);};
+        /**
+         * Force a new robot position
+         * the position is automatically symetrized depending
+         * on the value configured with setColor()
+         */
+        void
+        setPosition(PointCap newPose);
+        void setPosition(float x/*mm*/, float y/*mm*/, float h/*deg*/)
+        {
+            setPosition(PointCap(x, y, DEG_TO_RAD * h));
+        }
+        ;
 
-    /**
-     Send a Goto (x,y,heading) request, the robot will turn to face the target
-     and use a straight line to go to it. Then it will turn to reach the
-     target heading/
-     If an order is already present the call is blocking as if a wait() where done.
+        /**
+         * Get the current robot position
+         */
+        PointCap getPosition()
+        {
+            return m_pose;
+        }
 
-     Note that the target is automatically symetrized depending
-     on the color configured with setColor()
+        /**
+         Send a Goto (x,y) request, the robot will turn to face the target
+         and use a straight line to go to it.
+         If an order is already present the call is blocking as if a wait() where done.
 
-     In order to wait until the order is complete, use the wait()/targetReached() functions
+         Note that the target is automatically symetrized depending
+         on the color configured with setColor()
 
-     x,y in mm
-     heading in degrees
+         In order to wait until the order is complete, use the wait()/targetReached() functions
 
-     */
-    void
-    goToCap (PointCap target, eDir sens = eDir_FORWARD);
-    void
-    goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD){goToCap(PointCap(x,y,h*DEG_TO_RAD), sens);};
+         x,y in mm
 
-    /**
-     * The robot will go ahead of the distance in parameter
-     * note : the distance may be negative to go rear-way
-     *
-     * If an order is already present the call is blocking as if a wait() where done.
-     */
-    void
-    goForward (float distanceMm);
+         */
+        void
+        goTo(Point target, eDir sens = eDir_FORWARD);
+        void goTo(float x /*mm*/, float y/*mm*/, eDir sens = eDir_FORWARD)
+        {
+            goTo(Point(x, y), sens);
+        }
+        ;
 
-    /**
-     * The robot will turn of the angle in parameter (absolute or relative)
-     * note : the angle may be negative to go clockwise
-     *
-     * If an order is already present the call is blocking as if a wait() where done.
-     */
-    void
-    turnDelta(float angle);
-    void
-    turnTo (float angle);
+        /**
+         Send a Goto (x,y,heading) request, the robot will turn to face the target
+         and use a straight line to go to it. Then it will turn to reach the
+         target heading/
+         If an order is already present the call is blocking as if a wait() where done.
 
-    /**
-     * The robot will turn to face the point in parameter
-     * Note that the target is automatically symetrized depending
-     * on the color configured with setColor()
-     *
-     * If an order is already present the call is blocking as if a wait() where done.
-     */
-    void
-    faceTo (Point p);
+         Note that the target is automatically symetrized depending
+         on the color configured with setColor()
 
-    /**
-     * Stops the robot. It interrupts current order.
-     */
-    void 
-    stopMoving();
+         In order to wait until the order is complete, use the wait()/targetReached() functions
 
-    /**
-     * This is a blocking call until the current order is finished
-     */
-    void
-    wait ();
+         x,y in mm
+         heading in degrees
 
-    /**
-     * This is the non blocking version of wait()
-     */
-    bool
-    targetReached();
+         */
+        void
+        goToCap(PointCap target, eDir sens = eDir_FORWARD);
+        void goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD)
+        {
+            goToCap(PointCap(x, y, h * DEG_TO_RAD), sens);
+        }
+        ;
 
-    /**---------------------------------
-     * Nav configuration
-     ---------------------------------*/
+        /**
+         * The robot will go ahead of the distance in parameter
+         * note : the distance may be negative to go rear-way
+         *
+         * If an order is already present the call is blocking as if a wait() where done.
+         */
+        void
+        goForward(float distanceMm);
 
-    void
-    setColor (eColor c);
-    void
-    setSpeed (float speed); //in mm/s
-    void
-    setSpeedVir (float s); //in °/s
+        /**
+         * The robot will turn of the angle in parameter (absolute or relative)
+         * note : the angle may be negative to go clockwise
+         *
+         * If an order is already present the call is blocking as if a wait() where done.
+         */
+        void
+        turnDelta(float angle);
+        void
+        turnTo(float angle);
 
-    /**---------------------------------
-     * Publish state
-     ---------------------------------*/
+        /**
+         * The robot will turn to face the point in parameter
+         * Note that the target is automatically symetrized depending
+         * on the color configured with setColor()
+         *
+         * If an order is already present the call is blocking as if a wait() where done.
+         */
+        void faceTo(Point p);
 
-    apb_NavState getState() const;
+        /**
+         * Stops the robot. It interrupts current order.
+         */
+        void stopMoving();
 
-  private:
-    //Integrates the new displacement mesures with current position
-    //This function modifies critical section variables with no protection
-    //It's the caller responsibility to protect the call with portENTER_CRITICAL/portEXIT_CRITICAL from a thread, or call it in an interrupt context
-    void
-    compute_odom ();
+        /**
+         * This is a blocking call until the current order is finished
+         */
+        void wait();
 
-    //State machine transition actions
-    void action_startOrder();
-    void action_goingToTarget();
-    void action_turningAtTarget();
-    void action_finishOrder();
+        /**
+         * This is the non blocking version of wait()
+         */
+        bool targetReached();
 
+        /**
+         * Active/Deactivate avoidance system
+         */
+        void enableAvoidance(bool on);
 
-    //used to send a straight line trajectory to the motors, it's a relative order
-    void
-    applyCmdToGoStraight (double distInMm);
+        /**---------------------------------
+         * Nav configuration
+         ---------------------------------*/
 
-    //used to send an on place rotation trajectory to the motors, its a relative order
-    void
-    applyCmdToTurn (double angleInRad);
+        void
+        setColor(eColor c);
+        void
+        setSpeed(float speed); //in mm/s
+        void
+        setSpeedVir(float s); //in °/s
 
-    //interrupt the current movement
-    void interruptCurrentMove();
+        /**---------------------------------
+         * Publish state
+         ---------------------------------*/
 
-    //used internally after a straight/turn/face order to check completeness
-    bool
-    subOrderFinished();
+        apb_NavState getState() const;
 
-    String
-    sensToString (eDir sens);
-    String
-    orderToString (eNavOrder order);
-    String
-    stateToString (eNavState state);
+    private:
+        //Integrates the new displacement mesures with current position
+        //This function modifies critical section variables with no protection
+        //It's the caller responsibility to protect the call with portENTER_CRITICAL/portEXIT_CRITICAL from a thread, or call it in an interrupt context
+        void
+        compute_odom();
 
-    //status
-    PointCap m_pose; //critical section
-    eNavState m_state;
+        //State machine transition actions
+        void action_startOrder();
+        void action_goingToTarget();
+        void action_turningAtTarget();
+        void action_finishOrder();
+        void action_waitOppMove();
 
-    //target definition
-    PointCap m_target;
-    eDir m_sensTarget;
-    eNavOrder m_order;
+        //used to send a straight line trajectory to the motors, it's a relative order
+        void
+        applyCmdToGoStraight(double distInMm);
 
-    //HW interface
-    AccelStepper stepperL; //critical section
-    AccelStepper stepperR; //critical section
+        //used to send an on place rotation trajectory to the motors, its a relative order
+        void
+        applyCmdToTurn(double angleInRad);
 
-    FilteredInput omronFrontLeft;
-    FilteredInput omronFrontRight;
-    FilteredInput omronRearLeft;
-    FilteredInput omronRearRight;
+        //interrupt the current movement
+        void interruptCurrentMove();
 
-    //match color
-    eColor m_color;
+        //used internally after a straight/turn/face order to check completeness
+        bool
+        subOrderFinished();
 
-    //speed is reduced in turns to prevent drifting
-    //hence we need 2 vars to switch from one to the other
-    float m_speed;//mm/s
-    float m_speed_virage; //rad/s
+        String
+        sensToString(eDir sens);
+        String
+        orderToString(eNavOrder order);
+        String
+        stateToString(eNavState state);
 
-    FakeMutex m_mutex;
-    Signal m_targetReached;
-    
-    long oldStepL; //critical section
-    long oldStepR; //critical section
-  };
+        //Test if opponent is ahead of robot
+        bool isOpponentAhead();
+
+        //Test if opponent is behind robot
+        bool isOpponentBehind();
+
+        //status
+        PointCap m_pose; //critical section
+        eNavState m_state;
+
+        //target definition
+        PointCap m_target;
+        eDir m_sensTarget;
+        eNavOrder m_order;
+
+        //HW interface
+        AccelStepper stepperL; //critical section
+        AccelStepper stepperR; //critical section
+
+        FilteredInput omronFrontLeft;
+        FilteredInput omronFrontRight;
+        FilteredInput omronRearLeft;
+        FilteredInput omronRearRight;
+
+        //match color
+        eColor m_color;
+
+        //speed is reduced in turns to prevent drifting
+        //hence we need 2 vars to switch from one to the other
+        float m_speed;    //mm/s
+        float m_speed_virage; //rad/s
+
+        Mutex m_mutex;
+        Signal m_targetReached;
+
+        long oldStepL; //critical section
+        long oldStepR; //critical section
+
+        //opponent management
+        SwTimer oppTimer;
+        bool avoidanceActive; //is true when avoidance system is active
+    };
 }    //end namespace
 
 #endif

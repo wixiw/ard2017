@@ -14,17 +14,13 @@
 #include "CMSIS/Device/ATMEL/sam.h"
 
 #ifdef __cplusplus
-#include "Drivers/AccelStepper.h"
-#include "Drivers/Adafruit_TCS34725.h"
-#include "Drivers/ArdUART.h"
-#include "Drivers/Buzzer.h"
-#include "Drivers/DueTimer.h"
-#include "Drivers/SPI.h" //SPI shall be imported before SD
-#include "Drivers/SD.h"
-#include "Drivers/Servo.h"
-#include "Drivers/TWI_I2C.h"
-
-
+#include "ArdOs.h"
+#include "CpuIo/ArdUART.h"
+#include "CpuIo/DueTimer.h"
+#include "CpuIo/GpioTools.h"
+#include "CpuIo/SPI.h" //SPI shall be imported before SD
+#include "CpuIo/SD.h"
+#include "CpuIo/TWI_I2C.h"
 
 #endif //C++
 

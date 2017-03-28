@@ -1,8 +1,8 @@
 #ifndef COLORSENSOR_H
 #define COLORSENSOR_H
 
-#include "BSP.h"
 #include "ArdOs.h"
+#include "Adafruit_TCS34725.h"
 #include "CommonMsg.pb.h"
 
 namespace ard

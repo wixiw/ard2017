@@ -45,6 +45,9 @@ void StrategyThread::displayIntroduction()
     {
         LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
     }
+
+    ROBOT.buzzer().bip(2);
+    ROBOT.buzzer().wait();
 }
 
 void StrategyThread::run()
@@ -62,6 +65,7 @@ void StrategyThread::run()
         IEvent* evts[] =
         {   evt_startIn, evt_teleopConfigure};
         auto triggeredEvent = waitEvents(evts, 2);
+        ROBOT.buzzer().bip(1);
 
         //In case the start is inserted, read the HMI switches to configure the strat
         if( triggeredEvent == evt_startIn )
@@ -76,9 +80,16 @@ void StrategyThread::run()
         LOG_INFO("Waiting start withdraw to begin the match...");
         IEvent* evts[] =
         {   evt_startOut, evt_teleopStart};
-        waitEvents(evts, 2); //returned event is not read as we don't care, result will be the same
+        auto triggeredEvent = waitEvents(evts, 2); //returned event is not read as we don't care, result will be the same
+
+        //Avoidance is activated after start so that it is deactivated in simumation
+        if( triggeredEvent == evt_startOut)
+        {
+            ROBOT.nav.enableAvoidance(true);
+        }
 
         //Execute selected strategy
+        ROBOT.buzzer().bip(1);
         strategies[strategyId].functor();
     }
 }

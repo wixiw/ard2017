@@ -68,6 +68,10 @@ ard::Strategy_Alpha ()
         ROBOT.nav.goTo(0, 0, eDir_BACKWARD);
         ROBOT.nav.wait();
 
+        LOG_INFO("STRAT : Move order 13 sent");
+        ROBOT.nav.goToCap(0, 0, eDir_BACKWARD);
+        ROBOT.nav.wait();
+
         ArdOs::sleepMs(2000);
 	}
 

@@ -55,15 +55,16 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(getOsStatsLogs)
         HANDLE_MSG(getTelemetry)
         HANDLE_MSG(reboot)
+        HANDLE_MSG(requestPlaySound)
         HANDLE_MSG(configureMatch)
         HANDLE_MSG(startMatch)
         HANDLE_MSG(setPosition)
         HANDLE_MSG(requestGoto)
         HANDLE_MSG(requestGotoCap)
+        HANDLE_MSG(requestBlockRobot)
         HANDLE_MSG(requestMaxLengthMsg)
         HANDLE_MSG(requestCrcFailMsg)
         HANDLE_MSG(requestTooLittleMsg)
-
 
         default:
         {
@@ -152,6 +153,17 @@ void RemoteControl::reboot(apb_RemoteControlRequest const & request)
     ArdOs::reboot();
 }
 
+void RemoteControl::requestPlaySound(apb_RemoteControlRequest const & request)
+{
+    LOG_INFO("Playing melody...");
+    for(unsigned int i = 0 ; i < request.type.requestPlaySound.tones_count ; i++)
+    {
+        apb_Tone tone = request.type.requestPlaySound.tones[i];
+        ROBOT.buzzer().playTone(tone.frequency, tone.duration);
+    }
+
+}
+
 void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
 {
 
@@ -186,6 +198,15 @@ void RemoteControl::requestGotoCap(apb_RemoteControlRequest const & request)
             request.type.requestGotoCap.target.y,
             request.type.requestGotoCap.target.h,
             request.type.requestGotoCap.direction);
+}
+
+void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)
+{
+    if(request.type.requestBlockRobot)
+        LOG_INFO("Robot block request.");
+    else
+        LOG_INFO("Robot unblock request.");
+    ROBOT.nav.fakeRobot = request.type.requestBlockRobot;
 }
 
 void RemoteControl::requestMaxLengthMsg(apb_RemoteControlRequest const & request)

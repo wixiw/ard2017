@@ -5,7 +5,7 @@ from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from proto import *
+from generated import *
 import threading
 
 #
