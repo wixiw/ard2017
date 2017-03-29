@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-#expand path to find modules :
+# expand path to find modules :
 import sys
 
-#Find the directory in which vizu.py is located
+# Find the directory in which vizu.py is located
 from os.path import dirname, abspath
 DIR = dirname(abspath(__file__))
 
@@ -31,14 +31,19 @@ class ConnectScreen(QWidget):
         self.readSettings()
         self.setWindowTitle('8=> Vizu')  
         
+        self.shortcuts = dict()
+        self.shortcutsOffline = dict()
+        self.shortcutsText = dict()
+        
         self.teleop = RemoteControl()
         
         self.tab = dict()
-        self.tab["Com"]   = TabCom(self.teleop)
-        self.tab["Log"]   = TabLog()
+        self.tab["Com"] = TabCom(self.teleop)
+        self.tab["Log"] = TabLog()
         self.tab["Strat"] = TabStrat()
         self.tab["Robot"] = TabRobot()
-        self.tab["Help"] = TabHelp()
+        self.tab["Config"] = TabConfig()
+        self.tab["Help"] = TabHelp(self.shortcutsText)
         
         
         self.tabs = QTabWidget(self)
@@ -47,7 +52,7 @@ class ConnectScreen(QWidget):
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
         
-        #connect Com tab
+        # connect Com tab
         self.tab["Com"].networkStatus         .connect(self._handleNetworkStatus)
         self.tab["Robot"].requestPlaySound    .connect(self.teleop.requestPlaySound)
         self.tab["Robot"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
@@ -56,66 +61,98 @@ class ConnectScreen(QWidget):
         self.tab["Robot"].startMatch          .connect(self.teleop.startMatch)
         self.tab["Robot"].resetCpu            .connect(self.teleop.resetCpu)
         self.tab["Robot"].blocked             .connect(self.teleop.requestBlockRobot)
-        #connect Log tab
+        # connect Log tab
         self.teleop.log.connect(self.tab["Log"].log)
-        #connect Strat tab
+        # connect Strat tab
         self.teleop.telemetry.connect(self.tab["Strat"]._telemetryDataCb)
-        #connect Robot tab
+        # connect Robot tab
         for cmd, widget in self.tab["Robot"].navTab.items():
-            widget.execute.connect(getattr(self.teleop, cmd))  #getattr is used to get a method reference from name, hence automatically binding signals ;p
+            widget.execute.connect(getattr(self.teleop, cmd))  # getattr is used to get a method reference from name, hence automatically binding signals ;p
         
-        #add shortcut to quit the app with ESC
-        self.shortcuts = dict()
-        self.shortcuts["ESC"] = QShortcut(QKeySequence(Qt.Key_Escape), self)
-        self.shortcuts["ESC"].activated.connect(QCoreApplication.quit)
-        
-        #add F1 to F4 shortcuts for each tab
+        # add shortcut to quit the app with ESC
+        self.addShortcut("ESC",
+                    Qt.Key_Escape,
+                    True,
+                    "Quits vizu",
+                    QCoreApplication.quit)
+
+        # Add shortcuts for tabs
         self.tabShortcutMap = QSignalMapper()
         self.tabShortcutMap.mapped.connect(self.selectTab)
-            #F1 for Com tab
-        self.shortcuts["F1"] = QShortcut(QKeySequence(Qt.Key_F1), self)
-        self.shortcuts["F1"].activated.connect(self.tabShortcutMap.map)
+        self.addShortcut("F1",
+                    Qt.Key_F1,
+                    True,
+                    "Switch to Com tab.",
+                    self.tabShortcutMap.map)
+        self.addShortcut("F2",
+                    Qt.Key_F2,
+                    True,
+                    "Switch to Logs tab.",
+                    self.tabShortcutMap.map)
+        self.addShortcut("F3",
+                    Qt.Key_F3,
+                    False,
+                    "Switch to Strategy tab.",
+                    self.tabShortcutMap.map)
+        self.addShortcut("F4",
+                    Qt.Key_F4,
+                    False,
+                    "Switch to Robot control tab.",
+                    self.tabShortcutMap.map)
+        self.addShortcut("F5",
+                    Qt.Key_F5,
+                    False,
+                    "Switch to Robot configuration tab.",
+                    self.tabShortcutMap.map)
+        self.addShortcut("F6",
+                    Qt.Key_F6,
+                    True,
+                    "Switch to Help tab.",
+                    self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F1"], 0)
-            #F2 for Log tab
-        self.shortcuts["F2"] = QShortcut(QKeySequence(Qt.Key_F2), self)
-        self.shortcuts["F2"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F2"], 1)
-            #F3 for Table tab
-        self.shortcuts["F3"] = QShortcut(QKeySequence(Qt.Key_F3), self)
-        self.shortcuts["F3"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F3"], 2)
-            #F4 for Robot tab
-        self.shortcuts["F4"] = QShortcut(QKeySequence(Qt.Key_F4), self)
-        self.shortcuts["F4"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F4"], 3)
-            #F5 for Help tab
-        self.shortcuts["F5"] = QShortcut(QKeySequence(Qt.Key_F5), self)
-        self.shortcuts["F5"].activated.connect(self.tabShortcutMap.map)
         self.tabShortcutMap.setMapping(self.shortcuts["F5"], 4)
+        self.tabShortcutMap.setMapping(self.shortcuts["F6"], 5)
         
-        #add shortcut to manage match
+        # add shortcut to manage match
         self.configureMap = QSignalMapper()
         self.configureMap.mapped.connect(self._configShortcut)
-            #YELLOW config with "y"
-        self.shortcuts["y"] = QShortcut(QKeySequence(Qt.Key_Y), self)
-        self.shortcuts["y"].activated.connect(self.configureMap.map)
+            # YELLOW config with "y"
+        self.addShortcut("y",
+                    Qt.Key_Y,
+                    True,
+                    "Configure a match with Alpha strategy and YELLOW color.",
+                    self.configureMap.map)  
         self.configureMap.setMapping(self.shortcuts["y"], Types_pb2.PREF)
-            #BLUE config with "b"        
-        self.shortcuts["b"] = QShortcut(QKeySequence(Qt.Key_B), self)
-        self.shortcuts["b"].activated.connect(self.configureMap.map)
+            # BLUE config with "b"       
+        self.addShortcut("b",
+                    Qt.Key_B,
+                    True,
+                    "Configure a match with Alpha strategy and BLUE color.",
+                    self.configureMap.map)  
         self.configureMap.setMapping(self.shortcuts["b"], Types_pb2.SYM)
-            #Start match with s
-        self.shortcuts["s"] = QShortcut(QKeySequence(Qt.Key_S), self)
-        self.shortcuts["s"].activated.connect(self.teleop.startMatch)
-            #reset with r
-        self.shortcuts["r"] = QShortcut(QKeySequence(Qt.Key_R), self)
-        self.shortcuts["r"].activated.connect(self.teleop.resetCpu)
-            #reset with x
-        self.shortcuts["x"] = QShortcut(QKeySequence(Qt.Key_X), self)
-        self.shortcuts["x"].activated.connect(self.tab["Robot"]._blockFromShortcut)
+            # Start match with s
+        self.addShortcut("s",
+                    Qt.Key_S,
+                    True,
+                    "Starts the match.",
+                    self.teleop.startMatch) 
+            # reset with r
+        self.addShortcut("r",
+                    Qt.Key_R,
+                    True,
+                    "Starts the match.",
+                    self.teleop.resetCpu) 
+            # block/unblock robot with x
+        self.addShortcut("x",
+                    Qt.Key_X,
+                    True,
+                    "Create/destroy a virtual opponent on the robot path",
+                    self.tab["Robot"]._blockFromShortcut) 
         
-        
-            #disable tabs and shortcuts requiring a network connection
+            # disable tabs and shortcuts requiring a network connection
         self._handleNetworkStatus(False)
     
     def __del__(self):
@@ -129,23 +166,16 @@ class ConnectScreen(QWidget):
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), True)
             self.tabs.setCurrentWidget(self.tab["Strat"])
             
-            self.shortcuts["F1"].setEnabled(True)
-            self.shortcuts["F2"].setEnabled(True)
-            self.shortcuts["F3"].setEnabled(True)
-            self.shortcuts["F4"].setEnabled(True)
-            self.shortcuts["F5"].setEnabled(True)
-            
+            for key, shortcut in self.shortcuts.items():
+                shortcut.setEnabled(True)
         else:
             self.tab["Log"].appendLog(("----------disconnected-----------"))
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Strat"]), False)
             self.tabs.setTabEnabled(self.tabs.indexOf(self.tab["Robot"]), False)
             self.tabs.setCurrentWidget(self.tab["Com"])
             
-            self.shortcuts["F1"].setEnabled(True)
-            self.shortcuts["F2"].setEnabled(True)
-            self.shortcuts["F3"].setEnabled(False)
-            self.shortcuts["F4"].setEnabled(False)
-            self.shortcuts["F5"].setEnabled(True)
+            for key, shortcut in self.shortcuts.items():
+                shortcut.setEnabled(self.shortcutsOffline[key])
     
     @pyqtSlot(int)
     def selectTab(self, tabId):
@@ -167,13 +197,19 @@ class ConnectScreen(QWidget):
         
     @pyqtSlot(int)
     def _configShortcut(self, color):
-        self.teleop.configureMatch(0,color) #0 for default strat
+        self.teleop.configureMatch(0, color)  # 0 for default strat
+        
+    def addShortcut(self, key, keycode, availableWhenDisconnected, text, callback):
+        self.shortcuts[key] = QShortcut(QKeySequence(keycode), self)
+        self.shortcuts[key].activated.connect(callback)
+        self.shortcutsOffline[key] = availableWhenDisconnected
+        self.shortcutsText[key] = text
         
 if __name__ == '__main__':
     import os
     
-    #re-generate proto (not optimal, but as they will change a lot at project beginning...)
-    #os.system("..\com\generateCom.bat .. off")
+    # re-generate proto (not optimal, but as they will change a lot at project beginning...)
+    # os.system("..\com\generateCom.bat .. off")
     
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     
@@ -182,12 +218,12 @@ if __name__ == '__main__':
     app.setOrganizationName("A.R.D.")
     app.setOrganizationDomain("team-ard.com")
     
-    #Start application
+    # Start application
     screen = ConnectScreen()
     screen.show()
     res = app.exec_()
     
-    #save settings
+    # save settings
     del screen
     print("Settings saved")
     
