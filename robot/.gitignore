@@ -1,5 +1,6 @@
 .vs
 Debug
+Release
 robot/RobotA/jlink.log
 robot/UT_FreeRtos/jlink.config
 *.componentinfo.xml
