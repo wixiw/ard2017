@@ -11,7 +11,7 @@
 
 #include "Arduino.h"
 #include "ArdOs.h"
-#include "BSP.h"
+#include "BSP.hpp"
 
 using namespace ard;
 

@@ -13,17 +13,6 @@
 #include "CMSIS/CMSIS/Include/core_cm3.h"
 #include "CMSIS/Device/ATMEL/sam.h"
 
-#ifdef __cplusplus
-#include "ArdOs.h"
-#include "CpuIo/ArdUART.h"
-#include "CpuIo/DueTimer.h"
-#include "CpuIo/GpioTools.h"
-#include "CpuIo/SPI.h" //SPI shall be imported before SD
-#include "CpuIo/SD.h"
-#include "CpuIo/TWI_I2C.h"
-
-#endif //C++
-
 #include "variant.h"
 #include "K_constants.h"
 
@@ -81,26 +70,5 @@
 #define LED_DUE_TX	73
 
 #define ANA0_VBAT       A0
-
-#ifdef __cplusplus
-
-typedef void(*IrqCB)(void);
-extern IrqCB UART_Handler_CB;
-
-class BSP
-{
-    public:
-        //Initialize all pins mode. It's best to gather all pin init
-        //at the same place to be sure everything is properly initialized
-        //whatever if libs re-init them later, it's better to do it twice than to forget
-        //and risk an HW prob
-        BSP();
-       
-
-        //Rx0 / Tx0 serial driver
-        ard::ArdUART serial0;
-};
-
-#endif //C++
 
 #endif /* BSP_H_ */

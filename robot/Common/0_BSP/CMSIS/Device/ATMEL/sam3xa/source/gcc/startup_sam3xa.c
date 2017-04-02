@@ -48,6 +48,7 @@ int main(void);
 extern void __libc_init_array();
 extern void init();
 extern void delay(uint32_t);
+extern uint32_t GetTickCount();
 
 // Arduino: handlers weak symbols moved into main
 

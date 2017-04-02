@@ -11,6 +11,8 @@
 #include "RSP.h"
 #include "ActuatorX.h"
 
+#ifdef BUILD_STRATEGY
+
 namespace ard
 {
   class ActuatorThread : public PollerThread
@@ -30,5 +32,7 @@ namespace ard
   };
 
 } /* namespace ard */
+
+#endif //BUILD_STRATEGY
 
 #endif /* ROBOTS_ACTUATORTHREAD_H_ */

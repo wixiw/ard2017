@@ -47,13 +47,22 @@ class ConnectScreen(QWidget):
         
         
         self.tabs = QTabWidget(self)
+        self.tabs.currentChanged.connect(self.tabChanged)
         for tabName, tab in self.tab.items():
             self.tabs.addTab(tab, tabName)
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
         
-        # connect Com tab
+        # connect Com Tab msg requests
         self.tab["Com"].networkStatus         .connect(self._handleNetworkStatus)
+
+        # connect Log tab
+        self.teleop.log.connect(self.tab["Log"].log)
+        
+        # connect Strat tab
+        self.teleop.telemetry.connect(self.tab["Strat"]._telemetryDataCb)
+        
+        # connect Robot tab
         self.tab["Robot"].requestPlaySound    .connect(self.teleop.requestPlaySound)
         self.tab["Robot"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
         self.tab["Robot"].getTelemetry        .connect(self.teleop.getTelemetry)
@@ -61,13 +70,14 @@ class ConnectScreen(QWidget):
         self.tab["Robot"].startMatch          .connect(self.teleop.startMatch)
         self.tab["Robot"].resetCpu            .connect(self.teleop.resetCpu)
         self.tab["Robot"].blocked             .connect(self.teleop.requestBlockRobot)
-        # connect Log tab
-        self.teleop.log.connect(self.tab["Log"].log)
-        # connect Strat tab
-        self.teleop.telemetry.connect(self.tab["Strat"]._telemetryDataCb)
-        # connect Robot tab
         for cmd, widget in self.tab["Robot"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  # getattr is used to get a method reference from name, hence automatically binding signals ;p
+        
+        # connect Config tab
+        self.tab["Config"].getConfig          .connect(self.teleop.getConfig)
+        self.tab["Config"].setConfig          .connect(self.teleop.setConfig)
+        self.teleop.config.connect(self.tab["Config"].updateConfig)
+        
         
         # add shortcut to quit the app with ESC
         self.addShortcut("ESC",
@@ -177,9 +187,17 @@ class ConnectScreen(QWidget):
             for key, shortcut in self.shortcuts.items():
                 shortcut.setEnabled(self.shortcutsOffline[key])
     
+    #Signal activated by shortcuts (helper to being able to map in conneciton)
     @pyqtSlot(int)
     def selectTab(self, tabId):
         self.tabs.setCurrentIndex(tabId)
+        
+    #Signal emitted by QT when a new tab is displayed
+    @pyqtSlot(int)
+    def tabChanged(self, tabId):
+        #if current tab is config, then request the current config
+        if self.tabs.currentWidget() == self.tab["Config"]:
+            self.teleop.getConfig()
         
     def readSettings(self):
         settings = QSettings("config.ini", QSettings.IniFormat)

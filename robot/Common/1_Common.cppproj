@@ -640,6 +640,9 @@
     <Compile Include="0_BSP\BSP.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="0_BSP\BSP.hpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="0_BSP\CMSIS\CMSIS\DSP_Lib\Source\FastMathFunctions\arm_cos_f32.c">
       <SubType>compile</SubType>
     </Compile>
@@ -1166,6 +1169,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\Navigation.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\RobotConfig.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\RobotConfig.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\RSP.h">

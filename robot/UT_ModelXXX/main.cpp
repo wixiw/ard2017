@@ -3,7 +3,7 @@
  *
  */ 
 
-#include "BSP.h"
+#include "BSP.hpp"
 BSP bsp;
 
 int main(void)

@@ -59,8 +59,8 @@ namespace ard
 
         //emission buffers. hdlc buffer are flat buffers
         //because yahdlc is not able to read from ring buffers
-        size_t nbParsedBytes = 0;//nb bytes parsed by yahdlc that can be thrown away
-        size_t hdlc_length = 0;
+        size_t nbParsedBytes = 0;//nb bytes parsed by yahdlc that can be thrown away (in the input serial buffer)
+        size_t hdlc_length = 0; //nb bytes in the output buffer after hdlc has parsed the data.
         char hdlc_send_framebuffer[SERIAL_BUF_SIZE];
 
         //translate bytes from serial_recv_buffer to the left and replace old data with 0

@@ -9,8 +9,10 @@
 #ifndef __ACTUATORX_H__
 #define __ACTUATORX_H__
 
-#include "BSP.h"
+#include "BSP.hpp"
 #include "RSP.h"
+
+#ifdef BUILD_STRATEGY
 
 namespace ard
 {
@@ -60,5 +62,7 @@ namespace ard
 	}; //ActuatorX
 
 }//namespace ard
+
+#endif //BUILD_STRATEGY
 
 #endif //__ACTUATORX_H__

@@ -39,6 +39,31 @@ message Telemetry
 	required ActuatorsState actuators			= 3;
 }
 
+message Configuration
+{
+	//Mechanics/Electronics related constants
+	required uint32 stepByTurn 			= 1; //nb steps when the motor has made a complete revolution
+	required uint32 xar 				= 2; //mm distance from the wheel center to the rear of the robot
+	required uint32 yside 				= 3; //mm distance from the robot center to a side
+	//	calibration params
+	required float leftWheelDiameter	= 4; //mm
+    required float rightWheelDiameter	= 5; //mm
+    required float voie					= 6; //mm (distance between the 2 wheels contact points)
+
+    //Navigation config
+    required uint32 maxAcc				= 11; //in mm /s²
+    required uint32 recalSpeed			= 12; //in mm /s
+    required uint32 maxTurnSpeed		= 13; //in ° /s
+    required uint32 maxSpeed			= 14; //in mm /s
+
+    //Avoidance config
+    required uint32 detectionWaitForOppMove = 16;  //in ms
+    required bool detectionActive		= 17; //activates (or not) the avoidance system.
+
+    //Strat config
+    required uint32 matchDuration		= 21; //in ms
+}
+
 //----------------------------------------------------------------------
 // Multiplexer : this message is used to encapsulate all the other
 //               so that several messages can be sent on the same
@@ -55,6 +80,8 @@ message RemoteControlRequest
 		EmptyMsg 			getTelemetry		= 3;
 		EmptyMsg			reboot				= 4;
 		Melody				requestPlaySound	= 5;
+		EmptyMsg			getConfig			= 6;
+		Configuration		setConfig			= 7;
 
 		//messages from 100 to 199 are reserved fo strategy
 		ConfigureMatch 		configureMatch 		= 100;
@@ -80,6 +107,7 @@ message RemoteControlResponse
 	{
 		Log					log					= 1;
 		EmptyMsg 			osStats 			= 2;
+		Configuration		config				= 3;
 		Telemetry			telemetry			= 200;
 	}
 }

@@ -10,23 +10,25 @@
 
 namespace ard
 {
+    class Robot2017;
+    
     //awaiting a real strategy ...
-    void Strategy_Alpha();
+    void Strategy_Alpha(Robot2017& robot);
 
     //for debug only : make all leds blinking to check they are working
-    void Strategy_LedTest();
+    void Strategy_LedTest(Robot2017& robot);
 
     //for debug only : light a led for each activated user switch
-    void Strategy_ButtonTest();
+    void Strategy_ButtonTest(Robot2017& robot);
 
     //for debug only : light a led for each activated omron
-    void Strategy_OmronTest();
+    void Strategy_OmronTest(Robot2017& robot);
 
     //for debug only : simple moves to check odometry
-    void Strategy_CalibTest();
+    void Strategy_CalibTest(Robot2017& robot);
 
     //for debug only : test all possible moves
-    void Strategy_MotionTest();
+    void Strategy_MotionTest(Robot2017& robot);
 }
 
 #endif /* ROBOT_COMMON_2_AL_STRATEGIES_STRATEGIES_H_ */

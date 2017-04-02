@@ -6,7 +6,6 @@
  */
 
 #include "K_thread_config.h"
-#include "BSP.h"
 #include "Log.h"
 
 using namespace ard;

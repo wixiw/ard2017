@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "K_constants.h"
-#include "BSP.h"
 #include "Log.h"
 #include "Navigation.h"
 
@@ -26,22 +25,38 @@ Navigation::Navigation()
                 omronRearLeft(OMRON3, 50, 50),
                 omronRearRight(OMRON4, 50, 50),
                 m_color(eColor_PREF),
-                m_speed(SPEED_MAX),
-                m_speed_virage(SPEED_MAX_VIR),
+                m_speed(0),
+                m_speed_virage(0),
                 m_mutex(),
                 m_targetReached(),
                 oldStepL(0),
                 oldStepR(0),
                 oppTimer(),
-                avoidanceActive(false)//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
+                avoidanceActive(false),//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
+                conf(NULL)
 {
-    stepperL.setAcceleration(fabs(ACC_MAX * GAIN_MM_2_STEPS_LEFT));
-    stepperR.setAcceleration(fabs(ACC_MAX * GAIN_MM_2_STEPS_RIGHT));
+
+}
+
+void Navigation::updateConf(RobotConfig* newConf)
+{
+    ASSERT(newConf);
+    conf = newConf;
+    m_speed = conf->maxSpeed();
+    m_speed_virage = conf->maxTurnSpeed();
+    stepperL.setAcceleration(fabs(conf->maxAcc() * conf->GAIN_MM_2_STEPS_LEFT));
+    stepperR.setAcceleration(fabs(conf->maxAcc() * conf->GAIN_MM_2_STEPS_RIGHT));
 }
 
 /**---------------------------------
  * Thread interface
  ---------------------------------*/
+
+void Navigation::init()
+{
+    ASSERT_TEXT(conf, "You must bind a configuration.");
+    Thread::init();
+}
 
 void Navigation::run()
 {
@@ -140,7 +155,7 @@ void Navigation::run()
                 //If opponent is still present, continue to wait
                 else
                 {
-                    oppTimer.arm(WAIT_FOR_OPP_MOVE);
+                    oppTimer.arm(conf->detectionWaitForOppMove());
                 }
             }
 
@@ -332,15 +347,15 @@ void Navigation::setSpeed(float s)
     enterCriticalSection();
     if (s > 0)
     {
-        stepperL.setMaxSpeed(fabs(s * GAIN_MM_2_STEPS_LEFT));
-        stepperR.setMaxSpeed(fabs(s * GAIN_MM_2_STEPS_RIGHT));
+        stepperL.setMaxSpeed(fabs(s * conf->GAIN_MM_2_STEPS_LEFT));
+        stepperR.setMaxSpeed(fabs(s * conf->GAIN_MM_2_STEPS_RIGHT));
         m_speed = s;
     }
     else
     {
-        stepperL.setMaxSpeed(fabs(SPEED_MAX * GAIN_MM_2_STEPS_LEFT));
-        stepperR.setMaxSpeed(fabs(SPEED_MAX * GAIN_MM_2_STEPS_RIGHT));
-        m_speed = SPEED_MAX;
+        stepperL.setMaxSpeed(fabs(conf->maxSpeed() * conf->GAIN_MM_2_STEPS_LEFT));
+        stepperR.setMaxSpeed(fabs(conf->maxSpeed() * conf->GAIN_MM_2_STEPS_RIGHT));
+        m_speed = conf->maxSpeed();
     }
     exitCriticalSection();
 }
@@ -354,7 +369,7 @@ void Navigation::setSpeedVir(float s)
     }
     else
     {
-        m_speed_virage = SPEED_MAX_VIR;
+        m_speed_virage = conf->maxTurnSpeed();
     }
     m_mutex.unlock();
 }
@@ -394,8 +409,8 @@ void Navigation::compute_odom()
     long dxR = newStepR - oldStepR;
     oldStepL = newStepL;
     oldStepR = newStepR;
-    double ds = (dxR * GAIN_STEPS_2_MM_RIGHT + dxL * GAIN_STEPS_2_MM_LEFT) / 2.;
-    double dh = (dxR * GAIN_STEPS_2_MM_RIGHT - dxL * GAIN_STEPS_2_MM_LEFT) / VOIE;
+    double ds = (dxR * conf->GAIN_STEPS_2_MM_RIGHT + dxL * conf->GAIN_STEPS_2_MM_LEFT) / 2.;
+    double dh = (dxR * conf->GAIN_STEPS_2_MM_RIGHT - dxL * conf->GAIN_STEPS_2_MM_LEFT) / conf->voie();
 
     //prevent conflicts with m_pose usage
     m_mutex.lock();
@@ -516,7 +531,7 @@ void Navigation::action_waitOppMove()
     stepperR.stop();
     exitCriticalSection();
 
-    oppTimer.arm(WAIT_FOR_OPP_MOVE);
+    oppTimer.arm(conf->detectionWaitForOppMove());
     m_state = eNavState_WAIT_OPP_MOVE;
     LOG_INFO("Waiting that opponent moves away...");
 }
@@ -527,10 +542,10 @@ void Navigation::applyCmdToGoStraight(double mm)
 
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
-    stepperL.setMaxSpeed(fabs(m_speed * GAIN_MM_2_STEPS_LEFT));
-    stepperR.setMaxSpeed(fabs(m_speed * GAIN_MM_2_STEPS_RIGHT));
-    stepperL.move(mm * GAIN_MM_2_STEPS_LEFT);
-    stepperR.move(mm * GAIN_MM_2_STEPS_RIGHT);
+    stepperL.setMaxSpeed(fabs(m_speed * conf->GAIN_MM_2_STEPS_LEFT));
+    stepperR.setMaxSpeed(fabs(m_speed * conf->GAIN_MM_2_STEPS_RIGHT));
+    stepperL.move(mm * conf->GAIN_MM_2_STEPS_LEFT);
+    stepperR.move(mm * conf->GAIN_MM_2_STEPS_RIGHT);
     exitCriticalSection();
 }
 
@@ -540,10 +555,10 @@ void Navigation::applyCmdToTurn(double angleInRad)
 
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
-    stepperL.setMaxSpeed(fabs(m_speed_virage * GAIN_DEG_2_MM_LEFT));
-    stepperR.setMaxSpeed(fabs(m_speed_virage * GAIN_DEG_2_MM_RIGHT));
-    stepperL.move(-angleInRad * GAIN_RAD_2_MM_LEFT/2.); //half contribution on each wheel
-    stepperR.move(angleInRad * GAIN_RAD_2_MM_RIGHT/2.);
+    stepperL.setMaxSpeed(fabs(m_speed_virage * conf->GAIN_DEG_2_MM_LEFT));
+    stepperR.setMaxSpeed(fabs(m_speed_virage * conf->GAIN_DEG_2_MM_RIGHT));
+    stepperL.move(-angleInRad * conf->GAIN_RAD_2_MM_LEFT/2.); //half contribution on each wheel
+    stepperR.move(angleInRad * conf->GAIN_RAD_2_MM_RIGHT/2.);
     exitCriticalSection();
 }
 

@@ -6,9 +6,16 @@
 using namespace ard;
 
 int main( void )
-{
-    //Spawn ARD instance
-    ROBOT.bootOs();
+{   
+    Robot2017& robotA = Robot2017::getInstance();
+
+    //Retrieve and modify config
+    apb_Configuration config = robotA.getConfig();
+    config.matchDuration = 666;
+    robotA.setConfig(config);
+
+    //Build and start robot
+    robotA.bootOs();
 
     return 0;
 }

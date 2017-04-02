@@ -12,7 +12,7 @@
 // This is the time for the semaphore and a context switch.
 #include "Arduino.h"
 #include "FreeRTOS_ARM.h"
-#include "BSP.h"
+#include "BSP.hpp"
 
 #define LED_PIN 13
 // Semaphore to trigger context switch

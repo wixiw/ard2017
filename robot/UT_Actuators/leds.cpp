@@ -17,7 +17,6 @@ public:
 
     void run() override
     {
-        buzzer.init(true);
         buzzer.bip(3);
         while (1)
         {

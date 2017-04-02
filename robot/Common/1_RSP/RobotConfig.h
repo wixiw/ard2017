@@ -1,0 +1,55 @@
+/*
+ * RobotConfig.h
+ *
+ *  Created on: 2 avr. 2017
+ *      Author: wix
+ */
+
+#ifndef ROBOT_COMMON_1_RSP_ROBOTCONFIG_H_
+#define ROBOT_COMMON_1_RSP_ROBOTCONFIG_H_
+
+#include <Com.h>
+
+namespace ard
+{
+
+class RobotConfig
+{
+public:
+    double GAIN_MM_2_STEPS_LEFT; // *-1 because left motor is inverted
+    double GAIN_MM_2_STEPS_RIGHT;
+    double GAIN_STEPS_2_MM_LEFT; // *-1 because left motor is inverted
+    double GAIN_STEPS_2_MM_RIGHT;
+    double GAIN_DEG_2_MM_LEFT;
+    double GAIN_DEG_2_MM_RIGHT;
+    double GAIN_RAD_2_MM_LEFT;
+    double GAIN_RAD_2_MM_RIGHT;
+
+    RobotConfig();
+
+    void updateConfig(apb_Configuration const& newConf);
+    apb_Configuration const& copy() const {return cfg;};
+
+    uint32_t stepByTurn()           const {return cfg.stepByTurn;};
+    uint32_t xar()                  const {return cfg.xar;};
+    uint32_t yside()                const {return cfg.yside;};
+    float leftWheelDiameter()    	const {return cfg.leftWheelDiameter;};
+    float rightWheelDiameter()  	const {return cfg.rightWheelDiameter;};
+    float voie()                 	const {return cfg.voie;};
+    uint32_t maxAcc()               const {return cfg.maxAcc;};
+    uint32_t recalSpeed()           const {return cfg.recalSpeed;};
+    uint32_t maxTurnSpeed()         const {return cfg.maxTurnSpeed;};
+    uint32_t maxSpeed()             const {return cfg.maxSpeed;};
+    uint32_t matchDuration()        const {return cfg.matchDuration;};
+    uint32_t detectionWaitForOppMove()const {return cfg.detectionWaitForOppMove;};
+    bool detectionActive()      	const {return cfg.detectionActive;};
+    
+private:
+    apb_Configuration cfg;
+
+    void defaultConfig();
+};
+
+} /* namespace ard */
+
+#endif /* ROBOT_COMMON_1_RSP_ROBOTCONFIG_H_ */

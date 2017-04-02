@@ -231,7 +231,9 @@ bool buffer_copy_cir2raw(uint8_t* const dest, CircularBuffer * const source, uin
 bool buffer_copy_raw2cir(CircularBuffer* const  dest,  uint8_t const* const  source,    uint16_t const sizeToCopy)
 {
     if(!sizeToCopy)
+    {
         return false;
+    }        
 
 	if( circular_getFreeRoom(dest) < sizeToCopy )
 		return false;

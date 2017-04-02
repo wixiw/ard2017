@@ -1,6 +1,6 @@
 #include "Arduino.h"
 #include "FreeRTOS_ARM.h"
-#include "BSP.h"
+#include "BSP.hpp"
 
 //extern void context_switch_duration();
 //extern void ard_signal();

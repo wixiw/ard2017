@@ -46,6 +46,10 @@ Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_ArdUart", "UT_ArdUart\UT
 	EndProjectSection
 EndProject
 Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "UT_Sensors", "UT_Sensors\UT_Sensors.cppproj", "{F8398D18-D053-42E4-A3DB-FF8A55940C1E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DA4F1581-646B-4293-8BF6-81869867C585} = {DA4F1581-646B-4293-8BF6-81869867C585}
+		{DCE6C7E3-EE26-4D79-826B-08594B9AD897} = {DCE6C7E3-EE26-4D79-826B-08594B9AD897}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

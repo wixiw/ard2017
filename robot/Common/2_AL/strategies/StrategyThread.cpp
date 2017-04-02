@@ -8,13 +8,23 @@
 #include "StrategyThread.h"
 #include "../Robot2017.h"
 
+#ifdef BUILD_STRATEGY
+
 using namespace ard;
 
 StrategyThread::StrategyThread():
         Thread("Strategy", PRIO_STRATEGY, STACK_STRATEGY),
-        strategyId(0)
+        strategyId(0),
+        robot(NULL)
 {
     INIT_TABLE_TO_ZERO(strategies);
+}
+
+void ard::StrategyThread::attachRobot(Robot2017* newRobot)
+{
+    ASSERT_TEXT(newRobot,"You should not attach a NULL robot");
+    ASSERT_TEXT(robot == NULL, "You should not attach robot twice");
+    robot=newRobot;
 }
 
 void StrategyThread::init()
@@ -35,7 +45,7 @@ void StrategyThread::displayIntroduction()
     #endif
 
     //Trace binary version to prevent miss build error and usage error during the middle of the night.
-    LOG_INFO("Version libArd : " + ROBOT.getVersion());
+    LOG_INFO("Version libArd : " + robot->getVersion());
     LOG_INFO(getExeVersion());
 
     LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
@@ -46,16 +56,16 @@ void StrategyThread::displayIntroduction()
         LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
     }
 
-    ROBOT.buzzer().bip(2);
-    ROBOT.buzzer().wait();
+    robot->buzzer().bip(2);
+    robot->buzzer().wait();
 }
 
 void StrategyThread::run()
 {
-    auto evt_startIn = ROBOT.getStartInEvt();
-    auto evt_startOut = ROBOT.getStartOutEvt();
-    auto evt_teleopConfigure = ROBOT.getRemoteControlEvt(EVT_CONFIGURE);
-    auto evt_teleopStart = ROBOT.getRemoteControlEvt(EVT_START_MATCH);
+    auto evt_startIn = robot->getStartInEvt();
+    auto evt_startOut = robot->getStartOutEvt();
+    auto evt_teleopConfigure = robot->getRemoteControlEvt(EVT_CONFIGURE);
+    auto evt_teleopStart = robot->getRemoteControlEvt(EVT_START_MATCH);
 
     displayIntroduction();
 
@@ -65,7 +75,7 @@ void StrategyThread::run()
         IEvent* evts[] =
         {   evt_startIn, evt_teleopConfigure};
         auto triggeredEvent = waitEvents(evts, 2);
-        ROBOT.buzzer().bip(1);
+        robot->buzzer().bip(1);
 
         //In case the start is inserted, read the HMI switches to configure the strat
         if( triggeredEvent == evt_startIn )
@@ -85,12 +95,12 @@ void StrategyThread::run()
         //Avoidance is activated after start so that it is deactivated in simumation
         if( triggeredEvent == evt_startOut)
         {
-            ROBOT.nav.enableAvoidance(true);
+            robot->nav.enableAvoidance(true);
         }
 
         //Execute selected strategy
-        ROBOT.buzzer().bip(1);
-        strategies[strategyId].functor();
+        robot->buzzer().bip(1);
+        strategies[strategyId].functor(ROBOT);
     }
 }
 
@@ -107,29 +117,29 @@ void StrategyThread::readUserInputs()
 {   
     //Read color input
     eColor selectedColor = eColor_UNKNOWN;
-    if ( ROBOT.isPreferedColor() )
+    if ( robot->isPreferedColor() )
         selectedColor = eColor_PREF;
     else
         selectedColor = eColor_SYM;
 
     //Read strat config
-    configureMatch(ROBOT.getStrategyId(), selectedColor);
+    configureMatch(robot->getStrategyId(), selectedColor);
 }
 
 void StrategyThread::configureMatch(uint8_t strategyId_, eColor matchColor)
 {
-    ROBOT.nav.setColor (matchColor);
+    robot->nav.setColor (matchColor);
     
     //Configure color
     if ( matchColor == eColor_PREF )
     {
-        ROBOT.setRGBled(YELLOW, ON);
+        robot->setRGBled(YELLOW, ON);
         LOG_INFO("User has selected PREF (Yellow) color.");
     }
     else if ( matchColor == eColor_SYM )
     {
-        ROBOT.nav.setColor (eColor_SYM);
-        ROBOT.setRGBled(BLUE, ON);
+        robot->nav.setColor (eColor_SYM);
+        robot->setRGBled(BLUE, ON);
         LOG_INFO("User has selected SYM (Blue) color.");
     }
     else
@@ -143,3 +153,4 @@ void StrategyThread::configureMatch(uint8_t strategyId_, eColor matchColor)
     LOG_INFO("User has selected strategy " + strategies[strategyId].name + ".");
 }
 
+#endif

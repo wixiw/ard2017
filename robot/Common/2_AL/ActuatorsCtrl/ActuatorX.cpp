@@ -6,6 +6,9 @@
  */
 
 #include "ActuatorX.h"
+
+#ifdef BUILD_STRATEGY
+
 using namespace ard;
 
 #define CLAW_LEFT_CLOSED 14
@@ -57,3 +60,5 @@ ActuatorX::release ()
 {
   umbrella.write (UMBRELLA_RELEASED);
 }
+
+#endif

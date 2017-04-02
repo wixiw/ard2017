@@ -153,7 +153,7 @@ void ArdHdlc::parseBuffer()
             //ETOOSHORT : message is too short, to be discarded
             if( res == -ARDHDLC_EFCS || res == -ARDHDLC_ETOOSHORT )
             {
-                size_t startOfRemainingData = hdlc_length;
+                size_t startOfRemainingData = hdlc_length;//TODO c'est louche, c'est peut être nbParsedBytes
                 ASSERT(startOfRemainingData <= bytesInRecvBuf);
                 size_t remainingBytesNb = bytesInRecvBuf - startOfRemainingData;
                 throwUnusedBytes(startOfRemainingData, remainingBytesNb);

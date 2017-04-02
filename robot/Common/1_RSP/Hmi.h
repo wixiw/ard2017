@@ -9,7 +9,7 @@
 #define ROBOTS_HMI_H_
 
 #include <stdint.h>
-#include "BSP.h"
+#include "BSP.hpp"
 #include "Actuators/Buzzer2017.h"
 
 namespace ard

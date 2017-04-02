@@ -22,5 +22,6 @@
 #include "Navigation.h"
 
 #include "K_thread_config.h"
+#include "RobotConfig.h"
 
 #endif /* ROBOTS_RSP_H_ */

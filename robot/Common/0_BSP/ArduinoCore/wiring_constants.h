@@ -23,14 +23,30 @@
 extern "C"{
 #endif // __cplusplus
 
+#include <stdbool.h>
+
+enum BitOrder {
+    LSBFIRST = 0,
+    MSBFIRST = 1
+};
+
+typedef unsigned int word;
+
+
+
+typedef bool boolean ;
+typedef uint8_t byte ;
+
+#ifdef __cplusplus
+} // extern "C"
+#endif // __cplusplus
+
 #define HIGH 0x1
 #define LOW  0x0
 
 #define INPUT 0x0
 #define OUTPUT 0x1
 #define INPUT_PULLUP 0x2
-
-#include <stdbool.h>
 
 #define PI 3.1415926535897932384626433832795
 #define HALF_PI 1.5707963267948966192313216916398
@@ -41,11 +57,6 @@ extern "C"{
 
 #define SERIAL  0x0
 #define DISPLAY 0x1
-
-enum BitOrder {
-	LSBFIRST = 0,
-	MSBFIRST = 1
-};
 
 //      LOW 0
 //      HIGH 1
@@ -84,15 +95,8 @@ enum BitOrder {
 #define bitClear(value, bit) ((value) &= ~(1UL << (bit)))
 #define bitWrite(value, bit, bitvalue) (bitvalue ? bitSet(value, bit) : bitClear(value, bit))
 
-typedef unsigned int word;
-
 #define bit(b) (1UL << (b))
 
-typedef bool boolean ;
-typedef uint8_t byte ;
 
-#ifdef __cplusplus
-} // extern "C"
-#endif // __cplusplus
 
 #endif /* _WIRING_CONSTANTS_ */

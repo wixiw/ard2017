@@ -8,6 +8,8 @@
 #include "RemoteControl.h"
 #include "Robot2017.h"
 
+#ifdef BUILD_REMOTE_CONTROL
+
 using namespace ard;
 
 #define HANDLE_MSG(msg)                 \
@@ -18,10 +20,18 @@ case apb_RemoteControlRequest_##msg##_tag:     \
 }
 
 RemoteControl::RemoteControl(ISerialDriver& serialDriver):
-    com("RemCtl", serialDriver, LOG_QUEUE_SIZE)
+    com("RemCtl", serialDriver, LOG_QUEUE_SIZE),
+    robot(NULL)
 {
     INIT_TABLE_TO_ZERO(msg_send_buffer);
     com.setListener(this);
+}
+
+void ard::RemoteControl::attachRobot(Robot2017* newRobot)
+{
+    ASSERT_TEXT(newRobot,"You should not attach a NULL robot");
+    ASSERT_TEXT(robot == NULL, "You should not attach robot twice");
+    robot=newRobot;
 }
 
 IEvent* RemoteControl::getEvent(eRemoteControlEvtId id)
@@ -37,6 +47,8 @@ bool RemoteControl::isReady() const
 void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLength)
 {
     UNUSED(origin);
+    ASSERT_TEXT(robot, "RemoteControl shall not be started without having a robot attached.");
+
     apb_RemoteControlRequest request = apb_RemoteControlRequest_init_default;
 
     /* Create a stream that reads from the buffer. */
@@ -56,6 +68,8 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(getTelemetry)
         HANDLE_MSG(reboot)
         HANDLE_MSG(requestPlaySound)
+        HANDLE_MSG(getConfig)
+        HANDLE_MSG(setConfig)
         HANDLE_MSG(configureMatch)
         HANDLE_MSG(startMatch)
         HANDLE_MSG(setPosition)
@@ -140,11 +154,12 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
     apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
     response.which_type                     = apb_RemoteControlResponse_telemetry_tag;
     response.type.telemetry.date            = millis();
-    response.type.telemetry.nav             = ROBOT.nav.getState();
-    response.type.telemetry.actuators       = ROBOT.actuators.getState();
-
+    response.type.telemetry.nav             = robot->nav.getState();
+#ifdef BUILD_STRATEGY
+    response.type.telemetry.actuators       = robot->actuators.getState();
+#endif
     /* Now we are ready to encode the message! */
-    ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode Log message.");
+    ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode telemetry message.");
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get telemetry failed");
 }
 
@@ -159,17 +174,40 @@ void RemoteControl::requestPlaySound(apb_RemoteControlRequest const & request)
     for(unsigned int i = 0 ; i < request.type.requestPlaySound.tones_count ; i++)
     {
         apb_Tone tone = request.type.requestPlaySound.tones[i];
-        ROBOT.buzzer().playTone(tone.frequency, tone.duration);
+        robot->buzzer().playTone(tone.frequency, tone.duration);
     }
+}
 
+void RemoteControl::getConfig(apb_RemoteControlRequest const & request)
+{
+    /* Clean send buffer and create a stream that will write to our buffer. */
+    INIT_TABLE_TO_ZERO(msg_send_buffer);
+    pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
+
+    /* populates message */
+    apb_RemoteControlResponse response  = apb_RemoteControlResponse_init_default;
+    response.which_type                 = apb_RemoteControlResponse_config_tag;
+    response.type.config                = robot->getConfig();
+
+    /* Now we are ready to encode the message! */
+    ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode config message.");
+    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get config failed");
+}
+
+void RemoteControl::setConfig(apb_RemoteControlRequest const & request)
+{
+    robot->setConfig(request.type.setConfig);
+    getConfig(request);
 }
 
 void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
 {
-
+#ifdef BUILD_STRATEGY
     uint8_t strategy = request.type.configureMatch.strategy;
     eColor color = (eColor)(request.type.configureMatch.matchColor);
-    ROBOT.strategy.configureMatch(strategy, color);
+
+    robot->strategy.configureMatch(strategy, color);
+#endif
     events[EVT_CONFIGURE].publish();
 }
 
@@ -180,12 +218,12 @@ void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
 
 void RemoteControl::setPosition(apb_RemoteControlRequest const & request)
 {
-    ROBOT.nav.setPosition(PointCap::fromProto(request.type.setPosition));
+    robot->nav.setPosition(PointCap::fromProto(request.type.setPosition));
 }
 
 void RemoteControl::requestGoto(apb_RemoteControlRequest const & request)
 {
-    ROBOT.nav.goTo(
+    robot->nav.goTo(
             request.type.requestGoto.target.x,
             request.type.requestGoto.target.y,
             request.type.requestGoto.direction);
@@ -193,7 +231,7 @@ void RemoteControl::requestGoto(apb_RemoteControlRequest const & request)
 
 void RemoteControl::requestGotoCap(apb_RemoteControlRequest const & request)
 {
-    ROBOT.nav.goToCap(
+    robot->nav.goToCap(
             request.type.requestGotoCap.target.x,
             request.type.requestGotoCap.target.y,
             request.type.requestGotoCap.target.h,
@@ -206,7 +244,7 @@ void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)
         LOG_INFO("Robot block request.");
     else
         LOG_INFO("Robot unblock request.");
-    ROBOT.nav.fakeRobot = request.type.requestBlockRobot;
+    robot->nav.fakeRobot = request.type.requestBlockRobot;
 }
 
 void RemoteControl::requestMaxLengthMsg(apb_RemoteControlRequest const & request)
@@ -260,4 +298,4 @@ void RemoteControl::log(LogMsg const & log)
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: log failed");
 }
 
-
+#endif

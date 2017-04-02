@@ -10,12 +10,16 @@
 
 #include "RSP.h"
 
+#ifdef BUILD_STRATEGY
+
 #define NB_MAX_STRATEGIES 4
 
 namespace ard
 {
+    class Robot2017;
+
     //Every strategy function shall have this signature :
-	typedef void (*StrategyFunctor)(void);
+	typedef void (*StrategyFunctor)(Robot2017& robot);
 
 	//Used to display the list of existing strategies
 	struct StrategyDescriptor{
@@ -27,6 +31,7 @@ namespace ard
   {
   public:
     StrategyThread();
+    void attachRobot(Robot2017* robot);
 
     //Override Thread : create the event
     void init() override;
@@ -54,8 +59,12 @@ namespace ard
 	
 	//list of strategies
 	StrategyDescriptor strategies[NB_MAX_STRATEGIES];
+
+	Robot2017* robot;
   };
 
 } /* namespace ard */
+
+#endif //build strategy
 
 #endif /* ROBOTS_TELEOPTHREAD_H_ */

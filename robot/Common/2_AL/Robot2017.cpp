@@ -6,7 +6,6 @@
  */
 
 #include "Robot2017.h"
-#include "BSP.h"
 #include "strategies/Strategies.h"
 
 //Timer 0 reserved for ARD cpu stats, instanciated for IRQ priority config
@@ -18,7 +17,6 @@
 #define TIMER_NAV_STEPPER   Timer2
 #define TIMER_GPIO          Timer3
 #define TIMER_BUZZER        Timer4
-
 
 using namespace ard;
 
@@ -73,25 +71,39 @@ void Robot2017_UART_Handler()
 
 Robot2017::Robot2017():
     bsp(),
+#ifdef BUILD_STRATEGY
     actuators(),
     strategy(),
+#endif
     nav(),
     hmi(TIMER_BUZZER),
     log(LogDispatcher::getInstance()),
 #ifdef BUILD_REMOTE_CONTROL
     remoteControl(bsp.serial0),
 #endif
-    fileLogger(LOG_QUEUE_SIZE)
+    fileLogger(LOG_QUEUE_SIZE),
+    buildDate("unknown"),
+    conf()
 {
     buildDate = String(__DATE__) + " " + __TIME__;
-    strategy.registerStrategy("Alpha",          Strategy_Alpha);
-    strategy.registerStrategy("Led Test",       Strategy_LedTest);
-    strategy.registerStrategy("Button Test",    Strategy_ButtonTest);
-    strategy.registerStrategy("Omron Test",     Strategy_OmronTest);
 }
 
 void Robot2017::bootOs()
 {
+    nav.updateConf(&conf);
+
+#ifdef BUILD_REMOTE_CONTROL
+    remoteControl.attachRobot(this);
+#endif
+
+#ifdef BUILD_STRATEGY
+    strategy.attachRobot(this);
+    strategy.registerStrategy("Alpha",          Strategy_Alpha);
+    strategy.registerStrategy("Led Test",       Strategy_LedTest);
+    strategy.registerStrategy("Button Test",    Strategy_ButtonTest);
+    strategy.registerStrategy("Omron Test",     Strategy_OmronTest);
+#endif
+    
     //Connect the log service
     Thread::setLogger(&log);
     log.addLogger(fileLogger);
@@ -103,7 +115,7 @@ void Robot2017::bootOs()
     //GPIO_TIMER is used for CPU stats, see FreeRTOSConfig.h and FreeRTOS_ARM.c
     TIMER_NAV_STEPPER.attachInterrupt(veryFast_interrupt);
     TIMER_GPIO.attachInterrupt(fast_interrupt);
-    
+
     //Configure interrupts priorities
     TIMER_CPU.setInterruptPriority              (PRIORITY_IRQ_CPU_STATS);
     TIMER_SERVO.setInterruptPriority            (PRIORITY_IRQ_SERVO);
@@ -144,18 +156,14 @@ void Robot2017::dieMotherFucker()
     nav.wait();
 
     //last action as strategy thread is certainly called^^
-    ROBOT.strategy.stopThread();
-    ROBOT.setRGBled(RED, FAST_BLINK);
-    ROBOT.setLed(LED1, OFF);
-    ROBOT.setLed(LED2, OFF);
-    ROBOT.setLed(LED3, OFF);
-    ROBOT.setLed(LED4, OFF);
-}
-
-Robot2017& Robot2017::operator=(const Robot2017& p)
-{
-    *this = Robot2017(p);
-    return *this;
+#ifdef BUILD_STRATEGY
+    strategy.stopThread();
+#endif
+    setRGBled(RED, FAST_BLINK);
+    setLed(LED1, OFF);
+    setLed(LED2, OFF);
+    setLed(LED3, OFF);
+    setLed(LED4, OFF);
 }
 
 IEvent* ard::Robot2017::getRemoteControlEvt(eRemoteControlEvtId id)
@@ -166,11 +174,6 @@ IEvent* ard::Robot2017::getRemoteControlEvt(eRemoteControlEvtId id)
     static Event<1> defaultEvent;
     return &defaultEvent;
 #endif
-}
-
-Robot2017::Robot2017(const Robot2017& p)
-: Robot2017()
-{
 }
 
 bool Robot2017::isStartPlugged()
@@ -226,4 +229,10 @@ void Robot2017::setLed(uint8_t led, eLedState blink)
         ASSERT_TEXT(false, "Unexpected value in setLed()");
         break;
     }
+}
+
+void Robot2017::setConfig(apb_Configuration const& newConf)
+{
+    conf.updateConfig(newConf);
+    nav.updateConf(&conf);
 }

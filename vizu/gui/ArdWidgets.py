@@ -38,6 +38,9 @@ class IntegerInput(QLineEdit):
             return int(self.text())
         else:
             return 0
+        
+    def setValue(self, value):
+        self.setText(str(value)) 
 
 #
 # This widget is a restricted text field usable to select an float value in a range 
@@ -73,6 +76,9 @@ class FloatInput(QLineEdit):
             return float(self.text())
         else:
             return 0.0
+        
+    def setValue(self, value):
+        self.setText(str(value)) 
 
 #
 # This widget is a restricted text field usable to select a heading/angle value.
@@ -84,6 +90,7 @@ class HeadingInput(FloatInput):
         
     def getValue(self):
         return normalizeAngle(math.radians(FloatInput.getValue(self)))
+    
         
 #
 # This widget is a restricted combobox to select a direction forward/backward

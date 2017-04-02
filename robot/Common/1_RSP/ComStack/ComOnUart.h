@@ -8,7 +8,7 @@
 #ifndef ROBOT_COMMON_1_RSP_COMMUNICATION_H_
 #define ROBOT_COMMON_1_RSP_COMMUNICATION_H_
 
-#include "BSP.h"
+#include "BSP.hpp"
 #include "ComInterfaces.h"
 #include "ArdHdlc.h"
 

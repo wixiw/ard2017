@@ -7,6 +7,8 @@
 
 #include "ActuatorThread.h"
 
+#ifdef BUILD_STRATEGY
+
 using namespace ard;
 
 ActuatorThread::ActuatorThread():
@@ -29,6 +31,7 @@ apb_ActuatorsState ActuatorThread::getState()
     return state;
 }
 
+#endif
 
 
 

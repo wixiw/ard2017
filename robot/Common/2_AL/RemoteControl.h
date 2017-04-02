@@ -15,12 +15,16 @@
 
 namespace ard
 {
+    class Robot2017;
+
     typedef enum
     {
         EVT_CONFIGURE = 0,
         EVT_START_MATCH,
         EVT_MAX
     } eRemoteControlEvtId;
+
+#ifdef BUILD_REMOTE_CONTROL
 
     /**
      * This class is used to rwait and receive commands from debug serial link
@@ -34,6 +38,7 @@ namespace ard
     {
     public:
         RemoteControl(ISerialDriver& serialDriver);
+        void attachRobot(Robot2017* robot);
         virtual ~RemoteControl() = default;
 
         //Get any teleop event (non-const on purpose)
@@ -57,11 +62,10 @@ namespace ard
         //Implements ILogChannel : push a log on the serial link
         virtual void log(LogMsg const & log) override;
 
-
     private:
         Event<1> events[EVT_MAX];
-        
         ComOnUart com;
+        Robot2017* robot;
         char msg_send_buffer[HDLC_FRAME_LENGTH];
 
         /**------------------------------
@@ -72,6 +76,8 @@ namespace ard
         void getTelemetry           (apb_RemoteControlRequest const & request);
         void reboot                 (apb_RemoteControlRequest const & request);
         void requestPlaySound       (apb_RemoteControlRequest const & request);
+        void getConfig              (apb_RemoteControlRequest const & request);
+        void setConfig              (apb_RemoteControlRequest const & request);
         void configureMatch         (apb_RemoteControlRequest const & request);
         void startMatch             (apb_RemoteControlRequest const & request);
         void setPosition            (apb_RemoteControlRequest const & request);
@@ -84,6 +90,10 @@ namespace ard
 
     };
 
+#endif //BUILD_REMOTE_CONTROLs
+
 } /* namespace ard */
+
+
 
 #endif /* ROBOTS_TELEOPTHREAD_H_ */

@@ -2,10 +2,11 @@
 #ifndef NAVIGATION_H
 #define NAVIGATION_H
 
-#include "BSP.h"
+#include "BSP.hpp"
 #include "Core/ArdMaths.h"
 #include "Actuators/AccelStepper.h"
 #include "CommonMsg.pb.h"
+#include "RobotConfig.h"
 
 namespace ard
 {
@@ -18,11 +19,19 @@ namespace ard
     {
     public:
         Navigation();
+
+        //Reread the configuration and maps default config. Shall be called at least once
+        //before the OS is initialized
+        void updateConf(RobotConfig* newConf);
+
+
         bool fakeRobot; //is true when a fake robot is simulated
 
         /**---------------------------------
          * Thread interface
          ---------------------------------*/
+
+        void init() override;
 
         //Implements Thread
         void run() override;
@@ -242,6 +251,8 @@ namespace ard
         //opponent management
         SwTimer oppTimer;
         bool avoidanceActive; //is true when avoidance system is active
+
+        RobotConfig* conf;
     };
 }    //end namespace
 

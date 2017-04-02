@@ -25,6 +25,7 @@ class RemoteControl(QObject):
     #-------------------------
     log             = pyqtSignal(RemoteControl_pb2.Log)
     osStats         = pyqtSignal(CommonMsg_pb2.EmptyMsg)
+    config          = pyqtSignal(RemoteControl_pb2.Configuration)
     telemetry       = pyqtSignal(RemoteControl_pb2.Telemetry)
     #-------------------------
     
@@ -95,6 +96,16 @@ class RemoteControl(QObject):
         msg = RemoteControl_pb2.RemoteControlRequest()
         melody.toMsg(msg.requestPlaySound)
         self._sendMsg(msg)
+        
+    @pyqtSlot()
+    def getConfig(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.getConfig.SetInParent()
+        self._sendMsg(msg)
+        
+    @pyqtSlot(RemoteControl_pb2.RemoteControlRequest)
+    def setConfig(self, request):
+        self._sendMsg(request)
     
     @pyqtSlot()
     def resetCpu(self):
@@ -188,7 +199,14 @@ class RemoteControl(QObject):
                 subMsg = getattr(response, response.WhichOneof("type"))
                 signal.emit(subMsg)
             except:
-                print("RemoteControl : Unkown message " + str(response))
+                import traceback
+                print("----- exception ---------")
+                traceback.print_exc()
+                print("------ stack ------------")
+                traceback.print_stack()
+                print("-------------------------")
+                print("RemoteControl : Unkown message ")
+                print(str(response))
         
             
     #serialize and send the message on communication link
@@ -197,11 +215,20 @@ class RemoteControl(QObject):
         assert isinstance(msg, RemoteControl_pb2.RemoteControlRequest), "RemoteControl_pb2._sendMsg expects to receive a RemoteControlRequest class"
         #---DEBUG--- print("RemoteControl request : " + str(msg))
 
-        if self.com.sendMsg(msg.SerializeToString()):
-            #--- DEBUG---print("Frame sent successfully.")
-            pass
-        else:
-            print("Frame send error.")
+        try:
+            if self.com.sendMsg(msg.SerializeToString()):
+                #--- DEBUG---print("Frame sent successfully.")
+                pass
+            else:
+                print("Frame send error.")
+        except:
+            import traceback
+            print("----- exception ---------")
+            traceback.print_exc()
+            print("------ stack ------------")
+            traceback.print_stack()
+            print("-------------------------")
+            print("Failed to serialize msg.")
 
     #self.timer_telemetry Callback : send a telemetry data request  
     @pyqtSlot()

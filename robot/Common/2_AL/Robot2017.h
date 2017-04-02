@@ -8,7 +8,7 @@
 #ifndef ROBOTS_ROBOT2017_H_
 #define ROBOTS_ROBOT2017_H_
 
-#include "BSP.h"
+#include "BSP.hpp"
 #include "RSP.h"
 #include "ActuatorsCtrl/ActuatorThread.h"
 #include "Strategies/StrategyThread.h"
@@ -87,17 +87,25 @@ namespace ard
         //Utility function to get version info
         String const& getVersion(){return buildDate;};
 
+        //Get the robot config
+        apb_Configuration const& getConfig() const {return conf.copy();};
+
+        //Set the robot config (you cannot do this at any time, think twice before using)
+        void setConfig(apb_Configuration const& newConf);
+
         //hardware layer
         BSP bsp;
 
         //Applicative layer
+#ifdef BUILD_STRATEGY
         ActuatorThread actuators;
         StrategyThread strategy;
-
+#endif
         //Public RSP interface : because i'm too lazy to hide it, please feel free to implement the decorator
         Navigation nav;
 
     private:
+
         //RSP implementation
         HmiThread hmi;
         LogDispatcher& log;
@@ -105,17 +113,20 @@ namespace ard
         RemoteControl remoteControl;
 #endif
         SdCardLogger fileLogger;
-        //singleton instance
+
+        //Singleton instance
         static Robot2017* instance;
 
         //Save the ARD library build date in the binary
         String buildDate;
 
+        RobotConfig conf;
+
         //Assemble all object instances
         //private constructor as its a singleton class
         Robot2017();
-        Robot2017& operator=(const Robot2017& p);
-        Robot2017(const Robot2017& p);
+        Robot2017& operator=(const Robot2017& p) = delete;
+        Robot2017(const Robot2017& p) = delete;
 
     };
 

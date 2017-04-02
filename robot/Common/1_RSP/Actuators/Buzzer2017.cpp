@@ -6,7 +6,7 @@
  */
 
 #include "Buzzer2017.h"
-#include "BSP.h"
+#include "BSP.hpp"
 
 using namespace ard;
 
