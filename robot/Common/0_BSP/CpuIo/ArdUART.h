@@ -163,6 +163,9 @@ class ArdUART: public ISerialDriver
     uint32_t deviceId;
     IRQn_Type irqId;
 
+  public:
+    uint32_t nbRxBytes; // total rx bytes
+    uint32_t nbTxBytes; // total tx bytes
     //Keep track of errors detected when received
     uint32_t nbRxBytesLost;
     uint32_t nbTxBytesLost;

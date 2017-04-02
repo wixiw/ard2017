@@ -85,8 +85,6 @@ class VizuMainScreen(QWidget):
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
         
-
-        
         # connect Com Tab msg requests
         self.tabContexts["Com"].tab.networkStatus         .connect(self._handleNetworkStatus)
 
@@ -99,6 +97,7 @@ class VizuMainScreen(QWidget):
         # connect Robot tab
         self.tabContexts["Robot"].tab.requestPlaySound    .connect(self.teleop.requestPlaySound)
         self.tabContexts["Robot"].tab.getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
+        self.tabContexts["Robot"].tab.getComStatsLogs     .connect(self.teleop.getComStatsLogs)
         self.tabContexts["Robot"].tab.getTelemetry        .connect(self.teleop.getTelemetry)
         self.tabContexts["Robot"].tab.configureMatch      .connect(self.teleop.configureMatch)
         self.tabContexts["Robot"].tab.startMatch          .connect(self.teleop.startMatch)

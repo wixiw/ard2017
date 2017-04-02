@@ -40,6 +40,13 @@ namespace ard
         //Implements ICom interface : read all received bytes and call listener when payload is detected
         virtual void readAll() override;
 
+        // for the stats
+        uint32_t maxRxBufferLoad;   // max raw data in serial_recv_buffer
+        uint32_t maxRxRawMsg;       // max size of single hdlc raw msg in serial_recv_buffer
+        uint32_t maxRxPayloadSize;  // max size of hdlc payload
+        uint32_t maxTxRawMsg;       // max size of hdlc msg (header + payload + crc + ...)
+
+
     private:
         IComListener* listener;
 

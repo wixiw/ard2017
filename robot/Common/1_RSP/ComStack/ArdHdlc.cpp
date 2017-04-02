@@ -11,6 +11,10 @@
 using namespace ard;
 
 ArdHdlc::ArdHdlc(String name, ISerialDriver& serialDriver):
+        maxRxBufferLoad(0),
+        maxRxRawMsg(0),
+        maxRxPayloadSize(0),
+        maxTxRawMsg(0),
         listener(NULL),
         physicalLink(serialDriver),
         bytesInRecvBuf(0),
@@ -94,6 +98,8 @@ void ArdHdlc::parseBuffer()
     bool msgFound = false;
     unsigned int lastBytesInRecvBuf = 0;
     
+    if ( bytesInRecvBuf > maxRxBufferLoad ) maxRxBufferLoad = bytesInRecvBuf;
+
     while (lastBytesInRecvBuf != bytesInRecvBuf) //there may be several frames, so as long as we find some work to do, unpile the buffer
     {
         //hldc local vars
@@ -119,6 +125,10 @@ void ArdHdlc::parseBuffer()
 #endif
             //A message has been found
             msgFound = true;
+
+            // for the stats
+            if ( hdlc_length > maxRxPayloadSize ) maxRxPayloadSize = hdlc_length;
+
             if(listener)
                 listener->handleMsg(this, hdlc_recv_framebuffer, hdlc_length);
             
@@ -126,6 +136,9 @@ void ArdHdlc::parseBuffer()
             INIT_TABLE_TO_ZERO(hdlc_recv_framebuffer);
 
             nbParsedBytes = res + 1; //the result is the index of the last read element in the buffer
+
+            // for the stats
+            if ( nbParsedBytes > maxRxRawMsg) maxRxRawMsg = nbParsedBytes;
             
             //clean input buffer : all data are read and copied into hdlc_recv_framebuffer
             if (nbParsedBytes == SERIAL_BUF_SIZE)
@@ -194,7 +207,7 @@ bool ArdHdlc::sendMsg(char const * msg, size_t msgLength)
     unsigned int hdlcByteToWrite = SERIAL_BUF_SIZE;
     int res = ardHdlc_createDataFrame(&control, msg, msgLength, hdlc_send_framebuffer, &hdlcByteToWrite);
     ASSERT(res == ARDHDLC_ESUCCESS);
-
+    if ( hdlcByteToWrite > maxTxRawMsg) maxTxRawMsg = hdlcByteToWrite; // for the stats
     for(unsigned int i = 0 ; i < hdlcByteToWrite ; i++)
     {
         physicalLink.write(hdlc_send_framebuffer[i]);

@@ -45,6 +45,7 @@ bool ard::ComOnUart::isConnected() const
 
 ComOnUart::Sender::Sender(String const& name, ICom& com, uint8_t recvQueueSize):
         Thread(name, PRIO_REMOTE_CTRL_TX, STACK_REMOTE_CTRL_TX),
+        maxMsgLength(0),
         com(com),
         queueLength(recvQueueSize, sizeof(size_t)),
         queueMsg(recvQueueSize, HDLC_FRAME_LENGTH)
@@ -61,6 +62,8 @@ void ComOnUart::Sender::run()
         queueLength.pop(&length);
         queueMsg.pop(&sendBuf);
         ASSERT_TEXT(com.sendMsg(sendBuf, length), "Sender::run issue");
+        // keep track of max length for stats
+        if( length > maxMsgLength) maxMsgLength = length;
     }
 }
 

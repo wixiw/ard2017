@@ -65,6 +65,7 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
     {
         HANDLE_MSG(getOsStats)
         HANDLE_MSG(getOsStatsLogs)
+        HANDLE_MSG(getComStatsLogs)
         HANDLE_MSG(getTelemetry)
         HANDLE_MSG(reboot)
         HANDLE_MSG(requestPlaySound)
@@ -141,6 +142,29 @@ void RemoteControl::getOsStatsLogs(apb_RemoteControlRequest const & request)
     LOG_INFO(String("  Nb queues    : ") + Queue::getOsObjectCount());
     LOG_INFO(String("  Nb threads   : ") + Thread::getOsObjectCount());
     LOG_INFO(String("  Nb SW Timers : ") + SwTimer::getOsObjectCount());
+    LOG_INFO("-----------------------------------------");
+}
+
+void RemoteControl::getComStatsLogs(apb_RemoteControlRequest const & request)
+{
+    LOG_INFO("-----------------------------------------");
+    LOG_INFO("|           Serial 0 Stats              |");
+    LOG_INFO("-----------------------------------------");
+    LOG_INFO(String("  Total RX bytes      : ") + ROBOT.bsp.serial0.nbTxBytes);
+    LOG_INFO(String("  Total TX bytes      : ") + ROBOT.bsp.serial0.nbRxBytes);
+    LOG_INFO(String("  RxBytesLost         : ") + ROBOT.bsp.serial0.nbRxBytesLost);
+    LOG_INFO(String("  TxBytesLost         : ") + ROBOT.bsp.serial0.nbTxBytesLost);
+    LOG_INFO(String("  FrameError          : ") + ROBOT.bsp.serial0.nbFrameError);
+    LOG_INFO(String("  ParityError         : ") + ROBOT.bsp.serial0.nbParityError);
+    LOG_INFO(String("  MissedIrq           : ") + ROBOT.bsp.serial0.nbMissedIrq);
+    LOG_INFO(String("  Max hdlc TX payload : ") + com.getMaxTxMsgLength());
+    LOG_INFO(String("  Max hdlc TX msg     : ") + com.getMaxTxHdlcPayload());
+    LOG_INFO(String("  Max RX buffer load  : ") + com.getMaxRxBufferLoad());
+    LOG_INFO(String("  Max RX msg          : ") + com.getMaxRxRawMsg());
+    LOG_INFO(String("  Max hdlc RX payload : ") + com.getMaxRxHdlcPayload());
+    LOG_INFO(String("  HDLC Frame length   : ") + HDLC_FRAME_LENGTH);
+    LOG_INFO(String("  HDLC buffer size    : ") + SERIAL_BUF_SIZE);
+    LOG_INFO(String("  LOG_QUEUE_SIZE      : ") + LOG_QUEUE_SIZE);
     LOG_INFO("-----------------------------------------");
 }
 
