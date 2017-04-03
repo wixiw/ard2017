@@ -11,14 +11,16 @@
 using namespace ard;
 
 ArdHdlc::ArdHdlc(String name, ISerialDriver& serialDriver):
+        nbMsgRecv(0),
+        nbMsgSent(0),
         maxRxBufferLoad(0),
         maxRxRawMsg(0),
         maxRxPayloadSize(0),
         maxTxRawMsg(0),
+        dropMsgCount(0),
         listener(NULL),
         physicalLink(serialDriver),
         bytesInRecvBuf(0),
-        dropMsgCount(0),
         nbParsedBytes(0),
         hdlc_length(0)
 {
@@ -125,6 +127,7 @@ void ArdHdlc::parseBuffer()
 #endif
             //A message has been found
             msgFound = true;
+            nbMsgRecv++;
 
             // for the stats
             if ( hdlc_length > maxRxPayloadSize ) maxRxPayloadSize = hdlc_length;
@@ -213,6 +216,7 @@ bool ArdHdlc::sendMsg(char const * msg, size_t msgLength)
         physicalLink.write(hdlc_send_framebuffer[i]);
     }
     INIT_TABLE_TO_ZERO(hdlc_send_framebuffer);
+    nbMsgSent++;
     return true;
 }
 
