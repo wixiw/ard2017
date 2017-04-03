@@ -51,17 +51,17 @@ message Configuration
     required float voie					= 6; //mm (distance between the 2 wheels contact points)
 
     //Navigation config
-    required uint32 maxAcc				= 11; //in mm /s²
-    required uint32 recalSpeed			= 12; //in mm /s
-    required uint32 maxTurnSpeed		= 13; //in ° /s
-    required uint32 maxSpeed			= 14; //in mm /s
+    required uint32 maxAccFront 		= 11; //in mm /s² maximal accelaration in front motion, maximal decceleration in rear motion
+    required uint32 recalSpeed			= 13; //in mm /s
+    required uint32 maxTurnSpeed		= 14; //in ° /s
+    required uint32 deccDist			= 15; //in mm distance to stop the robot at max speed (vmax is computed from acc/decc and this value)
 
     //Avoidance config
-    required uint32 detectionWaitForOppMove = 16;  //in ms
-    required bool detectionActive		= 17; //activates (or not) the avoidance system.
+    required uint32 detectionWaitForOppMove = 21;  //in ms
+    required bool detectionActive		= 22; //activates (or not) the avoidance system.
 
     //Strat config
-    required uint32 matchDuration		= 21; //in ms
+    required uint32 matchDuration		= 31; //in ms
 }
 
 //----------------------------------------------------------------------

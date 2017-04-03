@@ -65,9 +65,11 @@ class TabConfig(QWidget):
         req.setConfig.rightWheelDiameter = self.calibConfig.rightWheelDiameter.getValue()
         req.setConfig.voie = self.calibConfig.voie.getValue()
         #Nav
-        req.setConfig.maxAcc = self.navConfig.maxAcc.getValue()
-        req.setConfig.maxSpeed = self.navConfig.maxSpeed.getValue()
+        req.setConfig.maxAccFront = self.navConfig.maxAccFront.getValue()
+        #req.setConfig.maxDeccFront = self.navConfig.maxDeccFront.getValue()
         req.setConfig.maxTurnSpeed = self.navConfig.maxTurnSpeed.getValue()
+        req.setConfig.deccDist = self.navConfig.deccDist.getValue()
+        
         req.setConfig.recalSpeed = self.navConfig.recalSpeed.getValue()
         #Avoidance
         req.setConfig.detectionWaitForOppMove = self.avoidanceConfig.detectionWaitForOppMove.getValue()
@@ -93,10 +95,14 @@ class TabConfig(QWidget):
         self.calibConfig.rightWheelDiameter.setValue(msg.rightWheelDiameter)
         self.calibConfig.voie.setValue(msg.voie)
         #Nav
-        self.navConfig.maxAcc.setValue(msg.maxAcc)
-        self.navConfig.maxSpeed.setValue(msg.maxSpeed)
+        self.navConfig.maxAccFront.setValue(msg.maxAccFront)
+        #self.navConfig.maxDeccFront.setValue(msg.maxDeccFront)
         self.navConfig.maxTurnSpeed.setValue(msg.maxTurnSpeed)
         self.navConfig.recalSpeed.setValue(msg.recalSpeed)
+        self.navConfig.deccDist.setValue(msg.deccDist)
+        self.navConfig.vmaxFront.setText(str(math.floor(math.sqrt(2*msg.maxAccFront*msg.deccDist)))) #TODO to change when acc are separated
+        #self.navConfig.vmaxRear.setText(str(math.sqrt(2*msg.maxAccFront*msg.deccDist)))
+        
         #Avoidance
         self.avoidanceConfig.detectionWaitForOppMove.setValue(msg.detectionWaitForOppMove)
         self.avoidanceConfig.detectionActive.setChecked(msg.detectionActive)
@@ -133,10 +139,16 @@ class NavigationConfigWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         
-        self.maxAcc         = IntegerInput(self, 0, 2000)
-        self.maxSpeed           = IntegerInput(self, 0, 2000)
-        self.maxTurnSpeed       = IntegerInput(self, 0, 2000)
+        self.maxAccFront     = IntegerInput(self, 0, 2000)
+        #self.maxDeccFront    = IntegerInput(self, 0, 2000)
+        self.maxTurnSpeed    = IntegerInput(self, 0, 2000)
         self.recalSpeed      = IntegerInput(self, 0, 2000)
+        self.deccDist        = IntegerInput(self, 0, 2000)
+        self.vmaxFront       = QLabel("0")
+        #self.vmaxRear        = QLabel("0")
+        
+        self.vmaxFront.setAlignment(Qt.AlignCenter)
+        #self.vmaxRear.setAlignment(Qt.AlignCenter)
         
         self.layoutH = QHBoxLayout(self)
         self.layoutV = QGroupBox("Navigation")
@@ -144,10 +156,13 @@ class NavigationConfigWidget(QWidget):
         self.form = QFormLayout()
         self.layoutV.setLayout(self.form)
         
-        self.form.addRow("maxAcc (mm/s²)", self.maxAcc)
-        self.form.addRow("vmax (mm/s)", self.maxSpeed)
+        self.form.addRow("maxAccFront (mm/s²)", self.maxAccFront)
+        #self.form.addRow("maxDeccFront (mm/s²)", self.maxDeccFront)
         self.form.addRow("maxTurnSpeed (mm/s)", self.maxTurnSpeed)
         self.form.addRow("recalSpeed (mm/s)", self.recalSpeed)
+        self.form.addRow("decc distance (mm)", self.deccDist)
+        self.form.addRow("info : vmaxFront (mm/s)", self.vmaxFront)
+        #self.form.addRow("info : vmaxRear (mm/s)", self.vmaxRear)
         
 class AvoidanceConfigWidget(QWidget): 
     

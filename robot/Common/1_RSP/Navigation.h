@@ -163,10 +163,6 @@ namespace ard
 
         void
         setColor(eColor c);
-        void
-        setSpeed(float speed); //in mm/s
-        void
-        setSpeedVir(float s); //in °/s
 
         /**---------------------------------
          * Publish state
@@ -236,11 +232,6 @@ namespace ard
 
         //match color
         eColor m_color;
-
-        //speed is reduced in turns to prevent drifting
-        //hence we need 2 vars to switch from one to the other
-        float m_speed;    //mm/s
-        float m_speed_virage; //rad/s
 
         Mutex m_mutex;
         Signal m_targetReached;

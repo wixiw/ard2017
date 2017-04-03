@@ -25,8 +25,6 @@ Navigation::Navigation()
                 omronRearLeft(OMRON3, 50, 50),
                 omronRearRight(OMRON4, 50, 50),
                 m_color(eColor_PREF),
-                m_speed(0),
-                m_speed_virage(0),
                 m_mutex(),
                 m_targetReached(),
                 oldStepL(0),
@@ -42,10 +40,6 @@ void Navigation::updateConf(RobotConfig* newConf)
 {
     ASSERT(newConf);
     conf = newConf;
-    m_speed = conf->maxSpeed();
-    m_speed_virage = conf->maxTurnSpeed()*DEG_TO_RAD;
-    stepperL.setAcceleration(fabs(conf->maxAcc() * conf->GAIN_MM_2_STEPS_LEFT));
-    stepperR.setAcceleration(fabs(conf->maxAcc() * conf->GAIN_MM_2_STEPS_RIGHT));
 }
 
 /**---------------------------------
@@ -149,7 +143,7 @@ void Navigation::run()
                 || (m_sensTarget == eDir_BACKWARD && !isOpponentBehind()) )
                 {
                     LOG_INFO("Opponent has moved away, continuing order.");
-                    LOG_DEBUG(String("Speed=") + m_speed + " togoL=" + stepperL.distanceToGo() + " togoR=" + stepperR.distanceToGo());
+                    LOG_DEBUG(String(" toGoL=") + stepperL.distanceToGo() + " toGoR=" + stepperR.distanceToGo());
                     action_goingToTarget();
                 }
                 //If opponent is still present, continue to wait
@@ -341,39 +335,6 @@ void Navigation::setColor(eColor c)
     m_color = c;
 }
 
-void Navigation::setSpeed(float s)
-{
-    //prevent any interrupt from occurring between any configuration of a left/right motor
-    enterCriticalSection();
-    if (s > 0)
-    {
-        stepperL.setMaxSpeed(fabs(s * conf->GAIN_MM_2_STEPS_LEFT));
-        stepperR.setMaxSpeed(fabs(s * conf->GAIN_MM_2_STEPS_RIGHT));
-        m_speed = s;
-    }
-    else
-    {
-        stepperL.setMaxSpeed(fabs(conf->maxSpeed() * conf->GAIN_MM_2_STEPS_LEFT));
-        stepperR.setMaxSpeed(fabs(conf->maxSpeed() * conf->GAIN_MM_2_STEPS_RIGHT));
-        m_speed = conf->maxSpeed();
-    }
-    exitCriticalSection();
-}
-
-void Navigation::setSpeedVir(float s)
-{
-    m_mutex.lock();
-    if (s > 0)
-    {
-        m_speed_virage = s;
-    }
-    else
-    {
-        m_speed_virage = conf->maxTurnSpeed();
-    }
-    m_mutex.unlock();
-}
-
 /**---------------------------------
  * Publish state
  ---------------------------------*/
@@ -540,12 +501,21 @@ void Navigation::applyCmdToGoStraight(double mm)
 {
     LOG_DEBUG(String("applyCmdToGoStraight : ") + mm + " mm");
 
+    double maxAccLeft = fabs(conf->maxAccFront() * conf->GAIN_MM_2_STEPS_LEFT);
+    double maxAccRight = fabs(conf->maxAccFront() * conf->GAIN_MM_2_STEPS_RIGHT);
+    double maxSpeedLeft = fabs(conf->maxSpeedFront * conf->GAIN_MM_2_STEPS_LEFT);
+    double maxSpeedRight = fabs(conf->maxSpeedFront * conf->GAIN_MM_2_STEPS_RIGHT);
+    double distLeft = mm * conf->GAIN_MM_2_STEPS_LEFT;
+    double distRight = mm * conf->GAIN_MM_2_STEPS_RIGHT;
+
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
-    stepperL.setMaxSpeed(fabs(m_speed * conf->GAIN_MM_2_STEPS_LEFT));
-    stepperR.setMaxSpeed(fabs(m_speed * conf->GAIN_MM_2_STEPS_RIGHT));
-    stepperL.move(mm * conf->GAIN_MM_2_STEPS_LEFT);
-    stepperR.move(mm * conf->GAIN_MM_2_STEPS_RIGHT);
+    stepperL.setAcceleration(maxAccLeft);
+    stepperR.setAcceleration(maxAccRight);
+    stepperL.setMaxSpeed(maxSpeedLeft);
+    stepperR.setMaxSpeed(maxSpeedRight);
+    stepperL.move(distLeft);
+    stepperR.move(distRight);
     exitCriticalSection();
 }
 
@@ -553,12 +523,21 @@ void Navigation::applyCmdToTurn(double angleInRad)
 {
     LOG_DEBUG(String("applyCmdToTurn : ") + angleInRad + " rad");
 
+    double maxAccLeft = fabs(conf->maxAccFront() * conf->GAIN_MM_2_STEPS_LEFT);
+    double maxAccRight = fabs(conf->maxAccFront() * conf->GAIN_MM_2_STEPS_RIGHT);
+    double maxSpeedLeft = fabs(conf->maxTurnSpeed() * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_LEFT);
+    double maxSpeedRight = fabs(conf->maxTurnSpeed() * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_RIGHT);
+    double distLeft = -angleInRad * conf->GAIN_RAD_2_STEPS_LEFT;
+    double distRight = angleInRad * conf->GAIN_RAD_2_STEPS_RIGHT;
+
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
-    stepperL.setMaxSpeed(fabs(m_speed_virage * conf->GAIN_RAD_2_STEPS_LEFT));
-    stepperR.setMaxSpeed(fabs(m_speed_virage * conf->GAIN_RAD_2_STEPS_RIGHT));
-    stepperL.move(-angleInRad * conf->GAIN_RAD_2_STEPS_LEFT);
-    stepperR.move(angleInRad * conf->GAIN_RAD_2_STEPS_RIGHT);
+    stepperL.setAcceleration(maxAccLeft);
+    stepperR.setAcceleration(maxAccRight);
+    stepperL.setMaxSpeed(maxSpeedLeft);
+    stepperR.setMaxSpeed(maxSpeedRight);
+    stepperL.move(distLeft);
+    stepperR.move(distRight);
     exitCriticalSection();
 }
 
