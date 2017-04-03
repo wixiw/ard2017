@@ -73,6 +73,7 @@ namespace ard
          --------------------------------*/
         void getOsStats             (apb_RemoteControlRequest const & request);
         void getOsStatsLogs         (apb_RemoteControlRequest const & request);
+        void getComStatsLogs        (apb_RemoteControlRequest const & request);
         void getTelemetry           (apb_RemoteControlRequest const & request);
         void reboot                 (apb_RemoteControlRequest const & request);
         void requestPlaySound       (apb_RemoteControlRequest const & request);

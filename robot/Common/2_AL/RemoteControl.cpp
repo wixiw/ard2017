@@ -65,6 +65,7 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
     {
         HANDLE_MSG(getOsStats)
         HANDLE_MSG(getOsStatsLogs)
+        HANDLE_MSG(getComStatsLogs)
         HANDLE_MSG(getTelemetry)
         HANDLE_MSG(reboot)
         HANDLE_MSG(requestPlaySound)
@@ -141,6 +142,36 @@ void RemoteControl::getOsStatsLogs(apb_RemoteControlRequest const & request)
     LOG_INFO(String("  Nb queues    : ") + Queue::getOsObjectCount());
     LOG_INFO(String("  Nb threads   : ") + Thread::getOsObjectCount());
     LOG_INFO(String("  Nb SW Timers : ") + SwTimer::getOsObjectCount());
+    LOG_INFO("-----------------------------------------");
+}
+
+void RemoteControl::getComStatsLogs(apb_RemoteControlRequest const & request)
+{
+    LOG_INFO("------------------------------------------------");
+    LOG_INFO("|           Serial 0 Stats                     |");
+    LOG_INFO("------------------------------------------------");
+    LOG_INFO(String(" ########  ##     ##       Total bytes : ") + ROBOT.bsp.serial0.nbTxBytes);
+    LOG_INFO(String(" ##     ##  ##   ##          Total msg : ") + com.getNbRxMsg());
+    LOG_INFO(String(" ##     ##   ## ##          Bytes lost : ") + ROBOT.bsp.serial0.nbRxBytesLost);
+    LOG_INFO(String(" ########     ###      Max buffer load : ") + com.getMaxRxBufferLoad());
+    LOG_INFO(String(" ##   ##     ## ##    Max msg in queue : ") + com.getMaxRxRawMsg());
+    LOG_INFO(String(" ##    ##   ##   ##     Max HDLC payld : ") + com.getMaxRxHdlcPayload());
+    LOG_INFO(String(" ##     ## ##     ##           Dropped : ") + com.getHdlcDropMsgCount());
+    LOG_INFO("");
+    LOG_INFO(String("  ######## ##     ##       Total bytes : ") + ROBOT.bsp.serial0.nbRxBytes);
+    LOG_INFO(String("     ##     ##   ##          Total msg : ") + com.getNbTxMsg());
+    LOG_INFO(String("     ##      ## ##          Bytes lost : ") + ROBOT.bsp.serial0.nbTxBytesLost);
+    LOG_INFO(String("     ##       ###      Max buffer load : ") + com.getMaxTxMsgCount());
+    LOG_INFO(String("     ##      ## ##     Max raw  length : ") + com.getMaxTxMsgLength());
+    LOG_INFO(String("     ##     ##   ##     Max HDLC payld : ") + com.getMaxTxHdlcPayload());
+    LOG_INFO(String("     ##    ##     ##                     "));
+    LOG_INFO("");
+    LOG_INFO(String("  FrameError        : ") + ROBOT.bsp.serial0.nbFrameError);
+    LOG_INFO(String("  ParityError       : ") + ROBOT.bsp.serial0.nbParityError);
+    LOG_INFO(String("  MissedIrq         : ") + ROBOT.bsp.serial0.nbMissedIrq);
+    LOG_INFO(String("  HDLC Frame length : ") + HDLC_FRAME_LENGTH);
+    LOG_INFO(String("  HDLC buffer size  : ") + SERIAL_BUF_SIZE);
+    LOG_INFO(String("  LOG_QUEUE_SIZE    : ") + LOG_QUEUE_SIZE);
     LOG_INFO("-----------------------------------------");
 }
 

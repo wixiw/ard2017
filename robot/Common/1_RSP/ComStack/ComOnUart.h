@@ -62,6 +62,16 @@ namespace ard
             ASSERT(false);
         }
 
+        uint32_t getNbTxMsg() { return dataLink.nbMsgSent; }      // max size of message to send BEFORE HDLC serialization (= HDLC payload)
+        uint32_t getNbRxMsg() { return dataLink.nbMsgRecv; }        // max message count in sender circular buffer
+        uint32_t getMaxTxMsgLength() { return txThread.maxMsgLength; }      // max size of message to send BEFORE HDLC serialization (= HDLC payload)
+        uint32_t getMaxTxMsgCount() { return txThread.maxMsgCount; }        // max message count in sender circular buffer
+        uint32_t getMaxTxHdlcPayload() { return dataLink.maxTxRawMsg; }     // max size of sent HDLC full msg
+        uint32_t getMaxRxBufferLoad() { return dataLink.maxRxBufferLoad; }  // max raw data in serial_recv_buffer
+        uint32_t getMaxRxRawMsg() { return dataLink.maxRxRawMsg; }          // max size of single message received BEFORE HDLC parsing
+        uint32_t getMaxRxHdlcPayload() { return dataLink.maxRxPayloadSize; }// max size of received HDLC payload
+        uint32_t getHdlcDropMsgCount() { return dataLink.dropMsgCount; }// max size of received HDLC payload
+
     private:
         /**
          * This internal class is used to manage the emission thread
@@ -77,6 +87,9 @@ namespace ard
 
             //@return : return false if send queue is full : retry later
             bool sendMsg(char const * msg, size_t msgLength);
+
+            uint32_t maxMsgLength;
+            uint32_t maxMsgCount;
 
         private:
             //The com link on which to send data

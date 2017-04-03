@@ -86,6 +86,12 @@ class RemoteControl(QObject):
         self._sendMsg(msg)
         
     @pyqtSlot()
+    def getComStatsLogs(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.getComStatsLogs.SetInParent()
+        self._sendMsg(msg)
+        
+    @pyqtSlot()
     def getTelemetry(self):
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.getTelemetry.SetInParent()

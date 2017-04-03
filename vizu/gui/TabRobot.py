@@ -15,6 +15,7 @@ from core import *
 class TabRobot(QWidget):
     
     getOsStatsLogs = pyqtSignal()
+    getComStatsLogs = pyqtSignal()
     getTelemetry = pyqtSignal()
     requestPlaySound = pyqtSignal(Melody)
     resetCpu = pyqtSignal()
@@ -55,6 +56,9 @@ class TabRobot(QWidget):
         self.btn_cmds = dict()
         self.btn_cmds["getOsStats"] = QPushButton('Get OS Stats', self)
         self.btn_cmds["getOsStats"].clicked.connect(self._getOsStatsLogs) 
+        
+        self.btn_cmds["getComStatsLogs"] = QPushButton('Get COM Stats', self)
+        self.btn_cmds["getComStatsLogs"].clicked.connect(self._getComStatsLogs) 
         
         self.btn_cmds["getTelemetry"] = QPushButton('Get Telemetry', self)
         self.btn_cmds["getTelemetry"].clicked.connect(self._getTelemetry) 
@@ -138,6 +142,11 @@ class TabRobot(QWidget):
     def _getOsStatsLogs(self): 
        print("Stats request")
        self.getOsStatsLogs.emit()
+       
+    @pyqtSlot()
+    def _getComStatsLogs(self): 
+       print("Com Stats request")
+       self.getComStatsLogs.emit()
        
     @pyqtSlot()
     def _getTelemetry(self): 

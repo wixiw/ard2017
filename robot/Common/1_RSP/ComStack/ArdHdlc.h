@@ -40,6 +40,16 @@ namespace ard
         //Implements ICom interface : read all received bytes and call listener when payload is detected
         virtual void readAll() override;
 
+        // for the stats
+        uint32_t nbMsgRecv;         // total number of msg received
+        uint32_t nbMsgSent;         // total number of msg sent
+        uint32_t maxRxBufferLoad;   // max raw data in serial_recv_buffer
+        uint32_t maxRxRawMsg;       // max size of single hdlc raw msg in serial_recv_buffer
+        uint32_t maxRxPayloadSize;  // max size of hdlc payload
+        uint32_t maxTxRawMsg;       // max size of hdlc msg (header + payload + crc + ...)
+        //statistic to count dropped messages (in fact it's the number of time we reseted the buffer, it may be more than that, but who care ?)
+        uint32_t dropMsgCount;
+
     private:
         IComListener* listener;
 
@@ -53,9 +63,6 @@ namespace ard
         
         //hdlc buffer tracking state
         ardHdlc_state_t hdlcState;
-
-        //statistic to count dropped messages (in fact it's the number of time we reseted the buffer, it may be more than that, but who care ?)
-        uint32_t dropMsgCount;
 
         //emission buffers. hdlc buffer are flat buffers
         //because yahdlc is not able to read from ring buffers

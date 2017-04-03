@@ -37,6 +37,8 @@ ArdUART::ArdUART(Uart* pUart, uint32_t dwId, size_t const rxSize, size_t const t
     baseAddr(pUart),
     deviceId(dwId),
     irqId(static_cast<IRQn_Type>(dwId)),
+    nbRxBytes(0),
+    nbTxBytes(0),
     nbRxBytesLost(0),
     nbTxBytesLost(0),
     nbFrameError(0),
@@ -124,6 +126,7 @@ void ArdUART::read(uint8_t * const byte)
     Thread::enterCriticalSection();
     bool byteReceived = circular_popByte(&rxBuf, byte);
     Thread::exitCriticalSection();
+    nbTxBytes++;
 
     ASSERT(byteReceived);
 //    dh_publish_event("read:done", *byte, 0);
@@ -137,6 +140,7 @@ void ArdUART::write(uint8_t byte)
     Thread::enterCriticalSection();
     bool roomAvailable = circular_appendByte(&txBuf, byte);
     Thread::exitCriticalSection();
+    nbRxBytes++;
 
     ASSERT(roomAvailable);
 //    dh_publish_event("write:done", byte, 0);
