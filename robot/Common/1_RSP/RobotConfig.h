@@ -16,14 +16,12 @@ namespace ard
 class RobotConfig
 {
 public:
-    double GAIN_MM_2_STEPS_LEFT; // *-1 because left motor is inverted
-    double GAIN_MM_2_STEPS_RIGHT;
-    double GAIN_STEPS_2_MM_LEFT; // *-1 because left motor is inverted
-    double GAIN_STEPS_2_MM_RIGHT;
-    double GAIN_DEG_2_MM_LEFT;
-    double GAIN_DEG_2_MM_RIGHT;
-    double GAIN_RAD_2_MM_LEFT;
-    double GAIN_RAD_2_MM_RIGHT;
+    double GAIN_MM_2_STEPS_LEFT;   // gain to pass from a distance in mm to a number of steps on the left motor, *-1 because left motor is inverted
+    double GAIN_MM_2_STEPS_RIGHT;  // gain to pass from a distance in mm to a number of steps on the right motor,
+    double GAIN_STEPS_2_MM_LEFT;   // gain to convert a step count into a distance on left motor,
+    double GAIN_STEPS_2_MM_RIGHT;  // gain to convert a step count into a distance on right motor,
+    double GAIN_RAD_2_STEPS_LEFT;  // gain to convert an angle into a step count on left motor
+    double GAIN_RAD_2_STEPS_RIGHT; // gain to convert an angle into a step count on left motor
 
     RobotConfig();
 

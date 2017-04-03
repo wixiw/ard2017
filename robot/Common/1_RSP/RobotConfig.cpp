@@ -37,12 +37,10 @@ void RobotConfig::updateConfig(apb_Configuration const& newConf)
 {
 	cfg = newConf;
 
-	GAIN_MM_2_STEPS_LEFT    = - cfg.stepByTurn / (cfg.leftWheelDiameter * M_PI);
+	GAIN_MM_2_STEPS_LEFT    = -( cfg.stepByTurn / (cfg.leftWheelDiameter * M_PI));
     GAIN_MM_2_STEPS_RIGHT   = cfg.stepByTurn / (cfg.rightWheelDiameter * M_PI);
-    GAIN_STEPS_2_MM_LEFT    = - (cfg.leftWheelDiameter * M_PI) / cfg.stepByTurn;
-    GAIN_STEPS_2_MM_RIGHT   = (cfg.rightWheelDiameter * M_PI) /  cfg.stepByTurn;
-    GAIN_DEG_2_MM_LEFT      = DEG_TO_RAD * cfg.voie * GAIN_MM_2_STEPS_LEFT;
-    GAIN_DEG_2_MM_RIGHT     = DEG_TO_RAD * cfg.voie * GAIN_MM_2_STEPS_LEFT;
-    GAIN_RAD_2_MM_LEFT      = cfg.voie * GAIN_MM_2_STEPS_LEFT;
-    GAIN_RAD_2_MM_RIGHT     = cfg.voie * GAIN_MM_2_STEPS_RIGHT;
+    GAIN_STEPS_2_MM_LEFT    = 1/GAIN_MM_2_STEPS_LEFT;
+    GAIN_STEPS_2_MM_RIGHT   = 1/GAIN_MM_2_STEPS_RIGHT;
+    GAIN_RAD_2_STEPS_LEFT   = cfg.voie * GAIN_MM_2_STEPS_LEFT / 2.;
+    GAIN_RAD_2_STEPS_RIGHT  = cfg.voie * GAIN_MM_2_STEPS_RIGHT / 2.;
 }

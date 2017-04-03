@@ -43,7 +43,7 @@ void Navigation::updateConf(RobotConfig* newConf)
     ASSERT(newConf);
     conf = newConf;
     m_speed = conf->maxSpeed();
-    m_speed_virage = conf->maxTurnSpeed();
+    m_speed_virage = conf->maxTurnSpeed()*DEG_TO_RAD;
     stepperL.setAcceleration(fabs(conf->maxAcc() * conf->GAIN_MM_2_STEPS_LEFT));
     stepperR.setAcceleration(fabs(conf->maxAcc() * conf->GAIN_MM_2_STEPS_RIGHT));
 }
@@ -555,10 +555,10 @@ void Navigation::applyCmdToTurn(double angleInRad)
 
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
-    stepperL.setMaxSpeed(fabs(m_speed_virage * conf->GAIN_DEG_2_MM_LEFT));
-    stepperR.setMaxSpeed(fabs(m_speed_virage * conf->GAIN_DEG_2_MM_RIGHT));
-    stepperL.move(-angleInRad * conf->GAIN_RAD_2_MM_LEFT/2.); //half contribution on each wheel
-    stepperR.move(angleInRad * conf->GAIN_RAD_2_MM_RIGHT/2.);
+    stepperL.setMaxSpeed(fabs(m_speed_virage * conf->GAIN_RAD_2_STEPS_LEFT));
+    stepperR.setMaxSpeed(fabs(m_speed_virage * conf->GAIN_RAD_2_STEPS_RIGHT));
+    stepperL.move(-angleInRad * conf->GAIN_RAD_2_STEPS_LEFT);
+    stepperR.move(angleInRad * conf->GAIN_RAD_2_STEPS_RIGHT);
     exitCriticalSection();
 }
 

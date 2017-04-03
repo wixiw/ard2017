@@ -47,7 +47,7 @@ namespace ard
         ISerialDriver& physicalLink;
 
         //reception buffers
-        unsigned int bytesInRecvBuf = 0;
+        unsigned int bytesInRecvBuf = 0; //usefull bytes in serial_recv_buffer
         char serial_recv_buffer[SERIAL_BUF_SIZE];
         char hdlc_recv_framebuffer[SERIAL_BUF_SIZE];
         

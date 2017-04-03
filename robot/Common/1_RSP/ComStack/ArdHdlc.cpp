@@ -153,7 +153,7 @@ void ArdHdlc::parseBuffer()
             //ETOOSHORT : message is too short, to be discarded
             if( res == -ARDHDLC_EFCS || res == -ARDHDLC_ETOOSHORT )
             {
-                size_t startOfRemainingData = hdlc_length;//TODO c'est louche, c'est peut être nbParsedBytes
+                size_t startOfRemainingData = hdlcState.src_index;
                 ASSERT(startOfRemainingData <= bytesInRecvBuf);
                 size_t remainingBytesNb = bytesInRecvBuf - startOfRemainingData;
                 throwUnusedBytes(startOfRemainingData, remainingBytesNb);
@@ -193,13 +193,14 @@ bool ArdHdlc::sendMsg(char const * msg, size_t msgLength)
 
     unsigned int hdlcByteToWrite = SERIAL_BUF_SIZE;
     int res = ardHdlc_createDataFrame(&control, msg, msgLength, hdlc_send_framebuffer, &hdlcByteToWrite);
+    ASSERT(res == ARDHDLC_ESUCCESS);
+
     for(unsigned int i = 0 ; i < hdlcByteToWrite ; i++)
     {
         physicalLink.write(hdlc_send_framebuffer[i]);
     }
     INIT_TABLE_TO_ZERO(hdlc_send_framebuffer);
-    
-    return res == ARDHDLC_ESUCCESS;
+    return true;
 }
 
 bool ArdHdlc::isConnected() const
