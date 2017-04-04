@@ -82,6 +82,7 @@ message RemoteControlRequest
 		Melody				requestPlaySound	= 5;
 		EmptyMsg			getConfig			= 6;
 		Configuration		setConfig			= 7;
+		EmptyMsg 			getComStatsLogs		= 8;
 
 		//messages from 100 to 199 are reserved fo strategy
 		ConfigureMatch 		configureMatch 		= 100;
