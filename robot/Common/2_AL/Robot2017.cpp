@@ -98,8 +98,9 @@ void Robot2017::bootOs()
 
 #ifdef BUILD_STRATEGY
     strategy.attachRobot(this);
+	strategy.registerStrategy("Tanguy",         Strategy_Tanguy);
     strategy.registerStrategy("Alpha",          Strategy_Alpha);
-    strategy.registerStrategy("Led Test",       Strategy_LedTest);
+    //strategy.registerStrategy("Led Test",       Strategy_LedTest);
     strategy.registerStrategy("Button Test",    Strategy_ButtonTest);
     strategy.registerStrategy("Omron Test",     Strategy_OmronTest);
 #endif
