@@ -5,7 +5,6 @@
 *.pb.c
 *.pb.h
 *.pb
-*.pyc
 *~
 *.tar.gz
 .sconsign.dblite
@@ -25,3 +24,4 @@ examples/using_double_on_avr/test_conversions
 examples/using_union_messages/decode
 examples/using_union_messages/encode
 generator/nanopb_pb2.pyc
+generator/proto/__pycache__
