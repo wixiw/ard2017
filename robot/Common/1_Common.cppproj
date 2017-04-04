@@ -1213,6 +1213,9 @@
     <Compile Include="2_AL\Strategies\StrategyAlpha.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\Strategies\StrategyTanguy.cpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\Strategies\StrategyThread.cpp">
       <SubType>compile</SubType>
     </Compile>

@@ -13,6 +13,9 @@ namespace ard
     //awaiting a real strategy ...
     void Strategy_Alpha();
 
+    //testing purpose
+    void Strategy_Tanguy();
+
     //for debug only : make all leds blinking to check they are working
     void Strategy_LedTest();
 
