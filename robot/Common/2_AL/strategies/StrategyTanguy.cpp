@@ -12,7 +12,7 @@
 using namespace ard;
 
 void
-ard::Strategy_Tanguy ()
+ard::Strategy_Tanguy (Robot2017& robot)
 {
 	LOG_INFO("STRAT : Strategy_Tanguy.");
 

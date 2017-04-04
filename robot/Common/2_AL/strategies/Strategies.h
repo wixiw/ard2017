@@ -16,10 +16,7 @@ namespace ard
     void Strategy_Alpha(Robot2017& robot);
 
     //testing purpose
-    void Strategy_Tanguy();
-
-    //testing purpose
-    void Strategy_Tanguy();
+    void Strategy_Tanguy(Robot2017& robot);
 
     //for debug only : make all leds blinking to check they are working
     void Strategy_LedTest(Robot2017& robot);
