@@ -18,6 +18,10 @@ Navigation::Navigation()
                 m_target(),
                 m_sensTarget(eDir_UNDEFINED),
                 m_order(eNavOrder_NOTHING),
+                userMaxSpeed(0),
+                userMaxTurnSpeed(0),
+                userMaxAcc(0),
+                userMaxTurnAcc(0),
                 stepperL(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
                 stepperR(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
                 omronFrontLeft(OMRON1, 50, 50),
@@ -40,6 +44,11 @@ void Navigation::updateConf(RobotConfig* newConf)
 {
     ASSERT(newConf);
     conf = newConf;
+
+    userMaxSpeed        = conf->maxSpeed();
+    userMaxTurnSpeed    = conf->maxTurnSpeed();
+    userMaxAcc          = conf->maxAcc();
+    userMaxTurnAcc      = conf->maxTurnAcc();
 }
 
 /**---------------------------------
@@ -184,6 +193,23 @@ void Navigation::setPosition(PointCap newPose)
     exitCriticalSection();
 
     LOG_INFO("position set to :" + newPose.toString());
+}
+
+
+void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t accMax, uint16_t accMaxTurn)
+{
+    m_mutex.lock();
+
+    //If a config is NULL, then restore default configuration
+    vMax        != 0 ? userMaxSpeed         = vMax         : userMaxSpeed       = conf->maxSpeed();
+    vMaxTurn    != 0 ? userMaxTurnSpeed     = vMaxTurn     : userMaxTurnSpeed   = conf->maxSpeed();
+    accMax      != 0 ? userMaxAcc           = accMax       : userMaxAcc         = conf->maxAcc();
+    accMaxTurn  != 0 ? userMaxTurnAcc       = accMaxTurn   : userMaxTurnAcc     = conf->maxTurnAcc();
+
+    m_mutex.unlock();
+
+    LOG_INFO(String("speed set to : (") + userMaxSpeed + "mm/s, " + userMaxTurnSpeed +
+            "°/s), acc set to (" + userMaxAcc + "mm/s², " + userMaxTurnAcc + "°/s²)");
 }
 
 void Navigation::goTo(Point target, eDir sens)
@@ -501,10 +527,10 @@ void Navigation::applyCmdToGoStraight(double mm)
 {
     LOG_DEBUG(String("applyCmdToGoStraight : ") + mm + " mm");
 
-    double maxAccLeft = fabs(conf->maxAccFront() * conf->GAIN_MM_2_STEPS_LEFT);
-    double maxAccRight = fabs(conf->maxAccFront() * conf->GAIN_MM_2_STEPS_RIGHT);
-    double maxSpeedLeft = fabs(conf->maxSpeedFront * conf->GAIN_MM_2_STEPS_LEFT);
-    double maxSpeedRight = fabs(conf->maxSpeedFront * conf->GAIN_MM_2_STEPS_RIGHT);
+    double maxAccLeft = fabs(userMaxAcc * conf->GAIN_MM_2_STEPS_LEFT);
+    double maxAccRight = fabs(userMaxAcc * conf->GAIN_MM_2_STEPS_RIGHT);
+    double maxSpeedLeft = fabs(userMaxSpeed * conf->GAIN_MM_2_STEPS_LEFT);
+    double maxSpeedRight = fabs(userMaxSpeed * conf->GAIN_MM_2_STEPS_RIGHT);
     double distLeft = mm * conf->GAIN_MM_2_STEPS_LEFT;
     double distRight = mm * conf->GAIN_MM_2_STEPS_RIGHT;
 
@@ -523,10 +549,10 @@ void Navigation::applyCmdToTurn(double angleInRad)
 {
     LOG_DEBUG(String("applyCmdToTurn : ") + angleInRad + " rad");
 
-    double maxAccLeft = fabs(conf->maxAccFront() * conf->GAIN_MM_2_STEPS_LEFT);
-    double maxAccRight = fabs(conf->maxAccFront() * conf->GAIN_MM_2_STEPS_RIGHT);
-    double maxSpeedLeft = fabs(conf->maxTurnSpeed() * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_LEFT);
-    double maxSpeedRight = fabs(conf->maxTurnSpeed() * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_RIGHT);
+    double maxAccLeft = fabs(userMaxTurnAcc * conf->GAIN_MM_2_STEPS_LEFT);
+    double maxAccRight = fabs(userMaxTurnAcc * conf->GAIN_MM_2_STEPS_RIGHT);
+    double maxSpeedLeft = fabs(userMaxTurnSpeed * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_LEFT);
+    double maxSpeedRight = fabs(userMaxTurnSpeed * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_RIGHT);
     double distLeft = -angleInRad * conf->GAIN_RAD_2_STEPS_LEFT;
     double distRight = angleInRad * conf->GAIN_RAD_2_STEPS_RIGHT;
 

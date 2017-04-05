@@ -48,13 +48,18 @@ namespace ard
          * the position is automatically symetrized depending
          * on the value configured with setColor()
          */
-        void
-        setPosition(PointCap newPose);
+        void setPosition(PointCap newPose);
         void setPosition(float x/*mm*/, float y/*mm*/, float h/*deg*/)
         {
             setPosition(PointCap(x, y, DEG_TO_RAD * h));
         }
         ;
+
+        /**
+         * Set a new user speed/acc constraint
+         */
+        void setSpeedAcc(uint16_t vMax /*mm/s*/, uint16_t vMaxsTurn /*°/s*/,
+                uint16_t accMax /*mm/s2*/, uint16_t accMaxTurn /*°/s2*/);
 
         /**
          * Get the current robot position
@@ -220,6 +225,12 @@ namespace ard
         PointCap m_target;
         eDir m_sensTarget;
         eNavOrder m_order;
+
+        //move constraints
+        uint16_t userMaxSpeed;          //mm/s
+        uint16_t userMaxTurnSpeed;      //°/s
+        uint16_t userMaxAcc;        //mm/s²
+        uint16_t userMaxTurnAcc;    //°/s²
 
         //HW interface
         AccelStepper stepperL; //critical section

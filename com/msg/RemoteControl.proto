@@ -8,60 +8,69 @@ import "CommonMsg.proto";
 //Configure the robot match paramters
 message ConfigureMatch
 {
-	required uint32 strategy = 1;
-	required eColor matchColor = 2;
+    required uint32 strategy = 1;
+    required eColor matchColor = 2;
+}
+
+//request the robot to modify its speeds. If params are set to 0 => restore config speed
+message SetSpeedAcc {
+    required uint32          vMax                = 1; //mm/s
+    required uint32          vMaxTurn            = 2; //°/s
+    required uint32          accMax              = 3; //mm/s2
+    required uint32          accMaxTurn          = 4; //°/s2
 }
 
 //request the robot to turn to head to destination, then go ahead
 message RequestGoto {
-	required Point			target				= 1;
-	required eDir			direction			= 2;
+    required Point           target              = 1;
+    required eDir            direction           = 2;
 }
 
 //relative motion order to go in straight line
 message RequestGotoCap {
-	required PointCap		target				= 1;
-	required eDir			direction			= 2;
+    required PointCap        target              = 1;
+    required eDir            direction           = 2;
 }
 
 message Log {
-	required uint32			date				= 1;
-	required eLogLevel		level				= 2;
-	required string			component			= 3 [(nanopb).max_size = 16];
-	required string			text				= 4 [(nanopb).max_size = 200];
+    required uint32            date              = 1;
+    required eLogLevel         level             = 2;
+    required string            component         = 3 [(nanopb).max_size = 16];
+    required string            text              = 4 [(nanopb).max_size = 200];
 }
 
 //feedback on Robot low level states
 message Telemetry
 {
-	required uint32			date				= 1;
-	required NavState 		nav 				= 2;
-	required ActuatorsState actuators			= 3;
+    required uint32            date              = 1;
+    required NavState          nav               = 2;
+    required ActuatorsState    actuators         = 3;
 }
 
 message Configuration
 {
-	//Mechanics/Electronics related constants
-	required uint32 stepByTurn 			= 1; //nb steps when the motor has made a complete revolution
-	required uint32 xar 				= 2; //mm distance from the wheel center to the rear of the robot
-	required uint32 yside 				= 3; //mm distance from the robot center to a side
-	//	calibration params
-	required float leftWheelDiameter	= 4; //mm
-    required float rightWheelDiameter	= 5; //mm
-    required float voie					= 6; //mm (distance between the 2 wheels contact points)
+    //Mechanics/Electronics related constants
+    required uint32 stepByTurn             = 1; //nb steps when the motor has made a complete revolution
+    required uint32 xar                    = 2; //mm distance from the wheel center to the rear of the robot
+    required uint32 yside                  = 3; //mm distance from the robot center to a side
+    //    calibration params
+    required float leftWheelDiameter       = 4; //mm
+    required float rightWheelDiameter      = 5; //mm
+    required float voie                    = 6; //mm (distance between the 2 wheels contact points)
 
     //Navigation config
-    required uint32 maxAccFront 		= 11; //in mm /s² maximal accelaration in front motion, maximal decceleration in rear motion
-    required uint32 recalSpeed			= 13; //in mm /s
-    required uint32 maxTurnSpeed		= 14; //in ° /s
-    required uint32 deccDist			= 15; //in mm distance to stop the robot at max speed (vmax is computed from acc/decc and this value)
+    required uint32 maxAcc                = 11; //in mm /s² maximal accelaration in linear motion
+    required uint32 maxTurnAcc            = 12; //in ° /s² maximal accelaration in rotations
+    required uint32 recalSpeed            = 13; //in mm /s
+    required uint32 maxTurnSpeed          = 14; //in ° /s
+    required uint32 deccDist              = 15; //in mm distance to stop the robot at max speed (vmax is computed from acc/decc and this value)
 
     //Avoidance config
     required uint32 detectionWaitForOppMove = 21;  //in ms
-    required bool detectionActive		= 22; //activates (or not) the avoidance system.
+    required bool detectionActive         = 22; //activates (or not) the avoidance system.
 
     //Strat config
-    required uint32 matchDuration		= 31; //in ms
+    required uint32 matchDuration         = 31; //in ms
 }
 
 //----------------------------------------------------------------------
@@ -72,43 +81,44 @@ message Configuration
 
 message RemoteControlRequest
 {
-	oneof type
-	{
-		//messages from 0 to 99 are general purpose messages
-		EmptyMsg 			getOsStats 			= 1;
-		EmptyMsg 			getOsStatsLogs		= 2;
-		EmptyMsg 			getTelemetry		= 3;
-		EmptyMsg			reboot				= 4;
-		Melody				requestPlaySound	= 5;
-		EmptyMsg			getConfig			= 6;
-		Configuration		setConfig			= 7;
-		EmptyMsg 			getComStatsLogs		= 8;
+    oneof type
+    {
+        //messages from 0 to 99 are general purpose messages
+        EmptyMsg             getOsStats         = 1;
+        EmptyMsg             getOsStatsLogs     = 2;
+        EmptyMsg             getTelemetry       = 3;
+        EmptyMsg             reboot             = 4;
+        Melody               requestPlaySound   = 5;
+        EmptyMsg             getConfig          = 6;
+        Configuration        setConfig          = 7;
+        EmptyMsg             getComStatsLogs    = 8;
 
-		//messages from 100 to 199 are reserved fo strategy
-		ConfigureMatch 		configureMatch 		= 100;
-		EmptyMsg 			startMatch 			= 101;
+        //messages from 100 to 199 are reserved fo strategy
+        ConfigureMatch       configureMatch     = 100;
+        EmptyMsg             startMatch         = 101;
 
-		//messages from 200 to 299 are reserved fo navigation
-		PointCap			setPosition			= 200;
-		RequestGoto        	requestGoto			= 210;
-		RequestGotoCap      requestGotoCap		= 211;
-		bool				requestBlockRobot   = 230;
+        //messages from 200 to 299 are reserved fo navigation
+        PointCap            setPosition         = 200;
+        SetSpeedAcc         setSpeedAcc         = 201;
+        RequestGoto         requestGoto         = 210;
+        RequestGotoCap      requestGotoCap      = 211;
+        bool                requestBlockRobot   = 230;
 
-		//messages from 300 to 399 for design tests
-			//communication tests
-		EmptyMsg			requestMaxLengthMsg = 300;
-		EmptyMsg			requestCrcFailMsg 	= 301;
-		EmptyMsg			requestTooLittleMsg = 302;
-	}
+        //messages from 300 to 399 for design tests
+            //communication tests
+        EmptyMsg            requestMaxLengthMsg = 300;
+        EmptyMsg            requestCrcFailMsg   = 301;
+        EmptyMsg            requestTooLittleMsg = 302;
+    }
 }
 
 message RemoteControlResponse
 {
-	oneof type
-	{
-		Log					log					= 1;
-		EmptyMsg 			osStats 			= 2;
-		Configuration		config				= 3;
-		Telemetry			telemetry			= 200;
-	}
+    oneof type
+    {
+        Log                  log                  = 1;
+        EmptyMsg             osStats              = 2;
+        Configuration        config               = 3;
+        Telemetry            telemetry            = 200;
+    }
 }

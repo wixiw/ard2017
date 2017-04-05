@@ -5,44 +5,44 @@ syntax = "proto2";
 // with communication types. It's an architectureal coupling done on purpose
 
 enum eDir{
-    UNDEFINED 	= 0;
-    FORWARD		= 1;
-    BACKWARD	= -1;
+    UNDEFINED     = 0;
+    FORWARD        = 1;
+    BACKWARD    = -1;
 }
 
 enum eColor {
-	UNKNOWN 		= 0;
-	PREF 			= 1;
-	SYM 			= 2;
+    UNKNOWN         = 0;
+    PREF             = 1;
+    SYM             = 2;
 }
 
 enum eNavState {
-	IDLE 			= 0;
-	FACING_DEST 	= 1;
-	GOING_TO_TARGET = 2;
-	TURNING_AT_TARGET = 3;
-	STOPPING 		= 4;
-	WAIT_OPP_MOVE 	= 5;
+    IDLE             = 0;
+    FACING_DEST     = 1;
+    GOING_TO_TARGET = 2;
+    TURNING_AT_TARGET = 3;
+    STOPPING         = 4;
+    WAIT_OPP_MOVE     = 5;
 }
 
 enum eNavOrder {
-	NOTHING 		= 0;
-	GOTO 			= 1;
-	GOTO_CAP 		= 2;
-	STOP 			= 3;
+    NOTHING         = 0;
+    GOTO             = 1;
+    GOTO_CAP         = 2;
+    STOP             = 3;
 }
 
 // Specific 2017
 enum eObjectColor {
-	UNDEF			= 0;
-	BLUE			= 1;
-	YELLOW			= 2;
-	WHITE			= 3;
+    UNDEF            = 0;
+    BLUE            = 1;
+    YELLOW            = 2;
+    WHITE            = 3;
 }
 
 enum eLogLevel {
-	DEBUG 			= 0;
-	INFO 			= 1;
-	ERROR 			= 2;
-	ASSERT 			= 3;
+    DEBUG             = 0;
+    INFO             = 1;
+    ERROR             = 2;
+    ASSERT             = 3;
 }

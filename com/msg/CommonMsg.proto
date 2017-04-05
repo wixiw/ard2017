@@ -46,12 +46,12 @@ message ActuatorsState {
 
 message Tone
 {
-	required uint32 frequency = 1; //Hz
-	required uint32 duration = 2; //ms
+    required uint32 frequency = 1; //Hz
+    required uint32 duration = 2; //ms
 }
 
 message Melody
 {
-	repeated Tone tones = 1 [(nanopb).max_count = 150]; //size to be adjusted with Buzzer2017.cpp
+    repeated Tone tones = 1 [(nanopb).max_count = 150]; //size to be adjusted with Buzzer2017.cpp
 }
 

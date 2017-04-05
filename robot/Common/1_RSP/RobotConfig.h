@@ -23,9 +23,6 @@ public:
     double GAIN_RAD_2_STEPS_LEFT;  // gain to convert an angle into a step count on left motor
     double GAIN_RAD_2_STEPS_RIGHT; // gain to convert an angle into a step count on left motor
 
-    double maxSpeedFront; //in mm/s : maximal speed in front direction so that you match the avoidance distance
-    double maxSpeedRear;  //in mm/s : maximal speed in rear direction so that you match the avoidance distance
-
     RobotConfig();
 
     void updateConfig(apb_Configuration const& newConf);
@@ -37,10 +34,11 @@ public:
     float leftWheelDiameter()    	const {return cfg.leftWheelDiameter;};
     float rightWheelDiameter()  	const {return cfg.rightWheelDiameter;};
     float voie()                 	const {return cfg.voie;};
-    uint32_t maxAccFront()          const {return cfg.maxAccFront;};
-    //uint32_t maxDeccFront()         const {return cfg.maxDeccFront;};
+    uint32_t maxAcc()               const {return cfg.maxAcc;};
+    uint32_t maxTurnAcc()           const {return cfg.maxTurnAcc;};
     uint32_t recalSpeed()           const {return cfg.recalSpeed;};
     uint32_t maxTurnSpeed()         const {return cfg.maxTurnSpeed;};
+    uint32_t maxSpeed()             const {return _maxSpeed;};
     uint32_t deccDist()             const {return cfg.deccDist;};
     uint32_t matchDuration()        const {return cfg.matchDuration;};
     uint32_t detectionWaitForOppMove()const {return cfg.detectionWaitForOppMove;};
@@ -48,6 +46,8 @@ public:
     
 private:
     apb_Configuration cfg;
+
+    double _maxSpeed;               //in mm/s : maximal speed so that you match the avoidance distance
 
     void defaultConfig();
 };

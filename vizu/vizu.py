@@ -193,7 +193,7 @@ class VizuMainScreen(QWidget):
             # reset with r
         self.shortcuts["r"] = ShortcutContext("r", Qt.Key_R, self.teleop.resetCpu, "Starts the match.") 
             # block/unblock robot with x
-        self.shortcuts["r"] = ShortcutContext("r", Qt.Key_X, self.tabContexts["Robot"].tab._blockFromShortcut, "Create/destroy a virtual opponent on the robot path") 
+        self.shortcuts["x"] = ShortcutContext("x", Qt.Key_X, self.tabContexts["Robot"].tab._blockFromShortcut, "Create/destroy a virtual opponent on the robot path") 
         
         #register shortcuts into main widget
         for name, shortcutContext in self.shortcuts.items():

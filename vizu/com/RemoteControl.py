@@ -137,7 +137,16 @@ class RemoteControl(QObject):
         msg = RemoteControl_pb2.RemoteControlRequest()
         pose.toPoseMsg(msg.setPosition)
         self._sendMsg(msg)
-        
+
+    @pyqtSlot(int, int, int, int)
+    def setSpeedAcc(self, vMax, vMaxTurn, accMax, accMaxTurn):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.setSpeedAcc.vMax = vMax
+        msg.setSpeedAcc.vMaxTurn = vMaxTurn
+        msg.setSpeedAcc.accMax = accMax
+        msg.setSpeedAcc.accMaxTurn = accMaxTurn
+        self._sendMsg(msg)
+                
     @pyqtSlot(Pose2D, int)
     def requestGotoCap(self, pose, dir):
         msg = RemoteControl_pb2.RemoteControlRequest()

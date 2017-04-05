@@ -24,8 +24,8 @@ void RobotConfig::defaultConfig()
     cfg.leftWheelDiameter       = 60.000;
     cfg.rightWheelDiameter      = 60.000;
     cfg.voie                    = 104.73;
-    cfg.maxAccFront             = 700;
-    //cfg.maxDeccFront            = 700;
+    cfg.maxAcc                  = 700;
+    cfg.maxTurnAcc              = 200;
     cfg.recalSpeed              = 210.0;
     cfg.maxTurnSpeed            = 125.0;
     cfg.deccDist                = 150.0;
@@ -45,6 +45,5 @@ void RobotConfig::updateConfig(apb_Configuration const& newConf)
     GAIN_RAD_2_STEPS_LEFT   = cfg.voie * GAIN_MM_2_STEPS_LEFT / 2.;
     GAIN_RAD_2_STEPS_RIGHT  = cfg.voie * GAIN_MM_2_STEPS_RIGHT / 2.;
 
-    maxSpeedFront = sqrt(2*cfg.maxAccFront*cfg.deccDist);
-    maxSpeedRear = sqrt(2*cfg.maxAccFront*cfg.deccDist);
+    _maxSpeed = sqrt(2*cfg.maxAcc*cfg.deccDist);
 }

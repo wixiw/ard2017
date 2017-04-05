@@ -74,6 +74,7 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(configureMatch)
         HANDLE_MSG(startMatch)
         HANDLE_MSG(setPosition)
+        HANDLE_MSG(setSpeedAcc)
         HANDLE_MSG(requestGoto)
         HANDLE_MSG(requestGotoCap)
         HANDLE_MSG(requestBlockRobot)
@@ -250,6 +251,15 @@ void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
 void RemoteControl::setPosition(apb_RemoteControlRequest const & request)
 {
     robot->nav.setPosition(PointCap::fromProto(request.type.setPosition));
+}
+
+void RemoteControl::setSpeedAcc(apb_RemoteControlRequest const & request)
+{
+    robot->nav.setSpeedAcc(
+            request.type.setSpeedAcc.vMax,
+            request.type.setSpeedAcc.vMaxTurn,
+            request.type.setSpeedAcc.accMax,
+            request.type.setSpeedAcc.accMaxTurn);
 }
 
 void RemoteControl::requestGoto(apb_RemoteControlRequest const & request)

@@ -32,6 +32,7 @@ class TabRobot(QWidget):
         #Navigation order widgets   
         self.navTab = dict()
         self.navTab["setPosition"] = SetPosForm()
+        self.navTab["setSpeedAcc"] = SetSpeedAccForm()
         self.navTab["requestGotoCap"] = GotoCapForm()
         self.navTab["requestGoto"] = GotoForm()
         self.navCombo = QComboBox(self)
@@ -170,7 +171,6 @@ class TabRobot(QWidget):
    
    
 class SetPosForm(QWidget):
-    #signal(pose)
     execute = pyqtSignal(Pose2D)
                         
     def __init__(self):
@@ -198,8 +198,38 @@ class SetPosForm(QWidget):
     def _execute(self):
         self.execute.emit(Pose2D(self.x.getValue(), self.y.getValue(), self.h.getValue()))
         
+class SetSpeedAccForm(QWidget):
+    execute = pyqtSignal(int, int, int, int)
+                        
+    def __init__(self):
+        super().__init__()
+        self.vMax = IntegerInput(self, 0, 2000)
+        self.vMaxTurn = IntegerInput(self, 0, 1000)
+        self.accMax = IntegerInput(self, 0, 2000)
+        self.accMaxTurn = IntegerInput(self, 0, 2000)
+        self.exe = QPushButton('Execute', self)
+        self.exe.clicked.connect(self._execute) 
+        
+        layout = QHBoxLayout(self)
+        layoutForm = QFormLayout()
+        layout.addLayout(layoutForm)
+        layout.addWidget(self.exe)
+        layoutForm.addRow("vMax (mm/s)", self.vMax)
+        layoutForm.addRow("vMaxTurn (°/s)", self.vMaxTurn)
+        layoutForm.addRow("accMax (mm/s²)", self.accMax)
+        layoutForm.addRow("accMaxTurn (°/s²)", self.accMaxTurn)
+    
+    def reset(self):
+        self.vMax.clear()
+        self.vMaxTurn.clear()
+        self.accMax.clear()
+        self.accMaxTurn.clear()
+        
+    @pyqtSlot()
+    def _execute(self):
+        self.execute.emit(self.vMax.getValue(), self.vMaxTurn.getValue(), self.accMax.getValue(), self.accMaxTurn.getValue())
+            
 class GotoCapForm(QWidget):
-    #signal(pose,dir)
     execute = pyqtSignal(Pose2D, int)
                         
     def __init__(self):
@@ -227,7 +257,10 @@ class GotoCapForm(QWidget):
         
     @pyqtSlot()
     def _execute(self):
-        self.execute.emit(Pose2D(self.x.getValue(), self.y.getValue(), self.h.getValue()), self.dir.getValue())
+        self.execute.emit(Pose2D(self.x.getValue(), 
+                                 self.y.getValue(), 
+                                 self.h.getValue()), 
+                          self.dir.getValue())
         
 class GotoForm(QWidget):
     #signal(point, dir)
@@ -255,7 +288,9 @@ class GotoForm(QWidget):
         
     @pyqtSlot()
     def _execute(self):
-        self.execute.emit(Point(self.x.getValue(), self.y.getValue()), self.dir.getValue())
+        self.execute.emit(Point(self.x.getValue(), 
+                                self.y.getValue()), 
+                          self.dir.getValue())
         
         
 if __name__ == '__main__':
