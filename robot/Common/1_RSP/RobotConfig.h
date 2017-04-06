@@ -25,7 +25,8 @@ public:
 
     RobotConfig();
 
-    void updateConfig(apb_Configuration const& newConf);
+    //True if conf is updated successfully, false : unchanged
+    bool updateConfig(apb_Configuration const& newConf);
     apb_Configuration const& copy() const {return cfg;};
 
     uint32_t stepByTurn()           const {return cfg.stepByTurn;};
@@ -44,12 +45,23 @@ public:
     uint32_t detectionWaitForOppMove()const {return cfg.detectionWaitForOppMove;};
     bool detectionActive()      	const {return cfg.detectionActive;};
     
+    static const uint32_t MINBOUND_MAXSPEED = 50;
+    static const uint32_t MAXBOUND_MAXSPEED = 2000;
+    static const uint32_t MINBOUND_MAXACC = 300;
+    static const uint32_t MAXBOUND_MAXACC = 2000;
+    static const uint32_t MINBOUND_MAXTURNSPEED = 45;
+    static const uint32_t MAXBOUND_MAXTURNSPEED = 800;
+    static const uint32_t MINBOUND_MAXTURNACC = 200;
+    static const uint32_t MAXBOUND_MAXTURNACC = 2000;
+
 private:
     apb_Configuration cfg;
 
     double _maxSpeed;               //in mm/s : maximal speed so that you match the avoidance distance
 
     void defaultConfig();
+    void setComputedVars();
+    bool checkConfig(apb_Configuration const& newConf);
 };
 
 } /* namespace ard */

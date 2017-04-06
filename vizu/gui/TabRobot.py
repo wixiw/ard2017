@@ -12,49 +12,46 @@ from core import *
 # This class is a pre-built widget which is designed to display 
 # robot state related to onboard actuators/sensors.
 #
-class TabRobot(QWidget):
+class TabRobot_Cmds(QWidget):
     
+    def __init__(self, parent):
+        super().__init__(parent)
+        
+        self.sections = dict()
+
+        #Create sections   
+        self.sections["nav"] = NavigationTeleopWidget(self)
+        self.sections["general"] = GeneralTeleopWidget(self)
+        self.sections["sound"] = SoundTeleopWidget(self)
+        self.sections["chatte"] = QLabel(self)
+        
+        #create layouts objects
+        self.layout = QVBoxLayout(self)
+        self.split1 = QHBoxLayout(self)
+        self.layout.addWidget(self.sections["nav"])
+        self.layout.addLayout(self.split1)
+        self.layout.addStretch(1)
+        
+        self.split1.addWidget(self.sections["general"])
+        self.split1.addWidget(self.sections["sound"])
+        self.split1.addStretch(1)
+
+        
+      
+        
+class GeneralTeleopWidget(QWidget):    
     getOsStatsLogs = pyqtSignal()
     getComStatsLogs = pyqtSignal()
     getTelemetry = pyqtSignal()
-    requestPlaySound = pyqtSignal(Melody)
     resetCpu = pyqtSignal()
     configureMatch = pyqtSignal(int, int)
     startMatch = pyqtSignal()
-    blocked = pyqtSignal(bool)
-
-    
-    def __init__(self):
-        super().__init__()
-        
-        self.layout=dict()
-
-        #Navigation order widgets   
-        self.navTab = dict()
-        self.navTab["setPosition"] = SetPosForm()
-        self.navTab["setSpeedAcc"] = SetSpeedAccForm()
-        self.navTab["requestGotoCap"] = GotoCapForm()
-        self.navTab["requestGoto"] = GotoForm()
-        self.navCombo = QComboBox(self)
-        for tabName, tab in self.navTab.items():
-            self.navCombo.addItem(tabName, tab)
-        self.navCombo.setEditable(True)
-        self.navCombo.lineEdit().setReadOnly(True)
-        self.navCombo.lineEdit().setAlignment(Qt.AlignHCenter)
-        self.navCombo.highlighted[int].connect(self._navCmdChanged)
-        self.navCombo.currentIndexChanged[int].connect(self._navCmdChanged)
-        self.btn_nav = dict()
-        self.btn_nav["Block"] = QPushButton('Block', self)
-        self.btn_nav["Block"].toggled[bool].connect(self._blockFromButton)
-        self.btn_nav["Block"].setCheckable(True)
-        
-        #Sound
-        self.btn_sound = dict()
-        self.btn_sound["bips"] = ToneWidget(self)
-        self.btn_sound["bips"].toneRequest.connect(self._requestPlayTone)
-        
-        #Buttons widgets
+                        
+    def __init__(self, parent):
+        super().__init__(parent)
         self.btn_cmds = dict()
+        self.layout=dict()
+        
         self.btn_cmds["getOsStats"] = QPushButton('Get OS Stats', self)
         self.btn_cmds["getOsStats"].clicked.connect(self._getOsStatsLogs) 
         
@@ -73,71 +70,17 @@ class TabRobot(QWidget):
         self.btn_cmds["resetCpu"] = QPushButton('Reset CPU', self)
         self.btn_cmds["resetCpu"].clicked.connect(self._resetCpu) 
         
-        #create layouts objects
-        self.layout["Top"] = QVBoxLayout(self)
-        self.layout["NavOrder"] = QHBoxLayout()
-        self.layout["Commands"] = QVBoxLayout()
+        self.layout["Commands"] = QVBoxLayout(self)
         for button in self.btn_cmds:    
             self.layout["Commands"].addWidget(self.btn_cmds[button])
         self.layout["Commands"].addStretch()
         
-        self.layout["Sound"] = QVBoxLayout()
-        for button in self.btn_sound:    
-            self.layout["Sound"].addWidget(self.btn_sound[button])
-        self.layout["Sound"].addStretch()
+        self.box = QGroupBox("General")
+        self.box.setLayout(self.layout["Commands"])
         
-        #populate layouts
-        self.layout["NavOrder"].addWidget(self.navCombo)
-        self.layout["NavStack"] = QStackedLayout()
-        self.layout["NavOrder"].addLayout(self.layout["NavStack"])
-        for tabName, tab in self.navTab.items():
-            self.layout["NavStack"].addWidget(tab)
-        self.layout["NavOrder"].addWidget(self.btn_nav["Block"])
-        self.layout["NavOrder"].addStretch(1)
-        
-        self.box_nav = QGroupBox("Navigation")
-        self.box_nav.setLayout(self.layout["NavOrder"])
-        
-        self.box_cmd = QGroupBox("Commands")
-        self.box_cmd.setLayout(self.layout["Commands"])
-        
-        self.box_sound = QGroupBox("Sound")
-        self.box_sound.setLayout(self.layout["Sound"])
-        
-        self.layout["Top"].addWidget(self.box_nav)
-        self.layout["Top"].addWidget(self.box_cmd)
-        self.layout["Top"].addWidget(self.box_sound)
-        self.layout["Top"].addStretch(1)
-        
-    @pyqtSlot(int)
-    def _navCmdChanged(self, comboId):
-        self.navTab[self.navCombo.currentText()].reset()
-        for name, widget in self.navTab.items():
-            widget.reset()
-        self.layout["NavStack"].setCurrentIndex(comboId)
-
-    @pyqtSlot(bool)
-    def _blockFromButton(self, pressed): 
-        if pressed:
-            print("Block request") 
-            self.btn_nav["Block"].setText("Unblock")
-        else:
-            print("Unblock request") 
-            self.btn_nav["Block"].setText("Block")
-        self.blocked.emit(pressed)
-
-    @pyqtSlot()
-    def _blockFromShortcut(self): 
-        self.btn_nav["Block"].toggle()
-      
-    @pyqtSlot(Tone, int)
-    def _requestPlayTone(self, tone, counts):    
-        print("Play tone request freq=" + str(tone.frequency) + "Hz duration=" + str(tone.duration) + "ms count=" + str(counts))
-        melody = Melody()
-        for i in range(counts):
-            print("bite")
-            melody.add(tone)
-        self.requestPlaySound.emit(melody)
+        self.layout = QHBoxLayout(self)
+        self.layout.addWidget(self.box)
+        self.layout.addStretch()
         
     @pyqtSlot()
     def _getOsStatsLogs(self): 
@@ -170,11 +113,109 @@ class TabRobot(QWidget):
        self.resetCpu.emit()
    
    
+   
+   
+class NavigationTeleopWidget(QWidget): 
+    blocked = pyqtSignal(bool)
+                          
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.navTab = dict()
+        self.layout=dict()
+        
+        self.navTab["setPosition"] = SetPosForm(self)
+        self.navTab["setSpeedAcc"] = SetSpeedAccForm(self)
+        self.navTab["requestGotoCap"] = GotoCapForm(self)
+        self.navTab["requestGoto"] = GotoForm(self)
+        self.navCombo = QComboBox(self)
+        for tabName, tab in self.navTab.items():
+            self.navCombo.addItem(tabName, tab)
+        self.navCombo.setEditable(True)
+        self.navCombo.lineEdit().setReadOnly(True)
+        self.navCombo.lineEdit().setAlignment(Qt.AlignHCenter)
+        self.navCombo.highlighted[int].connect(self._navCmdChanged)
+        self.navCombo.currentIndexChanged[int].connect(self._navCmdChanged)
+        self.btn_nav = dict()
+        self.btn_nav["Block"] = QPushButton('Block', self)
+        self.btn_nav["Block"].toggled[bool].connect(self._blockFromButton)
+        self.btn_nav["Block"].setCheckable(True)
+        
+        self.layout["NavOrder"] = QHBoxLayout(self)
+        
+        self.layout["NavOrder"].addWidget(self.navCombo)
+        self.layout["NavStack"] = QStackedLayout()
+        self.layout["NavOrder"].addLayout(self.layout["NavStack"])
+        for tabName, tab in self.navTab.items():
+            self.layout["NavStack"].addWidget(tab)
+        self.layout["NavOrder"].addWidget(self.btn_nav["Block"])
+        self.layout["NavOrder"].addStretch(1)
+        
+        self.box = QGroupBox("Navigation")
+        self.box.setLayout(self.layout["NavOrder"])
+        
+        self.layout = QHBoxLayout(self)
+        self.layout.addWidget(self.box)
+        self.layout.addStretch()
+        
+    @pyqtSlot(int)
+    def _navCmdChanged(self, comboId):
+        self.navTab[self.navCombo.currentText()].reset()
+        for name, widget in self.navTab.items():
+            widget.reset()
+        self.layout["NavStack"].setCurrentIndex(comboId)
+        
+    @pyqtSlot()
+    def _blockFromShortcut(self): 
+        self.btn_nav["Block"].toggle()
+        
+    @pyqtSlot(bool)
+    def _blockFromButton(self, pressed): 
+        if pressed:
+            print("Block request") 
+            self.btn_nav["Block"].setText("Unblock")
+        else:
+            print("Unblock request") 
+            self.btn_nav["Block"].setText("Block")
+        self.blocked.emit(pressed)
+   
+   
+   
+   
+class SoundTeleopWidget(QWidget): 
+    requestPlaySound = pyqtSignal(Melody)
+    
+    def __init__(self, parent):
+        super().__init__(parent)
+        
+        self.inputs = ToneWidget(self)
+        self.inputs.toneRequest.connect(self._requestPlayTone)
+        
+        self.layoutBox = QVBoxLayout()
+        self.layoutBox.addWidget(self.inputs)
+        self.layoutBox.addStretch()
+        
+        self.box = QGroupBox("Sound")
+        self.box.setLayout(self.layoutBox)
+        
+        self.layout = QHBoxLayout(self)
+        self.layout.addWidget(self.box)
+        self.layout.addStretch()
+    
+    @pyqtSlot(Tone, int)
+    def _requestPlayTone(self, tone, counts):    
+        print("Play tone request freq=" + str(tone.frequency) + "Hz duration=" + str(tone.duration) + "ms count=" + str(counts))
+        melody = Melody()
+        for i in range(counts):
+            print("bite")
+            melody.add(tone)
+        self.requestPlaySound.emit(melody)
+        
+    
 class SetPosForm(QWidget):
     execute = pyqtSignal(Pose2D)
                         
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         self.x = IntegerInput(self, -2000, 2000)
         self.y = IntegerInput(self, -1500, 1500)
         self.h = HeadingInput(self)
@@ -198,11 +239,14 @@ class SetPosForm(QWidget):
     def _execute(self):
         self.execute.emit(Pose2D(self.x.getValue(), self.y.getValue(), self.h.getValue()))
         
+        
+        
+        
 class SetSpeedAccForm(QWidget):
     execute = pyqtSignal(int, int, int, int)
                         
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         self.vMax = IntegerInput(self, 0, 2000)
         self.vMaxTurn = IntegerInput(self, 0, 1000)
         self.accMax = IntegerInput(self, 0, 2000)
@@ -229,11 +273,13 @@ class SetSpeedAccForm(QWidget):
     def _execute(self):
         self.execute.emit(self.vMax.getValue(), self.vMaxTurn.getValue(), self.accMax.getValue(), self.accMaxTurn.getValue())
             
+            
+            
 class GotoCapForm(QWidget):
     execute = pyqtSignal(Pose2D, int)
                         
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         self.x = IntegerInput(self, -2000, 2000)
         self.y = IntegerInput(self, -1500, 1500)
         self.h = HeadingInput(self)
@@ -266,8 +312,8 @@ class GotoForm(QWidget):
     #signal(point, dir)
     execute = pyqtSignal(Point, int)
     
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         self.x = IntegerInput(self, -2000, 2000)
         self.y = IntegerInput(self, -1500, 1500)
         self.dir = DirectionInput(self)
@@ -291,6 +337,30 @@ class GotoForm(QWidget):
         self.execute.emit(Point(self.x.getValue(), 
                                 self.y.getValue()), 
                           self.dir.getValue())
+        
+        
+        
+    
+    
+class TabRobot_Sensors(QWidget):
+        
+    def __init__(self, parent):
+        super().__init__(parent)
+        
+        
+        
+class TabRobot(QWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.tab = dict()
+        self.tab["Commands"]   = TabRobot_Cmds(self)
+        self.tab["Sensors"]   = TabRobot_Sensors(self)
+        
+        self.tabs = QTabWidget(self)
+        for tabName, tab in self.tab.items():
+            self.tabs.addTab(tab, tabName)
+        layout_main = QHBoxLayout(self)
+        layout_main.addWidget(self.tabs)
         
         
 if __name__ == '__main__':

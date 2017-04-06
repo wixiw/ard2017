@@ -10,8 +10,8 @@ class TabCom(QWidget):
     networkStatus = pyqtSignal(bool)
     
     #@param ArdSerial : a reference on the object managing the serial line
-    def __init__(self, comMdw):
-        super().__init__()
+    def __init__(self, parent, comMdw):
+        super().__init__(parent)
         self.com = comMdw
         settings = QSettings("config.ini", QSettings.IniFormat)
         settings.beginGroup("Com")

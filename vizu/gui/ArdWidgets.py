@@ -110,7 +110,6 @@ class DirectionInput(QComboBox):
         return self.currentData()
     
 class ToneWidget(QWidget):
-    #signal(Tone)
     toneRequest = pyqtSignal(Tone, int)
     
     def __init__(self, parent):
@@ -122,7 +121,7 @@ class ToneWidget(QWidget):
         self.play = QPushButton('Play', self)
         self.play.clicked.connect(self._play) 
         
-        layout = QHBoxLayout(self)
+        layout = QVBoxLayout(self)
         layoutForm = QFormLayout()
         layout.addLayout(layoutForm)
         layout.addWidget(self.play)

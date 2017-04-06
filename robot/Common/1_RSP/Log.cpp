@@ -105,7 +105,12 @@ void LogDispatcher::log(eLogLevel logLevel, String const& log)
     // fill the buffer
     msg.date = now;
     msg.level = logLevel;
-    strcpy(msg.component, pcTaskGetTaskName(xTaskGetCurrentTaskHandle()));
+    TaskHandle_t currentTask = xTaskGetCurrentTaskHandle();
+    if(currentTask)
+        strcpy(msg.component, pcTaskGetTaskName(currentTask));
+    else
+        strcpy(msg.component, "Boot");
+        
     strcpy(msg.text, log.c_str());
 
     disptachLogToChannels(msg);

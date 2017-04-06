@@ -17,7 +17,7 @@ class TabConfig(QWidget):
     getConfig = pyqtSignal()
     setConfig = pyqtSignal(RemoteControl_pb2.RemoteControlRequest)
     
-    def __init__(self, parent = None):
+    def __init__(self, parent):
         super().__init__(parent)
         self.layout=dict()
 

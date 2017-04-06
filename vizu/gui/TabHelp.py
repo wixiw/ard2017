@@ -5,8 +5,8 @@ from PyQt5.Qt import *
 from PyQt5.QtWidgets import *
 
 class TabShortcuts(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         layout = QVBoxLayout(self)
         self.layoutForm = QFormLayout()
         layout.addLayout(self.layoutForm)
@@ -17,15 +17,15 @@ class TabShortcuts(QWidget):
             self.layoutForm.addRow(context.shortcut, text)
         
 class TabBuild(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
              
 class TabHelp(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         self.tab = dict()
-        self.tab["Shortcuts"]   = TabShortcuts()
-        self.tab["Build"]   = TabBuild()
+        self.tab["Shortcuts"]   = TabShortcuts(self)
+        self.tab["Build"]   = TabBuild(self)
         
         self.tabs = QTabWidget(self)
         for tabName, tab in self.tab.items():

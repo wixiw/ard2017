@@ -201,10 +201,40 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
     m_mutex.lock();
 
     //If a config is NULL, then restore default configuration
-    vMax        != 0 ? userMaxSpeed         = vMax         : userMaxSpeed       = conf->maxSpeed();
-    vMaxTurn    != 0 ? userMaxTurnSpeed     = vMaxTurn     : userMaxTurnSpeed   = conf->maxSpeed();
-    accMax      != 0 ? userMaxAcc           = accMax       : userMaxAcc         = conf->maxAcc();
-    accMaxTurn  != 0 ? userMaxTurnAcc       = accMaxTurn   : userMaxTurnAcc     = conf->maxTurnAcc();
+    if( vMax != 0 )
+    {
+        LOG_ERROR("New vMax config saturated");
+        userMaxSpeed = constrain(vMax, RobotConfig::MINBOUND_MAXSPEED, RobotConfig::MAXBOUND_MAXSPEED);
+    }
+    else
+        userMaxSpeed = conf->maxSpeed();
+
+    //If a config is NULL, then restore default configuration
+    if( vMaxTurn    != 0 )
+    {
+        LOG_ERROR("New vMaxTurn config saturated");
+        userMaxTurnSpeed = constrain(vMaxTurn, RobotConfig::MINBOUND_MAXTURNSPEED, RobotConfig::MAXBOUND_MAXTURNSPEED);
+    }
+    else
+        userMaxTurnSpeed = conf->maxTurnSpeed();
+
+    //If a config is NULL, then restore default configuration
+    if( accMax != 0 )
+    {
+        LOG_ERROR("New accMax config saturated");
+        userMaxAcc = constrain(accMax, RobotConfig::MINBOUND_MAXACC, RobotConfig::MAXBOUND_MAXACC);
+    }
+    else
+        userMaxAcc = conf->maxAcc();
+
+    //If a config is NULL, then restore default configuration
+    if( accMaxTurn != 0 )
+    {
+        LOG_ERROR("New accMaxTurn config saturated");
+        userMaxTurnAcc = constrain(accMaxTurn, RobotConfig::MINBOUND_MAXTURNACC, RobotConfig::MAXBOUND_MAXTURNACC);
+    }
+    else
+        userMaxTurnAcc = conf->maxTurnAcc();
 
     m_mutex.unlock();
 

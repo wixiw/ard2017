@@ -62,12 +62,12 @@ class VizuMainScreen(QWidget):
         self.tabShortcutMap = QSignalMapper()
         self.tabShortcutMap.mapped.connect(self.selectTab)
         self.tabContexts = dict()
-        self.tabContexts["Com"]     = TabContext(TabCom(self.teleop),           "F1", Qt.Key_F1, self.tabShortcutMap.map, "Switch to Com tab.", TabContext.AVAILABLE_OFFLINE)
-        self.tabContexts["Log"]     = TabContext(TabLog(),                      "F2", Qt.Key_F2, self.tabShortcutMap.map, "Switch to Log tab.", TabContext.AVAILABLE_OFFLINE)
-        self.tabContexts["Strat"]   = TabContext(TabStrat(),                    "F3", Qt.Key_F3, self.tabShortcutMap.map, "Switch to Strat tab.")
-        self.tabContexts["Robot"]   = TabContext(TabRobot(),                    "F4", Qt.Key_F4, self.tabShortcutMap.map, "Switch to Robot tab.")
-        self.tabContexts["Config"]  = TabContext(TabConfig(),                   "F5", Qt.Key_F5, self.tabShortcutMap.map, "Switch to Config tab.")
-        self.tabContexts["Help"]    = TabContext(TabHelp(),       "F6", Qt.Key_F6, self.tabShortcutMap.map,"Switch to LHelpog tab.", TabContext.AVAILABLE_OFFLINE)
+        self.tabContexts["Com"]     = TabContext(TabCom(self, self.teleop),         "F1", Qt.Key_F1, self.tabShortcutMap.map, "Switch to Com tab.", TabContext.AVAILABLE_OFFLINE)
+        self.tabContexts["Log"]     = TabContext(TabLog(self),                      "F2", Qt.Key_F2, self.tabShortcutMap.map, "Switch to Log tab.", TabContext.AVAILABLE_OFFLINE)
+        self.tabContexts["Strat"]   = TabContext(TabStrat(self),                    "F3", Qt.Key_F3, self.tabShortcutMap.map, "Switch to Strat tab.")
+        self.tabContexts["Robot"]   = TabContext(TabRobot(self),                    "F4", Qt.Key_F4, self.tabShortcutMap.map, "Switch to Robot tab.")
+        self.tabContexts["Config"]  = TabContext(TabConfig(self),                   "F5", Qt.Key_F5, self.tabShortcutMap.map, "Switch to Config tab.")
+        self.tabContexts["Help"]    = TabContext(TabHelp(self),                     "F6", Qt.Key_F6, self.tabShortcutMap.map,"Switch to LHelpog tab.", TabContext.AVAILABLE_OFFLINE)
         
         #create shortcuts
         for tabName, tabContext in self.tabContexts.items():
@@ -95,15 +95,15 @@ class VizuMainScreen(QWidget):
         self.teleop.telemetry.connect(self.tabContexts["Strat"].tab._telemetryDataCb)
         
         # connect Robot tab
-        self.tabContexts["Robot"].tab.requestPlaySound    .connect(self.teleop.requestPlaySound)
-        self.tabContexts["Robot"].tab.getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
-        self.tabContexts["Robot"].tab.getComStatsLogs     .connect(self.teleop.getComStatsLogs)
-        self.tabContexts["Robot"].tab.getTelemetry        .connect(self.teleop.getTelemetry)
-        self.tabContexts["Robot"].tab.configureMatch      .connect(self.teleop.configureMatch)
-        self.tabContexts["Robot"].tab.startMatch          .connect(self.teleop.startMatch)
-        self.tabContexts["Robot"].tab.resetCpu            .connect(self.teleop.resetCpu)
-        self.tabContexts["Robot"].tab.blocked             .connect(self.teleop.requestBlockRobot)
-        for cmd, widget in self.tabContexts["Robot"].tab.navTab.items():
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["sound"].requestPlaySound        .connect(self.teleop.requestPlaySound)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getOsStatsLogs        .connect(self.teleop.getOsStatsLogs)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getComStatsLogs       .connect(self.teleop.getComStatsLogs)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getTelemetry        .connect(self.teleop.getTelemetry)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].configureMatch      .connect(self.teleop.configureMatch)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].startMatch          .connect(self.teleop.startMatch)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].resetCpu            .connect(self.teleop.resetCpu)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].blocked             .connect(self.teleop.requestBlockRobot)
+        for cmd, widget in self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  # getattr is used to get a method reference from name, hence automatically binding signals ;p
         
         # connect Config tab
@@ -193,7 +193,7 @@ class VizuMainScreen(QWidget):
             # reset with r
         self.shortcuts["r"] = ShortcutContext("r", Qt.Key_R, self.teleop.resetCpu, "Starts the match.") 
             # block/unblock robot with x
-        self.shortcuts["x"] = ShortcutContext("x", Qt.Key_X, self.tabContexts["Robot"].tab._blockFromShortcut, "Create/destroy a virtual opponent on the robot path") 
+        self.shortcuts["x"] = ShortcutContext("x", Qt.Key_X, self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"]._blockFromShortcut, "Create/destroy a virtual opponent on the robot path") 
         
         #register shortcuts into main widget
         for name, shortcutContext in self.shortcuts.items():

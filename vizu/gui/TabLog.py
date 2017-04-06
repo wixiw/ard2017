@@ -14,8 +14,8 @@ import threading
 #
 class TabLog(QWidget):
     
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
 
         self.time       = Qt.Checked
         self.level      = Qt.Checked

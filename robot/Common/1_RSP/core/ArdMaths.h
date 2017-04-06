@@ -12,6 +12,10 @@
 #include <math.h>
 #include "CommonMsg.pb.h"
 
+//Checks if a value is in a range
+#define IS_IN_RANGE(min, value, max) if( min <= value && value <= max)
+#define IS_OUT_RANGE(min, value, max) if( !(min <= value && value <= max))
+
 namespace ard
 {
     double

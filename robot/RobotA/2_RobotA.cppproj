@@ -39,12 +39,12 @@
       </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.samice</avrtool>
-    <avrtoolserialnumber>158006664</avrtoolserialnumber>
+    <avrtoolserialnumber>158002621</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x285E0A60</avrdeviceexpectedsignature>
     <com_atmel_avrdbg_tool_samice>
       <ToolOptions>
         <InterfaceProperties>
-          <JtagDbgClock>4000000</JtagDbgClock>
+          <JtagDbgClock>0</JtagDbgClock>
           <JtagEnableExtResetOnStartSession>true</JtagEnableExtResetOnStartSession>
           <JtagInChain>false</JtagInChain>
           <JtagDevicesBefore>0</JtagDevicesBefore>
@@ -59,11 +59,11 @@
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.samice</ToolType>
-      <ToolNumber>158006664</ToolNumber>
+      <ToolNumber>158002621</ToolNumber>
       <ToolName>J-Link</ToolName>
     </com_atmel_avrdbg_tool_samice>
     <avrtoolinterface>JTAG</avrtoolinterface>
-    <avrtoolinterfaceclock>4000000</avrtoolinterfaceclock>
+    <avrtoolinterfaceclock>0</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -144,9 +144,9 @@
         </armgcccpp.compiler.symbols.DefSymbols>
         <armgcccpp.compiler.directories.IncludePaths>
           <ListValues>
-			<Value>../../../com</Value>
-			<Value>../../../com/generated</Value>
-			<Value>../../../com/nanopb</Value>
+            <Value>../../../com</Value>
+            <Value>../../../com/generated</Value>
+            <Value>../../../com/nanopb</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
