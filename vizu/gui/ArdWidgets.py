@@ -134,3 +134,24 @@ class ToneWidget(QWidget):
     def _play(self):
         self.toneRequest.emit(Tone(self.frequencyWidget.getValue(), self.durationWidget.getValue()), self.countWidget.getValue())
         
+class LedIndicator(QWidget):
+    def __init__(self, parent): 
+        super().__init__(parent)
+        self.l = QLabel("Bite")
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.l)
+        self.light(False)
+        
+    def light(self, on):
+        if on:
+            pixmap = QPixmap('img/green_light.png')
+            if pixmap.isNull():
+                print("Error loading img/green_light.png");
+            self.l.setPixmap(pixmap)
+        else:
+            pixmap = QPixmap('img/grey_light.png')
+            if pixmap.isNull():
+                print("Error loading img/grey_light.png");
+            self.l.setPixmap(pixmap)
+            
+            

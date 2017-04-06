@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include "BSP.hpp"
 #include "Actuators/Buzzer2017.h"
+#include <Com.h>
 
 namespace ard
 {
@@ -46,6 +47,8 @@ namespace ard
         void
         run();
 
+        uint8_t getState();
+
     private:
 
         void
@@ -61,8 +64,9 @@ namespace ard
 
     };
 
-    //utility to have explicit constructor
+//utility to have explicit constructor
 #define INVERTED 1
+
     class Led
     {
     public:
@@ -88,6 +92,9 @@ namespace ard
         run();
 
         void set(eLedState state);
+
+        //is true when the LED is light on
+        bool getState();
 
     private:
         eLedState m_blink;
@@ -134,6 +141,11 @@ namespace ard
         Buzzer2017 buzzer;
         //TODO mute buzzer
         //FakeBuzzer buzzer;
+
+        apb_HmiState const& getState();
+
+    private:
+        apb_HmiState state;
     };
 
 } /* namespace ard */

@@ -93,6 +93,7 @@ class VizuMainScreen(QWidget):
         
         # connect Strat tab
         self.teleop.telemetry.connect(self.tabContexts["Strat"].tab._telemetryDataCb)
+        self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Status"]._telemetryDataCb)
         
         # connect Robot tab
         self.tabContexts["Robot"].tab.tab["Commands"].sections["sound"].requestPlaySound        .connect(self.teleop.requestPlaySound)

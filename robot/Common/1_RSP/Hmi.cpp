@@ -129,6 +129,11 @@ void RgbLed::output(bool _on)
     }
 }
 
+uint8_t RgbLed::getState()
+{
+    return (pwm_r.read() << 2) + (pwm_g.read() << 1) + pwm_b.read();
+}
+
 //---------------------------------------------------------------------------
 
 Led::Led(int pin, bool inverted)
@@ -172,9 +177,17 @@ void Led::run()
     lastState++;
 }
 
-void ard::Led::set(eLedState state)
+void Led::set(eLedState state)
 {
     m_blink = state;
+}
+
+bool Led::getState()
+{
+    if (m_inverted)
+        return 1 - digitalRead(m_pin);
+    else
+        return digitalRead(m_pin);
 }
 
 /*--------------------------------------------------------------------- */
@@ -196,6 +209,7 @@ HmiThread::HmiThread(DueTimer& timer):
     user2(BUTTON_USER2, HMI_DEBOUNCE, HMI_DEBOUNCE),
     buzzer(timer)
 {
+    state = apb_HmiState_init_default;
 }
 
 void HmiThread::run()
@@ -210,3 +224,20 @@ void HmiThread::run()
     ledDue_L.run();
 }
 
+apb_HmiState const& HmiThread::getState()
+{
+    state = apb_HmiState_init_default;
+    state.led1 = led1.getState();
+    state.led2 = led2.getState();
+    state.led3 = led3.getState();
+    state.led4 = led4.getState();
+    state.ledRgb = ledRGB.getState();
+    state.start = tirette.read();
+    state.colorSwitch = matchColor.read();
+    state.user1 = user1.read();
+    state.user2 = user2.read();
+    state.ledDue_Rx = ledDue_Rx.getState();
+    state.ledDue_Tx = ledDue_Tx.getState();
+    state.ledDue_L = ledDue_L.getState();
+    return state;
+}

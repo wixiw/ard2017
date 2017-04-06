@@ -237,3 +237,4 @@ void Robot2017::setConfig(apb_Configuration const& newConf)
     conf.updateConfig(newConf);
     nav.updateConf(&conf);
 }
+

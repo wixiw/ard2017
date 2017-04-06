@@ -66,6 +66,8 @@ namespace ard
         //Retrive any of the teleop events
         IEvent* getRemoteControlEvt(eRemoteControlEvtId id);
 
+        apb_HmiState const& getHmiState(){return hmi.getState();};
+
         //-------------------------------------------------------------------
         // End of Strategy API
         //-------------------------------------------------------------------

@@ -15,21 +15,24 @@
 
 namespace ard
 {
-  class ActuatorThread : public PollerThread
-  {
-  public:
-    ActuatorThread();
+    class ActuatorThread: public PollerThread
+    {
+    public:
+        ActuatorThread();
 
-    //Overrides Thread : register polled objects
-    void init() override;
+        //Overrides Thread : register polled objects
+        void init() override;
 
-    //used for telemetry or any instropection
-    apb_ActuatorsState getState();
+        //used for telemetry or any instropection
+        apb_ActuatorsState const& getState();
 
-    //data are public to prevent having to write a decorator, but anyone is welcome to do it
-    ColorSensor stockColor;
-    ActuatorX   claws;
-  };
+        //data are public to prevent having to write a decorator, but anyone is welcome to do it
+        ColorSensor stockColor;
+        ActuatorX claws;
+
+    private:
+        apb_ActuatorsState state;
+    };
 
 } /* namespace ard */
 

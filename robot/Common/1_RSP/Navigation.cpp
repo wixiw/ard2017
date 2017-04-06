@@ -37,7 +37,7 @@ Navigation::Navigation()
                 avoidanceActive(false),//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
                 conf(NULL)
 {
-
+    state = apb_NavState_init_default;
 }
 
 void Navigation::updateConf(RobotConfig* newConf)
@@ -394,10 +394,8 @@ void Navigation::setColor(eColor c)
 /**---------------------------------
  * Publish state
  ---------------------------------*/
-apb_NavState Navigation::getState() const
+apb_NavState const& Navigation::getState()
 {
-    apb_NavState state = apb_NavState_init_default;
-
     state.state = m_state;
     state.order = m_order;
     state.pos = m_pose.getProto();

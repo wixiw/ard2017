@@ -190,6 +190,8 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
 #ifdef BUILD_STRATEGY
     response.type.telemetry.actuators       = robot->actuators.getState();
 #endif
+    response.type.telemetry.hmi            = robot->getHmiState();
+
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode telemetry message.");
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get telemetry failed");

@@ -161,6 +161,11 @@ namespace ard
         };
 
         /**
+         * Reads the GPIO level, take into account the inversion
+         */
+        eGpioLevel read();
+
+        /**
          * reserved for FilteredInputManager, do not call
          */
         void update(DelayUs sinceLastCall) override;

@@ -3,7 +3,7 @@
 
 from PyQt5.Qt import *
 from PyQt5.QtWidgets import *
-
+from ArdWidgets import *
 class TabCom(QWidget):
     
     #QT emitted signals :
@@ -38,6 +38,8 @@ class TabCom(QWidget):
         self.btn_connect = QPushButton('Connect', self)
         self.btn_connect.setCheckable(True)
         self.btn_connect.toggled[bool].connect(self._connectFromButton)
+            #LED widget
+        self.connectedLed = LedIndicator(self)
         
             #tests
         self.buttonsGroup = QWidget()
@@ -55,6 +57,7 @@ class TabCom(QWidget):
         self.btn_tooLittleReq = QPushButton('Receive too little errouneous msg', self.buttonsGroup)
         self.btn_tooLittleReq.clicked.connect(self._tooLittleReq) 
         
+        
         layout    = QVBoxLayout(self)
         layoutH1  = QHBoxLayout()
         layoutH2  = QHBoxLayout()
@@ -64,7 +67,8 @@ class TabCom(QWidget):
         
         layoutH1.addWidget(self.combo_COM)
         layoutH1.addWidget(self.combo_Baudrate)
-        layoutH1.addWidget(self.btn_connect)      
+        layoutH1.addWidget(self.btn_connect) 
+        layoutH1.addWidget(self.connectedLed)
         layoutH1.addStretch()
         
         layoutH2.addWidget(self.buttonsGroup)
@@ -107,6 +111,7 @@ class TabCom(QWidget):
             settings.setValue("baudrate", baudrate)
             self.buttonsGroup.setEnabled(True)
             self.networkStatus.emit(True)
+            self.connectedLed.light(True)
         else:
             print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizu instance...)")
             self.btn_connect.setText("Connect")
@@ -115,6 +120,7 @@ class TabCom(QWidget):
             self.combo_Baudrate.setEnabled(True)
             self.combo_COM.removeItem(self.combo_COM.findText(port))
             self._updateComInfo()
+            self.connectedLed.light(False)
             
     def _disconnect(self):
         self.com.disconnect()
@@ -125,6 +131,7 @@ class TabCom(QWidget):
         self.buttonsGroup.setEnabled(False)
         self.networkStatus.emit(False)
         self._updateComInfo()
+        self.connectedLed.light(False)
         print("Disconnected")
         
     def _updateComInfo(self):

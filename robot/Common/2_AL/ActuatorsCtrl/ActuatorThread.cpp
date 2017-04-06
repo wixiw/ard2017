@@ -14,6 +14,7 @@ using namespace ard;
 ActuatorThread::ActuatorThread():
         PollerThread("Actuator", PRIO_ACTUATORS, STACK_ACTUATORS, PERIOD_ACTUATORS, 2)
 {
+    state = apb_ActuatorsState_init_default;
 }
 
 void ActuatorThread::init()
@@ -24,10 +25,9 @@ void ActuatorThread::init()
     PollerThread::init();
 }
 
-apb_ActuatorsState ActuatorThread::getState()
+apb_ActuatorsState const& ActuatorThread::getState()
 {
-    apb_ActuatorsState state = apb_ActuatorsState_init_default;
-    state.colorSensor = stockColor.getState();
+    state = apb_ActuatorsState_init_default;
     return state;
 }
 

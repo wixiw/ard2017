@@ -36,11 +36,12 @@ namespace ard
         //Implements PolledObject: read the capteur data and filters outputs to get the measured value
         void update(TimeMs sinceLastCall) override;
 
-        apb_ColorSensorState getState();
+        apb_ColorSensorState const& getState();
 
     private:
         Adafruit_TCS34725 tcs;
         ObjectColor color;
+        apb_ColorSensorState state;
     };
 }    //end namespace
 

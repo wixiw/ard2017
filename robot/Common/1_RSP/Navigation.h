@@ -173,7 +173,7 @@ namespace ard
          * Publish state
          ---------------------------------*/
 
-        apb_NavState getState() const;
+        apb_NavState const& getState();
 
     private:
         //Integrates the new displacement mesures with current position
@@ -255,6 +255,9 @@ namespace ard
         bool avoidanceActive; //is true when avoidance system is active
 
         RobotConfig* conf;
+
+        //for telemetry
+        apb_NavState state;
     };
 }    //end namespace
 

@@ -27,7 +27,7 @@ class TabRobot_Cmds(QWidget):
         
         #create layouts objects
         self.layout = QVBoxLayout(self)
-        self.split1 = QHBoxLayout(self)
+        self.split1 = QHBoxLayout()
         self.layout.addWidget(self.sections["nav"])
         self.layout.addLayout(self.split1)
         self.layout.addStretch(1)
@@ -342,19 +342,73 @@ class GotoForm(QWidget):
         
     
     
-class TabRobot_Sensors(QWidget):
+class TabRobot_Status(QWidget):
         
     def __init__(self, parent):
         super().__init__(parent)
+        self.robotState = RemoteControl_pb2.Telemetry()
         
+        self.layout    = QHBoxLayout(self)
+        self.columns = dict()
         
+        self.columns[0] = QFormLayout()
+        self.columns[1] = QFormLayout()
+        self.columns[2] = QFormLayout()
+        self.columns[3] = QFormLayout()
+        for key, column in self.columns.items():
+            self.layout.addLayout(column)
+            self.layout.addStretch()
+            column.setLabelAlignment(Qt.AlignVCenter)
+        
+        self.addSensorXor("led1", 0)
+        self.addSensorXor("led2", 0)
+        self.addSensorXor("led3", 0)
+        self.addSensorXor("led4", 0)
+        self.addSensorXor("ledRgb", 0)
+        
+        self.addSensorXor("switchArmLout", 1)
+        self.addSensorXor("switchArmLin", 1)
+        self.addSensorXor("switchRecalFL", 1)
+        self.addSensorXor("omronFL", 1)
+        self.addSensorXor("omronRL", 1)
+        
+        self.addSensorXor("switchArmRout", 2)
+        self.addSensorXor("switchArmRin", 2)
+        self.addSensorXor("switchRecalRL", 2)
+        self.addSensorXor("omronFR", 2)
+        self.addSensorXor("omronRR", 2)
+        
+        self.addSensorXor("switchRecalRC", 3)
+        self.addSensorXor("omronCylinder", 3)
+        self.addSensorXor("omronSpare", 3)
+        self.addSensorXor("switchLifterUp", 3)
+        self.addSensorXor("switchLifterDown", 3)
+        
+    def addSensorXor(self, name, column = 0):
+        setattr(self, name, LedIndicator(self))
+        self.columns[column].addRow(name,getattr(self, name))
+        
+    #telemetry reply data callback
+    @pyqtSlot(RemoteControl_pb2.Telemetry)     
+    def _telemetryDataCb(self, msg):
+        if self.isVisible():
+            #--- DEBUG --- print("Telemetry received.")
+            #--- DEBUG --- print(str(msg))
+            self.robotState = msg
+            
+            self.led1.light(msg.hmi.led1)
+            self.led2.light(msg.hmi.led2)
+            self.led3.light(msg.hmi.led3)
+            self.led4.light(msg.hmi.led4)
+            
+            self.update()
         
 class TabRobot(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.tab = dict()
         self.tab["Commands"]   = TabRobot_Cmds(self)
-        self.tab["Sensors"]   = TabRobot_Sensors(self)
+        self.tab["Status"]   = TabRobot_Status(self)
         
         self.tabs = QTabWidget(self)
         for tabName, tab in self.tab.items():

@@ -136,7 +136,15 @@ PwmOutput::PwmOutput(uint8_t pinId, DelayUs period, bool invert):
     fio_manager_registerIn(this);
 }
 
-void ard::PwmOutput::update(DelayUs sinceLastCall)
+eGpioLevel PwmOutput::read()
+{
+    if(invert)
+        return (1 - digitalRead(pin)) ? GPIO_HIGH : GPIO_LOW;
+    else
+        return digitalRead(pin) ? GPIO_HIGH : GPIO_LOW;
+}
+
+void PwmOutput::update(DelayUs sinceLastCall)
 {
     //case 100%
     if(transitionTime == period)
