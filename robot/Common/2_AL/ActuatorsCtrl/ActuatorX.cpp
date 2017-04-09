@@ -23,7 +23,7 @@ ActuatorX::init ()
 {
   leftClaw.attach (SERVO1);
   rightClaw.attach (SERVO5);
-  umbrella.attach(SERVO8);
+  umbrella.attach(SERVO6);
   
   close ();
   umbrella.write (UMBRELLA_RELEASED);
