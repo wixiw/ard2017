@@ -232,10 +232,10 @@ apb_HmiState const& HmiThread::getState()
     state.led3 = led3.getState();
     state.led4 = led4.getState();
     state.ledRgb = ledRGB.getState();
-    state.start = tirette.read();
-    state.colorSwitch = matchColor.read();
-    state.user1 = user1.read();
-    state.user2 = user2.read();
+    state.start = tirette.readRaw();
+    state.colorSwitch = matchColor.readRaw();
+    state.user1 = user1.readRaw();
+    state.user2 = user2.readRaw();
     state.ledDue_Rx = ledDue_Rx.getState();
     state.ledDue_Tx = ledDue_Tx.getState();
     state.ledDue_L = ledDue_L.getState();

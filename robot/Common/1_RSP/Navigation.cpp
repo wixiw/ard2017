@@ -28,6 +28,9 @@ Navigation::Navigation()
                 omronFrontRight(OMRON2, 50, 50),
                 omronRearLeft(OMRON3, 50, 50),
                 omronRearRight(OMRON4, 50, 50),
+                switchRecalFL(BORDURE_AVG, 1000, 10),
+                switchRecalFR(BORDURE_AVD, 1000, 10),
+                switchRecalRC(BORDURE_ARC, 1000, 10),
                 m_color(eColor_PREF),
                 m_mutex(),
                 m_targetReached(),
@@ -404,6 +407,10 @@ apb_NavState const& Navigation::getState()
     state.omronFR = omronFrontRight.readRaw();
     state.omronRL = omronRearLeft.readRaw();
     state.omronRR = omronRearRight.readRaw();
+
+    state.switchRecalFL = switchRecalFL.readRaw();
+    state.switchRecalFR = switchRecalFR.readRaw();
+    state.switchRecalRC = switchRecalRC.readRaw();
 
     return state;
 }

@@ -30,6 +30,9 @@ message NavState {
     required bool            omronFR                = 22; //front right omron, true = presence
     required bool            omronRL                = 23; //rear left omron, true = presence
     required bool            omronRR                = 24; //rear right omron, true = presence
+    required bool            switchRecalFL          = 30; //front left recal on border switch
+    required bool            switchRecalFR          = 31; //front right recal on border switch
+    required bool            switchRecalRC          = 32; //rear center recal on border switch
 }
 
 message ColorSensorState {
@@ -42,6 +45,15 @@ message ColorSensorState {
 
 message ActuatorsState {
     required ColorSensorState   colorSensor        = 1;
+    required bool               switchArmLout      = 2; //left arm extended (fully outside robot) position end course switch
+    required bool               switchArmLin       = 3; //left arm retracted (fully inside robot) position end course switch
+    required bool               switchArmRout      = 4; //right arm extended (fully outside robot) position end course switch
+    required bool               switchArmRin       = 5; //right arm retracted (fully inside robot) position end course switch
+    required bool               omronCylinder      = 6; //swallow mouth cylinder presence detection (lateral omron)
+    required bool               switchCylinder     = 7; //swallow mouth cylinder ready to lift, switch detection
+    required bool               omronSpare         = 8; //Rear center spare omron, close to the recal switch
+    required bool               switchLifterUp     = 9; //lifter upside end course switch
+    required bool               switchLifterDown   = 10; //lifter upside end course switch
 }
 
 message HmiState {

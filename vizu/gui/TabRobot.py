@@ -360,26 +360,35 @@ class TabRobot_Status(QWidget):
             self.layout.addStretch()
             column.setLabelAlignment(Qt.AlignVCenter)
         
-        self.addSensorXor("led1", 0)
+        #self.addSensorXor("led1", 0) #LED1 is currently driven as ledDue_Rx
         self.addSensorXor("led2", 0)
         self.addSensorXor("led3", 0)
         self.addSensorXor("led4", 0)
         self.addSensorXor("ledRgb", 0)
+        self.addSensorXor("ledDue_L", 0)
+        self.addSensorXor("ledDue_Tx", 0)
+        #self.addSensorXor("ledDue_Rx", 0) #This led is only light on when CPU is Idle ... hence it's stupid to display it's state which will always be off
         
         self.addSensorXor("switchArmLout", 1)
         self.addSensorXor("switchArmLin", 1)
         self.addSensorXor("switchRecalFL", 1)
         self.addSensorXor("omronFL", 1)
         self.addSensorXor("omronRL", 1)
+        self.addSensorXor("start", 1)
+        self.addSensorXor("colorSwitch", 1)
+
         
         self.addSensorXor("switchArmRout", 2)
         self.addSensorXor("switchArmRin", 2)
-        self.addSensorXor("switchRecalRL", 2)
+        self.addSensorXor("switchRecalFR", 2)
         self.addSensorXor("omronFR", 2)
         self.addSensorXor("omronRR", 2)
+        self.addSensorXor("user1", 2)
+        self.addSensorXor("user2", 2)
         
         self.addSensorXor("switchRecalRC", 3)
         self.addSensorXor("omronCylinder", 3)
+        self.addSensorXor("switchCylinder", 3)
         self.addSensorXor("omronSpare", 3)
         self.addSensorXor("switchLifterUp", 3)
         self.addSensorXor("switchLifterDown", 3)
@@ -396,10 +405,37 @@ class TabRobot_Status(QWidget):
             #--- DEBUG --- print(str(msg))
             self.robotState = msg
             
-            self.led1.light(msg.hmi.led1)
+            #self.led1.light(msg.hmi.led1) #LED1 is currently driven as ledDue_Rx
             self.led2.light(msg.hmi.led2)
             self.led3.light(msg.hmi.led3)
             self.led4.light(msg.hmi.led4)
+            self.ledRgb.light(msg.hmi.ledRgb)
+            self.ledDue_L.light(msg.hmi.ledDue_L)
+            self.ledDue_Tx.light(msg.hmi.ledDue_Tx)
+            #self.ledDue_Rx.light(msg.hmi.ledDue_Rx) #This led is only light on when CPU is Idle ... hence it's stupid to display it's state which will always be off
+            
+            self.start.light(msg.hmi.start)
+            self.colorSwitch.light(msg.hmi.colorSwitch)
+            self.user1.light(msg.hmi.user1)
+            self.user2.light(msg.hmi.user2)
+            
+            self.omronFL.light(msg.nav.omronFL)
+            self.omronFR.light(msg.nav.omronFR)
+            self.omronRL.light(msg.nav.omronRL)
+            self.omronRR.light(msg.nav.omronRR)
+            self.switchRecalFL.light(msg.nav.switchRecalFL)
+            self.switchRecalFR.light(msg.nav.switchRecalFR)
+            self.switchRecalRC.light(msg.nav.switchRecalRC)
+            
+            self.switchArmLout.light(msg.actuators.switchArmLout)
+            self.switchArmLin.light(msg.actuators.switchArmLin)
+            self.switchArmRout.light(msg.actuators.switchArmRout)
+            self.switchArmRin.light(msg.actuators.switchArmRin)
+            self.omronCylinder.light(msg.actuators.omronCylinder)
+            self.switchCylinder.light(msg.actuators.switchCylinder)
+            self.omronSpare.light(msg.actuators.omronSpare)
+            self.switchLifterUp.light(msg.actuators.switchLifterUp)
+            self.switchLifterDown.light(msg.actuators.switchLifterDown)
             
             self.update()
         

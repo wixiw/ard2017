@@ -30,6 +30,16 @@ namespace ard
         ColorSensor stockColor;
         ActuatorX claws;
 
+        FilteredInput switchArmLout;
+        FilteredInput switchArmLin;
+        FilteredInput switchArmRout;
+        FilteredInput switchArmRin;
+        FilteredInput omronCylinder;
+        FilteredInput switchCylinder;
+        FilteredInput omronSpare;
+        FilteredInput switchLifterUp;
+        FilteredInput switchLifterDown;
+
     private:
         apb_ActuatorsState state;
     };

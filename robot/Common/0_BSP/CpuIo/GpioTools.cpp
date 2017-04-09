@@ -7,7 +7,7 @@ using namespace ard;
 /**
  * Configure the maximal number of gpio to check
  */
-#define FIO_MANAGER_MAX_IO 20
+#define FIO_MANAGER_MAX_IO 25
 
 PolledObject* fio_manager_table[FIO_MANAGER_MAX_IO];
 uint8_t fio_manager_nbIo = 0;

@@ -28,7 +28,7 @@
 #define SERVO7          10
 #define SERVO8          11
 #define BUZZER          12
-#define LED_DUE_L       13
+#define LED_DUE_L       13 //used by ArdOs to signal OS errors
 //14/15 : TX/RX 3
 //16/17 : TX/RX 2
 //18/19 : TX/RX 1
@@ -41,8 +41,18 @@
 #define OMRON2          26
 #define OMRON3          27
 #define OMRON4          28
-#define BORDURE_G       29
-#define BORDURE_D       30
+#define BORDURE_AVG         BUTTON_USER1         //TODO QPE : was pin 29 in 2016
+#define BORDURE_AVD         BUTTON_USER1         //TODO QPE : was pin 30 in 2016
+#define BORDURE_ARC         BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
+#define SWITCH_ARM_L_OUT    BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
+#define SWITCH_ARM_L_IN     BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
+#define SWITCH_ARM_R_OUT    BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
+#define SWITCH_ARM_R_IN     BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
+#define OMRON_CYLINDER      BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
+#define SWITCH_CYLINDER     BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
+#define OMRON_SPARE         BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
+#define SWITCH_LIFTER_UP    BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
+#define SWITCH_LIFTER_DOWN  BUTTON_USER1         //TODO QPE : a mettre une fois mapping HW fait
 //Note : See above for  31 (Omron1)
 #define CS_SDCARD	32  //not mapped to child card
 //33 : free IO, not mapped on childboard

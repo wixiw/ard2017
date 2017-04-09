@@ -236,10 +236,16 @@ namespace ard
         AccelStepper stepperL; //critical section
         AccelStepper stepperR; //critical section
 
+        //Avoidance sensors
         FilteredInput omronFrontLeft;
         FilteredInput omronFrontRight;
         FilteredInput omronRearLeft;
         FilteredInput omronRearRight;
+
+        //Recal sensors
+        FilteredInput switchRecalFL;
+        FilteredInput switchRecalFR;
+        FilteredInput switchRecalRC;
 
         //match color
         eColor m_color;
