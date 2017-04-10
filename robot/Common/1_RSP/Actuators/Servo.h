@@ -63,8 +63,8 @@
 
 #define Servo_VERSION           2     // software version of this library
 
-#define MIN_PULSE_WIDTH       544     // the shortest pulse sent to a servo  
-#define MAX_PULSE_WIDTH      2400     // the longest pulse sent to a servo 
+#define MIN_PULSE_WIDTH      1000     // the shortest pulse sent to a servo
+#define MAX_PULSE_WIDTH      2000     // the longest pulse sent to a servo
 #define DEFAULT_PULSE_WIDTH  1500     // default pulse width when servo is attached
 #define REFRESH_INTERVAL    20000     // minumim time to refresh servos in microseconds 
 
@@ -86,19 +86,25 @@ typedef struct {
 class Servo
 {
 public:
-  Servo();
-  uint8_t attach(int pin);           // attach the given pin to the next free channel, sets pinMode, returns channel number or 0 if failure
-  uint8_t attach(int pin, int min, int max); // as above but also sets min and max values for writes. 
-  void detach();
-  void write(int value);             // if value is < 200 its treated as an angle, otherwise as pulse width in microseconds 
-  void writeMicroseconds(int value); // Write pulse width in microseconds 
+    //ARD addon : Set minimal angular commands in degrees (SW limits)
+  Servo(int pin, uint8_t min = 0, uint8_t max = 180);
+
+  bool enable();                    //Start generating the PWM. return false is the servo has an invalid configuration.
+  void disable();                   //Stop generating the PWM.
+
+  void write(int value);             // if value is < 200 its treated as an angle, otherwise as pulse width in microseconds. Automatically enables the servo if not done before
   int read();                        // returns current pulse width as an angle between 0 and 180 degrees
-  int readMicroseconds();            // returns current pulse width in microseconds for this servo (was read_us() in first release)
-  bool attached();                   // return true if this servo is attached, otherwise false 
+
 private:
+  void writeMicroseconds(int value); // Write pulse width in microseconds
+  int readMicroseconds();            // returns current pulse width in microseconds for this servo (was read_us() in first release)
+  uint8_t attach(int pin, int min, int max); // as above but also sets min and max values for writes. //ARD : function made private as min/max management is unclear
    uint8_t servoIndex;               // index into the channel data for this servo
-   int8_t min;                       // minimum is this value times 4 added to MIN_PULSE_WIDTH    
-   int8_t max;                       // maximum is this value times 4 added to MAX_PULSE_WIDTH   
+   int8_t minArduino;                       // minimum is this value times 4 added to MIN_PULSE_WIDTH    
+   int8_t maxArduino;                       // maximum is this value times 4 added to MAX_PULSE_WIDTH   
+   uint8_t angularMin;               // ARD addons : minimal angular command in degrees (i.e. SW limit), default 0
+   uint8_t angularMax;               // ARD addons : maximal angular command in degrees (i.e. SW limit), default 180
+   uint8_t currentAngleCommand;
 };
 
 #endif

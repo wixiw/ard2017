@@ -54,11 +54,6 @@ namespace ard
 	private:
 		ActuatorX( const ActuatorX &c );
 		ActuatorX& operator=( const ActuatorX &c );
-	
-		Servo leftClaw;
-		Servo rightClaw;
-		Servo umbrella;
-
 	}; //ActuatorX
 
 }//namespace ard

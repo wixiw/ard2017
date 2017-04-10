@@ -74,6 +74,16 @@ message Configuration
     required uint32 matchDuration         = 31; //in ms
 }
 
+message ActuatorsCmd
+{
+    optional int32 lifter       = 1; //angle in °
+    optional int32 leftArm      = 2; //angle in °
+    optional int32 rightArm     = 3; //angle in °
+    optional int32 leftWheel    = 4; //angle in °
+    optional int32 rightWheel   = 5; //angle in °
+    optional int32 funnyAction  = 6; //angle in °
+}
+
 //----------------------------------------------------------------------
 // Multiplexer : this message is used to encapsulate all the other
 //               so that several messages can be sent on the same
@@ -97,6 +107,7 @@ message RemoteControlRequest
         //messages from 100 to 199 are reserved fo strategy
         ConfigureMatch       configureMatch     = 100;
         EmptyMsg             startMatch         = 101;
+        ActuatorsCmd         requestActuators   = 110;
 
         //messages from 200 to 299 are reserved fo navigation
         PointCap            setPosition         = 200;

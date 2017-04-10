@@ -40,6 +40,13 @@ namespace ard
         FilteredInput switchLifterUp;
         FilteredInput switchLifterDown;
 
+        Servo         servoLifter;
+        Servo         servoLeftArm;
+        Servo         servoRightArm;
+        Servo         servoLeftWheel;
+        Servo         servoRightWheel;
+        Servo         servoFunnyAction;
+
     private:
         apb_ActuatorsState state;
     };

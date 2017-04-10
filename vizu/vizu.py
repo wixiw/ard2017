@@ -51,7 +51,8 @@ class TabContext(ShortcutContext):
 class VizuMainScreen(QWidget):
     
     def __init__(self):
-        super().__init__()             
+        super().__init__()  
+        self.resize(870, 500)           
         self.readSettings()
         self.setWindowTitle('8=> Vizu')  
         
@@ -76,7 +77,6 @@ class VizuMainScreen(QWidget):
         
         #build tab widget from tab contents
         self.tabs = QTabWidget(self)
-        self.tabs.currentChanged.connect(self.tabChanged)
         i = 0
         for tabName, tabContext in self.tabContexts.items():
             self.tabs.addTab(tabContext.tab, tabName)
@@ -94,18 +94,25 @@ class VizuMainScreen(QWidget):
         # connect Strat tab
         self.teleop.telemetry.connect(self.tabContexts["Strat"].tab._telemetryDataCb)
         self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Status"]._telemetryDataCb)
+        self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Servos"]._telemetryDataCb)
         
         # connect Robot tab
-        self.tabContexts["Robot"].tab.tab["Commands"].sections["sound"].requestPlaySound        .connect(self.teleop.requestPlaySound)
-        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getOsStatsLogs        .connect(self.teleop.getOsStatsLogs)
-        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getComStatsLogs       .connect(self.teleop.getComStatsLogs)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["sound"].requestPlaySound      .connect(self.teleop.requestPlaySound)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getComStatsLogs     .connect(self.teleop.getComStatsLogs)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getTelemetry        .connect(self.teleop.getTelemetry)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].configureMatch      .connect(self.teleop.configureMatch)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].startMatch          .connect(self.teleop.startMatch)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].resetCpu            .connect(self.teleop.resetCpu)
-        self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].blocked             .connect(self.teleop.requestBlockRobot)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].blocked                 .connect(self.teleop.requestBlockRobot)
         for cmd, widget in self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  # getattr is used to get a method reference from name, hence automatically binding signals ;p
+        self.tabContexts["Robot"].tab.tab["Servos"].lifterCmd                                 .connect(self.teleop.requestLifterServo)
+        self.tabContexts["Robot"].tab.tab["Servos"].leftArmCmd                                .connect(self.teleop.requestLeftArmServo)
+        self.tabContexts["Robot"].tab.tab["Servos"].rightArmCmd                               .connect(self.teleop.requestRightArmServo)
+        self.tabContexts["Robot"].tab.tab["Servos"].leftWheelCmd                              .connect(self.teleop.requestLeftWheelServo)
+        self.tabContexts["Robot"].tab.tab["Servos"].rightWheelCmd                             .connect(self.teleop.requestRightWheelServo)
+        self.tabContexts["Robot"].tab.tab["Servos"].funnyCmd                                  .connect(self.teleop.requestFunnyActionServo)
         
         # connect Config tab
         self.tabContexts["Config"].tab.getConfig          .connect(self.teleop.getConfig)
@@ -130,7 +137,8 @@ class VizuMainScreen(QWidget):
                 self.tabs.setTabEnabled(self.tabs.indexOf(tabContext.tab), True)
             
             #automatically switch to strat tab for convenience
-            self.tabs.setCurrentWidget(self.tabContexts["Strat"].tab)
+            self.tabs.setCurrentWidget(self.tabContexts["Robot"].tab)
+            self.tabs.setCurrentWidget(self.tabContexts["Robot"].tab)
             
             #activate all shortcuts
             for key, shortcutContext in self.shortcuts.items():
@@ -143,6 +151,7 @@ class VizuMainScreen(QWidget):
                 
             #automatically switch to Com tab for convenience
             self.tabs.setCurrentWidget(self.tabContexts["Com"].tab)
+            self.tabContexts["Robot"].tab.tabs.setCurrentWidget(self.tabContexts["Robot"].tab.tab["Servos"])
             
             #Deactivate shortcuts that are only available online
             for key, shortcut in self.shortcuts.items():
@@ -153,17 +162,10 @@ class VizuMainScreen(QWidget):
     def selectTab(self, tabId):
         self.tabs.setCurrentIndex(tabId)
         
-    #Signal emitted by QT when a new tab is displayed
-    @pyqtSlot(int)
-    def tabChanged(self, tabId):
-        #if current tab is config, then request the current config
-        if self.tabs.currentWidget() == self.tabContexts["Config"].tab:
-            self.teleop.getConfig()
-        
     def readSettings(self):
         settings = QSettings("config.ini", QSettings.IniFormat)
         settings.beginGroup("MainWindow")
-        self.resize(settings.value("size", QSize(640, 480)))
+        self.resize(settings.value("size", QSize(870, 500)))
         self.move(settings.value("pos", QPoint(300, 300)))
         settings.endGroup();
     

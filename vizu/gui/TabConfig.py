@@ -108,6 +108,11 @@ class TabConfig(QWidget):
         #Strat
         self.stratConfig.matchDuration.setValue(msg.matchDuration)
         
+    #Override in order to initialize the view each time the widget is shown
+    def showEvent (self, QShowEvent):
+        self._getConfig()
+
+        
 class CalibConfigWidget(QWidget): 
     
     def __init__(self, parent):

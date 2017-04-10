@@ -54,6 +54,13 @@ message ActuatorsState {
     required bool               omronSpare         = 8; //Rear center spare omron, close to the recal switch
     required bool               switchLifterUp     = 9; //lifter upside end course switch
     required bool               switchLifterDown   = 10; //lifter upside end course switch
+
+    required int32              servoLifter        = 30;
+    required int32              servoLeftArm       = 31;
+    required int32              servoRightArm      = 32;
+    required int32              servoLeftWheel     = 33;
+    required int32              servoRightWheel    = 34;
+    required int32              servoFunnyAction   = 35;
 }
 
 message HmiState {

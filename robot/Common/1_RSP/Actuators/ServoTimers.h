@@ -30,11 +30,11 @@
  */
 
 // For SAM3X:
-//#define _useTimerTC0
-//#define _useTimerTC2
-//#define _useTimerTC3
-//#define _useTimerTC4
-#define _useTimerTC5
+#define _useOneTimer
+//#define _useTwoTimers
+//#define _useThreeTimers
+//#define _useFourTimers
+//#define _useFiveTimers
 
 /*
   TC0, chan 0 => TC0_Handler
@@ -48,35 +48,35 @@
   TC2, chan 2 => TC8_Handler
  */
 
-#if defined (_useTimerTC3)
+#if defined (_useOneTimer)
 #define TC_FOR_TIMER1       TC1
-#define CHANNEL_FOR_TIMER1  0
-#define ID_TC_FOR_TIMER1    ID_TC3
-#define IRQn_FOR_TIMER1     TC3_IRQn
-#define HANDLER_FOR_TIMER1  TC3_Handler
+#define CHANNEL_FOR_TIMER1  2
+#define ID_TC_FOR_TIMER1    ID_TC5
+#define IRQn_FOR_TIMER1     TC5_IRQn
+#define HANDLER_FOR_TIMER1  TC5_Handler
 #endif
-#if defined (_useTimerTC4)
+#if defined (_useTwoTimers)
 #define TC_FOR_TIMER2       TC1
 #define CHANNEL_FOR_TIMER2  1
 #define ID_TC_FOR_TIMER2    ID_TC4
 #define IRQn_FOR_TIMER2     TC4_IRQn
 #define HANDLER_FOR_TIMER2  TC4_Handler
 #endif
-#if defined (_useTimerTC5)
+#if defined (_useThreeTimers)
 #define TC_FOR_TIMER3       TC1
-#define CHANNEL_FOR_TIMER3  2
-#define ID_TC_FOR_TIMER3    ID_TC5
-#define IRQn_FOR_TIMER3     TC5_IRQn
-#define HANDLER_FOR_TIMER3  TC5_Handler
+#define CHANNEL_FOR_TIMER3  0
+#define ID_TC_FOR_TIMER3    ID_TC3
+#define IRQn_FOR_TIMER3     TC3_IRQn
+#define HANDLER_FOR_TIMER3  TC3_Handler
 #endif
-#if defined (_useTimerTC2)
+#if defined (_useFourTimers)
 #define TC_FOR_TIMER4       TC0
 #define CHANNEL_FOR_TIMER4  2
 #define ID_TC_FOR_TIMER4    ID_TC2
 #define IRQn_FOR_TIMER4     TC2_IRQn
 #define HANDLER_FOR_TIMER4  TC2_Handler
 #endif
-#if defined (_useTimerTC0)
+#if defined (_useFiveTimers)
 #define TC_FOR_TIMER5       TC0
 #define CHANNEL_FOR_TIMER5  0
 #define ID_TC_FOR_TIMER5    ID_TC0
@@ -84,5 +84,5 @@
 #define HANDLER_FOR_TIMER5  TC0_Handler
 #endif
 
-typedef enum { _timer1, _timer2, _timer3, _timer4, _timer5, _Nbr_16timers } timer16_Sequence_t ;
+typedef enum { _timer1, /*_timer2, _timer3, _timer4, _timer5,*/ _Nbr_16timers } timer16_Sequence_t ;
 

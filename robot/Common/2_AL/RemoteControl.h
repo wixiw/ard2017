@@ -81,6 +81,7 @@ namespace ard
         void setConfig              (apb_RemoteControlRequest const & request);
         void configureMatch         (apb_RemoteControlRequest const & request);
         void startMatch             (apb_RemoteControlRequest const & request);
+        void requestActuators       (apb_RemoteControlRequest const & request);
         void setPosition            (apb_RemoteControlRequest const & request);
         void setSpeedAcc            (apb_RemoteControlRequest const & request);
         void requestGoto            (apb_RemoteControlRequest const & request);

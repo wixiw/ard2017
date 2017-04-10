@@ -112,9 +112,6 @@ class GeneralTeleopWidget(QWidget):
        print("Reset CPU request")
        self.resetCpu.emit()
    
-   
-   
-   
 class NavigationTeleopWidget(QWidget): 
     blocked = pyqtSignal(bool)
                           

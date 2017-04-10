@@ -21,12 +21,12 @@ using namespace ard;
 void
 ActuatorX::init ()
 {
-  leftClaw.attach (SERVO1);
-  rightClaw.attach (SERVO5);
-  umbrella.attach(SERVO6);
-  
+//  leftClaw.attach (SERVO1);
+//  rightClaw.attach (SERVO5);
+//  umbrella.attach(SERVO6);
+//
   close ();
-  umbrella.write (UMBRELLA_RELEASED);
+//  umbrella.write (UMBRELLA_RELEASED);
 }
 
 void
@@ -38,27 +38,27 @@ ActuatorX::update (TimeMs sinceLastCall)
 void
 ActuatorX::open ()
 {
-  leftClaw.write (CLAW_LEFT_OPENED);
-  rightClaw.write (CLAW_RIGHT_OPENED);
+//  leftClaw.write (CLAW_LEFT_OPENED);
+//  rightClaw.write (CLAW_RIGHT_OPENED);
 }
 
 void
 ActuatorX::close ()
 {
-  leftClaw.write (CLAW_LEFT_CLOSED);
-  rightClaw.write (CLAW_RIGHT_CLOSED);
+//  leftClaw.write (CLAW_LEFT_CLOSED);
+//  rightClaw.write (CLAW_RIGHT_CLOSED);
 }
 
 void
 ActuatorX::arm ()
 {
-  umbrella.write (UMBRELLA_ARMED);
+//  umbrella.write (UMBRELLA_ARMED);
 }
 
 void
 ActuatorX::release ()
 {
-  umbrella.write (UMBRELLA_RELEASED);
+//  umbrella.write (UMBRELLA_RELEASED);
 }
 
 #endif

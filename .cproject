@@ -37,6 +37,7 @@
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.901879017" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
 									<listOptionValue builtIn="false" value="__SAM3X8E__"/>
+									<listOptionValue builtIn="false" value="ARDUINO_ARCH_SAM"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.207876122" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -51,6 +52,7 @@
 								<option id="gnu.cpp.compiler.option.preprocessor.def.412119373" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__arm__"/>
 									<listOptionValue builtIn="false" value="__SAM3X8E__"/>
+									<listOptionValue builtIn="false" value="ARDUINO_ARCH_SAM"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1238219010" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>

@@ -21,11 +21,12 @@ class TabRobot(QWidget):
         self.tab["Servos"]   = TabRobot_Servos(self)
         
         self.tabs = QTabWidget(self)
+        
         for tabName, tab in self.tab.items():
             self.tabs.addTab(tab, tabName)
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
-        
+            
         
 if __name__ == '__main__':
     import sys
