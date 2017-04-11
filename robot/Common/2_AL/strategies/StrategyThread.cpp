@@ -92,7 +92,7 @@ void StrategyThread::run()
         {   evt_startOut, evt_teleopStart};
         auto triggeredEvent = waitEvents(evts, 2); //returned event is not read as we don't care, result will be the same
 
-        //Avoidance is activated after start so that it is deactivated in simumation
+        //Avoidance is activated after start so that it is deactivated in simulation
         if( triggeredEvent == evt_startOut)
         {
             robot->nav.enableAvoidance(true);

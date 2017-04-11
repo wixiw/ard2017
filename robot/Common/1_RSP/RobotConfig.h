@@ -31,6 +31,7 @@ public:
 
     uint32_t stepByTurn()           const {return cfg.stepByTurn;};
     uint32_t xar()                  const {return cfg.xar;};
+    uint32_t xav()                  const {return 100;};
     uint32_t yside()                const {return cfg.yside;};
     float leftWheelDiameter()    	const {return cfg.leftWheelDiameter;};
     float rightWheelDiameter()  	const {return cfg.rightWheelDiameter;};

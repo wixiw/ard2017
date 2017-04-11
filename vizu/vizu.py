@@ -194,7 +194,7 @@ class VizuMainScreen(QWidget):
             # Start match with s
         self.shortcuts["s"] = ShortcutContext("s", Qt.Key_S, self.teleop.startMatch, "Starts the match.") 
             # reset with r
-        self.shortcuts["r"] = ShortcutContext("r", Qt.Key_R, self.teleop.resetCpu, "Starts the match.") 
+        self.shortcuts["r"] = ShortcutContext("r", Qt.Key_R, self.teleop.resetCpu, "Reset the CPU.") 
             # block/unblock robot with x
         self.shortcuts["x"] = ShortcutContext("x", Qt.Key_X, self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"]._blockFromShortcut, "Create/destroy a virtual opponent on the robot path") 
         
