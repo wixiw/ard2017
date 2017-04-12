@@ -3,6 +3,7 @@
 
 from PyQt5.Qt import *
 from PyQt5.QtWidgets import *
+from ArdWidgets import ImageWidget
 
 class TabShortcuts(QWidget):
     def __init__(self, parent):
@@ -25,7 +26,10 @@ class TabHelp(QWidget):
         super().__init__(parent)
         self.tab = dict()
         self.tab["Shortcuts"]   = TabShortcuts(self)
-        self.tab["Build"]   = TabBuild(self)
+        self.tab["Build"]       = TabBuild(self)
+        self.tab["Table plan"]  = ImageWidget(self, "img/plan_table.png")
+        self.tab["Pen plan"]    = ImageWidget(self, "img/plan_pen.png")
+        self.tab["Tration plan"]= ImageWidget(self, "img/plan_tration.png")
         
         self.tabs = QTabWidget(self)
         for tabName, tab in self.tab.items():

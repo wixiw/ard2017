@@ -24,8 +24,8 @@ class RemoteControl(QObject):
     # TELEOP RECEIVE/Reply API
     #-------------------------
     log             = pyqtSignal(RemoteControl_pb2.Log)
-    osStats         = pyqtSignal(CommonMsg_pb2.EmptyMsg)
     config          = pyqtSignal(RemoteControl_pb2.Configuration)
+    serialNumber    = pyqtSignal(RemoteControl_pb2.SerialNumber)
     telemetry       = pyqtSignal(RemoteControl_pb2.Telemetry)
     #-------------------------
     

@@ -150,15 +150,16 @@ class NavigationTeleopWidget(QWidget):
         self.box = QGroupBox("Navigation")
         self.box.setLayout(self.layout["NavOrder"])
         
-        self.layout = QHBoxLayout(self)
-        self.layout.addWidget(self.box)
-        self.layout.addStretch()
+        self.layoutH = QHBoxLayout(self)
+        self.layoutH.addWidget(self.box)
+        self.layoutH.addStretch()
         
     @pyqtSlot(int)
     def _navCmdChanged(self, comboId):
         self.navTab[self.navCombo.currentText()].reset()
         for name, widget in self.navTab.items():
             widget.reset()
+        print(type(self.layout["NavStack"]))
         self.layout["NavStack"].setCurrentIndex(comboId)
         
     @pyqtSlot()

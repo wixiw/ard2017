@@ -49,6 +49,7 @@ void StrategyThread::displayIntroduction()
     LOG_INFO(getExeVersion());
 
     LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
+    robot->sendSerialNumber();
 
     LOG_INFO("Available strategies : ");
     for (int i = 0; i < NB_MAX_STRATEGIES; ++i)

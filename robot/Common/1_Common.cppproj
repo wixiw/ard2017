@@ -1171,10 +1171,10 @@
     <Compile Include="1_RSP\Navigation.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\RobotConfig.cpp">
+    <Compile Include="1_RSP\RobotParameters.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\RobotConfig.h">
+    <Compile Include="1_RSP\RobotParameters.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\RSP.h">

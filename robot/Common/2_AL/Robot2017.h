@@ -33,6 +33,9 @@ namespace ard
         // start of Strategy API
         //-------------------------------------------------------------------
 
+        //Get the robot parameters
+        RobotParameters const& params() const {return m_params;};
+
         //Freeze the robot so we are sure it doesn't do
         //anything until the end of the match
         // Caution : cannot be called from interrupt.
@@ -90,10 +93,13 @@ namespace ard
         String const& getVersion(){return buildDate;};
 
         //Get the robot config
-        apb_Configuration const& getConfig() const {return conf.copy();};
+        apb_Configuration const& getConfig() const {return m_params.getConfig();};
 
         //Set the robot config (you cannot do this at any time, think twice before using)
         void setConfig(apb_Configuration const& newConf);
+
+        //Send the robot serial number on communication link
+        void sendSerialNumber();
 
         //hardware layer
         BSP bsp;
@@ -122,7 +128,8 @@ namespace ard
         //Save the ARD library build date in the binary
         String buildDate;
 
-        RobotConfig conf;
+        //Robot parameters
+        RobotParameters m_params;
 
         //Assemble all object instances
         //private constructor as its a singleton class

@@ -43,7 +43,7 @@ Navigation::Navigation()
     state = apb_NavState_init_default;
 }
 
-void Navigation::updateConf(RobotConfig* newConf)
+void Navigation::updateConf(RobotParameters* newConf)
 {
     ASSERT(newConf);
     conf = newConf;
@@ -207,7 +207,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
     if( vMax != 0 )
     {
         LOG_ERROR("New vMax config saturated");
-        userMaxSpeed = constrain(vMax, RobotConfig::MINBOUND_MAXSPEED, RobotConfig::MAXBOUND_MAXSPEED);
+        userMaxSpeed = constrain(vMax, RobotParameters::MINBOUND_MAXSPEED, RobotParameters::MAXBOUND_MAXSPEED);
     }
     else
         userMaxSpeed = conf->maxSpeed();
@@ -216,7 +216,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
     if( vMaxTurn    != 0 )
     {
         LOG_ERROR("New vMaxTurn config saturated");
-        userMaxTurnSpeed = constrain(vMaxTurn, RobotConfig::MINBOUND_MAXTURNSPEED, RobotConfig::MAXBOUND_MAXTURNSPEED);
+        userMaxTurnSpeed = constrain(vMaxTurn, RobotParameters::MINBOUND_MAXTURNSPEED, RobotParameters::MAXBOUND_MAXTURNSPEED);
     }
     else
         userMaxTurnSpeed = conf->maxTurnSpeed();
@@ -225,7 +225,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
     if( accMax != 0 )
     {
         LOG_ERROR("New accMax config saturated");
-        userMaxAcc = constrain(accMax, RobotConfig::MINBOUND_MAXACC, RobotConfig::MAXBOUND_MAXACC);
+        userMaxAcc = constrain(accMax, RobotParameters::MINBOUND_MAXACC, RobotParameters::MAXBOUND_MAXACC);
     }
     else
         userMaxAcc = conf->maxAcc();
@@ -234,7 +234,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
     if( accMaxTurn != 0 )
     {
         LOG_ERROR("New accMaxTurn config saturated");
-        userMaxTurnAcc = constrain(accMaxTurn, RobotConfig::MINBOUND_MAXTURNACC, RobotConfig::MAXBOUND_MAXTURNACC);
+        userMaxTurnAcc = constrain(accMaxTurn, RobotParameters::MINBOUND_MAXTURNACC, RobotParameters::MAXBOUND_MAXTURNACC);
     }
     else
         userMaxTurnAcc = conf->maxTurnAcc();

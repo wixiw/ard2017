@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>RobotA</AssemblyName>
-    <Name>2_RobotA</Name>
-    <RootNamespace>RobotA</RootNamespace>
+    <AssemblyName>Pen</AssemblyName>
+    <Name>2_Pen</Name>
+    <RootNamespace>Pen</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -198,12 +198,12 @@
         <armgcccpp.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcccpp.preprocessingassembler.debugging.DebugLevel>
       </ArmGccCpp>
     </ToolchainSettings>
-    <OutputFileName>RobotA</OutputFileName>
+    <OutputFileName>Pen</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
-    <PreBuildEvent>DEL $(OutputDirectory)\RobotA* /Q</PreBuildEvent>
+    <PreBuildEvent>DEL $(OutputDirectory)\Pen* /Q</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="main.cpp">
+    <Compile Include="main_pen.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

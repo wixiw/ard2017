@@ -62,7 +62,11 @@ namespace ard
         //Implements ILogChannel : push a log on the serial link
         virtual void log(LogMsg const & log) override;
 
+        //Send serial number on communication linl
+        void sendSerialNumber(char const * const serialNumber);
+
     private:
+        Mutex mutex;
         Event<1> events[EVT_MAX];
         ComOnUart com;
         Robot2017* robot;

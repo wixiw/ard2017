@@ -4,6 +4,8 @@
 from PyQt5.Qt import *
 from PyQt5.QtWidgets import *
 from ArdWidgets import *
+
+
 class TabCom(QWidget):
     
     #QT emitted signals :

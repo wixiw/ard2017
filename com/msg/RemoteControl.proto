@@ -48,10 +48,14 @@ message Telemetry
     required HmiState          hmi               = 4;
 }
 
+//WARNING : To keep in sync with RobotParameters.h/cpp
 message Configuration
 {
+    required string serialNumber           = 100 [(nanopb).max_size = 16];
+
     //Mechanics/Electronics related constants
     required uint32 stepByTurn             = 1; //nb steps when the motor has made a complete revolution
+    required uint32 xav                    = 16; //mm distance from the wheel center to the front of the robot
     required uint32 xar                    = 2; //mm distance from the wheel center to the rear of the robot
     required uint32 yside                  = 3; //mm distance from the robot center to a side
     //    calibration params
@@ -82,6 +86,11 @@ message ActuatorsCmd
     optional int32 leftWheel    = 4; //angle in °
     optional int32 rightWheel   = 5; //angle in °
     optional int32 funnyAction  = 6; //angle in °
+}
+
+message SerialNumber
+{
+    required string value         = 1 [(nanopb).max_size = 16];
 }
 
 //----------------------------------------------------------------------
@@ -131,6 +140,7 @@ message RemoteControlResponse
         Log                  log                  = 1;
         EmptyMsg             osStats              = 2;
         Configuration        config               = 3;
+        SerialNumber         serialNumber         = 4;
         Telemetry            telemetry            = 200;
     }
 }

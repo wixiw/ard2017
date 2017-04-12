@@ -86,15 +86,16 @@ class VizuMainScreen(QWidget):
         layout_main.addWidget(self.tabs)
         
         # connect Com Tab msg requests
-        self.tabContexts["Com"].tab.networkStatus         .connect(self._handleNetworkStatus)
+        self.tabContexts["Com"].tab.networkStatus.connect(self._handleNetworkStatus)
+        self.teleop.serialNumber.connect(self._handleSerialNumber)
 
         # connect Log tab
         self.teleop.log.connect(self.tabContexts["Log"].tab.log)
         
         # connect Strat tab
+        self.tabContexts["Strat"].tab.getConfig.connect(self.teleop.getConfig)
         self.teleop.telemetry.connect(self.tabContexts["Strat"].tab._telemetryDataCb)
-        self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Status"]._telemetryDataCb)
-        self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Servos"]._telemetryDataCb)
+        self.teleop.config.connect(self.tabContexts["Strat"].tab._updateConfig)
         
         # connect Robot tab
         self.tabContexts["Robot"].tab.tab["Commands"].sections["sound"].requestPlaySound      .connect(self.teleop.requestPlaySound)
@@ -113,7 +114,9 @@ class VizuMainScreen(QWidget):
         self.tabContexts["Robot"].tab.tab["Servos"].leftWheelCmd                              .connect(self.teleop.requestLeftWheelServo)
         self.tabContexts["Robot"].tab.tab["Servos"].rightWheelCmd                             .connect(self.teleop.requestRightWheelServo)
         self.tabContexts["Robot"].tab.tab["Servos"].funnyCmd                                  .connect(self.teleop.requestFunnyActionServo)
-        
+        self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Status"]._telemetryDataCb)
+        self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Servos"]._telemetryDataCb)
+         
         # connect Config tab
         self.tabContexts["Config"].tab.getConfig          .connect(self.teleop.getConfig)
         self.tabContexts["Config"].tab.setConfig          .connect(self.teleop.setConfig)
@@ -137,8 +140,7 @@ class VizuMainScreen(QWidget):
                 self.tabs.setTabEnabled(self.tabs.indexOf(tabContext.tab), True)
             
             #automatically switch to strat tab for convenience
-            self.tabs.setCurrentWidget(self.tabContexts["Robot"].tab)
-            self.tabs.setCurrentWidget(self.tabContexts["Robot"].tab)
+            self.tabs.setCurrentWidget(self.tabContexts["Strat"].tab)
             
             #activate all shortcuts
             for key, shortcutContext in self.shortcuts.items():
@@ -151,11 +153,19 @@ class VizuMainScreen(QWidget):
                 
             #automatically switch to Com tab for convenience
             self.tabs.setCurrentWidget(self.tabContexts["Com"].tab)
-            self.tabContexts["Robot"].tab.tabs.setCurrentWidget(self.tabContexts["Robot"].tab.tab["Servos"])
             
             #Deactivate shortcuts that are only available online
             for key, shortcut in self.shortcuts.items():
                 shortcut.widget.setEnabled(shortcut.isAvailableOffline)
+                
+            #remove robot name from title
+            self.setWindowTitle('8=> Vizu')
+    
+    @pyqtSlot(RemoteControl_pb2.SerialNumber)
+    def _handleSerialNumber(self, serial):
+        print("New serial received : " + serial.value)
+        self.setWindowTitle('8=> Vizu [' + serial.value + ']') 
+        self.tabContexts["Strat"].tab.updateRobot(serial.value)
     
     #Signal activated by shortcuts (helper to being able to map in conneciton)
     @pyqtSlot(int)
@@ -204,6 +214,7 @@ class VizuMainScreen(QWidget):
             
         self.configureMap.setMapping(self.shortcuts["y"].widget, Types_pb2.PREF)
         self.configureMap.setMapping(self.shortcuts["b"].widget, Types_pb2.SYM)
+        
         
 if __name__ == '__main__':
     import os

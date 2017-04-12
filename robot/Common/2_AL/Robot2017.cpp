@@ -83,14 +83,14 @@ Robot2017::Robot2017():
 #endif
     fileLogger(LOG_QUEUE_SIZE),
     buildDate("unknown"),
-    conf()
+    m_params()
 {
     buildDate = String(__DATE__) + " " + __TIME__;
 }
 
 void Robot2017::bootOs()
 {
-    nav.updateConf(&conf);
+    nav.updateConf(&m_params);
 
 #ifdef BUILD_REMOTE_CONTROL
     remoteControl.attachRobot(this);
@@ -234,7 +234,11 @@ void Robot2017::setLed(uint8_t led, eLedState blink)
 
 void Robot2017::setConfig(apb_Configuration const& newConf)
 {
-    conf.updateConfig(newConf);
-    nav.updateConf(&conf);
+    m_params.setConfig(newConf);
+    nav.updateConf(&m_params);
 }
 
+void Robot2017::sendSerialNumber()
+{
+    remoteControl.sendSerialNumber(m_params.serialNumber());
+}

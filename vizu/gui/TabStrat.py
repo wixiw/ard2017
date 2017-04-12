@@ -7,6 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from core import *
 import math
+from time import sleep
 
 #spare area around the table
 T_SPARE  =  100.
@@ -34,6 +35,8 @@ markPen.setCosmetic(True)
 #
 class TabStrat(QWidget):
     
+    getConfig = pyqtSignal()
+    
     #@param robot : the prowy providing telemetry data
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -57,7 +60,18 @@ class TabStrat(QWidget):
         self.layout.addLayout(self.layoutInfo)
         self.layout.addWidget(self.overview)
         
+        self.robotConfig = None
         self.robotState = RemoteControl_pb2.Telemetry()
+        
+    def updateRobot(self, name):
+        if name == "Pen":
+            self.overview.robot = self.overview.robotPen
+        elif name == "Tration":
+            self.overview.robot = self.overview.robotTration
+        else:
+            self.overview.robot = None
+            self.robotConfig = None
+            print("[ERROR] TabStrat.updateRobot : unknown name " + name)
         
     def buildGeneralInfo(self):
         self.box_general = QGroupBox("General")
@@ -116,7 +130,14 @@ class TabStrat(QWidget):
     def getObjectColorStr(self):
         return Types_pb2.eObjectColor.Name(self.robotState.actuators.colorSensor.color)
     
-    #telemetry reply data callback
+    def paintEvent(self, event):
+        if self.robotConfig == None:
+            print("Requesting current config")
+            self.getConfig.emit()    #telemetry reply data callback
+        else:
+            super().paintEvent(event)
+        
+        
     @pyqtSlot(RemoteControl_pb2.Telemetry)     
     def _telemetryDataCb(self, msg):
         if self.isVisible():
@@ -138,6 +159,13 @@ class TabStrat(QWidget):
             self.label["objColor"].setText(colorStr)
             self.update()
 
+    @pyqtSlot(RemoteControl_pb2.Configuration)    
+    def _updateConfig(self, msg):
+        print("New config received from robot, updating tab")
+        #--- DEBUG --- print("Telemetry received.")
+        #--- DEBUG --- print(str(msg))
+        self.robotConfig = msg
+
 #
 # This class is an overview of the table with robot displayed at current position
 #
@@ -150,7 +178,9 @@ class TableOverview(QWidget):
         self.resize(600,400)
         self.p = QPainter()
         self.table = TableWidget(self.p)
-        self.robot = RobotWidget(self.p)
+        self.robotPen = RobotPenWidget(self.p)
+        self.robotTration = RobotTrationWidget(self.p)
+        self.robot = None
         self.view = QRect( - T_SPARE,
                    - T_SPARE,
                     T_WIDTH     +  2.*T_SPARE,
@@ -176,7 +206,8 @@ class TableOverview(QWidget):
         drawingPose.x = self.robotPose.x
         drawingPose.y = -self.robotPose.y
         drawingPose.h = normalizeAngle(math.pi + self.robotPose.h)
-        self.robot.draw(drawingPose)
+        if self.robot != None and self.parent().robotConfig != None:
+            self.robot.draw(drawingPose, self.parent().robotConfig)
         self.p.end()
     
     def mousePressEvent(self, event):
@@ -188,51 +219,81 @@ class TableOverview(QWidget):
         return QWidget.mousePressEvent(self, event)
 
 class RobotWidget():
-    
     def __init__(self, painter):
         self.p = painter
                 
-    def draw(self, pose):
+    def draw(self, pose, cfg):
         self.p.save()
         self.p.setRenderHint(QPainter.Antialiasing)
         self.p.translate(pose.x, pose.y)
         self.p.rotate(180 - math.degrees(pose.h))
-        self.drawCarriage()
-        self.drawWheels()
-        self.drawMarks()
+        self.drawCarriage(cfg)
+        self.drawWheels(cfg)
+        self.drawMarks(cfg)
         self.p.restore()
 
-    def drawCarriage(self):
-        self.p.setPen(markPen)
-        self.p.setBrush(Qt.gray)
-        carriage = QPainterPath()
-        carriage.moveTo(-40, 75)
-        carriage.lineTo(130, 75)
-        carriage.lineTo(130, 45)
-        carriage.lineTo( 40, 45)
-        carriage.lineTo( 40,-45)
-        carriage.lineTo(130,-45)
-        carriage.lineTo(130,-75)
-        carriage.lineTo(-40,-75)
-        carriage.closeSubpath()
-        self.p.drawPath(carriage)
-        pass
-    
-    def drawWheels(self):
+    def drawWheels(self, cfg):
         #draw wheels
         self.p.setBrush(Qt.green)
-        self.p.drawRoundedRect(QRectF(-35, 55, 60, 10), 3, 3)
-        self.p.drawRoundedRect(QRectF(-35, -65, 60, 10), 3, 3)
+        self.p.drawRoundedRect(QRectF(-cfg.leftWheelDiameter/2, cfg.voie/2. - 5, cfg.leftWheelDiameter, 10), 3, 3)
+        self.p.drawRoundedRect(QRectF(-cfg.rightWheelDiameter/2, -cfg.voie/2. - 5, cfg.rightWheelDiameter, 10), 3, 3)
         
-    def drawMarks(self):
+    def drawMarks(self, cfg):
         pen = QPen(ardGray)
         pen.setWidth(1)
         pen.setCosmetic(True)
         pen.setDashPattern([2, 3])
         self.p.setPen(pen)
         
-        self.p.drawLine(-60, 0, 150, 0)
-        self.p.drawLine(0, 90, 0, -90)
+        self.p.drawLine(-cfg.xar*1.5, 0, cfg.xav*1.5, 0)
+        self.p.drawLine(0, cfg.yside*1.5, 0, -cfg.yside*1.5)
+
+class RobotPenWidget(RobotWidget):
+    def drawCarriage(self, cfg):
+        self.p.setPen(markPen)
+        self.p.setBrush(Qt.gray)
+        carriage = QPainterPath()
+        mouthX = 35
+        mouthY = 35
+        #print("xar = " + str(cfg.xar))
+        carriage.moveTo(-cfg.xar, cfg.yside)
+        carriage.lineTo(cfg.xav, cfg.yside)
+        carriage.lineTo(cfg.xav, mouthX)
+        carriage.lineTo( mouthY, mouthX)
+        carriage.lineTo( mouthY,-mouthX)
+        carriage.lineTo(cfg.xav,-mouthX)
+        carriage.lineTo(cfg.xav,-cfg.yside)
+        carriage.lineTo(-cfg.xar,-cfg.yside)
+        carriage.closeSubpath()
+        self.p.drawPath(carriage)
+        
+        #draw front line
+        pen = QPen(ardGray)
+        pen.setWidth(1)
+        pen.setCosmetic(True)
+        pen.setDashPattern([2, 3])
+        self.p.setPen(pen)
+        carriage = QPainterPath()
+        carriage.moveTo(cfg.xav, cfg.yside)
+        carriage.lineTo(cfg.xav, -cfg.yside)
+        carriage.closeSubpath()
+        self.p.drawPath(carriage)
+        self.p.setPen(markPen)
+        
+class RobotTrationWidget(RobotWidget):
+    def drawCarriage(self, cfg):
+        self.p.setPen(markPen)
+        self.p.setBrush(Qt.cyan)
+        carriage = QPainterPath()
+        carriage.moveTo(-cfg.xar, cfg.yside)
+        carriage.lineTo(57, cfg.yside)
+        carriage.lineTo(cfg.xav, 0)
+        carriage.lineTo(57,-cfg.yside)
+        carriage.lineTo(-cfg.xar,-cfg.yside)
+        carriage.closeSubpath()
+        self.p.drawPath(carriage)
+        pass
+
 
 class TableWidget():
     

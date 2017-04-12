@@ -92,7 +92,6 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
             break;
         }
     }
-
 }
 
 /**
@@ -341,6 +340,8 @@ void RemoteControl::requestTooLittleMsg(apb_RemoteControlRequest const & request
 
 void RemoteControl::log(LogMsg const & log)
 {
+    mutex.lock();
+
     /* Clean send buffer and create a stream that will write to our buffer. */
     INIT_TABLE_TO_ZERO(msg_send_buffer);
     pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
@@ -356,6 +357,28 @@ void RemoteControl::log(LogMsg const & log)
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode Log message.");
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: log failed");
+
+    mutex.unlock();
+}
+
+void RemoteControl::sendSerialNumber(char const * const serialNumber)
+{
+    mutex.lock();
+
+    /* Clean send buffer and create a stream that will write to our buffer. */
+    INIT_TABLE_TO_ZERO(msg_send_buffer);
+    pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
+
+    /* populates message */
+    apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
+    response.which_type         = apb_RemoteControlResponse_serialNumber_tag;
+    strcpy(response.type.serialNumber.value, serialNumber);
+
+    /* Now we are ready to encode the message! */
+    ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode serial number.");
+    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: serial number send failed");
+
+    mutex.unlock();
 }
 
 #endif

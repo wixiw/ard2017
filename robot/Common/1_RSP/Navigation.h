@@ -6,7 +6,7 @@
 #include "Core/ArdMaths.h"
 #include "Actuators/AccelStepper.h"
 #include "CommonMsg.pb.h"
-#include "RobotConfig.h"
+#include "RobotParameters.h"
 
 namespace ard
 {
@@ -22,7 +22,7 @@ namespace ard
 
         //Reread the configuration and maps default config. Shall be called at least once
         //before the OS is initialized
-        void updateConf(RobotConfig* newConf);
+        void updateConf(RobotParameters* newConf);
 
 
         bool fakeRobot; //is true when a fake robot is simulated
@@ -260,7 +260,7 @@ namespace ard
         SwTimer oppTimer;
         bool avoidanceActive; //is true when avoidance system is active
 
-        RobotConfig* conf;
+        RobotParameters* conf;
 
         //for telemetry
         apb_NavState state;

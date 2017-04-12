@@ -133,6 +133,28 @@ class ToneWidget(QWidget):
     @pyqtSlot()
     def _play(self):
         self.toneRequest.emit(Tone(self.frequencyWidget.getValue(), self.durationWidget.getValue()), self.countWidget.getValue())
+     
+class ImageWidget(QMdiArea):
+    def __init__(self, parent, image): 
+        super().__init__(parent)
+        pixmap = QPixmap(image)
+        if pixmap.isNull():
+            print("Error loading " + image);
+        self.background_pixmap = pixmap
+        
+    def paintEvent(self, event):
+        painter = QPainter()
+        painter.begin(self.viewport())
+        painter.fillRect(event.rect(), self.palette().color(QPalette.Window))
+        x = (self.width() - self.display_pixmap.width())/2
+        y = (self.height() - self.display_pixmap.height())/2
+        painter.drawPixmap(x, y, self.display_pixmap)
+        painter.end()
+    
+    def resizeEvent(self, event):
+    
+        self.display_pixmap = self.background_pixmap.scaled(event.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+
         
 class LedIndicator(QWidget):
     def __init__(self, parent): 
