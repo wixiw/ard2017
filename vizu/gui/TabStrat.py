@@ -308,6 +308,7 @@ class TableWidget():
         self.drawBorders()
         self.drawDispensers()
         self.drawMarks()
+        self.drawCylinders()
         
     def drawBorders(self):
         self.p.setPen(markPen)
@@ -415,9 +416,9 @@ class TableWidget():
         self.p.save()
         self.p.setBrush(trafficWhite)
         self.p.translate(x, y)
-        self.drawCircle(0,0, 170/2+30)
+        self.drawCircle(0,0, 251/2.)
         self.p.setBrush(ardBackground)
-        self.drawCircle(0,0, 170/2)
+        self.drawCircle(0,0, 191/2.)
         self.p.restore()
     
     def drawContainers(self):
@@ -478,6 +479,76 @@ class TableWidget():
         self.p.drawEllipse(QRectF(x - radius, y - radius, 2*radius, 2*radius))
         self.p.restore()
         
+    def drawCylinders(self):
+        #Yellow area
+        self._drawYellowCylinder(2800,600)  #straight container and little border corner.
+        self._drawYellowCylinder(2200,1850) #in craters
+        self._drawYellowCylinder(1850,40)  #in dispenser
+        self._drawBicolorCylinder(2000, 600, -45) #close to start area
+        self._drawBicolorCylinder(2500, 1100, -45) #"middle" of half-table
+        self._drawBicolorCylinder(2100, 1400, -45) #blocking central container
+        self._drawBicolorCylinder(2960, 1350, -45) #in dispenser
+        
+        #Blue area
+        self._drawBlueCylinder(200,600)  #straight container and little border corner.
+        self._drawBlueCylinder(800,1850) #in craters
+        self._drawBlueCylinder(1150,40)  #in dispenser
+        self._drawBicolorCylinder(1000, 600, 135) #close to start area
+        self._drawBicolorCylinder(500, 1100, 135) #"middle" of half-table
+        self._drawBicolorCylinder(900, 1400, 135) #blocking central container
+        self._drawBicolorCylinder(40, 1350, 135) #in dispenser
+        
     
-    
-    
+    def _drawYellowCylinder(self, x, y):
+        self.p.save()
+        self.p.setPen(markPen)
+        self.p.setBrush(trafficYellow)
+        self.p.translate(x,y)
+        self.drawCircle(0,0, 63/2.)
+        self.p.restore()
+        
+    def _drawBlueCylinder(self, x, y):
+        self.p.save()
+        self.p.setPen(markPen)
+        self.p.setBrush(skyBlue)
+        self.p.translate(x,y)
+        self.drawCircle(0,0, 63/2.)
+        self.p.restore()
+        
+    def _drawBicolorCylinder(self, x, y, angle):
+        self.p.save()
+        self.p.setRenderHint(QPainter.Antialiasing)
+        self.p.setPen(markPen)
+        self.p.translate(x,y)
+        self.p.rotate(angle)
+        
+        #white sections
+        self.p.setBrush(trafficWhite)
+        path = QPainterPath()
+        path.moveTo(0,0)
+        path.lineTo(0,63/2.)
+        path.arcTo(QRectF(-63/2., -63/2., 63, 63), -90, 90)
+        path.lineTo(-63/2.,0)
+        path.arcTo(QRectF(-63/2., -63/2., 63, 63), 180, -90)
+        path.closeSubpath()
+        self.p.drawPath(path)
+        
+        #yellow section
+        self.p.setBrush(trafficYellow)
+        path = QPainterPath()
+        path.moveTo(0,0)
+        path.lineTo(63/2.,0)
+        path.arcTo(QRectF(-63/2., -63/2., 63, 63), 0, 90)
+        path.closeSubpath()
+        self.p.drawPath(path)
+        
+        #blue section
+        self.p.setBrush(skyBlue)
+        path = QPainterPath()
+        path.moveTo(0,0)
+        path.lineTo(-63/2.,0)
+        path.arcTo(QRectF(-63/2., -63/2., 63, 63), 180, 90)
+        path.closeSubpath()
+        self.p.drawPath(path)
+        self.p.restore()
+        
