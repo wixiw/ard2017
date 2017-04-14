@@ -21,6 +21,7 @@ class TabConfig(QWidget):
         super().__init__(parent)
         self.layout=dict()
 
+        self.serialNumber = "8=>"
         self.calibConfig = CalibConfigWidget(self)
         self.navConfig = NavigationConfigWidget(self)
         self.avoidanceConfig = AvoidanceConfigWidget(self)
@@ -54,11 +55,11 @@ class TabConfig(QWidget):
         
         
     def _sendConfig(self):
-        print("Requesting new config")
         req = RemoteControl_pb2.RemoteControlRequest()
-        
+        req.setConfig.serialNumber = self.serialNumber
         #Meca
         req.setConfig.stepByTurn = self.calibConfig.stepByTurn.getValue()
+        req.setConfig.xav = self.calibConfig.xav.getValue()
         req.setConfig.xar = self.calibConfig.xar.getValue()
         req.setConfig.yside = self.calibConfig.yside.getValue()
         req.setConfig.leftWheelDiameter = self.calibConfig.leftWheelDiameter.getValue()
@@ -79,16 +80,19 @@ class TabConfig(QWidget):
         req.setConfig.matchDuration = self.stratConfig.matchDuration.getValue()
         
         self.setConfig.emit(req)
+        print("New config send to robot")
        
     def _getConfig(self):
-        print("Requesting current config")
+        #print("Requesting current config")
         self.getConfig.emit()
         
     @pyqtSlot(RemoteControl_pb2.Configuration)    
     def updateConfig(self, msg):
-        print("New config received from robot, updating tab")
+        #print("New config received from robot, updating tab config")
+        self.serialNumer = msg.serialNumber        
         #Meca
         self.calibConfig.stepByTurn.setValue(msg.stepByTurn)
+        self.calibConfig.xav.setValue(msg.xav)
         self.calibConfig.xar.setValue(msg.xar)
         self.calibConfig.yside.setValue(msg.yside)
         self.calibConfig.leftWheelDiameter.setValue(msg.leftWheelDiameter)
@@ -119,6 +123,7 @@ class CalibConfigWidget(QWidget):
         super().__init__(parent)
         
         self.stepByTurn         = IntegerInput(self, 0, 8000)
+        self.xav                = IntegerInput(self, 0, 500)
         self.xar                = IntegerInput(self, 0, 500)
         self.yside              = IntegerInput(self, 0, 500)
         self.leftWheelDiameter  = FloatInput(self, 0, 100, 5)
@@ -132,6 +137,7 @@ class CalibConfigWidget(QWidget):
         self.layoutV.setLayout(self.form)
         
         self.form.addRow("steps by turn", self.stepByTurn)
+        self.form.addRow("x AV (mm)", self.xav)
         self.form.addRow("x AR (mm)", self.xar)
         self.form.addRow("y side (mm)", self.yside)
         self.form.addRow("left  wheel diameter (mm)", self.leftWheelDiameter)

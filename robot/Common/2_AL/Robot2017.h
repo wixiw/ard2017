@@ -14,8 +14,6 @@
 #include "Strategies/StrategyThread.h"
 #include "RemoteControl.h"
 
-#define ROBOT Robot2017::getInstance()
-
 namespace ard
 {
     /**

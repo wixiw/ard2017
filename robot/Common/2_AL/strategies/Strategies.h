@@ -8,6 +8,9 @@
 #ifndef ROBOT_COMMON_2_AL_STRATEGIES_STRATEGIES_H_
 #define ROBOT_COMMON_2_AL_STRATEGIES_STRATEGIES_H_
 
+#include "LSA_Dispenser.h"
+#include "LSA_Poo.h"
+
 namespace ard
 {
     class Robot2017;
@@ -35,3 +38,4 @@ namespace ard
 }
 
 #endif /* ROBOT_COMMON_2_AL_STRATEGIES_STRATEGIES_H_ */
+

@@ -1216,6 +1216,21 @@
     <Compile Include="2_AL\Robot2017.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\Strategies\LSA_Dispenser.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\LSA_Dispenser.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\LSA_Poo.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\LSA_Poo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\LSP_Dispenser2.cpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\Strategies\Strategies.h">
       <SubType>compile</SubType>
     </Compile>
@@ -1229,6 +1244,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Strategies\StrategyThread.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\StratInterfaces.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Strategies\TestStrategies.cpp">

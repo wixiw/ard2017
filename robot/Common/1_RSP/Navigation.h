@@ -51,7 +51,7 @@ namespace ard
         void setPosition(PointCap newPose);
         void setPosition(float x/*mm*/, float y/*mm*/, float h/*deg*/)
         {
-            setPosition(PointCap(x, y, DEG_TO_RAD * h));
+            setPosition(PointCap(x, y, h));
         }
         ;
 
@@ -109,7 +109,7 @@ namespace ard
         goToCap(PointCap target, eDir sens = eDir_FORWARD);
         void goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD)
         {
-            goToCap(PointCap(x, y, h * DEG_TO_RAD), sens);
+            goToCap(PointCap(x, y, h), sens);
         }
         ;
 

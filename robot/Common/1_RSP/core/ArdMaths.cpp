@@ -86,7 +86,7 @@ PointCap::PointCap(Point p)
 ;
 
 PointCap::PointCap(double x, double y, double h)
-        : Point(x, y), h(h)
+        : Point(x, y), h(h*DEG_TO_RAD)
 {
 }
 ;

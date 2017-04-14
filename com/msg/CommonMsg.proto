@@ -90,4 +90,29 @@ message Melody
     repeated Tone tones = 1 [(nanopb).max_count = 150]; //size to be adjusted with Buzzer2017.cpp
 }
 
+message StratInfo2017
+{
+    required eColor matchColor                     = 100;
 
+    required uint32 dispenserMonocolorNb           = 1; //Nb cylinders remaining in our mono-color dispenser
+    required uint32 dispenserBicolorNb             = 2; //Nb cylinders remaining in our bi-color dispenser
+    required uint32 dispenserOppNb                 = 3; //Nb cylinders remaining in opponent dispenser
+
+    required uint32 containerMidleCenterNb         = 4; //Nb cylinders present in the middle center container
+    required uint32 containerMidleOwnNb            = 5; //Nb cylinders present in the middle container on our side
+    required uint32 containerMidleOppNb            = 6; //Nb cylinders present in the middle container on opponent side
+    required uint32 containerBorderNb              = 7; //Nb cylinders present in the border container on our side
+    required uint32 containerBorderOppNb           = 8; //Nb cylinders present in the border container on opponent side
+    required uint32 containerStartNb               = 9; //Nb cylinders present in our start area
+
+    required bool   cylinderStart                  = 10; //Cylinder close to our start position is present on table
+    required bool   cylinderContainer              = 11; //Cylinder close to our midle center container is present on table
+    required bool   cylinderCenter                 = 12; //Cylinder in the middle of our table side is present on table
+    required bool   cylinderCorner                 = 13; //Cylinder close to our start position table corner is present on table
+    required bool   cylinderCrater                 = 14; //Cylinder close to our bottom craters is present on table
+    required bool   cylinderOppStart               = 15; //Cylinder close to opponent start position is present on table
+    required bool   cylinderOppContainer           = 16; //Cylinder close to opponent midle center container is present on table
+    required bool   cylinderOppCenter              = 17; //Cylinder in the middle of opponent table side is present on table
+
+    required uint32 robotCylinderStockNb           = 18; //Number of cylinders stocked properly inside the robot
+}

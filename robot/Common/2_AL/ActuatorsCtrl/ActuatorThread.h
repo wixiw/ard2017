@@ -48,7 +48,7 @@ namespace ard
         Servo         servoFunnyAction;
 
     private:
-        apb_ActuatorsState state;
+        apb_ActuatorsState state; //cache to hold telemetry data
     };
 
 } /* namespace ard */

@@ -151,25 +151,25 @@ void RemoteControl::getComStatsLogs(apb_RemoteControlRequest const & request)
     LOG_INFO("------------------------------------------------");
     LOG_INFO("|           Serial 0 Stats                     |");
     LOG_INFO("------------------------------------------------");
-    LOG_INFO(String(" ########  ##     ##       Total bytes : ") + ROBOT.bsp.serial0.nbTxBytes);
+    LOG_INFO(String(" ########  ##     ##       Total bytes : ") + robot->bsp.serial0.nbTxBytes);
     LOG_INFO(String(" ##     ##  ##   ##          Total msg : ") + com.getNbRxMsg());
-    LOG_INFO(String(" ##     ##   ## ##          Bytes lost : ") + ROBOT.bsp.serial0.nbRxBytesLost);
+    LOG_INFO(String(" ##     ##   ## ##          Bytes lost : ") + robot->bsp.serial0.nbRxBytesLost);
     LOG_INFO(String(" ########     ###      Max buffer load : ") + com.getMaxRxBufferLoad());
     LOG_INFO(String(" ##   ##     ## ##    Max msg in queue : ") + com.getMaxRxRawMsg());
     LOG_INFO(String(" ##    ##   ##   ##     Max HDLC payld : ") + com.getMaxRxHdlcPayload());
     LOG_INFO(String(" ##     ## ##     ##           Dropped : ") + com.getHdlcDropMsgCount());
     LOG_INFO("");
-    LOG_INFO(String("  ######## ##     ##       Total bytes : ") + ROBOT.bsp.serial0.nbRxBytes);
+    LOG_INFO(String("  ######## ##     ##       Total bytes : ") + robot->bsp.serial0.nbRxBytes);
     LOG_INFO(String("     ##     ##   ##          Total msg : ") + com.getNbTxMsg());
-    LOG_INFO(String("     ##      ## ##          Bytes lost : ") + ROBOT.bsp.serial0.nbTxBytesLost);
+    LOG_INFO(String("     ##      ## ##          Bytes lost : ") + robot->bsp.serial0.nbTxBytesLost);
     LOG_INFO(String("     ##       ###      Max buffer load : ") + com.getMaxTxMsgCount());
     LOG_INFO(String("     ##      ## ##     Max raw  length : ") + com.getMaxTxMsgLength());
     LOG_INFO(String("     ##     ##   ##     Max HDLC payld : ") + com.getMaxTxHdlcPayload());
     LOG_INFO(String("     ##    ##     ##                     "));
     LOG_INFO("");
-    LOG_INFO(String("  FrameError        : ") + ROBOT.bsp.serial0.nbFrameError);
-    LOG_INFO(String("  ParityError       : ") + ROBOT.bsp.serial0.nbParityError);
-    LOG_INFO(String("  MissedIrq         : ") + ROBOT.bsp.serial0.nbMissedIrq);
+    LOG_INFO(String("  FrameError        : ") + robot->bsp.serial0.nbFrameError);
+    LOG_INFO(String("  ParityError       : ") + robot->bsp.serial0.nbParityError);
+    LOG_INFO(String("  MissedIrq         : ") + robot->bsp.serial0.nbMissedIrq);
     LOG_INFO(String("  HDLC Frame length : ") + HDLC_FRAME_LENGTH);
     LOG_INFO(String("  HDLC buffer size  : ") + SERIAL_BUF_SIZE);
     LOG_INFO(String("  LOG_QUEUE_SIZE    : ") + LOG_QUEUE_SIZE);
@@ -189,6 +189,7 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
     response.type.telemetry.nav             = robot->nav.getState();
 #ifdef BUILD_STRATEGY
     response.type.telemetry.actuators       = robot->actuators.getState();
+    response.type.telemetry.stratInfo       = robot->strategy.getStratInfo();
 #endif
     response.type.telemetry.hmi            = robot->getHmiState();
 

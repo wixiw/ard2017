@@ -33,6 +33,68 @@ namespace ard
     StrategyThread();
     void attachRobot(Robot2017* robot);
 
+    /**
+     * ----  User API  --------------
+     */
+
+    //Inform strategy that a cylinder has been withdrawn from our mono-color dispenser, 0 means all available
+    void informWithdraw_MonocolorDispenser(uint8_t nb = 0);
+
+    //Inform strategy that a cylinder has been withdrawn from our bi-color dispenser, 0 means all available
+    void informWithdraw_BicolorDispenser(uint8_t nb = 0);
+
+    //Inform strategy that a cylinder has been withdrawn from opponent bi-color dispenser, 0 means all available
+    void informWithdraw_OppDispenser(uint8_t nb = 0);
+
+    //Inform strategy that a cylinder has been pooed in the middle center container, and decrease stock count, 0 means all available
+    void informPooed_MiddleCenter(uint8_t nb = 0);
+
+    //Inform strategy that a cylinder has been pooed in the middle container on our side, and decrease stock count, 0 means all available
+    void informPooed_MiddleOwn(uint8_t nb = 0);
+
+    //Inform strategy that a cylinder has been pooed in the middle container on opponent side, and decrease stock count, 0 means all available
+    void informPooed_MiddleOpp(uint8_t nb = 0);
+
+    //Inform strategy that a cylinder has been pooed in the border container on our side, and decrease stock count, 0 means all available
+    void informPooed_Border(uint8_t nb = 0);
+
+    //Inform strategy that a cylinder has been pooed in the border container on opponent side, and decrease stock count, 0 means all available
+    void informPooed_BorderOpp(uint8_t nb = 0);
+
+    //Inform strategy that a cylinder has been pooed in our start area, and decrease stock count, 0 means all available
+    void informPooed_Start(uint8_t nb = 0);
+
+    //Inform strategy that a cylinder has been pooed on table, 0 means all available
+    void informPooed_OnTable(uint8_t nb = 0);
+
+    //Inform stategy that a cylinder has been taken on table (close to our start position)
+    void informTaken_Start();
+
+    //Inform stategy that a cylinder has been taken on table (close to our midle center container)
+    void informTaken_Container();
+
+    //Inform stategy that a cylinder has been taken on table (in the middle of our table side)
+    void informTaken_Center();
+
+    //Inform stategy that a cylinder has been taken on table (close to our start position table corner)
+    void informTaken_Corner();
+
+    //Inform stategy that a cylinder has been taken on table (close to our bottom craters)
+    void informTaken_Crater();
+
+    //Inform stategy that a cylinder has been taken on table (close to opponent start position)
+    void informTaken_OppStart();
+
+    //Inform stategy that a cylinder has been taken on table (close to opponent midle center container)
+    void informTaken_OppContainer();
+
+    //Inform stategy that a cylinder has been taken on table (in the middle of opponent table side)
+    void informTaken_OppCenter();
+
+    /**
+     * -----------------------------
+     */
+
     //Override Thread : create the event
     void init() override;
 
@@ -46,6 +108,9 @@ namespace ard
 	//force the match configuration without using the HMI
 	void configureMatch(uint8_t strategyId, eColor matchColor);
 
+	//Use by telemetry to get fresh data
+	apb_StratInfo2017 const& getStratInfo();
+
   private:
     //read user config (color and strat selection)
     void readUserInputs();
@@ -54,11 +119,19 @@ namespace ard
     //it's just a mean to reduce the volume of code in the run function
     void displayIntroduction();
 
+    //helper function for updating stratInfo
+    void withdraw(uint8_t nb, uint32_t& dispenserCount, String const& caller);
+    void poo(uint8_t nb, uint8_t max, uint32_t& containerCount, String const& caller);
+    void take(bool& objectPresent, String const& caller);
+
     //a value identifying the strategy choosed by the user
     uint8_t strategyId;
 	
 	//list of strategies
 	StrategyDescriptor strategies[NB_MAX_STRATEGIES];
+
+	//cache to hold telemetry data
+	apb_StratInfo2017 stratInfo;
 
 	Robot2017* robot;
   };

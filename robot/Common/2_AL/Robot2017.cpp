@@ -34,7 +34,7 @@ void ardAssertImpl(bool condition, char const* file, unsigned int line, char con
         if( ArdOs::getState() == ArdOs::RUNNING && !Thread::interruptContext() )
         {
             LOG_ASSERT(String(file) +":" + line + String(text));
-            ROBOT.dieMotherFucker();
+            Robot2017::getInstance().dieMotherFucker();
         }
         else
         {

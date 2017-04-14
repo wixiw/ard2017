@@ -251,7 +251,7 @@ void Navigation::goTo(Point target, eDir sens)
 
     if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
     {
-        LOG_INFO("new order pending until current order is finished");
+        LOG_DEBUG("new order pending until current order is finished");
         m_mutex.unlock();
         wait();
         m_mutex.lock();
@@ -272,7 +272,7 @@ void Navigation::goToCap(PointCap target, eDir sens)
     //If an order is present, wait
     if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
     {
-        LOG_INFO("new order pending until current order is finished");
+        LOG_DEBUG("new order pending until current order is finished");
         m_mutex.unlock();
         wait();
         m_mutex.lock();
@@ -294,7 +294,7 @@ void Navigation::goForward(float distanceMm)
     //If an order is present, wait
     if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
     {
-        LOG_INFO("new order pending until current order is finished");
+        LOG_DEBUG("new order pending until current order is finished");
         m_mutex.unlock();
         wait();
         m_mutex.lock();
@@ -316,7 +316,7 @@ void Navigation::turnTo(float angle)
     //If an order is present, wait
     if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
     {
-        LOG_INFO("new order pending until current order is finished");
+        LOG_DEBUG("new order pending until current order is finished");
         m_mutex.unlock();
         wait();
         m_mutex.lock();
@@ -338,7 +338,7 @@ void Navigation::faceTo(Point p)
     //If an order is present, wait
     if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
     {
-        LOG_INFO("new order pending until current order is finished");
+        LOG_DEBUG("new order pending until current order is finished");
         m_mutex.unlock();
         wait();
         m_mutex.lock();
@@ -448,7 +448,7 @@ void Navigation::compute_odom()
 
 void Navigation::action_startOrder()
 {
-    LOG_INFO("new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
+    LOG_INFO("   new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
     double angleToTarget = atan2((m_target.y - m_pose.y), (m_target.x - m_pose.x));
     if (m_sensTarget == eDir_BACKWARD)
     {
@@ -543,7 +543,7 @@ void Navigation::action_finishOrder()
     m_state = eNavState_IDLE;
     m_order = eNavOrder_NOTHING;
     m_targetReached.set();
-    LOG_INFO("order finished.");
+    LOG_INFO("   order finished.");
 }
 
 void Navigation::action_waitOppMove()

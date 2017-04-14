@@ -13,98 +13,89 @@ using namespace ard;
 void
 ard::Strategy_Tanguy (Robot2017& robot)
 {
-	LOG_INFO("STRAT : Strategy_Tanguy.");
+	LOG_INFO("Strategy_Tanguy.");
 
 	robot.nav.setPosition(610,820,180);
 
-	LOG_INFO("STRAT : Go to Distributor Entry point");
-	robot.nav.goToCap(350, 750, 90, eDir_FORWARD);
+	LSA_Dispenser_Monocolor lsaTopDisp(robot);
+	LOG_INFO("Go to LSA_Dispenser_Monocolor entry point");
+	robot.nav.goToCap(lsaTopDisp.getEntryPoint());
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Approach Top_Distributor");
-	robot.nav.goTo(350, 860, eDir_FORWARD);
+	lsaTopDisp.execute(/*get*/ 2 /*cylinders*/);
+
+	LOG_INFO("Approach MidPoo zone");
+	robot.nav.goTo(0, 0, eDir_FORWARD);
+	robot.nav.goTo(0, - 30, eDir_FORWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Get 4 Cylinders");
-	ArdOs::sleepMs(12000);
+	LOG_INFO("Poo x4");
+	ArdOs::sleepMs(2000);
+	robot.strategy.informPooed_MiddleCenter(/*poo all*/);
 
-	LOG_INFO("STRAT : Leave Top_Distributor");
-	robot.nav.goToCap(350, 750, -115, eDir_BACKWARD);
+	LOG_INFO("Leave MidPoo zone");
+	robot.nav.goTo(0, 0,  eDir_BACKWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Go to Middle");
-	robot.nav.goToCap(0, 0, -90, eDir_FORWARD);
-	robot.nav.wait();
-
-	LOG_INFO("STRAT : Approach MidPoo zone");
-	robot.nav.goTo(0, -100, eDir_FORWARD);
-	robot.nav.wait();
-
-	LOG_INFO("STRAT : Poo x4");
-	ArdOs::sleepMs(12000);
-
-	LOG_INFO("STRAT : Leave MidPoo zone");
-	robot.nav.goToCap(0, 0, -25,  eDir_BACKWARD);
-	robot.nav.wait();
-
-	LOG_INFO("STRAT : Avoiding obstacles");
+	LOG_INFO("Avoiding obstacles");
 	robot.nav.goTo(700, -300, eDir_FORWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Goto Y_B");
+	LOG_INFO("Goto Y_B");
 	robot.nav.goToCap(700, -800, -90, eDir_FORWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Get Y_B");
+	LOG_INFO("Get Y_B");
 	ArdOs::sleepMs(2000);
+	robot.strategy.informTaken_Crater();
 
-	LOG_INFO("STRAT : Goto Y_R");
+	LOG_INFO("Goto Y_R");
 	//        robot.nav.goTo(1300-robot.conf.xav(), 400-robot.conf.yside(), eDir_FORWARD);
 	robot.nav.goTo(1200, 300, eDir_FORWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Get Y_R");
+	LOG_INFO("Get Y_R");
 	ArdOs::sleepMs(2000);
 
-	LOG_INFO("STRAT : Approach Y_Poo zone");
+	LOG_INFO("Approach Y_Poo zone");
 	robot.nav.goToCap(670, -335, -135,eDir_FORWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Poo x2");
-	ArdOs::sleepMs(12000);
+	LOG_INFO("Poo x2");
+	ArdOs::sleepMs(2000);
 
-	LOG_INFO("STRAT : Leave Y_Poo zone");
+	LOG_INFO("Leave Y_Poo zone");
 	robot.nav.goToCap(750, -350, 0,  eDir_BACKWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Approach Y_Distributor");
+	LOG_INFO("Approach Y_Distributor");
 	robot.nav.goTo(1360, -350, eDir_FORWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Get 4 Cylinders");
-	ArdOs::sleepMs(12000);
+	LOG_INFO("Get 4 Cylinders");
+	ArdOs::sleepMs(2000);
 
-	LOG_INFO("STRAT : Leave Y_Distributor");
+	LOG_INFO("Leave Y_Distributor");
 	robot.nav.goToCap(1300, -350, 140, eDir_BACKWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Get W_Mid");
+	LOG_INFO("Get W_Mid");
 	robot.nav.goTo(1000, -100, eDir_FORWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Get W_Top");
+	LOG_INFO("Get W_Top");
 	robot.nav.goToCap(500, 400, 80, eDir_FORWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Get W_Mid");
+	LOG_INFO("Get W_Mid");
 	robot.nav.goTo(550, 650, eDir_FORWARD);
 	robot.nav.wait();
 
-	LOG_INFO("STRAT : Poo x6");
-	ArdOs::sleepMs(15000);
+	LOG_INFO("Poo x6");
+	ArdOs::sleepMs(2000);
 
 
-    LOG_INFO("STRAT : Finished.");
+    LOG_INFO("Finished.");
 
 	robot.dieMotherFucker();
 }

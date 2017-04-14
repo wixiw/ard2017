@@ -46,6 +46,7 @@ message Telemetry
     required NavState          nav               = 2;
     required ActuatorsState    actuators         = 3;
     required HmiState          hmi               = 4;
+    required StratInfo2017     stratInfo         = 5;
 }
 
 //WARNING : To keep in sync with RobotParameters.h/cpp

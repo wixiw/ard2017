@@ -14,7 +14,11 @@ class TabRobot_Status(QWidget):
         super().__init__(parent)
         self.robotState = RemoteControl_pb2.Telemetry()
         
-        self.layout    = QHBoxLayout(self)
+        self.label = dict()
+        
+        self.layout     = QVBoxLayout(self)
+        self.Hlayout    = QHBoxLayout()
+        self.layout.addLayout(self.Hlayout)
         self.columns = dict()
         
         self.columns[0] = QFormLayout()
@@ -22,9 +26,9 @@ class TabRobot_Status(QWidget):
         self.columns[2] = QFormLayout()
         self.columns[3] = QFormLayout()
         for key, column in self.columns.items():
-            self.layout.addLayout(column)
+            self.Hlayout.addLayout(column)
             column.setLabelAlignment(Qt.AlignVCenter)
-        self.layout.addStretch()
+        self.Hlayout.addStretch()
         
         #self.addSensorXor("led1", 0) #LED1 is currently driven as ledDue_Rx
         self.addSensorXor("led2", 0)
@@ -58,6 +62,20 @@ class TabRobot_Status(QWidget):
         self.addSensorXor("omronSpare", 3)
         self.addSensorXor("switchLifterUp", 3)
         self.addSensorXor("switchLifterDown", 3)
+        
+        self.buildSensorsInfo()
+        
+    def buildSensorsInfo(self):
+        self.box_sensors = QGroupBox("Sensors")
+        self.label["RGBL"] = QLabel("?")
+        self.label["objColor"] = QLabel("?")
+        self.label["RGBL"].setAlignment(Qt.AlignRight)
+        self.label["objColor"].setAlignment(Qt.AlignRight)
+        box_layout = QFormLayout()
+        box_layout.addRow("RGB : ", self.label["RGBL"])
+        box_layout.addRow("Color : ", self.label["objColor"])
+        self.box_sensors.setLayout(box_layout)
+        self.layout.addWidget(self.box_sensors)
         
     def addSensorXor(self, name, column = 0):
         setattr(self, name, LedIndicator(self))
@@ -102,6 +120,10 @@ class TabRobot_Status(QWidget):
             self.omronSpare.light(msg.actuators.omronSpare)
             self.switchLifterUp.light(msg.actuators.switchLifterUp)
             self.switchLifterDown.light(msg.actuators.switchLifterDown)
+            
+            self.label["RGBL"].setText("(%d,%d,%d,%d)" % (color.r, color.g, color.b, color.l))
+            self.label["RGBL"].setStyleSheet("QLabel { color : white; background-color: rgba(%d,%d,%d,%d); }" % (color.r, color.g, color.b, 255))
+            self.label["objColor"].setText(colorStr)
             
             self.update()
    
