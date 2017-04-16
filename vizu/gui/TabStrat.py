@@ -5,6 +5,7 @@ from PyQt5.Qt import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from ArdWidgets import *
 from core import *
 from TableDrawing import *
 import math
@@ -57,6 +58,28 @@ class TabStrat(QWidget):
         
     def buildGeneralInfo(self):
         self.box_general = QGroupBox("General")
+                
+        #Strategy choice
+        self.comboStratId = QComboBox(self)
+        self.comboStratId.addItem("0 - Match", 0)
+        self.comboStratId.addItem("1 - Homol", 1)
+        self.comboStratId.addItem("2 - Invade", 2)
+        self.comboStratId.addItem("3 - Selftest", 3)
+        self.comboStratId.addItem("4 - Tanguy", 4)
+        self.comboStratId.addItem("5 - Quentin", 5)
+        self.comboStratId.addItem("6 - Willy", 6)
+        self.comboStratId.addItem("7 - UT LEDs", 7)
+        self.comboStratId.addItem("8 - UT Button", 8)
+        self.comboStratId.addItem("9 - UT Omron", 9)
+        self.comboStratId.addItem("10- UT CalibRot", 10)
+        self.comboStratId.addItem("11- UT CalibLin", 11)
+        self.comboStratId.addItem("12- UT Motion", 12)
+        self.comboStratId.currentIndexChanged[int].connect(self.selectStrat)
+            #retrieve persisted choice
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("Strat")
+        self.comboStratId.setCurrentIndex(int(settings.value("id", 0)))
+        settings.endGroup()
         
         #Color button
         self.buttonColor = QPushButton()
@@ -64,7 +87,6 @@ class TabStrat(QWidget):
         self.buttonColor.clicked.connect(self._colorSwitched)
         
         #Start button
-        #TODO : faire appel à setStartButtonState
         self.buttonStart = QPushButton() 
         self._setStartButtonState("color")    
         self.buttonStart.clicked.connect(self._startPressed)
@@ -74,6 +96,7 @@ class TabStrat(QWidget):
         self.label["bootTime"].setAlignment(Qt.AlignRight)
         box_layout = QFormLayout()
         box_layout.addRow("boot time (s): ", self.label["bootTime"])
+        box_layout.addRow("strategy: ", self.comboStratId)
         box_layout.addRow("color: ", self.buttonColor)
         box_layout.addRow("start: ", self.buttonStart)
         self.box_general.setLayout(box_layout)
@@ -157,14 +180,23 @@ class TabStrat(QWidget):
         self.robotConfig = msg
 
     @pyqtSlot(int)
+    def selectStrat(self, comboId):
+        print("New strategy ID selected : " + str(comboId))
+        self.uiStrategy = comboId
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("Strat")
+        settings.setValue("id", comboId)
+        settings.endGroup()
+        
+    @pyqtSlot(int)
     def setColor(self, color):
         if color == Types_pb2.PREF:
-            print("Match color configured to Prefered (YELLOW)")
+            print("Match color configured to Prefered (YELLOW) and strategy #" + str(self.uiStrategy))
             self.teleop.configureMatch(self.uiStrategy, Types_pb2.PREF)
             self._setColorButtonState(Types_pb2.PREF)
             self._setStartButtonState("go")
         elif color == Types_pb2.SYM:
-            print("Match color configured to Symetric (BLUE)")
+            print("Match color configured to Symetric (BLUE) and strategy #" + str(self.uiStrategy))
             self.teleop.configureMatch(self.uiStrategy, Types_pb2.SYM)
             self._setColorButtonState(Types_pb2.SYM)
             self._setStartButtonState("go")

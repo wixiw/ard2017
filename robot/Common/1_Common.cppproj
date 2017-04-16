@@ -1204,6 +1204,28 @@
     <Compile Include="2_AL\ActuatorsCtrl\ActuatorX.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\LSA\Dispenser.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\LSA\Dispenser.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\LSA\GetCylinder.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\LSA\GetCylinder.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\LSA\Poo.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\LSA\Poo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\LSA\StratInterfaces.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\LSA\StratInterfaces.h" />
     <Compile Include="2_AL\RemoteControl.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1216,43 +1238,37 @@
     <Compile Include="2_AL\Robot2017.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\Strategies\LSA_Dispenser.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\Strategies\LSA_Dispenser.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\Strategies\LSA_GetCylinder.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\Strategies\LSA_GetCylinder.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\Strategies\LSA_Poo.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\Strategies\LSA_Poo.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\Strategies\Strategies.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\Strategies\StrategyAlpha.cpp">
+    <Compile Include="2_AL\Strategies\StrategyHomol.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\StrategyInvade.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\StrategyMatch.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\StrategyQuentin.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\StrategySelftests.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Strategies\StrategyTanguy.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\Strategies\StrategyThread.cpp">
+    <Compile Include="2_AL\Strategies\StrategyWilly.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\Strategies\StrategyThread.h">
+    <Compile Include="2_AL\Strategies\UT_Strategies.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\Strategies\StratInterfaces.h">
+    <Compile Include="2_AL\StrategyThread.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\Strategies\TestStrategies.cpp">
+    <Compile Include="2_AL\StrategyThread.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="K_constants.h">
@@ -1298,6 +1314,7 @@
     <Folder Include="1_RSP\Sensors" />
     <Folder Include="2_AL" />
     <Folder Include="2_AL\ActuatorsCtrl" />
+    <Folder Include="2_AL\LSA\" />
     <Folder Include="2_AL\Strategies" />
   </ItemGroup>
   <ItemGroup>

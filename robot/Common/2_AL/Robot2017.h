@@ -11,7 +11,7 @@
 #include "BSP.hpp"
 #include "RSP.h"
 #include "ActuatorsCtrl/ActuatorThread.h"
-#include "Strategies/StrategyThread.h"
+#include "StrategyThread.h"
 #include "RemoteControl.h"
 
 namespace ard

@@ -98,11 +98,19 @@ void Robot2017::bootOs()
 
 #ifdef BUILD_STRATEGY
     strategy.attachRobot(this);
-	strategy.registerStrategy("Tanguy",         Strategy_Tanguy);
-    strategy.registerStrategy("Alpha",          Strategy_Alpha);
-    //strategy.registerStrategy("Led Test",       Strategy_LedTest);
-    strategy.registerStrategy("Button Test",    Strategy_ButtonTest);
-    strategy.registerStrategy("Omron Test",     Strategy_OmronTest);
+    strategy.registerStrategy("Match",          Strategy_Match);
+    strategy.registerStrategy("Homol",          Strategy_Homol);
+    strategy.registerStrategy("Invade",         Strategy_Invade);
+    strategy.registerStrategy("Selftest",       Strategy_Selftest);
+    strategy.registerStrategy("Tanguy",         Strategy_Tanguy);
+    strategy.registerStrategy("Quentin",        Strategy_Quentin);
+    strategy.registerStrategy("Willy",          Strategy_Willy);
+    strategy.registerStrategy("UT LEDs",        Strategy_LedTest);
+    strategy.registerStrategy("UT Button",      Strategy_ButtonTest);
+    strategy.registerStrategy("UT Omron",       Strategy_OmronTest);
+    strategy.registerStrategy("UT CalibRot",    Strategy_CalibRot);
+    strategy.registerStrategy("UT CalibLin",    Strategy_CalibLin);
+    strategy.registerStrategy("UT Motion",      Strategy_MotionTest);
 #endif
     
     //Connect the log service

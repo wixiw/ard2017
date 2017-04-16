@@ -121,14 +121,19 @@ void ard::Strategy_OmronTest(Robot2017& robot)
     }
 }
 
-void ard::Strategy_CalibTest(Robot2017& robot)
+void ard::Strategy_CalibRot(Robot2017& robot)
+{
+    LOG_ERROR("Strategy_CalibRot is not implemented.");
+}
+
+void ard::Strategy_CalibLin(Robot2017& robot)
 {
     auto evt_startOut = robot.getStartOutEvt();
     auto evt_teleopStart = robot.getRemoteControlEvt(EVT_START_MATCH);
     auto eventMotor = EventListener();
     eventMotor.init<1>();
 
-    LOG_INFO("STRAT : Strategy_Alpha.");
+    LOG_INFO("STRAT : Strategy_CalibRot.");
 
     //robot.nav.setPosition(610,820,-90);
 

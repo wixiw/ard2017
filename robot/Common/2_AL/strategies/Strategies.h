@@ -8,33 +8,31 @@
 #ifndef ROBOT_COMMON_2_AL_STRATEGIES_STRATEGIES_H_
 #define ROBOT_COMMON_2_AL_STRATEGIES_STRATEGIES_H_
 
-#include "LSA_Dispenser.h"
-#include "LSA_GetCylinder.h"
-#include "LSA_Poo.h"
+#include "../LSA/Dispenser.h"
+#include "../LSA/GetCylinder.h"
+#include "../LSA/Poo.h"
 
 namespace ard
 {
     class Robot2017;
     
-    //awaiting a real strategy ...
-    void Strategy_Alpha(Robot2017& robot);
+    //Operational strategies
+    void Strategy_Match(Robot2017& robot);
+    void Strategy_Homol(Robot2017& robot);
+    void Strategy_Invade(Robot2017& robot);
+    void Strategy_Selftest(Robot2017& robot);
 
-    //testing purpose
+    //development in progress
     void Strategy_Tanguy(Robot2017& robot);
+    void Strategy_Willy(Robot2017& robot);
+    void Strategy_Quentin(Robot2017& robot);
 
-    //for debug only : make all leds blinking to check they are working
+    //testing purposes
     void Strategy_LedTest(Robot2017& robot);
-
-    //for debug only : light a led for each activated user switch
     void Strategy_ButtonTest(Robot2017& robot);
-
-    //for debug only : light a led for each activated omron
     void Strategy_OmronTest(Robot2017& robot);
-
-    //for debug only : simple moves to check odometry
-    void Strategy_CalibTest(Robot2017& robot);
-
-    //for debug only : test all possible moves
+    void Strategy_CalibRot(Robot2017& robot);
+    void Strategy_CalibLin(Robot2017& robot);
     void Strategy_MotionTest(Robot2017& robot);
 }
 

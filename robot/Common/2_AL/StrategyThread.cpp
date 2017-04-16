@@ -6,7 +6,7 @@
  */
 
 #include "StrategyThread.h"
-#include "../Robot2017.h"
+#include "Robot2017.h"
 
 #ifdef BUILD_STRATEGY
 
@@ -16,6 +16,7 @@ extern String getExeVersion();
 StrategyThread::StrategyThread():
         Thread("Strategy", PRIO_STRATEGY, STACK_STRATEGY),
         strategyId(0),
+        nbRegisteredStrats(0),
         robot(NULL)
 {
     INIT_TABLE_TO_ZERO(strategies);
@@ -68,7 +69,11 @@ void StrategyThread::displayIntroduction()
     LOG_INFO("Available strategies : ");
     for (int i = 0; i < NB_MAX_STRATEGIES; ++i)
     {
-        LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
+        if( strategies[i].functor != NULL )
+        {
+            sleepMs(10);//Let Log thread do its job
+            LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
+        }
     }
 
     robot->buzzer().bip(2);
@@ -121,7 +126,6 @@ void StrategyThread::run()
 
 void StrategyThread::registerStrategy(String name, StrategyFunctor functor)
 {
-    static uint8_t nbRegisteredStrats = 0;
     ASSERT_TEXT(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many strategies registered.");
     strategies[nbRegisteredStrats].name = name;
     strategies[nbRegisteredStrats].functor = functor;
@@ -165,9 +169,10 @@ void StrategyThread::configureMatch(uint8_t strategyId_, eColor matchColor)
     }
 
     //Check selected strategy
-    strategyId = strategyId_;
+    ASSERT(strategyId_ < nbRegisteredStrats);
     ASSERT_TEXT(strategies[strategyId].functor != 0, "Selected strategy functor is null.");
-    LOG_INFO("User has selected strategy " + strategies[strategyId].name + ".");
+    strategyId = strategyId_;
+    LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + strategies[strategyId].name + ".");
 }
 
 apb_StratInfo2017 const& StrategyThread::getStratInfo()

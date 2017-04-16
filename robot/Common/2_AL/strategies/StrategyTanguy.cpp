@@ -1,24 +1,16 @@
-/* 
-* StrategyTanguy.cpp
-*
-* Created: 08/12/2016 00:20:33
-* Author: tanguy
-*/
-
 #include "Strategies.h"
 #include "../Robot2017.h"
 
 using namespace ard;
 
-void
-ard::Strategy_Tanguy (Robot2017& robot)
+void ard::Strategy_Tanguy (Robot2017& robot)
 {
 	LOG_INFO("Strategy_Tanguy.");
 
 	robot.nav.setPosition(610,820,180);
 
-	LSA_DispenserMonocolor lsaTopDisp(robot);
-	LOG_INFO("Go to LSA_Dispenser_Monocolor entry point");
+	DispenserMonocolor lsaTopDisp(robot);
+	LOG_INFO("Go to Dispenser_Monocolor entry point");
 	robot.nav.goToCap(lsaTopDisp.getEntryPoint());
 	robot.nav.wait();
 	lsaTopDisp.execute(/*get all cylinders*/);

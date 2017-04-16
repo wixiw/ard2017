@@ -12,7 +12,7 @@
 
 #ifdef BUILD_STRATEGY
 
-#define NB_MAX_STRATEGIES 4
+#define NB_MAX_STRATEGIES 15
 
 namespace ard
 {
@@ -154,6 +154,7 @@ namespace ard
 	
 	//list of strategies
 	StrategyDescriptor strategies[NB_MAX_STRATEGIES];
+	uint8_t nbRegisteredStrats;
 
 	//cache to hold telemetry data
 	apb_StratInfo2017 stratInfo;

@@ -1,25 +1,25 @@
 /*
- * LSA_Dispenser.cpp
+ * Dispenser.cpp
  *
  *  Created on: 13 avr. 2017
  *      Author: wix
  */
 
-#include "LSA_Dispenser.h"
+#include "Dispenser.h"
 #include "../Robot2017.h"
 
 using namespace ard;
 
 /**
- *  ----  LSA_Dispenser_Monocolor  ----
+ *  ----  Dispenser_Monocolor  ----
  */
 
-LSA_DispenserMonocolor::LSA_DispenserMonocolor(Robot2017& robot):
+DispenserMonocolor::DispenserMonocolor(Robot2017& robot):
         LSA(robot, PointCap(350, 700, 90))
 {
 }
 
-LSA_result LSA_DispenserMonocolor::execute(uint8_t nbItems)
+result DispenserMonocolor::execute(uint8_t nbItems)
 {
     LOG_INFO("Engage Monocolor Dispenser");
     robot.nav.goToCap(350, 770, 90);
@@ -40,38 +40,38 @@ LSA_result LSA_DispenserMonocolor::execute(uint8_t nbItems)
     robot.nav.goTo(entryPoint, eDir_BACKWARD);
     robot.nav.wait();
 
-    LOG_INFO("LSA_Dispenser_Monocolor success");
-    return LSA_Success;
+    LOG_INFO("Dispenser_Monocolor success");
+    return Success;
 }
 
 /**
- *  ----  LSA_DispenserBicolor  ----
+ *  ----  DispenserBicolor  ----
  */
 
 
-LSA_DispenserBicolor::LSA_DispenserBicolor(Robot2017& robot):
+DispenserBicolor::DispenserBicolor(Robot2017& robot):
                 LSA(robot, PointCap(0, 0, 0))
 {
 }
 
-LSA_result LSA_DispenserBicolor::execute(uint8_t nbItems)
+result DispenserBicolor::execute(uint8_t nbItems)
 {
-    LOG_INFO("LSA_DispenserBicolor success");
-    return LSA_Success;
+    LOG_INFO("DispenserBicolor success");
+    return Success;
 }
 
 /**
- *  ----  LSA_DispenserOpp  ----
+ *  ----  DispenserOpp  ----
  */
 
 
-LSA_DispenserOpp::LSA_DispenserOpp(Robot2017& robot):
+DispenserOpp::DispenserOpp(Robot2017& robot):
                 LSA(robot, PointCap(0, 0, 0))
 {
 }
 
-LSA_result LSA_DispenserOpp::execute(uint8_t nbItems)
+result DispenserOpp::execute(uint8_t nbItems)
 {
-    LOG_INFO("LSA_DispenserOpp success");
-    return LSA_Success;
+    LOG_INFO("DispenserOpp success");
+    return Success;
 }

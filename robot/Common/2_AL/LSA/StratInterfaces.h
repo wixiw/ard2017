@@ -19,9 +19,9 @@ namespace ard
 
     typedef enum
     {
-        LSA_Success,
-        LSA_Failed,
-    } LSA_result;
+        Success,
+        Failed,
+    } result;
 
     /**
      * LSA stands for : local strategic action. An LSA is a subpart of a global strategy.
@@ -45,7 +45,7 @@ namespace ard
         virtual PointCap const& getEntryPoint() const { return entryPoint;};
 
         //Execute the LSA for nb items, 0 would mean maximum number
-        virtual LSA_result execute(uint8_t nbItems = 0) = 0;
+        virtual result execute(uint8_t nbItems = 0) = 0;
 
     protected:
         Robot2017& robot;
@@ -54,13 +54,13 @@ namespace ard
 }
 
    //exemple :
-//    class LSA_Dispenser_Opp: public LSA
+//    class Dispenser_Opp: public LSA
 //    {
 //    public:
-//        LSA_Dispenser_Opp(Robot2017& robot);
+//        Dispenser_Opp(Robot2017& robot);
 //
 //        //Implements LSA
-//        virtual LSA_result execute(uint8_t nbItems = 0) override;
+//        virtual result execute(uint8_t nbItems = 0) override;
 //    };
 //}
 
