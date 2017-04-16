@@ -23,7 +23,6 @@ class TabRobot_Cmds(QWidget):
         self.sections["nav"] = NavigationTeleopWidget(self)
         self.sections["general"] = GeneralTeleopWidget(self)
         self.sections["sound"] = SoundTeleopWidget(self)
-        self.sections["chatte"] = QLabel(self)
         
         #create layouts objects
         self.layout = QVBoxLayout(self)
@@ -44,8 +43,6 @@ class GeneralTeleopWidget(QWidget):
     getComStatsLogs = pyqtSignal()
     getTelemetry = pyqtSignal()
     resetCpu = pyqtSignal()
-    configureMatch = pyqtSignal(int, int)
-    startMatch = pyqtSignal()
                         
     def __init__(self, parent):
         super().__init__(parent)
@@ -60,12 +57,6 @@ class GeneralTeleopWidget(QWidget):
         
         self.btn_cmds["getTelemetry"] = QPushButton('Get Telemetry', self)
         self.btn_cmds["getTelemetry"].clicked.connect(self._getTelemetry) 
-        
-        self.btn_cmds["configureMatch"] = QPushButton('Configure Match', self)
-        self.btn_cmds["configureMatch"].clicked.connect(self._configureMatch) 
-        
-        self.btn_cmds["startMatch"] = QPushButton('Start Match', self)
-        self.btn_cmds["startMatch"].clicked.connect(self._startMatch) 
         
         self.btn_cmds["resetCpu"] = QPushButton('Reset CPU', self)
         self.btn_cmds["resetCpu"].clicked.connect(self._resetCpu) 
@@ -96,16 +87,6 @@ class GeneralTeleopWidget(QWidget):
     def _getTelemetry(self): 
        print("Telemetry request")
        self.getTelemetry.emit()
-       
-    @pyqtSlot()
-    def _configureMatch(self): 
-       print("Configure match request")
-       self.configureMatch.emit(0, 2)
-       
-    @pyqtSlot()
-    def _startMatch(self): 
-       print("Start match request")
-       self.startMatch.emit()
        
     @pyqtSlot()
     def _resetCpu(self): 

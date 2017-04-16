@@ -64,7 +64,7 @@ class VizuMainScreen(QWidget):
         self.tabContexts = dict()
         self.tabContexts["Com"]     = TabContext(TabCom(self, self.teleop),         "F1", self.tabShortcutMap.map, "Switch to Com tab.", TabContext.AVAILABLE_OFFLINE)
         self.tabContexts["Log"]     = TabContext(TabLog(self),                      "F2", self.tabShortcutMap.map, "Switch to Log tab.", TabContext.AVAILABLE_OFFLINE)
-        self.tabContexts["Strat"]   = TabContext(TabStrat(self),                    "F3", self.tabShortcutMap.map, "Switch to Strat tab.")
+        self.tabContexts["Strat"]   = TabContext(TabStrat(self, self.teleop),       "F3", self.tabShortcutMap.map, "Switch to Strat tab.")
         self.tabContexts["Robot"]   = TabContext(TabRobot(self),                    "F4", self.tabShortcutMap.map, "Switch to Robot tab.")
         self.tabContexts["Config"]  = TabContext(TabConfig(self),                   "F5", self.tabShortcutMap.map, "Switch to Config tab.")
         self.tabContexts["Help"]    = TabContext(TabHelp(self),                     "F6", self.tabShortcutMap.map,"Switch to LHelpog tab.", TabContext.AVAILABLE_OFFLINE)
@@ -92,7 +92,6 @@ class VizuMainScreen(QWidget):
         self.teleop.log.connect(self.tabContexts["Log"].tab.log)
         
         # connect Strat tab
-        self.tabContexts["Strat"].tab.getConfig.connect(self.teleop.getConfig)
         self.teleop.telemetry.connect(self.tabContexts["Strat"].tab._telemetryDataCb)
         self.teleop.config.connect(self.tabContexts["Strat"].tab._updateConfig)
         
@@ -101,9 +100,7 @@ class VizuMainScreen(QWidget):
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getOsStatsLogs      .connect(self.teleop.getOsStatsLogs)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getComStatsLogs     .connect(self.teleop.getComStatsLogs)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getTelemetry        .connect(self.teleop.getTelemetry)
-        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].configureMatch      .connect(self.teleop.configureMatch)
-        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].startMatch          .connect(self.teleop.startMatch)
-        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].resetCpu            .connect(self.teleop.resetCpu)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].resetCpu            .connect(self.tabContexts["Strat"].tab.resetCpu)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].blocked                 .connect(self.teleop.requestBlockRobot)
         for cmd, widget in self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  # getattr is used to get a method reference from name, hence automatically binding signals ;p
@@ -190,25 +187,21 @@ class VizuMainScreen(QWidget):
         settings.endGroup()
         print("Settings saved")
         
-    @pyqtSlot(int)
-    def _configShortcut(self, color):
-        self.teleop.configureMatch(0, color)  # 0 for default strat
-        
     def initShortcuts(self):        
         # add shortcut to quit the app with ESC
         self.shortcuts["Ctrl+C"] = ShortcutContext("Ctrl+C", QCoreApplication.quit, "Quits vizu", ShortcutContext.AVAILABLE_OFFLINE)
 
         # add shortcut to manage match
         self.configureMap = QSignalMapper()
-        self.configureMap.mapped.connect(self._configShortcut)
+        self.configureMap.mapped.connect(self.tabContexts["Strat"].tab.setColor)
             # YELLOW config with "y"
         self.shortcuts["y"] = ShortcutContext("y", self.configureMap.map, "Configure a match with Alpha strategy and YELLOW color.")  
             # BLUE config with "b"       
         self.shortcuts["b"] = ShortcutContext("b", self.configureMap.map, "Configure a match with Alpha strategy and BLUE color.")  
             # Start match with s
-        self.shortcuts["s"] = ShortcutContext("s", self.teleop.startMatch, "Starts the match.") 
+        self.shortcuts["s"] = ShortcutContext("s", self.tabContexts["Strat"].tab.startMatch, "Starts the match.") 
             # reset with r
-        self.shortcuts["r"] = ShortcutContext("r", self.teleop.resetCpu, "Reset the CPU.") 
+        self.shortcuts["r"] = ShortcutContext("r", self.tabContexts["Strat"].tab.resetCpu, "Reset the CPU.") 
             # block/unblock robot with x
         self.shortcuts["x"] = ShortcutContext("x", self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"]._blockFromShortcut, "Create/destroy a virtual opponent on the robot path") 
         

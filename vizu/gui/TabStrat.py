@@ -15,12 +15,10 @@ import math
 #
 class TabStrat(QWidget):
     
-    getConfig = pyqtSignal()
-    
     #@param robot : the prowy providing telemetry data
-    def __init__(self, parent = None):
+    def __init__(self, parent, teleop):
         super().__init__(parent)
-        
+        self.teleop = teleop
         self.overview = TableOverview(self)
         
         #build info tab
@@ -43,6 +41,10 @@ class TabStrat(QWidget):
         self.robotConfig = None
         self.robotState = RemoteControl_pb2.Telemetry()
         
+        self.uiStarted = False
+        self.uiColor = Types_pb2.UNKNOWN
+        self.uiStrategy = 0 
+        
     def updateRobot(self, name):
         if name == "Pen":
             self.overview.robot = self.overview.robotPen
@@ -55,12 +57,27 @@ class TabStrat(QWidget):
         
     def buildGeneralInfo(self):
         self.box_general = QGroupBox("General")
+        
+        #Color button
+        self.buttonColor = QPushButton()
+        self._setColorButtonState(Types_pb2.UNKNOWN)
+        self.buttonColor.clicked.connect(self._colorSwitched)
+        
+        #Start button
+        #TODO : faire appel à setStartButtonState
+        self.buttonStart = QPushButton() 
+        self._setStartButtonState("color")    
+        self.buttonStart.clicked.connect(self._startPressed)
+        
+        #Labels
         self.label["bootTime"] = QLabel("0")
         self.label["bootTime"].setAlignment(Qt.AlignRight)
         box_layout = QFormLayout()
         box_layout.addRow("boot time (s): ", self.label["bootTime"])
+        box_layout.addRow("color: ", self.buttonColor)
+        box_layout.addRow("start: ", self.buttonStart)
         self.box_general.setLayout(box_layout)
-            
+        
     def buildPosInfo(self):
         self.box_pos = QGroupBox("Position")
         self.label["x"] = QLabel("0")
@@ -110,7 +127,7 @@ class TabStrat(QWidget):
     def paintEvent(self, event):
         if self.robotConfig == None:
             #print("Requesting current config")
-            self.getConfig.emit()    #telemetry reply data callback
+            self.teleop.getConfig()    #telemetry reply data callback
         else:
             super().paintEvent(event)
         
@@ -139,3 +156,91 @@ class TabStrat(QWidget):
         #print("New config received from robot, updating tab")
         self.robotConfig = msg
 
+    @pyqtSlot(int)
+    def setColor(self, color):
+        if color == Types_pb2.PREF:
+            print("Match color configured to Prefered (YELLOW)")
+            self.teleop.configureMatch(self.uiStrategy, Types_pb2.PREF)
+            self._setColorButtonState(Types_pb2.PREF)
+            self._setStartButtonState("go")
+        elif color == Types_pb2.SYM:
+            print("Match color configured to Symetric (BLUE)")
+            self.teleop.configureMatch(self.uiStrategy, Types_pb2.SYM)
+            self._setColorButtonState(Types_pb2.SYM)
+            self._setStartButtonState("go")
+        else:
+            assert False
+    
+    @pyqtSlot()
+    def startMatch(self):
+        if self.uiColor != Types_pb2.UNKNOWN:
+            print("Match start request")  
+            self._setColorButtonState(4)
+            self._setStartButtonState("reset")
+            self.teleop.startMatch()
+        else:
+            print("Match start request ignored as color is not choosed")
+         
+    @pyqtSlot()   
+    def resetCpu(self):   
+        print("Reset CPU request")
+        self._setColorButtonState(Types_pb2.UNKNOWN)
+        self._setStartButtonState("color")
+        self.teleop.resetCpu() 
+            
+    @pyqtSlot(bool)
+    def _colorSwitched(self, pressed):
+        if self.uiColor == Types_pb2.UNKNOWN or self.uiColor == Types_pb2.SYM:
+            self.setColor(Types_pb2.PREF)
+        else:
+            self.setColor(Types_pb2.SYM)
+        
+    @pyqtSlot(bool)
+    def _startPressed(self, pressed):
+        if self.uiColor != Types_pb2.UNKNOWN and not self.uiStarted:
+            self.startMatch()
+        elif self.uiStarted:
+            self.resetCpu()
+        
+        
+    def _setColorButtonState(self, color):
+        if color == Types_pb2.UNKNOWN:
+            self.uiColor = Types_pb2.UNKNOWN
+            self.buttonColor.setDisabled(False)
+            self.buttonColor.setText("Unknown")
+            self.buttonColor.setStyleSheet("background: #BDBAAB")
+            
+        elif color == Types_pb2.PREF:
+            self.uiColor = Types_pb2.PREF
+            self.buttonColor.setDisabled(False)
+            self.buttonColor.setText("PREF")
+            self.buttonColor.setStyleSheet("background: #FCBD1F")
+            
+        elif color == Types_pb2.SYM:
+            self.uiColor = Types_pb2.SYM
+            self.buttonColor.setDisabled(False)
+            self.buttonColor.setText("SYM")
+            self.buttonColor.setStyleSheet("background: #1761AB; color: #FFFFFF")
+            
+        elif color == 4:#disabled during match
+            self.buttonColor.setDisabled(True)
+            self.buttonColor.setText("running")
+        else:
+           assert False 
+            
+        
+    def _setStartButtonState(self, state):
+        if state == "go":
+            self.uiStarted = False
+            self.buttonStart.setDisabled(False)
+            self.buttonStart.setText("GO !") 
+        elif state == "reset":
+            self.uiStarted = True
+            self.buttonStart.setDisabled(False)
+            self.buttonStart.setText("reset")
+        elif state == "color":
+            self.uiStarted = False
+            self.buttonStart.setDisabled(True)
+            self.buttonStart.setText("color missing")
+        else:
+            assert False
