@@ -126,10 +126,9 @@ void Robot2017::bootOs()
     bsp.serial0.setInterruptPriority            (PRIORITY_IRQ_UART0);
     NVIC_SetPriority(WIRE_ISR_ID,                PRIORITY_IRQ_I2C0);
 
-
-    //Init debug serial link
+    //Configure debug serial link
     UART_Handler_CB = Robot2017_UART_Handler;
-    bsp.serial0.start(SERIAL_BAUDRATE, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
+
 
     //init all OS objects (including threads),
     //which should call all init() function
@@ -141,6 +140,7 @@ void Robot2017::bootOs()
     hmi.led2.slowBlink();
 
     //Start everything
+    bsp.serial0.start(SERIAL_BAUDRATE, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
     TIMER_NAV_STEPPER.start(PERIOD_VERY_FAST_IT_US);
     TIMER_GPIO.start(PERIOD_FAST_IT_US);
 
@@ -177,7 +177,7 @@ IEvent* ard::Robot2017::getRemoteControlEvt(eRemoteControlEvtId id)
 #endif
 }
 
-bool Robot2017::isStartPlugged()
+bool Robot2017::isStartPlugged() const
 {
     return hmi.tirette.read();
 }
@@ -192,12 +192,12 @@ IEvent* Robot2017::getStartOutEvt()
     return hmi.tirette.getEvent(FALLING_EDGE);
 }
 
-bool Robot2017::isPreferedColor()
+bool Robot2017::isPreferedColor() const
 {
     return hmi.matchColor.read();
 }
 
-uint8_t Robot2017::getStrategyId()
+uint8_t Robot2017::getStrategyId() const
 {
     return (hmi.user1.read() << 1) + (hmi.user2.read());
 }
@@ -240,5 +240,10 @@ void Robot2017::setConfig(apb_Configuration const& newConf)
 
 void Robot2017::sendSerialNumber()
 {
-    remoteControl.sendSerialNumber(m_params.serialNumber());
+    remoteControl.sendSerialNumber();
+}
+
+char const * const Robot2017::getSerialNumber() const
+{
+    return m_params.serialNumber();
 }

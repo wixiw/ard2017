@@ -91,6 +91,30 @@ namespace ard
     //Inform stategy that a cylinder has been taken on table (in the middle of opponent table side)
     void informTaken_OppCenter();
 
+    //Inform stategy that a cylinder has been push away from its default position (close to our start position)
+    void informPushedAway_Start();
+
+    //Inform stategy that a cylinder has been push away from its default position (close to our midle center container)
+    void informPushedAway_Container();
+
+    //Inform stategy that a cylinder has been push away from its default position (in the middle of our table side)
+    void informPushedAway_Center();
+
+    //Inform stategy that a cylinder has been push away from its default position (close to our start position table corner)
+    void informPushedAway_Corner();
+
+    //Inform stategy that a cylinder has been push away from its default position (close to our bottom craters)
+    void informPushedAway_Crater();
+
+    //Inform stategy that a cylinder has been push away from its default position (close to opponent start position)
+    void informPushedAway_OppStart();
+
+    //Inform stategy that a cylinder has been push away from its default position (close to opponent midle center container)
+    void informPushedAway_OppContainer();
+
+    //Inform stategy that a cylinder has been push away from its default position (in the middle of opponent table side)
+    void informPushedAway_OppCenter();
+
     /**
      * -----------------------------
      */
@@ -123,6 +147,7 @@ namespace ard
     void withdraw(uint8_t nb, uint32_t& dispenserCount, String const& caller);
     void poo(uint8_t nb, uint8_t max, uint32_t& containerCount, String const& caller);
     void take(bool& objectPresent, String const& caller);
+    void push(bool& objectPresent, const String& caller);
 
     //a value identifying the strategy choosed by the user
     uint8_t strategyId;

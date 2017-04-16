@@ -67,18 +67,19 @@ void ArdHdlc::readAll()
         }
 
         //If overflow or Hw error occured in the driver, throw everything out
-        if(physicalLink.getError() != ISerialDriver::ERR_NO_ERROR)
+        ISerialDriver::eError err = physicalLink.getError();
+        if(err != ISerialDriver::ERR_NO_ERROR)
         {
             ardHdlc_resetState(&hdlcState);
             memset(serial_recv_buffer, 0, SERIAL_BUF_SIZE);
             bytesInRecvBuf = 0;
             INIT_TABLE_TO_ZERO(hdlc_recv_framebuffer);
             dropMsgCount++;
-            LOG_ERROR("Serial HW error : one or more bytes lost, buffer reseted.");
+            LOG_ERROR(String("Serial driver HW error : ") + err);
         }
         else
         {
-            //TODO debug : check that no data are overwritten
+            //safety check : check that no data are overwritten
             ASSERT(serial_recv_buffer[bytesInRecvBuf] == 0);
 
             //As the yahdlc layer requires a flat buffer we "un-ring" the driver ring buffer

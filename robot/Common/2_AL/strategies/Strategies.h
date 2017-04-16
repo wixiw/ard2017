@@ -9,6 +9,7 @@
 #define ROBOT_COMMON_2_AL_STRATEGIES_STRATEGIES_H_
 
 #include "LSA_Dispenser.h"
+#include "LSA_GetCylinder.h"
 #include "LSA_Poo.h"
 
 namespace ard

@@ -14,21 +14,27 @@ using namespace ard;
  *  ----  LSA_Dispenser_Monocolor  ----
  */
 
-LSA_Dispenser_Monocolor::LSA_Dispenser_Monocolor(Robot2017& robot):
+LSA_DispenserMonocolor::LSA_DispenserMonocolor(Robot2017& robot):
         LSA(robot, PointCap(350, 700, 90))
 {
 }
 
-LSA_result LSA_Dispenser_Monocolor::execute(uint8_t nbItems)
+LSA_result LSA_DispenserMonocolor::execute(uint8_t nbItems)
 {
     LOG_INFO("Engage Monocolor Dispenser");
     robot.nav.goToCap(350, 770, 90);
     robot.nav.wait();
 
     LOG_INFO("Get 4 Cylinders from Monocolor dispenser");
-    ArdOs::sleepMs(2000);
 
-    robot.strategy.informWithdraw_MonocolorDispenser(nbItems);
+    if( nbItems == 0 )
+        nbItems = robot.strategy.getStratInfo().dispenserMonocolorNb;
+
+    for(int i = nbItems ; 0 < i ; i--)
+    {
+        ArdOs::sleepMs(500);
+        robot.strategy.informWithdraw_MonocolorDispenser(1);
+    }
 
     LOG_INFO("Leave Monocolor Dispenser");
     robot.nav.goTo(entryPoint, eDir_BACKWARD);
@@ -39,33 +45,33 @@ LSA_result LSA_Dispenser_Monocolor::execute(uint8_t nbItems)
 }
 
 /**
- *  ----  LSA_Dispenser_Bicolor  ----
+ *  ----  LSA_DispenserBicolor  ----
  */
 
 
-LSA_Dispenser_Bicolor::LSA_Dispenser_Bicolor(Robot2017& robot):
+LSA_DispenserBicolor::LSA_DispenserBicolor(Robot2017& robot):
                 LSA(robot, PointCap(0, 0, 0))
 {
 }
 
-LSA_result LSA_Dispenser_Bicolor::execute(uint8_t nbItems)
+LSA_result LSA_DispenserBicolor::execute(uint8_t nbItems)
 {
-    LOG_INFO("LSA_Dispenser_Bicolor success");
+    LOG_INFO("LSA_DispenserBicolor success");
     return LSA_Success;
 }
 
 /**
- *  ----  LSA_Dispenser_Opp  ----
+ *  ----  LSA_DispenserOpp  ----
  */
 
 
-LSA_Dispenser_Opp::LSA_Dispenser_Opp(Robot2017& robot):
+LSA_DispenserOpp::LSA_DispenserOpp(Robot2017& robot):
                 LSA(robot, PointCap(0, 0, 0))
 {
 }
 
-LSA_result LSA_Dispenser_Opp::execute(uint8_t nbItems)
+LSA_result LSA_DispenserOpp::execute(uint8_t nbItems)
 {
-    LOG_INFO("LSA_Dispenser_Opp success");
+    LOG_INFO("LSA_DispenserOpp success");
     return LSA_Success;
 }

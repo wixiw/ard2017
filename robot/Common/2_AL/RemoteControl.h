@@ -62,8 +62,8 @@ namespace ard
         //Implements ILogChannel : push a log on the serial link
         virtual void log(LogMsg const & log) override;
 
-        //Send serial number on communication linl
-        void sendSerialNumber(char const * const serialNumber);
+        //Send serial number on communication link
+        void sendSerialNumber();
 
     private:
         Mutex mutex;
@@ -77,12 +77,13 @@ namespace ard
          --------------------------------*/
         void getOsStats             (apb_RemoteControlRequest const & request);
         void getOsStatsLogs         (apb_RemoteControlRequest const & request);
-        void getComStatsLogs        (apb_RemoteControlRequest const & request);
         void getTelemetry           (apb_RemoteControlRequest const & request);
         void reboot                 (apb_RemoteControlRequest const & request);
         void requestPlaySound       (apb_RemoteControlRequest const & request);
         void getConfig              (apb_RemoteControlRequest const & request);
         void setConfig              (apb_RemoteControlRequest const & request);
+        void getComStatsLogs        (apb_RemoteControlRequest const & request);
+        void getSerial              (apb_RemoteControlRequest const & request);
         void configureMatch         (apb_RemoteControlRequest const & request);
         void startMatch             (apb_RemoteControlRequest const & request);
         void requestActuators       (apb_RemoteControlRequest const & request);

@@ -12,28 +12,28 @@
 
 namespace ard
 {
-    class LSA_Dispenser_Monocolor: public LSA
+    class LSA_DispenserMonocolor: public LSA
     {
     public:
-        LSA_Dispenser_Monocolor(Robot2017& robot);
+        LSA_DispenserMonocolor(Robot2017& robot);
 
         //Implements LSA
         virtual LSA_result execute(uint8_t nbItems = 0) override;
     };
 
-    class LSA_Dispenser_Bicolor: public LSA
+    class LSA_DispenserBicolor: public LSA
     {
     public:
-        LSA_Dispenser_Bicolor(Robot2017& robot);
+        LSA_DispenserBicolor(Robot2017& robot);
 
         //Implements LSA
         virtual LSA_result execute(uint8_t nbItems = 0) override;
     };
 
-    class LSA_Dispenser_Opp: public LSA
+    class LSA_DispenserOpp: public LSA
     {
     public:
-        LSA_Dispenser_Opp(Robot2017& robot);
+        LSA_DispenserOpp(Robot2017& robot);
 
         //Implements LSA
         virtual LSA_result execute(uint8_t nbItems = 0) override;

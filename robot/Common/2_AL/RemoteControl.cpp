@@ -65,12 +65,13 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
     {
         HANDLE_MSG(getOsStats)
         HANDLE_MSG(getOsStatsLogs)
-        HANDLE_MSG(getComStatsLogs)
         HANDLE_MSG(getTelemetry)
         HANDLE_MSG(reboot)
         HANDLE_MSG(requestPlaySound)
         HANDLE_MSG(getConfig)
         HANDLE_MSG(setConfig)
+        HANDLE_MSG(getComStatsLogs)
+        HANDLE_MSG(getSerial)
         HANDLE_MSG(configureMatch)
         HANDLE_MSG(startMatch)
         HANDLE_MSG(requestActuators)
@@ -235,6 +236,12 @@ void RemoteControl::setConfig(apb_RemoteControlRequest const & request)
     getConfig(request);
 }
 
+void RemoteControl::getSerial(apb_RemoteControlRequest const & request)
+{
+    robot->sendSerialNumber();
+}
+
+
 void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
 {
 #ifdef BUILD_STRATEGY
@@ -362,7 +369,7 @@ void RemoteControl::log(LogMsg const & log)
     mutex.unlock();
 }
 
-void RemoteControl::sendSerialNumber(char const * const serialNumber)
+void RemoteControl::sendSerialNumber()
 {
     mutex.lock();
 
@@ -373,7 +380,7 @@ void RemoteControl::sendSerialNumber(char const * const serialNumber)
     /* populates message */
     apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
     response.which_type         = apb_RemoteControlResponse_serialNumber_tag;
-    strcpy(response.type.serialNumber.value, serialNumber);
+    strcpy(response.type.serialNumber.value, robot->getSerialNumber());
 
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode serial number.");

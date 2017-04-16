@@ -8,9 +8,6 @@ from ArdWidgets import *
 
 class TabCom(QWidget):
     
-    #QT emitted signals :
-    networkStatus = pyqtSignal(bool)
-    
     #@param ArdSerial : a reference on the object managing the serial line
     def __init__(self, parent, comMdw):
         super().__init__(parent)
@@ -87,6 +84,10 @@ class TabCom(QWidget):
         #keyboard shortcuts
         QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connectFromShorcut)
 
+    def __del__(self):
+        if self.com.isConnected():
+            self.com.disconnect()
+
     @pyqtSlot(bool)
     def _connectFromButton(self, pressed):
         if pressed:
@@ -112,7 +113,6 @@ class TabCom(QWidget):
             settings.setValue("port", port)
             settings.setValue("baudrate", baudrate)
             self.buttonsGroup.setEnabled(True)
-            self.networkStatus.emit(True)
             self.connectedLed.light(True)
         else:
             print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizu instance...)")
@@ -131,7 +131,6 @@ class TabCom(QWidget):
         self.combo_COM.setEnabled(True)
         self.combo_Baudrate.setEnabled(True)
         self.buttonsGroup.setEnabled(False)
-        self.networkStatus.emit(False)
         self._updateComInfo()
         self.connectedLed.light(False)
         print("Disconnected")

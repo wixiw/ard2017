@@ -53,4 +53,15 @@ namespace ard
     };
 }
 
+   //exemple :
+//    class LSA_Dispenser_Opp: public LSA
+//    {
+//    public:
+//        LSA_Dispenser_Opp(Robot2017& robot);
+//
+//        //Implements LSA
+//        virtual LSA_result execute(uint8_t nbItems = 0) override;
+//    };
+//}
+
 #endif /* ROBOT_COMMON_2_AL_STRATEGIES_STRATINTERFACES_H_ */

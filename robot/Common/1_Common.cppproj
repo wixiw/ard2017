@@ -1222,13 +1222,16 @@
     <Compile Include="2_AL\Strategies\LSA_Dispenser.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\Strategies\LSA_GetCylinder.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies\LSA_GetCylinder.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\Strategies\LSA_Poo.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Strategies\LSA_Poo.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\Strategies\LSP_Dispenser2.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Strategies\Strategies.h">

@@ -54,7 +54,7 @@ class VizuMainScreen(QWidget):
         super().__init__()  
         self.resize(870, 500)           
         self.readSettings()
-        self.setWindowTitle('8=> Vizu')  
+        self.setWindowTitle('Vizu [8=>]')  
         
         self.teleop = RemoteControl()
         self.shortcuts = dict()
@@ -86,7 +86,7 @@ class VizuMainScreen(QWidget):
         layout_main.addWidget(self.tabs)
         
         # connect Com Tab msg requests
-        self.tabContexts["Com"].tab.networkStatus.connect(self._handleNetworkStatus)
+        self.teleop.networkStatus.connect(self._handleNetworkStatus)
         self.teleop.serialNumber.connect(self._handleSerialNumber)
 
         # connect Log tab
@@ -134,7 +134,12 @@ class VizuMainScreen(QWidget):
     @pyqtSlot(bool)
     def _handleNetworkStatus(self, connected):
         if connected:
-            self.tabContexts["Log"].tab.appendLog(("-----------connected-------------"))
+#             #As connecting may reboot the robot wait a bit
+#             time.sleep(2.200)
+#             
+#             #request robot serial
+#             self.teleop.getSerial()
+            
             #enable all tabs
             for tabName, tabContext in self.tabContexts.items():
                 self.tabs.setTabEnabled(self.tabs.indexOf(tabContext.tab), True)
@@ -163,7 +168,9 @@ class VizuMainScreen(QWidget):
     
     @pyqtSlot(RemoteControl_pb2.SerialNumber)
     def _handleSerialNumber(self, serial):
-        print("New serial received : " + serial.value)
+        #print("New serial received : " + serial.value)
+        if serial.value == "":
+            print("AAAAAAAAAAAAAARGFFGGSDSS")
         self.setWindowTitle('8=> Vizu [' + serial.value + ']') 
         self.tabContexts["Strat"].tab.updateRobot(serial.value)
     

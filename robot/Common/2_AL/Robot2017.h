@@ -40,7 +40,7 @@ namespace ard
         void dieMotherFucker();
 
         //answer true if the start is plugged
-        bool isStartPlugged();
+        bool isStartPlugged() const;
 
         //Retrieve the event published when the start is inserted
         IEvent* getStartInEvt();
@@ -49,10 +49,10 @@ namespace ard
         IEvent* getStartOutEvt();
 
         //answer true when color switch is on the preferred color
-        bool isPreferedColor();
+        bool isPreferedColor() const;
 
         //Combines strategy switch to creates an integer. Left switch represent highest bit, Right one lowest one.
-        uint8_t getStrategyId();
+        uint8_t getStrategyId() const;
 
         //Drive the RGB LED
         void setRGBled(eRgb color, eLedState blink);
@@ -98,6 +98,9 @@ namespace ard
 
         //Send the robot serial number on communication link
         void sendSerialNumber();
+
+        //retrieve the robot serial nunmber
+        char const * const getSerialNumber() const;
 
         //hardware layer
         BSP bsp;

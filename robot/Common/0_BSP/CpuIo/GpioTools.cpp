@@ -48,8 +48,7 @@ void FilteredInput::setDebounceLow(DelayMs debounce)
     debounceLowDuration = debounce * 1E3; //millis to us
 }
 
-IEvent*
-FilteredInput::getEvent(eGpioEdge edge)
+IEvent* FilteredInput::getEvent(eGpioEdge edge)
 {
     switch (edge)
     {

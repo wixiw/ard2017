@@ -70,8 +70,7 @@ namespace ard
         /**
          * Get the event reference to be able to wait for it
          */
-        IEvent*
-        getEvent(eGpioEdge edge);
+        IEvent* getEvent(eGpioEdge edge);
 
         /**
          * Reset the filter

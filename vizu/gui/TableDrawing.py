@@ -71,7 +71,7 @@ class TableOverview(QWidget):
         drawingPose.y = -self.robotPose.y
         drawingPose.h = normalizeAngle(math.pi + self.robotPose.h)
         if self.robot != None and self.parent().robotConfig != None:
-            self.robot.draw(drawingPose, self.parent().robotConfig)
+            self.robot.draw(drawingPose, self.parent().robotConfig, self.parent().robotState.stratInfo)
         self.p.end()
     
     def mousePressEvent(self, event):
@@ -86,7 +86,7 @@ class RobotWidget():
     def __init__(self, painter):
         self.p = painter
                 
-    def draw(self, pose, cfg):
+    def draw(self, pose, cfg, stratInfo):
         self.p.save()
         self.p.setRenderHint(QPainter.Antialiasing)
         self.p.translate(pose.x, pose.y)
@@ -94,6 +94,7 @@ class RobotWidget():
         self.drawCarriage(cfg)
         self.drawWheels(cfg)
         self.drawMarks(cfg)
+        self.drawObjects(stratInfo)
         self.p.restore()
 
     def drawWheels(self, cfg):
@@ -144,6 +145,15 @@ class RobotPenWidget(RobotWidget):
         self.p.drawPath(carriage)
         self.p.setPen(markPen)
         
+    def drawObjects(self, stratInfo):
+        if stratInfo.robotCylinderStockNb:
+            self.p.setPen(markPen)
+            drawHorizontalCylinder(self.p, stratInfo.matchColor, 85, 0, 0)
+                        
+        if stratInfo.robotCylinderStockNb == 6:
+            drawVerticalCylinder(self.p, stratInfo.matchColor, 180, 0)
+        
+        
 class RobotTrationWidget(RobotWidget):
     def drawCarriage(self, cfg):
         self.p.setPen(markPen)
@@ -156,6 +166,8 @@ class RobotTrationWidget(RobotWidget):
         carriage.lineTo(-cfg.xar,-cfg.yside)
         carriage.closeSubpath()
         self.p.drawPath(carriage)
+
+    def drawObjects(self, stratInfo):
         pass
 
 
@@ -173,6 +185,7 @@ class TableWidget():
         self.drawDispensers(stratInfo)
         self.drawMarks()
         self.drawCylinders(stratInfo)
+        self.drawPooedObjects(stratInfo)
         
     def drawBorders(self):
         self.p.setPen(markPen)
@@ -274,15 +287,76 @@ class TableWidget():
         self._drawOneCrater(2350,  540)
         self._drawOneCrater(1070, 1870)
         self._drawOneCrater(1930, 1870)
+        
+    def drawPooedObjects(self, stratInfo):
+       
+        #Draw Opp straight border area pooed objects
+        for i in range (0, stratInfo.containerBorderOppNb):
+            if stratInfo.matchColor == Types_pb2.PREF:
+                drawHorizontalCylinder(self.p, stratInfo.matchColor, 40, 700 + 25 + 100/2. + i*100, 90)
+            else:
+                drawHorizontalCylinder(self.p, stratInfo.matchColor, T_WIDTH - 40, 700 + 25 + 100/2. + i*100, 90)
+        
+        #Draw Own straight border area pooed objects    
+        for i in range (0, stratInfo.containerBorderNb):
+            if stratInfo.matchColor == Types_pb2.PREF:
+                drawHorizontalCylinder(self.p, stratInfo.matchColor, T_WIDTH - 40, 700 + 25 + 100/2. + i*100, 90)
+            else:
+                drawHorizontalCylinder(self.p, stratInfo.matchColor, 40, 700 + 25 + 100/2. + i*100, 90)
+                        
+        #Draw midle center pooed objects
+        for i in range (0, stratInfo.containerMidleCenterNb):
+            drawHorizontalCylinder(self.p, stratInfo.matchColor, T_WIDTH/2., 1250 + i*100, 90)
+            
+        #Draw own midle side pooed objects
+        self.p.save()
+        self.p.translate(T_WIDTH/2., T_HEIGHT)
+            #Yellow side
+        if stratInfo.matchColor == Types_pb2.PREF:
+            self.p.rotate(-45)
+            #Blue side
+        else:
+            self.p.rotate(-135)
+        for i in range (0, stratInfo.containerMidleOwnNb):
+            drawHorizontalCylinder(self.p, stratInfo.matchColor, 750 - i*100, 0, 0)
+        self.p.restore()
+        
+        #Draw opp midle side pooed objects
+        self.p.save()
+        self.p.translate(T_WIDTH/2., T_HEIGHT)
+            #Yellow side
+        if stratInfo.matchColor == Types_pb2.PREF:
+            self.p.rotate(-135)
+            #Blue side
+        else:
+            self.p.rotate(-45)
+        for i in range (0, stratInfo.containerMidleOppNb):
+            drawHorizontalCylinder(self.p, stratInfo.matchColor, 750 - i*100, 0, 0)
+        self.p.restore()
+
+        #Draw start area pooed objects
+        for i in range (0, stratInfo.containerStartNb):
+            #Yellow side
+            if stratInfo.matchColor == Types_pb2.PREF:
+                if i < 4 :
+                    drawHorizontalCylinder(self.p, stratInfo.matchColor, 2000 + i*75, 100, 90)
+                else:
+                    drawHorizontalCylinder(self.p, stratInfo.matchColor, 2000 + (i-4)*75, 250, 90)
+            #Blue side
+            else:
+                if i < 4 :
+                    drawHorizontalCylinder(self.p, stratInfo.matchColor, 1000 - i*75, 100, 90)
+                else:
+                    drawHorizontalCylinder(self.p, stratInfo.matchColor, 1000 - (i-4)*75, 250, 90) 
 
     def _drawOneCrater(self, x, y):
         self.p.setPen(markPen)
         self.p.save()
         self.p.setBrush(trafficWhite)
         self.p.translate(x, y)
-        self.drawCircle(0,0, 251/2.)
+        drawCircle(self.p, 0,0, 251/2.)
         self.p.setBrush(ardBackground)
-        self.drawCircle(0,0, 191/2.)
+        drawCircle(self.p, 0,0, 191/2.)
         self.p.restore()
     
     def drawContainers(self, stratInfo):
@@ -322,59 +396,53 @@ class TableWidget():
         self.p.setPen(markPen)
         self.p.setBrush(peebleGrey)
         self.p.translate(40, 1350)
-        self.drawCircle(0,0,40)
+        drawCircle(self.p, 0,0,40)
         self.p.restore()
         if stratInfo.dispenserBicolorNb != 0 and stratInfo.matchColor == Types_pb2.SYM:
             for i in range(0, stratInfo.dispenserBicolorNb):
-                self._drawBicolorCylinder(40 - 20*i, 1350, 135)
+                drawVBicolorCylinder(self.p, 40 - 20*i, 1350, 135)
         if stratInfo.dispenserOppNb != 0 and stratInfo.matchColor == Types_pb2.PREF:
             for i in range(0, stratInfo.dispenserOppNb):
-                self._drawBicolorCylinder(40 - 20*i, 1350, 135)
+                drawVBicolorCylinder(self.p, 40 - 20*i, 1350, 135)
             
         #Blue Top dispenser
         self.p.save()
         self.p.setPen(markPen)
         self.p.setBrush(peebleGrey)
         self.p.translate(1150, 40)
-        self.drawCircle(0,0,40)
+        drawCircle(self.p, 0,0,40)
         self.p.restore()
         if stratInfo.dispenserMonocolorNb != 0 and stratInfo.matchColor == Types_pb2.SYM:
             for i in range(0, stratInfo.dispenserMonocolorNb):
-                self._drawBlueCylinder(1150, 40 - 20*i)     
+                drawVerticalCylinder(self.p, Types_pb2.SYM, 1150, 40 - 20*i)     
         if stratInfo.matchColor == Types_pb2.PREF:
             for i in range(0, 4):
-                self._drawBlueCylinder(1150, 40 - 20*i) 
+                drawVerticalCylinder(self.p, Types_pb2.SYM, 1150, 40 - 20*i) 
         
         #Yellow Top dispenser
         self.p.save()
         self.p.translate(1850, 40)
-        self.drawCircle(0,0,40)
+        drawCircle(self.p, 0,0,40)
         self.p.restore()
         if stratInfo.dispenserMonocolorNb != 0 and stratInfo.matchColor == Types_pb2.PREF:
             for i in range(0, stratInfo.dispenserMonocolorNb):
-                self._drawYellowCylinder(1850, 40 - 20*i)  
+                drawVerticalCylinder(self.p, Types_pb2.PREF, 1850, 40 - 20*i)  
         if stratInfo.matchColor == Types_pb2.SYM:
             for i in range(0, 4):
-                self._drawYellowCylinder(1850, 40 - 20*i)  
+                drawVerticalCylinder(self.p, Types_pb2.PREF, 1850, 40 - 20*i)  
 
         #Bicolor lateral dispenser on Yellow side
         self.p.save()
         self.p.translate(T_WIDTH - 40, 1350)
-        self.drawCircle(0,0,40)
+        drawCircle(self.p, 0,0,40)
         self.p.restore()
         if stratInfo.dispenserBicolorNb != 0 and stratInfo.matchColor == Types_pb2.PREF:
             for i in range(0, stratInfo.dispenserBicolorNb):
-                self._drawBicolorCylinder(T_WIDTH - 40 + 20*i, 1350, -45)
+                drawVBicolorCylinder(self.p, T_WIDTH - 40 + 20*i, 1350, -45)
         if stratInfo.dispenserOppNb != 0 and stratInfo.matchColor == Types_pb2.SYM:
             for i in range(0, stratInfo.dispenserOppNb):
-                self._drawBicolorCylinder(T_WIDTH - 40 + 20*i, 1350, -45)
+                drawVBicolorCylinder(self.p, T_WIDTH - 40 + 20*i, 1350, -45)
         
-        
-    def drawCircle(self, x, y, radius):
-        self.p.save()
-        self.p.setRenderHint(QPainter.Antialiasing)
-        self.p.drawEllipse(QRectF(x - radius, y - radius, 2*radius, 2*radius))
-        self.p.restore()
         
     def drawCylinders(self, stratInfo):
     #
@@ -383,27 +451,27 @@ class TableWidget():
         #Cylinder close to start area
         if stratInfo.cylinderStart and stratInfo.matchColor == Types_pb2.PREF \
             or stratInfo.cylinderOppStart and stratInfo.matchColor == Types_pb2.SYM:
-            self._drawBicolorCylinder(2000, 600, -45) 
+            drawVBicolorCylinder(self.p, 2000, 600, -45) 
                         
         #Cylinder between straight container and little border corner.
         if stratInfo.cylinderCorner and stratInfo.matchColor == Types_pb2.PREF \
             or stratInfo.matchColor == Types_pb2.SYM:
-            self._drawYellowCylinder(2800,600)  
+            drawVerticalCylinder(self.p, Types_pb2.PREF, 2800,600)  
             
         #Cylinder in the "middle" of the half-table
         if stratInfo.cylinderCenter and stratInfo.matchColor == Types_pb2.PREF \
             or stratInfo.cylinderOppCenter and stratInfo.matchColor == Types_pb2.SYM:
-            self._drawBicolorCylinder(2500, 1100, -45) 
+            drawVBicolorCylinder(self.p, 2500, 1100, -45) 
             
         #Cylinder blocking central container
         if stratInfo.cylinderContainer and stratInfo.matchColor == Types_pb2.PREF \
             or stratInfo.cylinderOppContainer and stratInfo.matchColor == Types_pb2.SYM:
-            self._drawBicolorCylinder(2100, 1400, -45) 
+            drawVBicolorCylinder(self.p, 2100, 1400, -45) 
             
         #Cylinder between bottom craters
         if stratInfo.cylinderCrater and stratInfo.matchColor == Types_pb2.PREF \
             or stratInfo.matchColor == Types_pb2.SYM:
-            self._drawYellowCylinder(2200,1850) 
+            drawVerticalCylinder(self.p, Types_pb2.PREF, 2200,1850) 
             
             
     #
@@ -412,79 +480,103 @@ class TableWidget():
         #Cylinder close to start area
         if stratInfo.cylinderStart and stratInfo.matchColor == Types_pb2.SYM \
             or stratInfo.cylinderOppStart and stratInfo.matchColor == Types_pb2.PREF:
-            self._drawBicolorCylinder(1000, 600, 135) 
+            drawVBicolorCylinder(self.p, 1000, 600, 135) 
                         
         #Cylinder between straight container and little border corner.
         if stratInfo.cylinderCorner and stratInfo.matchColor == Types_pb2.SYM \
             or stratInfo.matchColor == Types_pb2.PREF:
-            self._drawBlueCylinder(200,600)
+            drawVerticalCylinder(self.p, Types_pb2.SYM, 200, 600)
             
         #Cylinder in the "middle" of the half-table
         if stratInfo.cylinderCenter and stratInfo.matchColor == Types_pb2.SYM \
             or stratInfo.cylinderOppCenter and stratInfo.matchColor == Types_pb2.PREF:
-            self._drawBicolorCylinder(500, 1100, 135)
+            drawVBicolorCylinder(self.p, 500, 1100, 135)
             
         #Cylinder blocking central container
         if stratInfo.cylinderContainer and stratInfo.matchColor == Types_pb2.SYM \
             or stratInfo.cylinderOppContainer and stratInfo.matchColor == Types_pb2.PREF:
-            self._drawBicolorCylinder(900, 1400, 135)
+            drawVBicolorCylinder(self.p, 900, 1400, 135)
             
         #Cylinder between bottom craters
         if stratInfo.cylinderCrater and stratInfo.matchColor == Types_pb2.SYM \
             or stratInfo.matchColor == Types_pb2.PREF:
-            self._drawBlueCylinder(800,1850)
+            drawVerticalCylinder(self.p, Types_pb2.SYM, 800, 1850)
         
     
-    def _drawYellowCylinder(self, x, y):
-        self.p.save()
-        self.p.setPen(markPen)
-        self.p.setBrush(trafficYellow)
-        self.p.translate(x,y)
-        self.drawCircle(0,0, 63/2.)
-        self.p.restore()
+def drawCircle(painter, x, y, radius):
+    painter.save()
+    painter.setRenderHint(QPainter.Antialiasing)
+    painter.drawEllipse(QRectF(x - radius, y - radius, 2*radius, 2*radius))
+    painter.restore()
+
+def drawVerticalCylinder(painter, color, x, y):
+    painter.save()
+    painter.setPen(markPen)
+    if color == Types_pb2.PREF:
+        painter.setBrush(trafficYellow)
+    else:
+        painter.setBrush(skyBlue)
+    painter.translate(x,y)
+    drawCircle(painter, 0,0, 63/2.)
+    painter.restore()
+    
+def drawVBicolorCylinder(painter, x, y, angle):
+    painter.save()
+    painter.setRenderHint(QPainter.Antialiasing)
+    painter.setPen(markPen)
+    painter.translate(x,y)
+    painter.rotate(angle)
+    
+    #white sections
+    painter.setBrush(trafficWhite)
+    path = QPainterPath()
+    path.moveTo(0,0)
+    path.lineTo(0,63/2.)
+    path.arcTo(QRectF(-63/2., -63/2., 63, 63), -90, 90)
+    path.lineTo(-63/2.,0)
+    path.arcTo(QRectF(-63/2., -63/2., 63, 63), 180, -90)
+    path.closeSubpath()
+    painter.drawPath(path)
+    
+    #yellow section
+    painter.setBrush(trafficYellow)
+    path = QPainterPath()
+    path.moveTo(0,0)
+    path.lineTo(63/2.,0)
+    path.arcTo(QRectF(-63/2., -63/2., 63, 63), 0, 90)
+    path.closeSubpath()
+    painter.drawPath(path)
+    
+    #blue section
+    painter.setBrush(skyBlue)
+    path = QPainterPath()
+    path.moveTo(0,0)
+    path.lineTo(-63/2.,0)
+    path.arcTo(QRectF(-63/2., -63/2., 63, 63), 180, 90)
+    path.closeSubpath()
+    painter.drawPath(path)
+    painter.restore()
         
-    def _drawBlueCylinder(self, x, y):
-        self.p.save()
-        self.p.setPen(markPen)
-        self.p.setBrush(skyBlue)
-        self.p.translate(x,y)
-        self.drawCircle(0,0, 63/2.)
-        self.p.restore()
-        
-    def _drawBicolorCylinder(self, x, y, angle):
-        self.p.save()
-        self.p.setRenderHint(QPainter.Antialiasing)
-        self.p.setPen(markPen)
-        self.p.translate(x,y)
-        self.p.rotate(angle)
-        
-        #white sections
-        self.p.setBrush(trafficWhite)
-        path = QPainterPath()
-        path.moveTo(0,0)
-        path.lineTo(0,63/2.)
-        path.arcTo(QRectF(-63/2., -63/2., 63, 63), -90, 90)
-        path.lineTo(-63/2.,0)
-        path.arcTo(QRectF(-63/2., -63/2., 63, 63), 180, -90)
-        path.closeSubpath()
-        self.p.drawPath(path)
-        
-        #yellow section
-        self.p.setBrush(trafficYellow)
-        path = QPainterPath()
-        path.moveTo(0,0)
-        path.lineTo(63/2.,0)
-        path.arcTo(QRectF(-63/2., -63/2., 63, 63), 0, 90)
-        path.closeSubpath()
-        self.p.drawPath(path)
-        
-        #blue section
-        self.p.setBrush(skyBlue)
-        path = QPainterPath()
-        path.moveTo(0,0)
-        path.lineTo(-63/2.,0)
-        path.arcTo(QRectF(-63/2., -63/2., 63, 63), 180, 90)
-        path.closeSubpath()
-        self.p.drawPath(path)
-        self.p.restore()
-        
+def drawHorizontalCylinder(painter, color, x, y, angle):     
+    painter.save()
+    
+    painter.translate(x,y)
+    painter.rotate(angle)
+    
+    painter.setPen(markPen)
+    if color == Types_pb2.PREF:
+        painter.setBrush(trafficYellow)
+    else:
+        painter.setBrush(skyBlue)
+    
+    cylinder = QPainterPath()
+    cylinder.moveTo(-50, 0)
+    cylinder.lineTo(-50, -63/2.)
+    cylinder.lineTo(50, -63/2.)
+    cylinder.lineTo(50, 63/2.)
+    cylinder.lineTo(-50, 63/2.)
+    cylinder.closeSubpath()
+    painter.drawPath(cylinder)
+    
+    painter.restore()
+    

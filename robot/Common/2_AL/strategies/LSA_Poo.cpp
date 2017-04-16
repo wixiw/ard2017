@@ -6,14 +6,10 @@
  */
 
 #include "LSA_Poo.h"
+#include "../Robot2017.h"
 
 namespace ard
 {
 
-    LSA_Poo::LSA_Poo()
-    {
-        // TODO Auto-generated constructor stub
-
-    }
 
 } /* namespace ard */

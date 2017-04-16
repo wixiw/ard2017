@@ -13,12 +13,19 @@ DIR = dirname(abspath(__file__))
 sys.path.append(DIR + "../../com")
 from generated import *
 
+import time
+
 #
 # This class is a network middleware allowing SW to call RPC method 
 # A message is created behing any RPC call, it acts as a decorator of ArdHdlc
 # It is a Level 6 OSI layer (Presentation Layer), encoding data with procol buffer 
 #
+# Telemetry polling is started as soon as a bootup is received
+#
 class RemoteControl(QObject):
+    
+     #connection state :
+    networkStatus = pyqtSignal(bool)
     
     #-------------------------
     # TELEOP RECEIVE/Reply API
@@ -37,6 +44,8 @@ class RemoteControl(QObject):
         self.com = ArdHdlc()
         self.timer_telemetry = QTimer(self)
         self.timer_telemetry.timeout.connect(self._telemetryTick)
+        self.serialNumber.connect(self._bootup)
+        self.bootupReceived = False
       
       
     def __del__(self):
@@ -51,20 +60,22 @@ class RemoteControl(QObject):
         return self.com.getAvailablePorts(), self.com.getAvailableBaudrates()
     
     # Connect to the specified port at the specified baudrate
-    # If the connection is established, then start the polling thread to get telemetry
     # @param str port : like "COM1", ideally from getAvailablePorts()
     # @param int baudrate : ideally from getAvailableBaudrates()
     # @return bool : true if the connection succeed, false otherwise
     def connect(self, port, baudrate):
         res = self.com.connect(port, baudrate, self._frameReceived)
-        if res:
-          self.timer_telemetry.start(100)  
+        #Workaround as first message is often lost
+        self.getSerial()
+        #Reset to get bootup logs
+        self.resetCpu()
         return res 
         
     # go throught decorator
     def disconnect(self):
         self.timer_telemetry.stop()
         self.com.disconnect()
+        self.networkStatus.emit(False)
       
     # go throught decorator  
     def isConnected(self):
@@ -112,6 +123,12 @@ class RemoteControl(QObject):
     @pyqtSlot(RemoteControl_pb2.RemoteControlRequest)
     def setConfig(self, request):
         self._sendMsg(request)
+        
+    @pyqtSlot()
+    def getSerial(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.getSerial.SetInParent()
+        self._sendMsg(msg)
     
     @pyqtSlot()
     def resetCpu(self):
@@ -286,7 +303,10 @@ class RemoteControl(QObject):
     def _telemetryTick(self):
         #print("tick")
         self.getTelemetry()
+
+    @pyqtSlot(RemoteControl_pb2.SerialNumber)        
+    def _bootup(self, serial):
+        self.networkStatus.emit(True)
+        self.timer_telemetry.start(100)  
         pass
-        
-        
         

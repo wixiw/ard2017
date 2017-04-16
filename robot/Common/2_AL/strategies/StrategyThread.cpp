@@ -236,7 +236,7 @@ void StrategyThread::poo(uint8_t nb, uint8_t max, uint32_t& containerCount, cons
         res = false;
     }
 
-    stratInfo.containerMidleCenterNb = nbTransfered;
+    containerCount += nbTransfered;
     stratInfo.robotCylinderStockNb -= nbTransfered;
 
     String log =caller + "(" + nb + "): pooed=" + nbTransfered + ", contained : " + containerCount + "/" + max
@@ -284,6 +284,12 @@ void StrategyThread::take(bool& objectPresent, const String& caller)
     {
         LOG_ERROR(log);
     }
+}
+
+void StrategyThread::push(bool& objectPresent, const String& caller)
+{
+    objectPresent = false;
+    LOG_INFO(caller);
 }
 
 void StrategyThread::informWithdraw_MonocolorDispenser(uint8_t nb)
@@ -417,4 +423,43 @@ void StrategyThread::informTaken_OppCenter()
     take( stratInfo.cylinderOppCenter, "informTaken_OppCenter");
 }
 
+void StrategyThread::informPushedAway_Start()
+{
+    push( stratInfo.cylinderStart, "informPushedAway_Start");
+}
+
+void StrategyThread::informPushedAway_Container()
+{
+    push( stratInfo.cylinderContainer, "informPushedAway_Container");
+}
+
+void StrategyThread::informPushedAway_Center()
+{
+    push( stratInfo.cylinderCenter, "informPushedAway_Center");
+}
+
+void StrategyThread::informPushedAway_Corner()
+{
+    push( stratInfo.cylinderCorner, "informPushedAway_Corner");
+}
+
+void StrategyThread::informPushedAway_Crater()
+{
+    push( stratInfo.cylinderCrater, "informPushedAway_Crater");
+}
+
+void StrategyThread::informPushedAway_OppStart()
+{
+    push( stratInfo.cylinderOppStart, "informPushedAway_OppStart");
+}
+
+void StrategyThread::informPushedAway_OppContainer()
+{
+    push( stratInfo.cylinderOppContainer, "informPushedAway_OppContainer");
+}
+
+void StrategyThread::informPushedAway_OppCenter()
+{
+    push( stratInfo.cylinderOppCenter, "informPushedAway_OppCenter");
+}
 #endif

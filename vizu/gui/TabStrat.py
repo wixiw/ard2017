@@ -109,7 +109,7 @@ class TabStrat(QWidget):
     
     def paintEvent(self, event):
         if self.robotConfig == None:
-            print("Requesting current config")
+            #print("Requesting current config")
             self.getConfig.emit()    #telemetry reply data callback
         else:
             super().paintEvent(event)
@@ -136,6 +136,6 @@ class TabStrat(QWidget):
 
     @pyqtSlot(RemoteControl_pb2.Configuration)    
     def _updateConfig(self, msg):
-        print("New config received from robot, updating tab")
+        #print("New config received from robot, updating tab")
         self.robotConfig = msg
 
