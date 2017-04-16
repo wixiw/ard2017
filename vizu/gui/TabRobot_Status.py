@@ -66,7 +66,7 @@ class TabRobot_Status(QWidget):
         self.buildSensorsInfo()
         
     def buildSensorsInfo(self):
-        self.box_sensors = QGroupBox("Sensors")
+        self.box_sensors = QGroupBox("Color")
         self.label["RGBL"] = QLabel("?")
         self.label["objColor"] = QLabel("?")
         self.label["RGBL"].setAlignment(Qt.AlignRight)
@@ -75,11 +75,18 @@ class TabRobot_Status(QWidget):
         box_layout.addRow("RGB : ", self.label["RGBL"])
         box_layout.addRow("Color : ", self.label["objColor"])
         self.box_sensors.setLayout(box_layout)
-        self.layout.addWidget(self.box_sensors)
+        layoutH = QHBoxLayout()
+        layoutH.addWidget(self.box_sensors)
+        layoutH.addStretch()
+        self.layout.addLayout(layoutH)
+        
         
     def addSensorXor(self, name, column = 0):
         setattr(self, name, LedIndicator(self))
         self.columns[column].addRow(name,getattr(self, name))
+        
+    def getObjectColorStr(self):
+        return Types_pb2.eObjectColor.Name(self.robotState.actuators.colorSensor.color)
         
     #telemetry reply data callback
     @pyqtSlot(RemoteControl_pb2.Telemetry)     
@@ -121,6 +128,8 @@ class TabRobot_Status(QWidget):
             self.switchLifterUp.light(msg.actuators.switchLifterUp)
             self.switchLifterDown.light(msg.actuators.switchLifterDown)
             
+            color = msg.actuators.colorSensor
+            colorStr = self.getObjectColorStr()
             self.label["RGBL"].setText("(%d,%d,%d,%d)" % (color.r, color.g, color.b, color.l))
             self.label["RGBL"].setStyleSheet("QLabel { color : white; background-color: rgba(%d,%d,%d,%d); }" % (color.r, color.g, color.b, 255))
             self.label["objColor"].setText(colorStr)

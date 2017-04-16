@@ -93,6 +93,8 @@ message Melody
 message StratInfo2017
 {
     required eColor matchColor                     = 100;
+    required uint32 matchPassedTime                = 101; //time since the beginning of the match
+    required uint32 matchRemainingTime             = 102; //remaining time until the end
 
     required uint32 dispenserMonocolorNb           = 1; //Nb cylinders remaining in our mono-color dispenser
     required uint32 dispenserBicolorNb             = 2; //Nb cylinders remaining in our bi-color dispenser

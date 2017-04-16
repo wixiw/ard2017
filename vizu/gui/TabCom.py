@@ -84,10 +84,6 @@ class TabCom(QWidget):
         #keyboard shortcuts
         QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connectFromShorcut)
 
-    def __del__(self):
-        if self.com.isConnected():
-            self.com.disconnect()
-
     @pyqtSlot(bool)
     def _connectFromButton(self, pressed):
         if pressed:

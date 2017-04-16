@@ -27,22 +27,21 @@ from gui import *
 class ShortcutContext():
     AVAILABLE_OFFLINE = True
     
-    def __init__(self, shortcut, keycode, callback, helpText = "no help", isAvailableOffline = False):
+    def __init__(self, shortcut, callback, helpText = "no help", isAvailableOffline = False):
         self.shortcut = shortcut
-        self.keycode = keycode
         self.helpText = helpText 
         self.callback = callback
         self.isAvailableOffline = isAvailableOffline
         self.widget = None
         
     def build(self, parent):
-        self.widget = QShortcut(QKeySequence(self.keycode), parent)
+        self.widget = QShortcut(QKeySequence(self.shortcut), parent)
         self.widget.activated.connect(self.callback)
         
 class TabContext(ShortcutContext):
     
-    def __init__(self, tab, shortcut, keycode, callback, helpText = "no help", isAvailableOffline = False):
-        super().__init__(shortcut, keycode, callback, helpText, isAvailableOffline)
+    def __init__(self, tab, shortcut, callback, helpText = "no help", isAvailableOffline = False):
+        super().__init__(shortcut, callback, helpText, isAvailableOffline)
         self.tab = tab
 
 
@@ -63,12 +62,12 @@ class VizuMainScreen(QWidget):
         self.tabShortcutMap = QSignalMapper()
         self.tabShortcutMap.mapped.connect(self.selectTab)
         self.tabContexts = dict()
-        self.tabContexts["Com"]     = TabContext(TabCom(self, self.teleop),         "F1", Qt.Key_F1, self.tabShortcutMap.map, "Switch to Com tab.", TabContext.AVAILABLE_OFFLINE)
-        self.tabContexts["Log"]     = TabContext(TabLog(self),                      "F2", Qt.Key_F2, self.tabShortcutMap.map, "Switch to Log tab.", TabContext.AVAILABLE_OFFLINE)
-        self.tabContexts["Strat"]   = TabContext(TabStrat(self),                    "F3", Qt.Key_F3, self.tabShortcutMap.map, "Switch to Strat tab.")
-        self.tabContexts["Robot"]   = TabContext(TabRobot(self),                    "F4", Qt.Key_F4, self.tabShortcutMap.map, "Switch to Robot tab.")
-        self.tabContexts["Config"]  = TabContext(TabConfig(self),                   "F5", Qt.Key_F5, self.tabShortcutMap.map, "Switch to Config tab.")
-        self.tabContexts["Help"]    = TabContext(TabHelp(self),                     "F6", Qt.Key_F6, self.tabShortcutMap.map,"Switch to LHelpog tab.", TabContext.AVAILABLE_OFFLINE)
+        self.tabContexts["Com"]     = TabContext(TabCom(self, self.teleop),         "F1", self.tabShortcutMap.map, "Switch to Com tab.", TabContext.AVAILABLE_OFFLINE)
+        self.tabContexts["Log"]     = TabContext(TabLog(self),                      "F2", self.tabShortcutMap.map, "Switch to Log tab.", TabContext.AVAILABLE_OFFLINE)
+        self.tabContexts["Strat"]   = TabContext(TabStrat(self),                    "F3", self.tabShortcutMap.map, "Switch to Strat tab.")
+        self.tabContexts["Robot"]   = TabContext(TabRobot(self),                    "F4", self.tabShortcutMap.map, "Switch to Robot tab.")
+        self.tabContexts["Config"]  = TabContext(TabConfig(self),                   "F5", self.tabShortcutMap.map, "Switch to Config tab.")
+        self.tabContexts["Help"]    = TabContext(TabHelp(self),                     "F6", self.tabShortcutMap.map,"Switch to LHelpog tab.", TabContext.AVAILABLE_OFFLINE)
         
         #create shortcuts
         for tabName, tabContext in self.tabContexts.items():
@@ -127,9 +126,6 @@ class VizuMainScreen(QWidget):
         
         # disable tabs and shortcuts requiring a network connection
         self._handleNetworkStatus(False)
-    
-    def __del__(self):
-        self.writeSettings()
     
     @pyqtSlot(bool)
     def _handleNetworkStatus(self, connected):
@@ -192,6 +188,7 @@ class VizuMainScreen(QWidget):
         settings.setValue("size", self.size())
         settings.setValue("pos", self.pos())
         settings.endGroup()
+        print("Settings saved")
         
     @pyqtSlot(int)
     def _configShortcut(self, color):
@@ -199,21 +196,21 @@ class VizuMainScreen(QWidget):
         
     def initShortcuts(self):        
         # add shortcut to quit the app with ESC
-        self.shortcuts["ESC"] = ShortcutContext("ESC", Qt.Key_Escape, QCoreApplication.quit, "Quits vizu", ShortcutContext.AVAILABLE_OFFLINE)
+        self.shortcuts["Ctrl+C"] = ShortcutContext("Ctrl+C", QCoreApplication.quit, "Quits vizu", ShortcutContext.AVAILABLE_OFFLINE)
 
         # add shortcut to manage match
         self.configureMap = QSignalMapper()
         self.configureMap.mapped.connect(self._configShortcut)
             # YELLOW config with "y"
-        self.shortcuts["y"] = ShortcutContext("y", Qt.Key_Y, self.configureMap.map, "Configure a match with Alpha strategy and YELLOW color.")  
+        self.shortcuts["y"] = ShortcutContext("y", self.configureMap.map, "Configure a match with Alpha strategy and YELLOW color.")  
             # BLUE config with "b"       
-        self.shortcuts["b"] = ShortcutContext("b", Qt.Key_B, self.configureMap.map, "Configure a match with Alpha strategy and BLUE color.")  
+        self.shortcuts["b"] = ShortcutContext("b", self.configureMap.map, "Configure a match with Alpha strategy and BLUE color.")  
             # Start match with s
-        self.shortcuts["s"] = ShortcutContext("s", Qt.Key_S, self.teleop.startMatch, "Starts the match.") 
+        self.shortcuts["s"] = ShortcutContext("s", self.teleop.startMatch, "Starts the match.") 
             # reset with r
-        self.shortcuts["r"] = ShortcutContext("r", Qt.Key_R, self.teleop.resetCpu, "Reset the CPU.") 
+        self.shortcuts["r"] = ShortcutContext("r", self.teleop.resetCpu, "Reset the CPU.") 
             # block/unblock robot with x
-        self.shortcuts["x"] = ShortcutContext("x", Qt.Key_X, self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"]._blockFromShortcut, "Create/destroy a virtual opponent on the robot path") 
+        self.shortcuts["x"] = ShortcutContext("x", self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"]._blockFromShortcut, "Create/destroy a virtual opponent on the robot path") 
         
         #register shortcuts into main widget
         for name, shortcutContext in self.shortcuts.items():
@@ -221,29 +218,64 @@ class VizuMainScreen(QWidget):
             
         self.configureMap.setMapping(self.shortcuts["y"].widget, Types_pb2.PREF)
         self.configureMap.setMapping(self.shortcuts["b"].widget, Types_pb2.SYM)
+   
+      
+   
+class VizuApplication(QApplication):
+    
+    def __init__(self):
+        super().__init__(sys.argv)
+        self.setApplicationName("Vizu")
+        self.setOrganizationName("A.R.D.")
+        self.setOrganizationDomain("team-ard.com")
+        self.aboutToQuit.connect(self._quitHandler)
         
+        #Build main view
+        self.mainWindow = VizuMainScreen()
         
+        signal.signal(signal.SIGINT, self._ctrlC_handler)
+        
+    #start the application. Blocking call.
+    #@return program exit code (0 is ok, other is error)
+    def run(self):
+        self.mainWindow.show()
+        return self.exec_()
+    
+    def _ctrlC_handler(self, signum, frame):
+        #This call request pyqt to quit the application, it will requires the next event loop to execute
+        #Note that cleanup code is in the aboutToQuit() method
+        print("Ctrl+C stroked")
+        self.quit()
+        
+    def _quitHandler(self):
+        print("Application quit handler")
+        
+        #Save persisted settings
+        self.mainWindow.writeSettings()
+ 
 if __name__ == '__main__':
     import os
     
     # re-generate proto (not optimal, but as they will change a lot at project beginning...)
     # os.system("..\com\generateCom.bat .. off")
     
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    # Build application
+    app = VizuApplication()
+
+    #A timer is requested to let pyqt interpreter give hand to python on Ctr+c
+    #We miss a standard pyqt solution here IMO
+    #see http://stackoverflow.com/questions/4938723/what-is-the-correct-way-to-make-my-pyqt-application-quit-when-killed-from-the-co/4939113#4939113
+    timer = QTimer()
+    timer.start(250)  # You may change this if you wish.
+    timer.timeout.connect(lambda: None)  # Let the interpreter run each 500 ms.
+
+    #Run
+    res = app.run()
     
-    app = QApplication(sys.argv)
-    app.setApplicationName("Vizu")
-    app.setOrganizationName("A.R.D.")
-    app.setOrganizationDomain("team-ard.com")
-    
-    # Start application
-    screen = VizuMainScreen()
-    screen.show()
-    res = app.exec_()
-    
-    # save settings
-    del screen
-    print("Settings saved")
-    
-    
+    #Quit
+    print("Application quit with code : " + str(res))
     sys.exit(res)
+    
+    
+    
+    

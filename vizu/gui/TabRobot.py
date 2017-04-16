@@ -20,13 +20,30 @@ class TabRobot(QWidget):
         self.tab["Status"]   = TabRobot_Status(self)
         self.tab["Servos"]   = TabRobot_Servos(self)
         
-        self.tabs = QTabWidget(self)
+        #retrieve saved tab
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("TabId")
+        lastTabId = int(settings.value("Robot", 0))
+        settings.endGroup()
         
+        #register tabs
+        self.tabs = QTabWidget(self)
+        self.tabs.currentChanged.connect(self.tabChanged)
         for tabName, tab in self.tab.items():
             self.tabs.addTab(tab, tabName)
+        self.tabs.setCurrentIndex(lastTabId)
+            
         layout_main = QHBoxLayout(self)
         layout_main.addWidget(self.tabs)
-            
+       
+    @pyqtSlot(int)
+    def tabChanged(self, tabId):
+        self.tabs.setCurrentIndex(tabId)
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("TabId")
+        settings.setValue("Robot", tabId)
+        settings.endGroup()
+             
         
 if __name__ == '__main__':
     import sys

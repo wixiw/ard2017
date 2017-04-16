@@ -46,10 +46,6 @@ class RemoteControl(QObject):
         self.timer_telemetry.timeout.connect(self._telemetryTick)
         self.serialNumber.connect(self._bootup)
         self.bootupReceived = False
-      
-      
-    def __del__(self):
-        del self.timer_telemetry
           
 #---------------------------------------------------------------------------------
 # Public API :
@@ -73,13 +69,14 @@ class RemoteControl(QObject):
         
     # go throught decorator
     def disconnect(self):
+        print("disconnect")
         self.timer_telemetry.stop()
         self.com.disconnect()
         self.networkStatus.emit(False)
       
     # go throught decorator  
     def isConnected(self):
-        self.com.isConnected()
+        return self.com.isConnected()
     
 #---------------------------------------------------------------------------------
 # TELEOP SEND/Request API : any of the method below send a msg with the same name in RemoteControl_pb2.py
