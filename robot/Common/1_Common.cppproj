@@ -381,8 +381,7 @@
     </ToolchainSettings>
     <OutputFileName>libARD</OutputFileName>
     <OutputFileExtension>.a</OutputFileExtension>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>$(MSBuildProjectDirectory)\generateStateMachines.bat $(SolutionDir)</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="0_BSP\ArdOs.cpp">

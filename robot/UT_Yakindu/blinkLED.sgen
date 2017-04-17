@@ -1,0 +1,12 @@
+GeneratorModel for yakindu::cpp {
+    
+    statechart blinkLED{
+        
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/UT_Yakindu"
+            libraryTargetFolder = "robot/UT_Yakindu"
+        }
+
+    }
+}

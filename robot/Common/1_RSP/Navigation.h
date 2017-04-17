@@ -190,19 +190,16 @@ namespace ard
         void action_waitOppMove();
 
         //used to send a straight line trajectory to the motors, it's a relative order
-        void
-        applyCmdToGoStraight(double distInMm);
+        void applyCmdToGoStraight(double distInMm);
 
         //used to send an on place rotation trajectory to the motors, its a relative order
-        void
-        applyCmdToTurn(double angleInRad);
+        void applyCmdToTurn(double angleInRad);
 
         //interrupt the current movement
         void interruptCurrentMove();
 
         //used internally after a straight/turn/face order to check completeness
-        bool
-        subOrderFinished();
+        bool subOrderFinished();
 
         String
         sensToString(eDir sens);
