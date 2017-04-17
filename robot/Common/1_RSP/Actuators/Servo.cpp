@@ -20,102 +20,83 @@
 
 #include "../ArduinoCore/Arduino.h"
 #include "Servo.h"
+#include "BSP.h"
+
+// Architecture specific include
+#include "ServoTimers.h"
+
+#define Servo_VERSION           2     // software version of this library
+
+#define MIN_PULSE_WIDTH       680     // the shortest pulse sent to a servo
+#define MAX_PULSE_WIDTH      2320     // the longest pulse sent to a servo
+#define DEFAULT_PULSE_WIDTH  1500     // default pulse width when servo is attached
+#define REFRESH_INTERVAL    20000     // minumim time to refresh servos in microseconds
+#define MAX_SERVOS             12     // the maximum number of servos controlled by the library
+#define INVALID_SERVO         255     // flag indicating an invalid servo index
 
 #define usToTicks(_us)    (( clockCyclesPerMicrosecond() * _us) / 32)     // converts microseconds to tick
 #define ticksToUs(_ticks) (( (unsigned)_ticks * 32)/ clockCyclesPerMicrosecond() ) // converts from ticks back to microseconds
 
-#define TRIM_DURATION       1                               // compensation ticks to trim adjust for digitalWrite delays
-
 static servo_t servos[MAX_SERVOS];                          // static array of servo structures
-
 uint8_t ServoCount = 0;                                     // the total number of attached servos
-
-static volatile int8_t Channel[_Nbr_16timers];             // counter for the servo being pulsed for each timer (or -1 if refresh interval)
+static volatile int8_t currentServoId;                      // counter for the servo being pulsed for each timer (or -1 if refresh interval)
 
 // convenience macros
-#define SERVO_INDEX_TO_TIMER(_servo_nbr) ((timer16_Sequence_t)(_servo_nbr / SERVOS_PER_TIMER)) // returns the timer controlling this servo
-#define SERVO_INDEX_TO_CHANNEL(_servo_nbr) (_servo_nbr % SERVOS_PER_TIMER)       // returns the index of the servo on this timer
-#define SERVO_INDEX(_timer,_channel)  ((_timer*SERVOS_PER_TIMER) + _channel)     // macro to access servo index by timer and channel
-#define SERVO(_timer,_channel)  (servos[SERVO_INDEX(_timer,_channel)])            // macro to access servo class by timer and channel
-
 #define SERVO_MIN() (MIN_PULSE_WIDTH - this->minArduino * 4)  // minimum value in uS for this servo
 #define SERVO_MAX() (MAX_PULSE_WIDTH - this->maxArduino * 4)  // maximum value in uS for this servo
+
+static uint32_t REFRESH_INTERVAL_US = usToTicks(REFRESH_INTERVAL); //pre-compute value used in interrupt for better performance
 
 /************ static functions common to all instances ***********************/
 
 //------------------------------------------------------------------------------
 /// Interrupt handler for the TC0 channel 1.
 //------------------------------------------------------------------------------
-void Servo_Handler(timer16_Sequence_t timer, Tc *pTc, uint8_t channel);
-#if defined (_useOneTimer)
 void HANDLER_FOR_TIMER1(void)
 {
-    Servo_Handler(_timer1, TC_FOR_TIMER1, CHANNEL_FOR_TIMER1);
-}
-#endif
-#if defined (_useTwoTimers)
-void HANDLER_FOR_TIMER2(void)
-{
-    Servo_Handler(_timer2, TC_FOR_TIMER2, CHANNEL_FOR_TIMER2);
-}
-#endif
-#if defined (_useThreeTimers)
-void HANDLER_FOR_TIMER3(void)
-{
-    Servo_Handler(_timer3, TC_FOR_TIMER3, CHANNEL_FOR_TIMER3);
-}
-#endif
-#if defined (_useFourTimers)
-void HANDLER_FOR_TIMER4(void)
-{
-    Servo_Handler(_timer4, TC_FOR_TIMER4, CHANNEL_FOR_TIMER4);
-}
-#endif
-#if defined (_useFiveTimers)
-void HANDLER_FOR_TIMER5(void)
-{
-    Servo_Handler(_timer5, TC_FOR_TIMER5, CHANNEL_FOR_TIMER5);
-}
-#endif
+    //DEBUG_SET_HIGH(); //uncomment to check period and delay with oscilloscope
 
-void Servo_Handler(timer16_Sequence_t timer, Tc *tc, uint8_t channel)
-{
     // clear interrupt
-    tc->TC_CHANNEL[channel].TC_SR;
-    if (Channel[timer] < 0)
+    TC_FOR_TIMER1->TC_CHANNEL[CHANNEL_FOR_TIMER1].TC_SR;
+    if (currentServoId < 0)
     {
-        tc->TC_CHANNEL[channel].TC_CCR |= TC_CCR_SWTRG; // channel set to -1 indicated that refresh interval completed so reset the timer
+        TC_FOR_TIMER1->TC_CHANNEL[CHANNEL_FOR_TIMER1].TC_CCR |= TC_CCR_SWTRG; // channel set to -1 indicated that refresh interval completed so reset the timer
     }
     else
     {
-        if (SERVO_INDEX(timer,Channel[timer]) < ServoCount && SERVO(timer,Channel[timer]).Pin.isActive == true)
+        if (currentServoId < ServoCount && servos[currentServoId].Pin.isActive == true)
         {
-            digitalWrite(SERVO(timer,Channel[timer]).Pin.nbr, LOW); // pulse this channel low if activated
+            ServoPin_t pin = servos[currentServoId].Pin;
+            PIO_Clear(pin.port, pin.id);
         }
     }
 
-    Channel[timer]++;    // increment to the next channel
-    if ( SERVO_INDEX(timer,Channel[timer]) < ServoCount && Channel[timer] < SERVOS_PER_TIMER)
+    currentServoId++;    // increment to the next channel
+    if ( currentServoId < ServoCount && currentServoId < MAX_SERVOS)
     {
-        tc->TC_CHANNEL[channel].TC_RA = tc->TC_CHANNEL[channel].TC_CV + SERVO(timer,Channel[timer]).ticks;
-        if (SERVO(timer,Channel[timer]).Pin.isActive == true)
-        {    // check if activated
-            digitalWrite( SERVO(timer,Channel[timer]).Pin.nbr, HIGH); // its an active channel so pulse it high
+        TC_FOR_TIMER1->TC_CHANNEL[CHANNEL_FOR_TIMER1].TC_RA = TC_FOR_TIMER1->TC_CHANNEL[CHANNEL_FOR_TIMER1].TC_CV + servos[currentServoId].ticks;
+        // check if activated
+        if (servos[currentServoId].Pin.isActive == true)
+        {
+            ServoPin_t pin = servos[currentServoId].Pin;
+            PIO_Set(pin.port, pin.id);
         }
     }
     else
     {
         // finished all channels so wait for the refresh period to expire before starting over
-        if ((tc->TC_CHANNEL[channel].TC_CV) + 4 < usToTicks(REFRESH_INTERVAL))
+        if ((TC_FOR_TIMER1->TC_CHANNEL[CHANNEL_FOR_TIMER1].TC_CV) + 4 < REFRESH_INTERVAL_US)
         { // allow a few ticks to ensure the next OCR1A not missed
-            tc->TC_CHANNEL[channel].TC_RA = (unsigned int) usToTicks(REFRESH_INTERVAL);
+            TC_FOR_TIMER1->TC_CHANNEL[CHANNEL_FOR_TIMER1].TC_RA = REFRESH_INTERVAL_US;
         }
         else
         {
-            tc->TC_CHANNEL[channel].TC_RA = tc->TC_CHANNEL[channel].TC_CV + 4;  // at least REFRESH_INTERVAL has elapsed
+            TC_FOR_TIMER1->TC_CHANNEL[CHANNEL_FOR_TIMER1].TC_RA = TC_FOR_TIMER1->TC_CHANNEL[CHANNEL_FOR_TIMER1].TC_CV + 4;  // at least REFRESH_INTERVAL has elapsed
         }
-        Channel[timer] = -1; // this will get incremented at the end of the refresh period to start again at the first channel
+        currentServoId = -1; // this will get incremented at the end of the refresh period to start again at the first channel
     }
+
+    //DEBUG_SET_LOW(); //uncomment to check period and delay with oscilloscope : default empty duration (2 io write + 1 function call) is 750ns
 }
 
 static void _initISR(Tc *tc, uint32_t channel, uint32_t id, IRQn_Type irqn)
@@ -138,55 +119,13 @@ static void _initISR(Tc *tc, uint32_t channel, uint32_t id, IRQn_Type irqn)
     TC_Start(tc, channel);
 }
 
-static void initISR(timer16_Sequence_t timer)
-{
-#if defined (_useOneTimer)
-    if (timer == _timer1)
-        _initISR(TC_FOR_TIMER1, CHANNEL_FOR_TIMER1, ID_TC_FOR_TIMER1, IRQn_FOR_TIMER1);
-#endif
-#if defined (_useTwoTimers)
-    if (timer == _timer2)
-    _initISR(TC_FOR_TIMER2, CHANNEL_FOR_TIMER2, ID_TC_FOR_TIMER2, IRQn_FOR_TIMER2);
-#endif
-#if defined (_useThreeTimers)
-    if (timer == _timer3)
-    _initISR(TC_FOR_TIMER3, CHANNEL_FOR_TIMER3, ID_TC_FOR_TIMER3, IRQn_FOR_TIMER3);
-#endif
-#if defined (_useFourTimers)
-    if (timer == _timer4)
-    _initISR(TC_FOR_TIMER4, CHANNEL_FOR_TIMER4, ID_TC_FOR_TIMER4, IRQn_FOR_TIMER4);
-#endif
-#if defined (_useFiveTimers)
-    if (timer == _timer5)
-    _initISR(TC_FOR_TIMER5, CHANNEL_FOR_TIMER5, ID_TC_FOR_TIMER5, IRQn_FOR_TIMER5);
-#endif
-}
 
-static void finISR(timer16_Sequence_t timer)
-{
-#if defined (_useOneTimer)
-    TC_Stop(TC_FOR_TIMER1, CHANNEL_FOR_TIMER1);
-#endif
-#if defined (_useTwoTimers)
-    TC_Stop(TC_FOR_TIMER2, CHANNEL_FOR_TIMER2);
-#endif
-#if defined (_useThreeTimers)
-    TC_Stop(TC_FOR_TIMER3, CHANNEL_FOR_TIMER3);
-#endif
-#if defined (_useFourTimers)
-    TC_Stop(TC_FOR_TIMER4, CHANNEL_FOR_TIMER4);
-#endif
-#if defined (_useFiveTimers)
-    TC_Stop(TC_FOR_TIMER5, CHANNEL_FOR_TIMER5);
-#endif
-}
-
-static boolean isTimerActive(timer16_Sequence_t timer)
+static boolean isTimerActive()
 {
     // returns true if any servo is active on this timer
-    for (uint8_t channel = 0; channel < SERVOS_PER_TIMER; channel++)
+    for (uint8_t channel = 0; channel < MAX_SERVOS; channel++)
     {
-        if (SERVO(timer,channel).Pin.isActive == true)
+        if (servos[channel].Pin.isActive == true)
             return true;
     }
     return false;
@@ -240,6 +179,8 @@ uint8_t Servo::attach(int pin, int min, int max)
 
     pinMode(pin, OUTPUT); // set servo pin to output
     servos[this->servoIndex].Pin.nbr = pin;
+    servos[this->servoIndex].Pin.port = g_APinDescription[pin].pPort;
+    servos[this->servoIndex].Pin.id = g_APinDescription[pin].ulPin;
     // todo min/max check: abs(min - MIN_PULSE_WIDTH) /4 < 128
     this->minArduino = (MIN_PULSE_WIDTH - min) / 4; //resolution of min/max is 4 uS
     this->maxArduino = (MAX_PULSE_WIDTH - max) / 4;
@@ -252,13 +193,10 @@ bool Servo::enable()
     if( this->servoIndex == INVALID_SERVO )
         return false;
 
-    timer16_Sequence_t timer;
-
     // initialize the timer if it has not already been initialized
-    timer = SERVO_INDEX_TO_TIMER(servoIndex);
-    if (isTimerActive(timer) == false)
+    if (isTimerActive() == false)
     {
-        initISR(timer);
+        _initISR(TC_FOR_TIMER1, CHANNEL_FOR_TIMER1, ID_TC_FOR_TIMER1, IRQn_FOR_TIMER1);
     }
     servos[this->servoIndex].Pin.isActive = true;  // this must be set after the check for isTimerActive
     return true;
@@ -266,13 +204,10 @@ bool Servo::enable()
 
 void Servo::disable()
 {
-    timer16_Sequence_t timer;
-
     servos[this->servoIndex].Pin.isActive = false;
-    timer = SERVO_INDEX_TO_TIMER(servoIndex);
-    if (isTimerActive(timer) == false)
+    if (isTimerActive() == false)
     {
-        finISR(timer);
+        TC_Stop(TC_FOR_TIMER1, CHANNEL_FOR_TIMER1);
     }
 }
 
@@ -282,24 +217,21 @@ void Servo::write(int value)
     if( !servos[this->servoIndex].Pin.isActive )
         enable();
 
-    // treat values less than 544 as angles in degrees (valid values in microseconds are handled as microseconds)
-    if (value < MIN_PULSE_WIDTH)
-    {
-        if (value < 0)
-            value = 0;
-        else if (value > 180)
-            value = 180;
+    if (value < 0)
+        value = 0;
+    else if (value > 180)
+        value = 180;
 
-        if (value < angularMin)
-            value = angularMin;
-        else if (value > angularMax)
-            value = angularMax;
+    if (value < angularMin)
+        value = angularMin;
+    else if (value > angularMax)
+        value = angularMax;
 
-        currentAngleCommand = value;
+    currentAngleCommand = value;
 
-        //convert into us command
-        value = map(value, 0, 180, SERVO_MIN(), SERVO_MAX());
-    }
+    //convert into us command
+    value = map(value, 0, 180, SERVO_MIN(), SERVO_MAX());
+
     writeMicroseconds(value);
 }
 
@@ -314,7 +246,6 @@ void Servo::writeMicroseconds(int value)
         else if (value > SERVO_MAX())
             value = SERVO_MAX();
 
-        value = value - TRIM_DURATION;
         value = usToTicks(value);  // convert to ticks after compensating for interrupt overhead
         servos[channel].ticks = value;
     }
@@ -329,7 +260,7 @@ int Servo::readMicroseconds()
 {
     unsigned int pulsewidth;
     if (this->servoIndex != INVALID_SERVO)
-        pulsewidth = ticksToUs(servos[this->servoIndex].ticks) + TRIM_DURATION;
+        pulsewidth = ticksToUs(servos[this->servoIndex].ticks);
     else
         pulsewidth = 0;
 

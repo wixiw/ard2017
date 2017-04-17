@@ -3,17 +3,6 @@
 
 using namespace ard;
 
-// IT handlers
-IrqCB UART_Handler_CB = NULL;
-
-void UART_Handler(void)
-{
-    if(UART_Handler_CB)
-        UART_Handler_CB();
-    else
-        ASSERT(false);
-}
-
 /*
 // IT handlers
 void USART0_Handler(void)
@@ -38,9 +27,7 @@ USARTClass Serial3(USART3, USART3_IRQn, ID_USART3, &rx_buffer4, &tx_buffer4);
 
 BSP::BSP ():
         serial0(UART, ID_UART, SERIAL_BUF_SIZE /*RX bvuf size*/, SERIAL_BUF_SIZE /*TX bvuf size*/)
-{   
-    UART_Handler_CB = NULL;
-    
+{      
     watchdogSetup();
 
     //#if defined(USBCON)

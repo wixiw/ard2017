@@ -50,23 +50,30 @@ Robot2017* Robot2017::instance = NULL;
 //Obviously at such a frequence a Thread is too heavy as the context-switch duration would be higher than the period
 void veryFast_interrupt()
 {
-    //  digitalWrite(DEBUG_1, 1); //uncomment to check period and delay with oscilloscope
+    //  DEBUG_SET_HIGH(); //uncomment to check period and delay with oscilloscope
     Robot2017::getInstance().nav.updateFromInterrupt();
-    //  digitalWrite(DEBUG_1, 0); //uncomment to check period and delay with oscilloscope
+    //  DEBUG_SET_LOW(); //uncomment to check period and delay with oscilloscope
 }
 
 //Use this interrupt to execute period stuff that shall run at a high frequency
 //At this frequence a Thread is quite heavy as the context-switch duration would be roughtly equal to the period
 void fast_interrupt()
 {
-    //  digitalWrite(DEBUG_2, 1); //uncomment to check period and delay with oscilloscope
+//    DEBUG_SET_HIGH(); //uncomment to check period and delay with oscilloscope
     gpioToolsIsrCallback(PERIOD_FAST_IT_US);
-    //  digitalWrite(DEBUG_2, 0); //uncomment to check period and delay with oscilloscope
+//    DEBUG_SET_LOW(); //uncomment to check period and delay with oscilloscope
 }
 
-void Robot2017_UART_Handler()
+void UART_Handler(void)
 {
-    Robot2017::getInstance().bsp.serial0.IrqHandler();
+    //DEBUG_SET_HIGH(); //uncomment to check period and delay with oscilloscope
+
+    static ArdUART* uart = NULL;
+    if( uart == NULL )
+        uart = &Robot2017::getInstance().bsp.serial0;
+    uart->IrqHandler();
+
+    //DEBUG_SET_LOW(); //uncomment to check period and delay with oscilloscope : default empty duration (2 io write + 1 function call) is 750ns
 }
 
 Robot2017::Robot2017():
@@ -126,17 +133,13 @@ void Robot2017::bootOs()
     TIMER_GPIO.attachInterrupt(fast_interrupt);
 
     //Configure interrupts priorities
-    TIMER_CPU.setInterruptPriority              (PRIORITY_IRQ_CPU_STATS);
+    //not used with interrupts : TIMER_CPU
     TIMER_SERVO.setInterruptPriority            (PRIORITY_IRQ_SERVO);
     TIMER_NAV_STEPPER.setInterruptPriority      (PRIORITY_IRQ_STEPPERS);
     TIMER_GPIO.setInterruptPriority             (PRIORITY_IRQ_GPIO_FILTERS);
     TIMER_BUZZER.setInterruptPriority           (PRIORITY_IRQ_BUZZER);
     bsp.serial0.setInterruptPriority            (PRIORITY_IRQ_UART0);
     NVIC_SetPriority(WIRE_ISR_ID,                PRIORITY_IRQ_I2C0);
-
-    //Configure debug serial link
-    UART_Handler_CB = Robot2017_UART_Handler;
-
 
     //init all OS objects (including threads),
     //which should call all init() function

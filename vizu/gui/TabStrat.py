@@ -21,6 +21,11 @@ class TabStrat(QWidget):
         super().__init__(parent)
         self.teleop = teleop
         self.overview = TableOverview(self)
+        self.robotConfig = None
+        self.robotState = RemoteControl_pb2.Telemetry()
+        self.uiStarted = False
+        self.uiColor = Types_pb2.UNKNOWN
+        self.uiStrategy = 0 
         
         #build info tab
         self.label = dict()
@@ -39,12 +44,7 @@ class TabStrat(QWidget):
         self.layout.addLayout(self.layoutInfo)
         self.layout.addWidget(self.overview)
         
-        self.robotConfig = None
-        self.robotState = RemoteControl_pb2.Telemetry()
-        
-        self.uiStarted = False
-        self.uiColor = Types_pb2.UNKNOWN
-        self.uiStrategy = 0 
+
         
     def updateRobot(self, name):
         if name == "Pen":
@@ -78,7 +78,9 @@ class TabStrat(QWidget):
             #retrieve persisted choice
         settings = QSettings("config.ini", QSettings.IniFormat)
         settings.beginGroup("Strat")
-        self.comboStratId.setCurrentIndex(int(settings.value("id", 0)))
+        self.uiStrategy = int(settings.value("id", 0))
+        self.comboStratId.setCurrentIndex(self.uiStrategy)
+        print("Strat : XXXXXXXX " + str(self.uiStrategy))
         settings.endGroup()
         
         #Color button

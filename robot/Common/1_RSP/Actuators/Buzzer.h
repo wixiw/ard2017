@@ -68,18 +68,6 @@ namespace ard
         uint32_t currentToneCpt;
     };
 
-    class FakeBuzzer
-    {
-    public:
-        FakeBuzzer(DueTimer& timer, uint8_t pin, uint16_t queueSize){};
-        void bip(uint8_t nb){};
-        void playTone(uint16_t frequency, uint16_t lengthMs){};
-        void playTone(Tone const& tone){};
-        void silence(uint16_t lengthMs){};
-        void playMelody(Melody melody, uint16_t nbTones){};
-        void wait(){};
-    };
-
 } /* namespace ard */
 
 // NB: ALL NOTES DEFINED WITH STANDARD ENGLISH NAMES, EXCEPT FROM "A"

@@ -154,15 +154,13 @@ void UsageFault_Handler() {errorBlink(6);}
 //ARD : see FreeRTOSConfig.h
 void enterIdleCB()
 {
-    digitalWrite(LED_DUE_RX, LOW);
-    digitalWrite(LED1, HIGH);
+    PIO_Clear(PIOC, PIO_PC30);// LED_DUE_RX
 }
 
 //ARD : see FreeRTOSConfig.h
 void exitIdleCB()
 {
-    digitalWrite(LED_DUE_RX, HIGH);
-    digitalWrite(LED1, LOW);
+    PIO_Set(PIOC, PIO_PC30); // LED_DUE_RX
 }
 
 //ARD : configure the timer used to compute CPU statistics Timer 0 chan 0 is used

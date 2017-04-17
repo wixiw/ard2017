@@ -139,8 +139,6 @@ namespace ard
         FilteredInput user2; //user2 is on the right (test/master choice)
 
         Buzzer2017 buzzer;
-        //TODO mute buzzer
-        //FakeBuzzer buzzer;
 
         apb_HmiState const& getState();
 

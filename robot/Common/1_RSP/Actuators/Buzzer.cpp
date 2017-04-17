@@ -14,6 +14,7 @@
 
 #include "Buzzer.h"
 #include "ArdOs.h"
+#include "BSP.h"
 
 using namespace ard;
 
@@ -29,8 +30,12 @@ static Buzzer* buzInst = NULL;
 
 void Buzzer_Handler(void)
 {
+    //DEBUG_SET_HIGH(); //uncomment to check period and delay with oscilloscope
+
     ASSERT(buzInst);
     buzInst->interrupt();
+
+    //DEBUG_SET_LOW(); //uncomment to check period and delay with oscilloscope : default empty duration (2 io write + 1 function call) is 750ns
 }
 
 Buzzer::Buzzer(DueTimer& timer, uint8_t pin, uint16_t queueSize)

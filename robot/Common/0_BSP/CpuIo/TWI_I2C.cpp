@@ -413,7 +413,9 @@ static void Wire_Deinit(void) {
 TWI_I2C I2C_0 = TWI_I2C(WIRE_INTERFACE, Wire_Init, Wire_Deinit);
 
 void WIRE_ISR_HANDLER(void) {
+//    PIO_Set(PIOA, PIO_PA10A_RXD0); //uncomment to check period and delay with oscilloscope
 	I2C_0.onService();
+//	PIO_Clear(PIOA, PIO_PA10A_RXD0); //uncomment to check period and delay with oscilloscope
 }
 #endif
 

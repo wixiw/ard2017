@@ -75,4 +75,8 @@
 
 #define ANA0_VBAT       A0
 
+//Rise the debug1 pin to HIGH
+#define DEBUG_SET_HIGH() PIO_Set(PIOA, PIO_PA10A_RXD0)
+#define DEBUG_SET_LOW()  PIO_Clear(PIOA, PIO_PA10A_RXD0)
+
 #endif /* BSP_H_ */

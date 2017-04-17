@@ -47,7 +47,7 @@ void ledInterrupt()
     BspTest bsp;
 #endif
 
-void UT_ArdUART_UART_Handler()
+void UART_Handler()
 {
     bsp.serial0.IrqHandler();
 }
@@ -234,7 +234,6 @@ int main(void)
     dh_init();
     
 #ifdef NEW
-    UART_Handler_CB = UT_ArdUART_UART_Handler;
     bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
 #endif
     ArdOs::init();
