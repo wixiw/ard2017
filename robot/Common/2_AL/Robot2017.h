@@ -113,6 +113,9 @@ namespace ard
         //Public RSP interface : because i'm too lazy to hide it, please feel free to implement the decorator
         Navigation nav;
 
+        //Chrono keeps track of the time during the match
+        Chrono chrono;
+
     private:
 
         //RSP implementation

@@ -17,6 +17,7 @@
 #include "Sensors/Adafruit_TCS34725.h"
 #include "Sensors/ColorSensor.h"
 
+#include "Chrono.h"
 #include "Hmi.h"
 #include "Log.h"
 #include "Navigation.h"

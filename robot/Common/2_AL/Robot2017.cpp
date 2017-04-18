@@ -83,6 +83,7 @@ Robot2017::Robot2017():
     strategy(),
 #endif
     nav(),
+    chrono(),
     hmi(TIMER_BUZZER),
     log(LogDispatcher::getInstance()),
 #ifdef BUILD_REMOTE_CONTROL

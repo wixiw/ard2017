@@ -95,8 +95,14 @@ class TabStrat(QWidget):
         #Labels
         self.label["bootTime"] = QLabel("0")
         self.label["bootTime"].setAlignment(Qt.AlignRight)
+        self.label["chronoMatch"] = QLabel("0")
+        self.label["chronoMatch"].setAlignment(Qt.AlignRight)
+        self.label["timeLeft"] = QLabel("0")
+        self.label["timeLeft"].setAlignment(Qt.AlignRight)
         box_layout = QFormLayout()
         box_layout.addRow("boot time (s): ", self.label["bootTime"])
+        box_layout.addRow("chrono match (s): ", self.label["chronoMatch"])
+        box_layout.addRow("time left (s): ", self.label["timeLeft"])
         box_layout.addRow("strategy: ", self.comboStratId)
         box_layout.addRow("color: ", self.buttonColor)
         box_layout.addRow("start: ", self.buttonStart)
@@ -165,14 +171,23 @@ class TabStrat(QWidget):
             pose = self.getRobotPosition()
             color = self.robotState.actuators.colorSensor
             colorStr = self.getObjectColorStr()
+            chrono = self.robotState.chrono.chrono_ms/1000.
             self.overview.robotPose = pose
             self.label["bootTime"].setText("%0.1f" % (self.robotState.date/1000.))
+            self.label["chronoMatch"].setText("%0.1f" % (chrono))
+            self.label["timeLeft"].setText("%0.1f" % (self.robotState.chrono.timeLeft_ms/1000.))
             self.label["x"].setText("%0.0f" %pose.x)
             self.label["y"].setText("%0.0f" %pose.y)
             self.label["h"].setText("%0.0f" % math.degrees(pose.h))
             self.label["state"].setText(self.getMotionStateStr())
             self.label["order"].setText(self.getMotionOrderStr())
             self.label["stock"].setText(str(msg.stratInfo.robotCylinderStockNb))
+            
+            if chrono > 90.0:
+                self.label["chronoMatch"].setStyleSheet("QLabel { color: red }")
+            else:
+                self.label["chronoMatch"].setStyleSheet("QLabel { color: black }")
+            
             self.update()
 
     @pyqtSlot(RemoteControl_pb2.Configuration)    

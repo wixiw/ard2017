@@ -43,10 +43,11 @@ message Log {
 message Telemetry
 {
     required uint32            date              = 1;
-    required NavState          nav               = 2;
-    required ActuatorsState    actuators         = 3;
-    required HmiState          hmi               = 4;
-    required StratInfo2017     stratInfo         = 5;
+    required Chrono            chrono            = 2;
+    required NavState          nav               = 3;
+    required ActuatorsState    actuators         = 4;
+    required HmiState          hmi               = 5;
+    required StratInfo2017     stratInfo         = 6;
 }
 
 //WARNING : To keep in sync with RobotParameters.h/cpp

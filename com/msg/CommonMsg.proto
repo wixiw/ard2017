@@ -22,6 +22,12 @@ message PointCap
     required float h = 3; //°
 }
 
+message Chrono {
+    required bool       started         = 1; // is the match started
+    required uint32     chrono_ms       = 2; // time since beginnnog of the match
+    required uint32     timeLeft_ms     = 3; // time left for the match (funny action non included)
+}
+
 message NavState {
     required eNavState       state                  = 10; //current motion state
     required eNavOrder       order                  = 11; //current motion order

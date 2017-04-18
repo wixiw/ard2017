@@ -193,6 +193,7 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
     response.type.telemetry.stratInfo       = robot->strategy.getStratInfo();
 #endif
     response.type.telemetry.hmi            = robot->getHmiState();
+    response.type.telemetry.chrono         = robot->chrono.getChrono();
 
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode telemetry message.");

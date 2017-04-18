@@ -1127,6 +1127,12 @@
     <Compile Include="1_RSP\Actuators\ServoTimers.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\Chrono.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Chrono.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\ComStack\ArdHdlc.cpp">
       <SubType>compile</SubType>
     </Compile>

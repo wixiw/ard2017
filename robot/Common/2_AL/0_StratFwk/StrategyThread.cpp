@@ -120,6 +120,7 @@ void StrategyThread::run()
 
         //Execute selected strategy
         robot->buzzer().bip(1);
+        robot->chrono.startMatch();
         strategies[strategyId].functor(Robot2017::getInstance());
     }
 }
