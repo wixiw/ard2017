@@ -1,0 +1,32 @@
+GeneratorModel for yakindu::cpp {
+
+    statechart FSM_Arms {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+
+    }
+    
+    statechart FSM_Lifter {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+
+    }
+    
+    statechart FSM_Willy {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+
+    }
+}

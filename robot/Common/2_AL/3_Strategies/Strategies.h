@@ -8,9 +8,9 @@
 #ifndef ROBOT_COMMON_2_AL_STRATEGIES_STRATEGIES_H_
 #define ROBOT_COMMON_2_AL_STRATEGIES_STRATEGIES_H_
 
-#include "../LSA/Dispenser.h"
-#include "../LSA/GetCylinder.h"
-#include "../LSA/Poo.h"
+#include "2_LSA/Dispenser.h"
+#include "2_LSA/GetCylinder.h"
+#include "2_LSA/Poo.h"
 
 namespace ard
 {

@@ -6,7 +6,7 @@
  */
 
 #include "Poo.h"
-#include "../Robot2017.h"
+#include "Robot2017.h"
 
 namespace ard
 {

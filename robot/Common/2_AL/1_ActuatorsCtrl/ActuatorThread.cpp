@@ -12,9 +12,8 @@
 using namespace ard;
 
 ActuatorThread::ActuatorThread():
-        PollerThread("Actuator", PRIO_ACTUATORS, STACK_ACTUATORS, PERIOD_ACTUATORS, 2),
+        PollerThread("Actuator", PRIO_ACTUATORS, STACK_ACTUATORS, PERIOD_ACTUATORS, 3),
         stockColor(),
-        claws(),
         switchArmLout(      SWITCH_ARM_L_OUT, 100, 10),
         switchArmLin(       SWITCH_ARM_L_IN, 100, 10),
         switchArmRout(      SWITCH_ARM_R_OUT, 100, 10),
@@ -29,9 +28,13 @@ ActuatorThread::ActuatorThread():
         servoRightArm(      SERVO3, 0, 180),
         servoLeftWheel(     SERVO4, 0, 180),
         servoRightWheel(    SERVO5, 0, 180),
-        servoFunnyAction(   SERVO6, 0, 180)
+        servoFunnyAction(   SERVO6, 0, 180),
+        fsmTimeWheel(),
+        lifter(*this, fsmTimeWheel),
+        arms(*this, fsmTimeWheel)
 {
     state = apb_ActuatorsState_init_default;
+    arms.setLifter(lifter);
 //    ASSERT(servoLifter.enable());
 //    ASSERT(servoLeftArm.enable());
 //    ASSERT(servoRightArm.enable());
@@ -43,9 +46,16 @@ ActuatorThread::ActuatorThread():
 void ActuatorThread::init()
 {
     addPolledObject(stockColor);
-    addPolledObject(claws);
+    addPolledObject(lifter);
+    addPolledObject(arms);
 
     PollerThread::init();
+}
+
+void ActuatorThread::run()
+{
+    fsmTimeWheel.run(getPeriod());
+    PollerThread::run();
 }
 
 apb_ActuatorsState const& ActuatorThread::getState()

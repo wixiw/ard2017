@@ -6,7 +6,7 @@
  */
 
 #include "Strategies.h"
-#include "../Robot2017.h"
+#include "Robot2017.h"
 
 #ifdef BUILD_STRATEGY
 
@@ -46,23 +46,19 @@ void ard::Strategy_ButtonTest(Robot2017& robot)
         if (robot.isPreferedColor())
         {
             robot.setLed(LED1, eLedState::ON);
-            robot.actuators.claws.arm();
         }
         else
         {
             robot.setLed(LED1, eLedState::OFF);
-            robot.actuators.claws.release();
         }
 
         if (robot.getStrategyId() & 0x02)
         {
             robot.setLed(LED2, eLedState::ON);
-            robot.actuators.claws.open();
         }
         else
         {
             robot.setLed(LED2, eLedState::OFF);
-            robot.actuators.claws.close();
         }
 
         if (robot.getStrategyId() & 0x02)

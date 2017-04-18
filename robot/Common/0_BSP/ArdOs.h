@@ -470,10 +470,10 @@ namespace ard
 
         //Overrides Thread : initialize all polled objects
         //User should not call this, it is automatically called during the ArdOs::init() call
-        void init() override;
+        virtual void init() override;
 
         //Implements Threads : run all actuator systems and sensors
-        void run () override;
+        virtual void run () override;
 
         //Add a polled object the list, shall be called before calling init()
         void addPolledObject(PolledObject& object );

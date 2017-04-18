@@ -8,7 +8,7 @@
 #ifndef ROBOT_COMMON_2_AL_STRATEGIES_DISPENSER_H_
 #define ROBOT_COMMON_2_AL_STRATEGIES_DISPENSER_H_
 
-#include "StratInterfaces.h"
+#include "StratFwk.h"
 
 namespace ard
 {

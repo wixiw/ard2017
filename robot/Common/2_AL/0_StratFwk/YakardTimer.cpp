@@ -6,8 +6,6 @@
  */
 
 #include "YakardTimer.h"
-#include "BSP.h"
-#include "generated/TimedStatemachineInterface.h";
 
 using namespace ard;
 

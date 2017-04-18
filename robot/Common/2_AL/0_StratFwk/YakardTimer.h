@@ -8,12 +8,11 @@
 #ifndef ROBOT_UT_YAKINDU_YAKARDTIMER_H_
 #define ROBOT_UT_YAKINDU_YAKARDTIMER_H_
 
-#include "TimerInterface.h"
+#include "generated/TimerInterface.h"
+#include "generated/TimedStatemachineInterface.h"
 #include "BSP.hpp"
 
 #define NB_YAKARD_TIMERS 10
-
-class DueTimer;
 
 namespace ard
 {

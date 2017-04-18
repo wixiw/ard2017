@@ -80,7 +80,6 @@ class TabStrat(QWidget):
         settings.beginGroup("Strat")
         self.uiStrategy = int(settings.value("id", 0))
         self.comboStratId.setCurrentIndex(self.uiStrategy)
-        print("Strat : XXXXXXXX " + str(self.uiStrategy))
         settings.endGroup()
         
         #Color button

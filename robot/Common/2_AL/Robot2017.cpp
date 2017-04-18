@@ -6,7 +6,7 @@
  */
 
 #include "Robot2017.h"
-#include "strategies/Strategies.h"
+#include "3_Strategies/Strategies.h"
 
 //Timer 0 reserved for ARD cpu stats, instanciated for IRQ priority config
 #define TIMER_CPU           Timer0

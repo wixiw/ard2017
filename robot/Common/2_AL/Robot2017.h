@@ -10,8 +10,8 @@
 
 #include "BSP.hpp"
 #include "RSP.h"
-#include "ActuatorsCtrl/ActuatorThread.h"
-#include "StrategyThread.h"
+#include "0_StratFwk/StrategyThread.h"
+#include "1_ActuatorsCtrl/ActuatorThread.h"
 #include "RemoteControl.h"
 
 namespace ard

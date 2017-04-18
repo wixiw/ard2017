@@ -26,7 +26,7 @@ if [%2] == [] (
 @echo %VERBOSE%
 
 REM Configure script
-set INPUT=%ARD_PATH%\robot\Common\2_AL\strategies
+set INPUT=%ARD_PATH%\robot\Common\2_AL\
 
 REM inform user about configuration
 echo Running from folder       : %ARD_PATH% 

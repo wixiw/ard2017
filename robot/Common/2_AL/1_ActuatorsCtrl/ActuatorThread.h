@@ -8,8 +8,9 @@
 #ifndef ROBOTS_ACTUATORTHREAD_H_
 #define ROBOTS_ACTUATORTHREAD_H_
 
-#include "RSP.h"
-#include "ActuatorX.h"
+#include "StratFwk.h"
+#include "Arms.h"
+#include "Lifter.h"
 
 #ifdef BUILD_STRATEGY
 
@@ -23,12 +24,14 @@ namespace ard
         //Overrides Thread : register polled objects
         void init() override;
 
+        //Overrides Thread : run timer for state machines
+        void run() override;
+
         //used for telemetry or any instropection
         apb_ActuatorsState const& getState();
 
         //data are public to prevent having to write a decorator, but anyone is welcome to do it
         ColorSensor stockColor;
-        ActuatorX claws;
 
         FilteredInput switchArmLout;
         FilteredInput switchArmLin;
@@ -49,6 +52,10 @@ namespace ard
 
     private:
         apb_ActuatorsState state; //cache to hold telemetry data
+
+        YakardTimer fsmTimeWheel;
+        Lifter      lifter;
+        Arms        arms;
     };
 
 } /* namespace ard */
