@@ -80,7 +80,7 @@ Robot2017::Robot2017():
     bsp(),
 #ifdef BUILD_STRATEGY
     actuators(),
-    strategy(),
+    lifecycle(),
 #endif
     nav(),
     chrono(),
@@ -105,20 +105,20 @@ void Robot2017::bootOs()
 #endif
 
 #ifdef BUILD_STRATEGY
-    strategy.attachRobot(this);
-    strategy.registerStrategy("Match",          Strategy_Match);
-    strategy.registerStrategy("Homol",          Strategy_Homol);
-    strategy.registerStrategy("Invade",         Strategy_Invade);
-    strategy.registerStrategy("Selftest",       Strategy_Selftest);
-    strategy.registerStrategy("Tanguy",         Strategy_Tanguy);
-    strategy.registerStrategy("Quentin",        Strategy_Quentin);
-    strategy.registerStrategy("Willy",          Strategy_Willy);
-    strategy.registerStrategy("UT LEDs",        Strategy_LedTest);
-    strategy.registerStrategy("UT Button",      Strategy_ButtonTest);
-    strategy.registerStrategy("UT Omron",       Strategy_OmronTest);
-    strategy.registerStrategy("UT CalibRot",    Strategy_CalibRot);
-    strategy.registerStrategy("UT CalibLin",    Strategy_CalibLin);
-    strategy.registerStrategy("UT Motion",      Strategy_MotionTest);
+    lifecycle.attachRobot(this);
+    lifecycle.registerStrategy("Match",          Strategy_Match);
+    lifecycle.registerStrategy("Homol",          Strategy_Homol);
+    lifecycle.registerStrategy("Invade",         Strategy_Invade);
+    lifecycle.registerStrategy("Selftest",       Strategy_Selftest);
+    lifecycle.registerStrategy("Tanguy",         Strategy_Tanguy);
+    lifecycle.registerStrategy("Quentin",        Strategy_Quentin);
+    lifecycle.registerStrategy("Willy",          Strategy_Willy);
+    lifecycle.registerStrategy("UT LEDs",        Strategy_LedTest);
+    lifecycle.registerStrategy("UT Button",      Strategy_ButtonTest);
+    lifecycle.registerStrategy("UT Omron",       Strategy_OmronTest);
+    lifecycle.registerStrategy("UT CalibRot",    Strategy_CalibRot);
+    lifecycle.registerStrategy("UT CalibLin",    Strategy_CalibLin);
+    lifecycle.registerStrategy("UT Motion",      Strategy_MotionTest);
 #endif
     
     //Connect the log service
@@ -170,7 +170,7 @@ void Robot2017::dieMotherFucker()
 
     //last action as strategy thread is certainly called^^
 #ifdef BUILD_STRATEGY
-    strategy.stopThread();
+    lifecycle.stopThread();
 #endif
     setRGBled(RED, FAST_BLINK);
     setLed(LED1, OFF);
@@ -204,7 +204,7 @@ IEvent* Robot2017::getStartOutEvt()
     return hmi.tirette.getEvent(FALLING_EDGE);
 }
 
-bool Robot2017::isPreferedColor() const
+bool Robot2017::isColorSwitchOnPrefered() const
 {
     return hmi.matchColor.read();
 }

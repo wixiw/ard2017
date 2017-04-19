@@ -8,9 +8,12 @@
 #ifndef ROBOT_UT_YAKINDU_YAKARDTIMER_H_
 #define ROBOT_UT_YAKINDU_YAKARDTIMER_H_
 
+#include "BSP.hpp"
+
+#ifdef BUILD_STRATEGY
+
 #include "generated/TimerInterface.h"
 #include "generated/TimedStatemachineInterface.h"
-#include "BSP.hpp"
 
 #define NB_YAKARD_TIMERS 10
 
@@ -42,7 +45,7 @@ namespace ard
     protected:
         /* internal arguments of a timer pthread */
         typedef struct {
-            int32_t time_ms;
+            DelayMs time_ms;
             bool periodic;
             DelayMs elapsed_time_ms;
             sc_eventid pt_evid;
@@ -53,5 +56,7 @@ namespace ard
     };
 
 } /* namespace ard */
+
+#endif //build strategy
 
 #endif /* ROBOT_UT_YAKINDU_YAKARDTIMER_H_ */

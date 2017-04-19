@@ -8,9 +8,10 @@
 #ifndef ROBOTS_ROBOT2017_H_
 #define ROBOTS_ROBOT2017_H_
 
+#include "0_StratFwk/Lifecycle.h"
+#include "0_StratFwk/StrategyModel2017.h"
 #include "BSP.hpp"
 #include "RSP.h"
-#include "0_StratFwk/StrategyThread.h"
 #include "1_ActuatorsCtrl/ActuatorThread.h"
 #include "RemoteControl.h"
 
@@ -49,7 +50,7 @@ namespace ard
         IEvent* getStartOutEvt();
 
         //answer true when color switch is on the preferred color
-        bool isPreferedColor() const;
+        bool isColorSwitchOnPrefered() const;
 
         //Combines strategy switch to creates an integer. Left switch represent highest bit, Right one lowest one.
         uint8_t getStrategyId() const;
@@ -108,7 +109,8 @@ namespace ard
         //Applicative layer
 #ifdef BUILD_STRATEGY
         ActuatorThread actuators;
-        StrategyThread strategy;
+        Lifecycle lifecycle;
+        StrategyModel2017 strategy;
 #endif
         //Public RSP interface : because i'm too lazy to hide it, please feel free to implement the decorator
         Navigation nav;

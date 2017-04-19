@@ -249,7 +249,7 @@ void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
     uint8_t strategy = request.type.configureMatch.strategy;
     eColor color = (eColor)(request.type.configureMatch.matchColor);
 
-    robot->strategy.configureMatch(strategy, color);
+    robot->lifecycle.configureMatch(strategy, color);
 #endif
     events[EVT_CONFIGURE].publish();
 }

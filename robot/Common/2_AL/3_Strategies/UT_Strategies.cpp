@@ -43,7 +43,7 @@ void ard::Strategy_ButtonTest(Robot2017& robot)
     LOG_INFO("STRAT : Strategy_ButtonTest.");
     while (1)
     {
-        if (robot.isPreferedColor())
+        if (robot.isColorSwitchOnPrefered())
         {
             robot.setLed(LED1, eLedState::ON);
         }

@@ -8,8 +8,10 @@
 #ifndef ROBOT_COMMON_2_AL_STRATEGIES_STRATINTERFACES_H_
 #define ROBOT_COMMON_2_AL_STRATEGIES_STRATINTERFACES_H_
 
-#include <stdint.h>
 #include "RSP.h"
+
+#ifdef BUILD_STRATEGY
+#include <stdint.h>
 
 namespace ard
 {
@@ -63,5 +65,7 @@ namespace ard
 //        virtual result execute(uint8_t nbItems = 0) override;
 //    };
 //}
+
+#endif //build strategy
 
 #endif /* ROBOT_COMMON_2_AL_STRATEGIES_STRATINTERFACES_H_ */
