@@ -8,6 +8,8 @@
 #include "Arms.h"
 #include "ActuatorThread.h"
 
+#ifdef BUILD_STRATEGY
+
 using namespace ard;
 
 Arms::Arms(ActuatorThread& parent, TimerInterface& timer):
@@ -48,3 +50,4 @@ void Arms::update(TimeMs sinceLastCall)
     acts.servoRightWheel.   write(fsm.getDefaultSCI()->get_rightWheel());
 }
 
+#endif

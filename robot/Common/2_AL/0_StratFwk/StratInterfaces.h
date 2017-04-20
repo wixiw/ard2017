@@ -53,6 +53,13 @@ namespace ard
         Robot2017& robot;
         PointCap entryPoint;
     };
+
+    /**
+     * Parent class of all strategies
+     */
+    class IStrategy: public PolledObject
+    {
+    };
 }
 
    //exemple :

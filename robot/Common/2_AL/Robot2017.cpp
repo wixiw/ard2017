@@ -6,7 +6,6 @@
  */
 
 #include "Robot2017.h"
-#include "3_Strategies/Strategies.h"
 
 //Timer 0 reserved for ARD cpu stats, instanciated for IRQ priority config
 #define TIMER_CPU           Timer0
@@ -81,6 +80,18 @@ Robot2017::Robot2017():
 #ifdef BUILD_STRATEGY
     actuators(),
     lifecycle(),
+    fsmTimer(),
+    strategy(),
+    stratFunnyAction(),
+    stratHomol(fsmTimer),
+    stratInstallation(fsmTimer),
+    stratInvade(fsmTimer),
+    stratMatch(fsmTimer),
+    stratQuentin(fsmTimer),
+    stratSelftest(fsmTimer),
+    stratTanguy(fsmTimer),
+    stratWilly(fsmTimer),
+
 #endif
     nav(),
     chrono(),
@@ -106,19 +117,23 @@ void Robot2017::bootOs()
 
 #ifdef BUILD_STRATEGY
     lifecycle.attachRobot(this);
-    lifecycle.registerStrategy("Match",          Strategy_Match);
-    lifecycle.registerStrategy("Homol",          Strategy_Homol);
-    lifecycle.registerStrategy("Invade",         Strategy_Invade);
-    lifecycle.registerStrategy("Selftest",       Strategy_Selftest);
-    lifecycle.registerStrategy("Tanguy",         Strategy_Tanguy);
-    lifecycle.registerStrategy("Quentin",        Strategy_Quentin);
-    lifecycle.registerStrategy("Willy",          Strategy_Willy);
-    lifecycle.registerStrategy("UT LEDs",        Strategy_LedTest);
-    lifecycle.registerStrategy("UT Button",      Strategy_ButtonTest);
-    lifecycle.registerStrategy("UT Omron",       Strategy_OmronTest);
-    lifecycle.registerStrategy("UT CalibRot",    Strategy_CalibRot);
-    lifecycle.registerStrategy("UT CalibLin",    Strategy_CalibLin);
-    lifecycle.registerStrategy("UT Motion",      Strategy_MotionTest);
+    stratInstallation.attachRobot(this);
+    stratWilly.attachRobot(this);
+    lifecycle.registerMatchInstallation(stratInstallation);
+    lifecycle.registerFunnyAction(stratFunnyAction);
+    lifecycle.registerStrategy("Match",          stratMatch);
+    lifecycle.registerStrategy("Homol",          stratHomol);
+    lifecycle.registerStrategy("Invade",         stratInvade);
+    lifecycle.registerStrategy("Selftest",       stratSelftest);
+    lifecycle.registerStrategy("Tanguy",         stratTanguy);
+    lifecycle.registerStrategy("Quentin",        stratQuentin);
+    lifecycle.registerStrategy("Willy",          stratWilly);
+//    lifecycle.registerStrategy("UT LEDs",        Strategy_LedTest);
+//    lifecycle.registerStrategy("UT Button",      Strategy_ButtonTest);
+//    lifecycle.registerStrategy("UT Omron",       Strategy_OmronTest);
+//    lifecycle.registerStrategy("UT CalibRot",    Strategy_CalibRot);
+//    lifecycle.registerStrategy("UT CalibLin",    Strategy_CalibLin);
+//    lifecycle.registerStrategy("UT Motion",      Strategy_MotionTest);
 #endif
     
     //Connect the log service
@@ -179,29 +194,9 @@ void Robot2017::dieMotherFucker()
     setLed(LED4, OFF);
 }
 
-IEvent* ard::Robot2017::getRemoteControlEvt(eRemoteControlEvtId id)
-{
-#ifdef BUILD_REMOTE_CONTROL
-    return remoteControl.getEvent(id);
-#else
-    static Event<1> defaultEvent;
-    return &defaultEvent;
-#endif
-}
-
 bool Robot2017::isStartPlugged() const
 {
     return hmi.tirette.read();
-}
-
-IEvent* Robot2017::getStartInEvt()
-{
-    return hmi.tirette.getEvent(RISING_EDGE);
-}
-
-IEvent* Robot2017::getStartOutEvt()
-{
-    return hmi.tirette.getEvent(FALLING_EDGE);
 }
 
 bool Robot2017::isColorSwitchOnPrefered() const

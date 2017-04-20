@@ -28,7 +28,7 @@ int main( void )
     cfg.recalSpeed              = 210.0;
     cfg.maxTurnSpeed            = 125.0;
     cfg.deccDist                = 150.0;
-    cfg.matchDuration           = 90000;
+    cfg.strategyDuration        = 89500;
     cfg.detectionWaitForOppMove = 1000;
     cfg.detectionActive         = true;
     robotPen.setConfig(cfg);

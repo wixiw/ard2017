@@ -77,7 +77,7 @@ message Configuration
     required bool detectionActive         = 22; //activates (or not) the avoidance system.
 
     //Strat config
-    required uint32 matchDuration         = 31; //in ms
+    required uint32 strategyDuration      = 31; //in ms
 }
 
 message ActuatorsCmd

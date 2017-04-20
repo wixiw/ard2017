@@ -3,6 +3,7 @@
 
 #include "BSP.hpp"
 #include "CommonMsg.pb.h"
+#include "RobotParameters.h"
 
 namespace ard
 {
@@ -26,38 +27,34 @@ namespace ard
         void startMatch();
 
         // Return the chrono since the beginning of the match
-        uint32_t getChrono_ms();
+        TimeMs getTime() const;
 
         // Return how much time is left before the end of the match
         // Return match duration if match is not started
-        uint32_t getTimeLeftMatch_ms();
+        DelayMs getStrategyRemainingTime() const;
 
         // Return how much time is left before the end of the funny action
         // Return funny action duration if the funny action is not started
-        uint32_t getTimeLeftFunnyAction_ms();
+        //uint32_t getTimeLeftFunnyAction_ms();
 
-        bool isMatchStarted(){ return matchStarted; }
-        bool isFunnyActionStarted(){ return funnyActionStarted; }
+        //provide telemetry data
+        apb_Chrono serialize() const;
 
-        apb_Chrono getChrono();
-
-        //TODO(QPE)
         //Reread the configuration and maps default config. Shall be called at least once
         //before the OS is initialized
-//        void updateConf(RobotConfig* newConf);
+        void updateConf(RobotParameters* newConf);
 
     private:
         // The date in ms when the match starts
-        uint32_t startDate_ms;
+        TimeMs startDate_ms;
 
         bool matchStarted;
-        bool funnyActionStarted;
 
         // Duration of the match (without funnyAction)
-        uint32_t matchDuration_ms;
+        DelayMs strategyDuration_ms;
 
         // Duration of the funnyAction
-        uint32_t funnyActionDuration_ms;
+        //uint32_t funnyActionDuration_ms;
     };
 }    //end namespace
 

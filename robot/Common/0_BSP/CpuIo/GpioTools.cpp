@@ -48,31 +48,6 @@ void FilteredInput::setDebounceLow(DelayMs debounce)
     debounceLowDuration = debounce * 1E3; //millis to us
 }
 
-IEvent* FilteredInput::getEvent(eGpioEdge edge)
-{
-    switch (edge)
-    {
-    default:
-        ASSERT_TEXT(false, "FilteredInput::getEvent : unexpected value.");
-        break;
-
-    case ANY_EDGE:
-        return &eventAny;
-        break;
-
-    case FALLING_EDGE:
-        return &eventFalling;
-        break;
-
-    case RISING_EDGE:
-        return &eventRising;
-        break;
-    }
-
-    ASSERT_TEXT(false, "FilteredInput::getEvent : unreachable.");
-    return NULL;
-}
-
 void FilteredInput::reset()
 {
     debounceHighCount = 0;
@@ -102,8 +77,6 @@ void FilteredInput::update(DelayUs sinceLastCall)
         {
             debounceLowCount = 0;
             filteredLevel = GPIO_HIGH;
-            eventAny.publishFromISR();
-            eventRising.publishFromISR();
         }
     }
     else if (newPinState == GPIO_LOW && filteredLevel == GPIO_HIGH)
@@ -114,8 +87,6 @@ void FilteredInput::update(DelayUs sinceLastCall)
         {
             debounceHighCount = 0;
             filteredLevel = GPIO_LOW;
-            eventAny.publishFromISR();
-            eventFalling.publishFromISR();
         }
     }
     else

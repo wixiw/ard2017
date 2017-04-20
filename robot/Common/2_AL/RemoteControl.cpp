@@ -34,11 +34,6 @@ void ard::RemoteControl::attachRobot(Robot2017* newRobot)
     robot=newRobot;
 }
 
-IEvent* RemoteControl::getEvent(eRemoteControlEvtId id)
-{
-    return &events[id];
-}
-
 bool RemoteControl::isReady() const
 {
     return com.isConnected();
@@ -193,7 +188,7 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
     response.type.telemetry.stratInfo       = robot->strategy.getStratInfo();
 #endif
     response.type.telemetry.hmi            = robot->getHmiState();
-    response.type.telemetry.chrono         = robot->chrono.getChrono();
+    response.type.telemetry.chrono         = robot->chrono.serialize();
 
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode telemetry message.");
@@ -249,18 +244,20 @@ void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
     uint8_t strategy = request.type.configureMatch.strategy;
     eColor color = (eColor)(request.type.configureMatch.matchColor);
 
-    robot->lifecycle.configureMatch(strategy, color);
+    robot->lifecycle.networkConfigRequest(strategy, color);
 #endif
-    events[EVT_CONFIGURE].publish();
 }
 
 void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
 {
-    events[EVT_START_MATCH].publish();
+#ifdef BUILD_STRATEGY
+    robot->lifecycle.startMatch();
+#endif
 }
 
 void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)
 {
+#ifdef BUILD_STRATEGY
     if( request.type.requestActuators.has_lifter )
         robot->actuators.servoLifter.write(request.type.requestActuators.lifter);
     if( request.type.requestActuators.has_leftArm )
@@ -273,6 +270,7 @@ void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)
         robot->actuators.servoRightWheel.write(request.type.requestActuators.rightWheel);
     if( request.type.requestActuators.has_funnyAction )
         robot->actuators.servoFunnyAction.write(request.type.requestActuators.funnyAction);
+#endif
 }
 
 void RemoteControl::setPosition(apb_RemoteControlRequest const & request)

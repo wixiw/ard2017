@@ -13,12 +13,73 @@
 using namespace ard;
 extern String getExeVersion();
 
+FSM_Lifecycle_Better::FSM_Lifecycle_Better():
+        lastState(FSM_Lifecycle_last_state)
+{
+
+}
+
+void FSM_Lifecycle_Better::run()
+{
+    runCycle();
+    FSM_LifecycleStates newState = getState();
+    if( lastState != newState)
+    {
+        LOG_INFO(String("[Lifecycle] state changed :  ") + state2Str(lastState) + " => state " + state2Str(newState));
+        lastState = newState;
+    }
+}
+
+String FSM_Lifecycle_Better::state2Str(FSM_LifecycleStates state) const
+{
+    switch(state)
+    {
+        case main_region_Waiting_table_installation:
+            return "Waiting_table_installation";
+            break;
+        case main_region_Table_installation:
+            return "Table_installation";
+            break;
+        case main_region_Waiting_match:
+            return "Waiting_match";
+            break;
+        case main_region_Match:
+            return "Match";
+            break;
+        case main_region_Waiting_match_end:
+            return "Waiting_match_end";
+            break;
+        case main_region_Funny_action:
+            return "Funny_action";
+            break;
+        case main_region_Match_ended:
+            return "Match_ended";
+            break;
+        case main_region_Waiting_start:
+            return "Waiting_start";
+            break;
+        case main_region_Booting:
+            return "Booting";
+            break;
+        case FSM_Lifecycle_last_state:
+            return "init state";
+            break;
+        default:
+            ASSERT(false);
+            return "";
+            break;
+    }
+}
+
 Lifecycle::Lifecycle():
-        Thread("Strategy", PRIO_STRATEGY, STACK_STRATEGY),
+        Thread("Strategy", PRIO_STRATEGY, STACK_STRATEGY, PERIOD_STRATEGY),
         strategyId(0),
         nbRegisteredStrats(0),
+        matchInstallation(NULL),
+        funnyAction(NULL),
         robot(NULL)
 {
+    fsm.setDefaultSCI_OCB(this);
     INIT_TABLE_TO_ZERO(strategies);
 }
 
@@ -31,14 +92,112 @@ void Lifecycle::attachRobot(Robot2017* newRobot)
 
 void Lifecycle::init()
 {
-    Thread::init();
+    ASSERT(robot);
+    ASSERT(matchInstallation);
+    ASSERT(funnyAction);
+    ASSERT(nbRegisteredStrats);
 
-    //init the event mailbox
-    EventListener::init<1>();
+    Thread::init();
+    fsm.init();
+    fsm.enter();
+}
+
+void Lifecycle::run()
+{
+    readInputs();
+    fsm.run();
+    publishOutputs();
+}
+
+void Lifecycle::registerMatchInstallation(IStrategy& object)
+{
+    ASSERT_TEXT(matchInstallation==NULL, "You registered match installation twice.");
+    matchInstallation = &object;
+}
+
+void Lifecycle::registerStrategy(String name, IStrategy& object)
+{
+    ASSERT_TEXT(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many strategies registered.");
+    strategies[nbRegisteredStrats].name = name;
+    strategies[nbRegisteredStrats].object = &object;
+    nbRegisteredStrats++;
+}
+
+void Lifecycle::registerFunnyAction(IStrategy& object)
+{
+    ASSERT_TEXT(funnyAction==NULL, "You registered funny action twice.");
+    funnyAction = &object;
+}
+
+void Lifecycle::networkConfigRequest(uint8_t strategyId_, eColor matchColor)
+{
+    configureMatch(strategyId_, matchColor);
+    fsm.raise_networkConfigRequest();
+}
+
+void Lifecycle::startMatch()
+{
+    fsm.raise_startMatch();
+}
+
+void Lifecycle::endMatch()
+{
+    fsm.raise_strategyFinished();
+}
+
+void Lifecycle::endFunnyAction()
+{
+    fsm.raise_funnyActionFinished();
+}
+
+void Lifecycle::readInputs()
+{
+    fsm.set_startIn                 (robot->isStartPlugged());
+    fsm.set_strategyRemainingTime   (robot->chrono.getStrategyRemainingTime());
+    fsm.set_matchDuration           (robot->chrono.getTime());
+}
+
+void Lifecycle::publishOutputs()
+{
+    if( fsm.isRaised_readHmiConfig() )
+    {
+        //Read color input
+        eColor selectedColor = eColor_UNKNOWN;
+        if ( robot->isColorSwitchOnPrefered() )
+            selectedColor = eColor_PREF;
+        else
+            selectedColor = eColor_SYM;
+
+        //Read strat config
+        configureMatch(robot->getStrategyId(), selectedColor);
+    }
+
+    if( fsm.isRaised_matchStarted() )
+    {
+        robot->nav.enableAvoidance(true);
+        robot->chrono.startMatch();
+    }
+
+    if( fsm.isStateActive(FSM_Lifecycle::main_region_Table_installation) )
+    {
+        matchInstallation->update(PERIOD_STRATEGY);
+    }
+
+    if( fsm.isStateActive(FSM_Lifecycle::main_region_Match) )
+    {
+        strategies[strategyId].object->update(PERIOD_STRATEGY);
+    }
+
+    if( fsm.isStateActive(FSM_Lifecycle::main_region_Funny_action) )
+    {
+        funnyAction->update(PERIOD_STRATEGY);
+    }
 }
 
 void Lifecycle::displayIntroduction()
 {
+    LOG_INFO("--------------------------------------");
+
     #ifdef ARD_DEBUG
     LOG_INFO(" --- DEBUG --- (see ARD_DEBUG in K_constants.h) ");
     #else
@@ -55,87 +214,23 @@ void Lifecycle::displayIntroduction()
     LOG_INFO("Available strategies : ");
     for (int i = 0; i < NB_MAX_STRATEGIES; ++i)
     {
-        if( strategies[i].functor != NULL )
+        if( strategies[i].object != NULL )
         {
             sleepMs(10);//Let Log thread do its job
             LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
         }
     }
-
-    robot->buzzer().bip(2);
-    robot->buzzer().wait();
 }
 
-void Lifecycle::run()
+void Lifecycle::beep(sc_integer nb)
 {
-    auto evt_startIn = robot->getStartInEvt();
-    auto evt_startOut = robot->getStartOutEvt();
-    auto evt_teleopConfigure = robot->getRemoteControlEvt(EVT_CONFIGURE);
-    auto evt_teleopStart = robot->getRemoteControlEvt(EVT_START_MATCH);
-
-    displayIntroduction();
-
-    //wait for start insertion or teleop command
-    {
-        LOG_INFO("Waiting for user to choose strategy/color and to insert start...");
-        IEvent* evts[] =
-        {   evt_startIn, evt_teleopConfigure};
-        auto triggeredEvent = waitEvents(evts, 2);
-        robot->buzzer().bip(1);
-
-        //In case the start is inserted, read the HMI switches to configure the strat
-        if( triggeredEvent == evt_startIn )
-        {
-            readUserInputs();
-        }
-        //else : if the teleop command is received, there is nothing to do as RemoteControl has already configured ourself with configureMatch
-    }
-
-    //wait for start withdraw or a teleop command to start the match
-    {
-        LOG_INFO("Waiting start withdraw to begin the match...");
-        IEvent* evts[] =
-        {   evt_startOut, evt_teleopStart};
-        auto triggeredEvent = waitEvents(evts, 2); //returned event is not read as we don't care, result will be the same
-
-        //Avoidance is activated after start so that it is deactivated in simulation
-        if( triggeredEvent == evt_startOut)
-        {
-            robot->nav.enableAvoidance(true);
-        }
-
-        //Execute selected strategy
-        robot->chrono.startMatch();
-        robot->buzzer().bip(1);
-        strategies[strategyId].functor(Robot2017::getInstance());
-    }
-}
-
-void Lifecycle::registerStrategy(String name, StrategyFunctor functor)
-{
-    ASSERT_TEXT(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many strategies registered.");
-    strategies[nbRegisteredStrats].name = name;
-    strategies[nbRegisteredStrats].functor = functor;
-    nbRegisteredStrats++;
-}
-
-void Lifecycle::readUserInputs()
-{   
-    //Read color input
-    eColor selectedColor = eColor_UNKNOWN;
-    if ( robot->isColorSwitchOnPrefered() )
-        selectedColor = eColor_PREF;
-    else
-        selectedColor = eColor_SYM;
-
-    //Read strat config
-    configureMatch(robot->getStrategyId(), selectedColor);
+    robot->buzzer().bip(nb);
 }
 
 void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)
 {
     robot->nav.setColor (matchColor);
-    
+
     //Configure color
     if ( matchColor == eColor_PREF )
     {
@@ -157,10 +252,9 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)
 
     //Check selected strategy
     ASSERT(strategyId_ < nbRegisteredStrats);
-    ASSERT_TEXT(strategies[strategyId].functor != 0, "Selected strategy functor is null.");
+    ASSERT_TEXT(strategies[strategyId].object != 0, "Selected strategy functor is null.");
     strategyId = strategyId_;
     LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + strategies[strategyId].name + ".");
 }
-
 
 #endif

@@ -8,6 +8,9 @@
 #ifndef ROBOT_COMMON_2_AL_ACTUATORSCTRL_ARMS_H_
 #define ROBOT_COMMON_2_AL_ACTUATORSCTRL_ARMS_H_
 
+#include "RSP.h"
+#ifdef BUILD_STRATEGY
+
 #include "generated/FSM_Arms.h"
 #include "StratFwk.h"
 #include "Lifter.h"
@@ -57,4 +60,5 @@ namespace ard
 
 } /* namespace ard */
 
+#endif
 #endif /* ROBOT_COMMON_2_AL_ACTUATORSCTRL_ARMS_H_ */

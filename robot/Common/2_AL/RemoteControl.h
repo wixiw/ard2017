@@ -41,9 +41,6 @@ namespace ard
         void attachRobot(Robot2017* robot);
         virtual ~RemoteControl() = default;
 
-        //Get any teleop event (non-const on purpose)
-        IEvent* getEvent(eRemoteControlEvtId id);
-
         //Implements ILogChannel : returns true if the communication is established
         virtual bool isReady() const override;
 
@@ -67,7 +64,6 @@ namespace ard
 
     private:
         Mutex mutex;
-        Event<1> events[EVT_MAX];
         ComOnUart com;
         Robot2017* robot;
         char msg_send_buffer[HDLC_FRAME_LENGTH];

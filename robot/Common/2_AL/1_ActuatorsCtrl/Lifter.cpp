@@ -10,6 +10,7 @@
 
 using namespace ard;
 
+#ifdef BUILD_STRATEGY
 
 Lifter::Lifter(ActuatorThread& parent, TimerInterface& timer):
         fsm(),
@@ -33,4 +34,6 @@ void Lifter::update(TimeMs sinceLastCall)
     //TODO convert 0=>100% to 0=>180
     acts.servoLifter.write(fsm.getDefaultSCI()->get_lifter());
 }
+
+#endif
 

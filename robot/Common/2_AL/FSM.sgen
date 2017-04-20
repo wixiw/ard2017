@@ -1,5 +1,14 @@
 GeneratorModel for yakindu::cpp {
+    
+    statechart FSM_Lifecycle {
 
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
     statechart FSM_Arms {
 
         feature Outlet {
@@ -7,7 +16,6 @@ GeneratorModel for yakindu::cpp {
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/2_AL/generated"
         }
-
     }
     
     statechart FSM_Lifter {
@@ -17,9 +25,71 @@ GeneratorModel for yakindu::cpp {
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/2_AL/generated"
         }
-
     }
     
+    statechart FSM_Homol {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_Installation {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_Invade {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_Match {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_Quentin {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_Selftest {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_Tanguy {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+        
     statechart FSM_Willy {
 
         feature Outlet {
@@ -27,6 +97,5 @@ GeneratorModel for yakindu::cpp {
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/2_AL/generated"
         }
-
     }
 }

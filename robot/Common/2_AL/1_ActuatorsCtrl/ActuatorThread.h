@@ -9,10 +9,11 @@
 #define ROBOTS_ACTUATORTHREAD_H_
 
 #include "StratFwk.h"
-#include "Arms.h"
-#include "Lifter.h"
 
 #ifdef BUILD_STRATEGY
+
+#include "Arms.h"
+#include "Lifter.h"
 
 namespace ard
 {

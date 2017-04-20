@@ -9,6 +9,7 @@
 #define ROBOT_COMMON_2_AL_STRATEGIES_GETCYLINDER_H_
 
 #include "StratFwk.h"
+#ifdef BUILD_STRATEGY
 
 namespace ard
 {
@@ -41,4 +42,5 @@ namespace ard
 
 } /* namespace ard */
 
+#endif
 #endif /* ROBOT_COMMON_2_AL_STRATEGIES_GETCYLINDER_H_ */

@@ -77,7 +77,7 @@ class TabConfig(QWidget):
         req.setConfig.detectionActive = self.avoidanceConfig.detectionActive.isChecked()
         
         #Strat
-        req.setConfig.matchDuration = self.stratConfig.matchDuration.getValue()
+        req.setConfig.strategyDuration = self.stratConfig.strategyDuration.getValue()
         
         self.setConfig.emit(req)
         print("New config send to robot")
@@ -110,7 +110,7 @@ class TabConfig(QWidget):
         self.avoidanceConfig.detectionWaitForOppMove.setValue(msg.detectionWaitForOppMove)
         self.avoidanceConfig.detectionActive.setChecked(msg.detectionActive)
         #Strat
-        self.stratConfig.matchDuration.setValue(msg.matchDuration)
+        self.stratConfig.strategyDuration.setValue(msg.strategyDuration)
         
     #Override in order to initialize the view each time the widget is shown
     def showEvent (self, QShowEvent):
@@ -194,7 +194,7 @@ class StratConfigWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         
-        self.matchDuration  = IntegerInput(self, 0, 2000)
+        self.strategyDuration  = IntegerInput(self, 0, 2000)
         
         self.layoutH = QHBoxLayout(self)
         self.layoutV = QGroupBox("Strategy")
@@ -202,5 +202,5 @@ class StratConfigWidget(QWidget):
         self.form = QFormLayout()
         self.layoutV.setLayout(self.form)
         
-        self.form.addRow("match duration (ms)", self.matchDuration)
+        self.form.addRow("match duration (ms)", self.strategyDuration)
         

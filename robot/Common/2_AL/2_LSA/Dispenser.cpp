@@ -7,7 +7,7 @@
 
 #include "Dispenser.h"
 #include "Robot2017.h"
-
+#ifdef BUILD_STRATEGY
 using namespace ard;
 
 /**
@@ -75,3 +75,5 @@ result DispenserOpp::execute(uint8_t nbItems)
     LOG_INFO("DispenserOpp success");
     return Success;
 }
+
+#endif

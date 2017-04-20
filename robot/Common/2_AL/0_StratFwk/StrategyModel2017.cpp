@@ -6,8 +6,28 @@
  */
 
 #include "StrategyModel2017.h"
+#include "Robot2017.h"
+
+#ifdef BUILD_STRATEGY
 
 using namespace ard;
+
+Strategy2017::Strategy2017():
+        robot(NULL)
+{
+
+}
+
+void Strategy2017::init()
+{
+    ASSERT_TEXT(robot, "You did not attached a robot.");
+}
+
+void Strategy2017::attachRobot(Robot2017* _robot)
+{
+    ASSERT_TEXT(robot==NULL, "You attached a robot twice.");
+    robot = _robot;
+}
 
 StrategyModel2017::StrategyModel2017()
 {
@@ -324,3 +344,5 @@ apb_StratInfo2017 const& StrategyModel2017::getStratInfo()
 {
     return stratInfo;
 }
+
+#endif

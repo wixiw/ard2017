@@ -63,6 +63,7 @@ static const StackSize STACK_UNIT_TEST          = 2000;
 //Periods (any change shall be reported into architecture document)
 #define PERIOD_ACTUATORS         100 //ms
 #define PERIOD_HMI                50 //ms
+#define PERIOD_STRATEGY           50 //ms
 #define PERIOD_NAVIGATION         20 //ms
 #define PERIOD_FAST_IT_US       1000 //us
 #define PERIOD_VERY_FAST_IT_US    50 //us

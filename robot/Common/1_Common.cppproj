@@ -1232,7 +1232,61 @@
     <Compile Include="2_AL\1_ActuatorsCtrl\Lifter.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\3_Strategies\FunnyAction.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\FunnyAction.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Homol.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Homol.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Installation.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Installation.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Invade.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Invade.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Match.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Match.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Quentin.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Quentin.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Selftest.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Selftest.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\3_Strategies\Strategies.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Tanguy.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Tanguy.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Willy.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Willy.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Arms.cpp">
@@ -1241,10 +1295,58 @@
     <Compile Include="2_AL\generated\FSM_Arms.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\generated\FSM_Homol.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Homol.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Installation.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Installation.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Invade.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Invade.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Lifecycle.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Lifecycle.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\generated\FSM_Lifter.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Lifter.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Match.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Match.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Quentin.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Quentin.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Selftest.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Selftest.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Tanguy.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_Tanguy.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Willy.cpp">
@@ -1296,36 +1398,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Robot2017.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\StrategyHomol.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\StrategyInvade.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\StrategyMatch.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\StrategyQuentin.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\StrategySelftests.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\StrategyTanguy.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\UT_Strategies.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Willy\StrategyWilly.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Willy\Willy.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Willy\Willy.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\0_StratFwk\YakardTimer.cpp">
@@ -1383,7 +1455,6 @@
     <Folder Include="2_AL\generated\" />
     <Folder Include="2_AL\2_LSA" />
     <Folder Include="2_AL\3_Strategies" />
-    <Folder Include="2_AL\3_Strategies\Willy" />
     <Folder Include="2_AL\0_StratFwk" />
     <Folder Include="2_AL\LSA\" />
   </ItemGroup>

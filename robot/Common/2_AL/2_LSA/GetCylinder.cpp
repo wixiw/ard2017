@@ -7,7 +7,7 @@
 
 #include "GetCylinder.h"
 #include "Robot2017.h"
-
+#ifdef BUILD_STRATEGY
 using namespace ard;
 
 /**
@@ -54,3 +54,5 @@ result GetCylinderOpp::execute(uint8_t nbItems)
     LOG_INFO("GetCylinderCraters success");
     return Success;
 }
+
+#endif

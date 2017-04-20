@@ -60,9 +60,9 @@ bool RobotParameters::checkConfig(apb_Configuration const& newConf)
     CHECK_RANGE(50, newConf.recalSpeed, 500);
     CHECK_RANGE(MINBOUND_MAXTURNACC, newConf.maxTurnAcc, MAXBOUND_MAXTURNACC);
     CHECK_RANGE(20, newConf.deccDist, 250);
-    if (newConf.matchDuration)
+    if (newConf.strategyDuration)
     {
-        CHECK_RANGE(50000, newConf.matchDuration, 0xFFFFFFFF);
+        CHECK_RANGE(50000, newConf.strategyDuration, 0xFFFFFFFF);
     }
     CHECK_RANGE(50, newConf.detectionWaitForOppMove, 5000);
     CHECK_RANGE(MINBOUND_MAXSPEED, newMaxSpeed, MAXBOUND_MAXSPEED);
@@ -167,10 +167,10 @@ uint32_t RobotParameters::deccDist() const
     return cfg.deccDist;
 }
 
-uint32_t RobotParameters::matchDuration() const
+uint32_t RobotParameters::strategyDuration() const
 {
     ASSERT(m_configuredOnce);
-    return cfg.matchDuration;
+    return cfg.strategyDuration;
 }
 
 uint32_t RobotParameters::detectionWaitForOppMove() const
@@ -281,10 +281,10 @@ void RobotParameters::set_deccDist(uint32_t value)
     setConfig(newConf);
 }
 
-void RobotParameters::set_matchDuration(uint32_t value)
+void RobotParameters::set_strategyDuration(uint32_t value)
 {
     apb_Configuration newConf = cfg;
-    newConf.matchDuration = value;
+    newConf.strategyDuration = value;
     setConfig(newConf);
 }
 
