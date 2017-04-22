@@ -9,30 +9,10 @@
 #define ROBOT_COMMON_2_AL_0_STRATFWK_STRATEGYMODEL2017_H_
 
 #include "RSP.h"
-
 #ifdef BUILD_STRATEGY
-
-#include "0_StratFwk/StratInterfaces.h"
 
 namespace ard
 {
-    class Robot2017; //forward declare
-
-    /**
-     * This class contains a standard robot actuators/sensors interface
-     * so that each build strategy doesn't have to redefine its own
-     */
-    class Strategy2017: public IStrategy
-    {
-    public:
-        Strategy2017(Robot2017* robot);
-
-        void enableAvoidance(bool on);
-
-    protected:
-        Robot2017* robot;
-    };
-
     class StrategyModel2017
     {
     public:

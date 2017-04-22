@@ -19,7 +19,7 @@ namespace ard
         GetCylinderCraters(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
     
     class GetCylinderCorner: public LSA
@@ -28,7 +28,7 @@ namespace ard
         GetCylinderCorner(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
     class GetCylinderOpp: public LSA
@@ -37,7 +37,7 @@ namespace ard
         GetCylinderOpp(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
 } /* namespace ard */

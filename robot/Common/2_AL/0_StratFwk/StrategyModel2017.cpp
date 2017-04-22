@@ -12,12 +12,6 @@
 
 using namespace ard;
 
-Strategy2017::Strategy2017(Robot2017* _robot):
-        robot(_robot)
-{
-    ASSERT_TEXT(robot, "You did not attached a robot.");
-}
-
 StrategyModel2017::StrategyModel2017()
 {
     stratInfo = apb_StratInfo2017_init_default;

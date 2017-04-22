@@ -326,12 +326,12 @@ void RemoteControl::requestFaceTo(apb_RemoteControlRequest const & request)
 
 void RemoteControl::recalFaceOnBorder(apb_RemoteControlRequest const & request)
 {
-    robot->nav.recalFaceOnBorder(request.type.recalFaceOnBorder);
+    robot->nav.recalFace(request.type.recalFaceOnBorder);
 }
 
 void RemoteControl::recalRearOnBorder(apb_RemoteControlRequest const & request)
 {
-    robot->nav.recalRearOnBorder(request.type.recalRearOnBorder);
+    robot->nav.recalRear(request.type.recalRearOnBorder);
 }
 
 void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)

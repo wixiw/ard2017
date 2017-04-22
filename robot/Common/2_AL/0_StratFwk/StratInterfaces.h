@@ -9,21 +9,19 @@
 #define ROBOT_COMMON_2_AL_STRATEGIES_STRATINTERFACES_H_
 
 #include "RSP.h"
-
 #ifdef BUILD_STRATEGY
 #include <stdint.h>
 
 namespace ard
 {
-    //forward declarations
+    //forward declare
     class Robot2017;
-
 
     typedef enum
     {
         Success,
         Failed,
-    } result;
+    } LSAResult;
 
     /**
      * LSA stands for : local strategic action. An LSA is a subpart of a global strategy.
@@ -47,7 +45,7 @@ namespace ard
         virtual PointCap const& getEntryPoint() const { return entryPoint;};
 
         //Execute the LSA for nb items, 0 would mean maximum number
-        virtual result execute(uint8_t nbItems = 0) = 0;
+        virtual LSAResult execute(uint8_t nbItems = 0) = 0;
 
     protected:
         Robot2017& robot;

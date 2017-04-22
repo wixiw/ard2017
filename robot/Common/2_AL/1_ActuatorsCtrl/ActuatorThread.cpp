@@ -84,6 +84,26 @@ apb_ActuatorsState const& ActuatorThread::getState()
     return state;
 }
 
+void ActuatorThread::swallow(uint8_t nbCylinders)
+{
+    arms.swallow(nbCylinders);
+}
+
+void ActuatorThread::retractArms()
+{
+    arms.retractArms();
+}
+
+void ActuatorThread::withdraw(uint8_t nbCylinders)
+{
+    arms.withdraw(nbCylinders);
+}
+
+void ActuatorThread::poo(uint8_t nbCylinders)
+{
+    arms.poo(nbCylinders);
+}
+
 #endif
 
 

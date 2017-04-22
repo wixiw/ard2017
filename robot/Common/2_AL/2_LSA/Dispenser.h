@@ -19,7 +19,7 @@ namespace ard
         DispenserMonocolor(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
     class DispenserBicolor: public LSA
@@ -28,7 +28,7 @@ namespace ard
         DispenserBicolor(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
     class DispenserOpp: public LSA
@@ -37,7 +37,7 @@ namespace ard
         DispenserOpp(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
 } /* namespace ard */

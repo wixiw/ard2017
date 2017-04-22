@@ -29,6 +29,21 @@ namespace ard
         Arms(ActuatorThread& parent, TimerInterface& timer);
 
         /**---------------------------------
+         * Strat API
+         ---------------------------------*/
+        //Open arm and make wheel turn to swallow several cylinder on table
+        void swallow(uint8_t nbCylinders);
+
+        //Stop turning wheels and retract arms to be able to move safely on table
+        void retractArms();
+
+        //Take a certain number of cylinders from the dispenser
+        void withdraw(uint8_t nbCylinders);
+
+        //Poo a certain number of cylinder (it doesn't matter if it's on table or in a container)
+        void poo(uint8_t nbCylinders);
+
+        /**---------------------------------
          * Container thread interface
          ---------------------------------*/
 

@@ -36,12 +36,10 @@ namespace ard
         RgbLed(int pin_r, int pin_g, int pin_b);
 
         //Configure the displayed color and blink effect
-        void
-        set(eRgb color, eLedState blink);
+        void set(eRgb color, eLedState blink);
 
         //Shut the led off
-        void
-        off();
+        void off();
 
         //Expected to be called periodically
         void

@@ -346,12 +346,12 @@ void Navigation::faceTo(Point p)
     goToCap(target);
 }
 
-void Navigation::recalFaceOnBorder(eTableBorder border)
+void Navigation::recalFace(eTableBorder border)
 {
     NOT_IMPLEMENTED();
 }
 
-void Navigation::recalRearOnBorder(eTableBorder border)
+void Navigation::recalRear(eTableBorder border)
 {
     NOT_IMPLEMENTED();
 }

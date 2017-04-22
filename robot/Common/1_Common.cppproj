@@ -1205,6 +1205,12 @@
     <Compile Include="2_AL\0_StratFwk\Lifecycle.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\0_StratFwk\Strategy2017.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\0_StratFwk\Strategy2017.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\0_StratFwk\StrategyModel2017.cpp">
       <SubType>compile</SubType>
     </Compile>

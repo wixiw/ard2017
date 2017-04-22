@@ -20,7 +20,7 @@ namespace ard
         PooMiddleCenter(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
     class PooMiddleOwn: public LSA
@@ -29,7 +29,7 @@ namespace ard
         PooMiddleOwn(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
     class PooMiddleOpp: public LSA
@@ -38,7 +38,7 @@ namespace ard
         PooMiddleOpp(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
     class PooBorder: public LSA
@@ -47,7 +47,7 @@ namespace ard
         PooBorder(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
     class PooBorderOpp: public LSA
@@ -56,7 +56,7 @@ namespace ard
         PooBorderOpp(Robot2017& robot);
 
         //Implements LSA
-        virtual result execute(uint8_t nbItems = 0) override;
+        virtual LSAResult execute(uint8_t nbItems = 0) override;
     };
 
 } /* namespace ard */

@@ -19,7 +19,7 @@ GetCylinderCraters::GetCylinderCraters(Robot2017& robot):
 {
 }
 
-result GetCylinderCraters::execute(uint8_t nbItems)
+LSAResult GetCylinderCraters::execute(uint8_t nbItems)
 {
     LOG_INFO("GetCylinderCraters success");
     return Success;
@@ -34,7 +34,7 @@ GetCylinderCorner::GetCylinderCorner(Robot2017& robot):
 {
 }
 
-result GetCylinderCorner::execute(uint8_t nbItems)
+LSAResult GetCylinderCorner::execute(uint8_t nbItems)
 {
     LOG_INFO("GetCylinderCorner success");
     return Success;
@@ -49,7 +49,7 @@ GetCylinderOpp::GetCylinderOpp(Robot2017& robot):
 {
 }
 
-result GetCylinderOpp::execute(uint8_t nbItems)
+LSAResult GetCylinderOpp::execute(uint8_t nbItems)
 {
     LOG_INFO("GetCylinderCraters success");
     return Success;
