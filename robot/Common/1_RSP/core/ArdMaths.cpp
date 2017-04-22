@@ -119,7 +119,7 @@ PointCap PointCap::toAmbiPose(eColor c) const
 
 String PointCap::toString() const
 {
-    return String("(") + x + "mm, " + y + "mm, " + h + "rad), h=" + RAD_TO_DEG*h +"°";
+    return String("(") + x + "mm, " + y + "mm, " + RAD_TO_DEG*h + "°), h=" + RAD_TO_DEG*h +" rad";
 }
 
 apb_PointCap PointCap::getProto() const

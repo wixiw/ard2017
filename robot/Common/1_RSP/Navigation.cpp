@@ -248,6 +248,8 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
 
 void Navigation::goTo(Point target, eDir sens)
 {
+    LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
+
     m_mutex.lock();
 
     if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
@@ -268,6 +270,8 @@ void Navigation::goTo(Point target, eDir sens)
 
 void Navigation::goToCap(PointCap target, eDir sens)
 {
+    LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
+
     m_mutex.lock();
 
     //If an order is present, wait
@@ -289,6 +293,8 @@ void Navigation::goToCap(PointCap target, eDir sens)
 
 void Navigation::goForward(float distanceMm)
 {
+    LOG_INFO(String("   new request : goForward(") + distanceMm + "mm).");
+
     m_mutex.lock();
     PointCap target = m_pose;
     m_mutex.unlock();
@@ -307,6 +313,8 @@ void Navigation::goForward(float distanceMm)
 
 void Navigation::turnDelta(float angle)
 {
+    LOG_INFO(String("   new request : turnDelta(") + angle + "°).");
+
     m_mutex.lock();
     PointCap target = m_pose;
     m_mutex.unlock();
@@ -317,6 +325,8 @@ void Navigation::turnDelta(float angle)
 
 void Navigation::turnTo(float angle)
 {
+    LOG_INFO(String("   new request : turnTo(") + angle + "°).");
+
     m_mutex.lock();
     PointCap target = m_pose;
     m_mutex.unlock();
@@ -327,6 +337,7 @@ void Navigation::turnTo(float angle)
 
 void Navigation::faceTo(Point p)
 {
+    LOG_INFO(String("   new request : faceTo") + p.toString() + ".");
     m_mutex.lock();
     PointCap target = m_pose;
     m_mutex.unlock();
@@ -441,7 +452,7 @@ void Navigation::compute_odom()
 
 void Navigation::action_startOrder()
 {
-    LOG_INFO("   new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
+    LOG_DEBUG("   new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
 
     double distDelta = m_sensTarget * m_pose.distanceTo(m_target);
     //Do no move if already on target
