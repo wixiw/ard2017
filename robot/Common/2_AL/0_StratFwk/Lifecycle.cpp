@@ -107,6 +107,19 @@ void Lifecycle::registerMatchType(String const& name, IStrategy* install, IStrat
     matchs[nbRegisteredStrats].install  = install;
     matchs[nbRegisteredStrats].match    = match;
     matchs[nbRegisteredStrats].funny    = funny;
+    matchs[nbRegisteredStrats].linear    = NULL;
+    nbRegisteredStrats++;
+}
+
+void Lifecycle::registerLinearStrat(String const& name, StrategyFunctor functor)
+{
+    ASSERT_TEXT(name != "", "Strat name shall not be empty");
+    ASSERT_TEXT(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many matchs registered.");
+    matchs[nbRegisteredStrats].name     = name;
+    matchs[nbRegisteredStrats].install  = NULL;
+    matchs[nbRegisteredStrats].match    = NULL;
+    matchs[nbRegisteredStrats].funny    = NULL;
+    matchs[nbRegisteredStrats].linear  = functor;
     nbRegisteredStrats++;
 }
 
@@ -163,20 +176,23 @@ void Lifecycle::publishOutputs()
         robot->chrono.startMatch();
     }
 
+    //Robot installation strategy
     if( fsm.isStateActive(FSM_Lifecycle::main_region_Table_installation) && matchs[strategyId].install != NULL)
-    {
         matchs[strategyId].install->update(PERIOD_STRATEGY);
-    }
 
-    if( fsm.isStateActive(FSM_Lifecycle::main_region_Match) && matchs[strategyId].match != NULL )
+    //Match running
+    if( fsm.isStateActive(FSM_Lifecycle::main_region_Match))
     {
-        matchs[strategyId].match->update(PERIOD_STRATEGY);
+        if( matchs[strategyId].linear != NULL)
+            matchs[strategyId].linear(*robot);
+
+        if( matchs[strategyId].match != NULL)
+            matchs[strategyId].match->update(PERIOD_STRATEGY);
     }
 
+    //Funny action
     if( fsm.isStateActive(FSM_Lifecycle::main_region_Funny_action) && matchs[strategyId].funny != NULL )
-    {
         matchs[strategyId].funny->update(PERIOD_STRATEGY);
-    }
 }
 
 void Lifecycle::displayIntroduction()
@@ -214,20 +230,30 @@ void Lifecycle::beep(sc_integer nb)
 
 void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)
 {
-    robot->nav.setColor (matchColor);
+    //Check selected strategy
+    if( nbRegisteredStrats <= strategyId_)
+    {
+        LOG_ERROR(String("Strategy ") +strategyId_+ " is unknown, using strat 0 instead.");
+        strategyId_ = 0;
+    }
+
+    ASSERT_TEXT(matchs[strategyId].name != "", "Selected strategy is malformed.");
+    strategyId = strategyId_;
+    LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + matchs[strategyId].name + ".");
 
     //Configure color
     if ( matchColor == eColor_PREF )
     {
         robot->setRGBled(YELLOW, ON);
+        robot->nav.setColor (eColor_PREF);
         robot->strategy.setColor(eColor_PREF);
         LOG_INFO("User has selected PREF (Yellow) color.");
     }
     else if ( matchColor == eColor_SYM )
     {
+        robot->setRGBled(BLUE, ON);
         robot->nav.setColor (eColor_SYM);
         robot->strategy.setColor(eColor_SYM);
-        robot->setRGBled(BLUE, ON);
         LOG_INFO("User has selected SYM (Blue) color.");
     }
     else
@@ -235,11 +261,7 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)
         ASSERT_TEXT(false, "StrategyThread::configureMatch : color should not be unknown.");
     }
 
-    //Check selected strategy
-    ASSERT(strategyId_ < nbRegisteredStrats);
-    ASSERT_TEXT(matchs[strategyId].name != "", "Selected strategy is malformed.");
-    strategyId = strategyId_;
-    LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + matchs[strategyId].name + ".");
+
 }
 
 #endif

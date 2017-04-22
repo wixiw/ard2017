@@ -28,6 +28,7 @@ namespace ard
         lifecycle.registerMatchType("Homol",          &stratInstallation, &stratHomol,    NULL);
         lifecycle.registerMatchType("Selftest",       &stratSelftest,     NULL,           NULL);
         lifecycle.registerMatchType("WIP",            NULL,               &stratWIP,      NULL);
+        lifecycle.registerLinearStrat("Old Tanguy",   Strategy_Tanguy);
 //    lifecycle.registerStrategy("UT LEDs",        Strategy_LedTest);
 //    lifecycle.registerStrategy("UT Button",      Strategy_ButtonTest);
 //    lifecycle.registerStrategy("UT Omron",       Strategy_OmronTest);

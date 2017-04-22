@@ -23,12 +23,16 @@ namespace ard
 {
     class Robot2017;
 
+    //Every strategy function shall have this signature :
+    typedef void (*StrategyFunctor)(Robot2017& robot);
+
 	//Used to display the list of existing strategies
 	struct MatchDescriptor{
 		String name;
 		IStrategy* install;
 		IStrategy* match;
 		IStrategy* funny;
+		StrategyFunctor linear;
 	};
 
 	/**
@@ -70,6 +74,10 @@ namespace ard
     //@param match : the strategy to run during the match, or NULL to skip
     //@param funny : the funny action to run at the match end, or NULL to skip
 	void registerMatchType(String const& name, IStrategy* install, IStrategy* match, IStrategy* funny);
+
+	//register a new simple linear (not periodic) strategy.
+	//For backward compatibility with previous design
+	void registerLinearStrat(String const& name, StrategyFunctor functor);
 
 	//automatic robot configuration (network command from vizu)
 	void networkConfigRequest(uint8_t strategyId_, eColor matchColor);

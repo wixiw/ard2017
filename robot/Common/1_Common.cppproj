@@ -1271,6 +1271,12 @@
     <Compile Include="2_AL\3_Strategies\Strategies.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\3_Strategies\StrategyTanguy.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\UT_Strategies.cpp">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\3_Strategies\WipPen.cpp">
       <SubType>compile</SubType>
     </Compile>

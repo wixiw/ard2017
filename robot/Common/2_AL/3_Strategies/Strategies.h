@@ -31,15 +31,8 @@ namespace ard
 {
     class Robot2017;
     
-    //Operational strategies
-    void Strategy_Match(Robot2017& robot);
-    void Strategy_Homol(Robot2017& robot);
-    void Strategy_Invade(Robot2017& robot);
-    void Strategy_Selftest(Robot2017& robot);
-
     //development in progress
     void Strategy_Tanguy(Robot2017& robot);
-    void Strategy_Quentin(Robot2017& robot);
 
     //testing purposes
     void Strategy_LedTest(Robot2017& robot);
