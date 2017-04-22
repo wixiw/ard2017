@@ -31,6 +31,6 @@ void Lifter::update(TimeMs sinceLastCall)
     fsm.runCycle();
 
     //TODO convert 0=>100% to 0=>180
-    acts.servoLifter.write(fsm.getDefaultSCI()->get_lifter());
+    //acts.servoLifter.write(fsm.getDefaultSCI()->get_lifter());
 }
 

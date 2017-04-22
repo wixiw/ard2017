@@ -42,9 +42,9 @@ void Arms::update(TimeMs sinceLastCall)
     fsm.runCycle();
 
     //TODO convert 0=>100% to 0=>180
-    acts.servoLeftArm.      write(fsm.getDefaultSCI()->get_leftArm());
-    acts.servoRightArm.     write(fsm.getDefaultSCI()->get_rightArm());
-    acts.servoLeftWheel.    write(fsm.getDefaultSCI()->get_leftWheel());
-    acts.servoRightWheel.   write(fsm.getDefaultSCI()->get_rightWheel());
+//    acts.servoLeftArm.      write(fsm.getDefaultSCI()->get_leftArm());
+//    acts.servoRightArm.     write(fsm.getDefaultSCI()->get_rightArm());
+//    acts.servoLeftWheel.    write(fsm.getDefaultSCI()->get_leftWheel());
+//    acts.servoRightWheel.   write(fsm.getDefaultSCI()->get_rightWheel());
 }
 
