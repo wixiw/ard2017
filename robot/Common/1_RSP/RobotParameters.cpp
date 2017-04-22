@@ -50,8 +50,10 @@ bool RobotParameters::checkConfig(apb_Configuration const& newConf)
     double newMaxSpeed = sqrt(2 * newConf.maxAcc * newConf.deccDist);
 
     //Checks :
+    CHECK_RANGE(5, newConf.xav, 500);
     CHECK_RANGE(5, newConf.xar, 500);
     CHECK_RANGE(5, newConf.yside, 500);
+    CHECK_RANGE(newConf.xav, newConf.xavExtended, 500);
     CHECK_RANGE(50, newConf.leftWheelDiameter, 70);
     CHECK_RANGE(50, newConf.rightWheelDiameter, 70);
     CHECK_RANGE(50, newConf.voie, 300);
@@ -117,6 +119,12 @@ uint32_t RobotParameters::yside() const
 {
     ASSERT(m_configuredOnce);
     return cfg.yside;
+}
+
+uint32_t RobotParameters::xavExtended() const
+{
+    ASSERT(m_configuredOnce);
+    return cfg.xavExtended;
 }
 
 float RobotParameters::leftWheelDiameter() const
@@ -222,6 +230,13 @@ void RobotParameters::set_yside(uint32_t value)
 {
     apb_Configuration newConf = cfg;
     newConf.yside = value;
+    setConfig(newConf);
+}
+
+void RobotParameters::set_xavExtended(uint32_t value)
+{
+    apb_Configuration newConf = cfg;
+    newConf.xavExtended = value;
     setConfig(newConf);
 }
 

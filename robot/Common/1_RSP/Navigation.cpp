@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "core/ArdFramework.h"
 #include "K_constants.h"
 #include "Log.h"
 #include "Navigation.h"
@@ -288,68 +289,53 @@ void Navigation::goToCap(PointCap target, eDir sens)
 
 void Navigation::goForward(float distanceMm)
 {
-    ASSERT_TEXT(false, "not implemented");
+    m_mutex.lock();
+    PointCap target = m_pose;
     m_mutex.lock();
 
-    //If an order is present, wait
-    if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
-    {
-        LOG_DEBUG("new order pending until current order is finished");
-        m_mutex.unlock();
-        wait();
-        m_mutex.lock();
-    }
+    target.translatePolar(m_pose.hDegree(), distanceMm);
 
-    //TODO
-//  m_order = XXX;
-//  m_target = target.toAmbiPose(m_color);
-//  m_sensTarget = sens;
+    goTo(target);
+}
 
-    m_mutex.unlock();
+void Navigation::turnDelta(float angle)
+{
+    m_mutex.lock();
+    PointCap target = m_pose;
+    m_mutex.lock();
+    target.hDegree(target.hDegree() + angle);
+
+    goTo(target);
 }
 
 void Navigation::turnTo(float angle)
 {
-    ASSERT_TEXT(false, "not implemented");
     m_mutex.lock();
+    PointCap target = m_pose;
+    m_mutex.lock();
+    target.hDegree(angle);
 
-    //If an order is present, wait
-    if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
-    {
-        LOG_DEBUG("new order pending until current order is finished");
-        m_mutex.unlock();
-        wait();
-        m_mutex.lock();
-    }
-
-    //TODO
-//  m_order = XXX;
-//  m_target = target.toAmbiPose(m_color);
-//  m_sensTarget = sens;
-
-    m_mutex.unlock();
+    goTo(target);
 }
 
 void Navigation::faceTo(Point p)
 {
-    ASSERT_TEXT(false, "not implemented");
     m_mutex.lock();
+    PointCap target = m_pose;
+    m_mutex.lock();
+    target.hDegree(m_pose.angleTo(p));
 
-    //If an order is present, wait
-    if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
-    {
-        LOG_DEBUG("new order pending until current order is finished");
-        m_mutex.unlock();
-        wait();
-        m_mutex.lock();
-    }
+    goTo(target);
+}
 
-    //TODO
-//  m_order = XXX;
-//  m_target = target.toAmbiPose(m_color);
-//  m_sensTarget = sens;
+void Navigation::recalFaceOnBorder(eTableBorder border)
+{
+    NOT_IMPLEMENTED();
+}
 
-    m_mutex.unlock();
+void Navigation::recalRearOnBorder(eTableBorder border)
+{
+    NOT_IMPLEMENTED();
 }
 
 void Navigation::stopMoving()

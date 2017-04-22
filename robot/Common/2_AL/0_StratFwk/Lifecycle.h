@@ -24,9 +24,11 @@ namespace ard
     class Robot2017;
 
 	//Used to display the list of existing strategies
-	struct StrategyDescriptor{
+	struct MatchDescriptor{
 		String name;
-		IStrategy* object;
+		IStrategy* install;
+		IStrategy* match;
+		IStrategy* funny;
 	};
 
 	/**
@@ -50,8 +52,7 @@ namespace ard
   class Lifecycle : public Thread, public FSM_Lifecycle::DefaultSCI_OCB
   {
   public:
-    Lifecycle();
-    void attachRobot(Robot2017* robot);
+    Lifecycle(Robot2017* robot);
 
     /**
      * -----------------------------
@@ -63,14 +64,12 @@ namespace ard
     //Implements Thread : executes the stategy
     void run() override;
 	
-    //register the match installation strategy
-    void registerMatchInstallation(IStrategy& object);
-
-	//register new strategy in the list
-	void registerStrategy(String name, IStrategy& object);
-
-	//register the funny action strategy
-	void registerFunnyAction(IStrategy& object);
+	//register new match in the list
+    //@param : the name of the strategy, shall not be empty
+    //@param install : the strategy to run before the match to prepare the robot, or NULL to skip
+    //@param match : the strategy to run during the match, or NULL to skip
+    //@param funny : the funny action to run at the match end, or NULL to skip
+	void registerMatchType(String const& name, IStrategy* install, IStrategy* match, IStrategy* funny);
 
 	//automatic robot configuration (network command from vizu)
 	void networkConfigRequest(uint8_t strategyId_, eColor matchColor);
@@ -106,10 +105,8 @@ namespace ard
     uint8_t strategyId;
 	
 	//list of strategies
-	StrategyDescriptor strategies[NB_MAX_STRATEGIES];
+	MatchDescriptor matchs[NB_MAX_STRATEGIES];
 	uint8_t nbRegisteredStrats;
-	IStrategy* matchInstallation;
-	IStrategy* funnyAction;
 
 	//State machine behavior
 	FSM_Lifecycle_Better fsm;

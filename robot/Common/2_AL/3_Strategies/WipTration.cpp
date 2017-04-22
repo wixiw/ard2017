@@ -1,29 +1,29 @@
 /*
- * Homol.cpp
+ * WipTration.cpp
  *
- *  Created on: 21 avr. 2017
+ *  Created on: 18 avr. 2017
  *      Author: wix
  */
 
-#include "Homol.h"
+#include "WipTration.h"
 #ifdef BUILD_STRATEGY
 #include "Robot2017.h"
 using namespace ard;
 
-Homol::Homol(Robot2017* robot):
+WipTration::WipTration(Robot2017* robot):
         Strategy2017(robot),
         fsm()
 {
     //fsm.setTimer(&robot->fsmTimer);
 }
 
-void Homol::init()
+void WipTration::init()
 {
     Strategy2017::init();
     fsm.init();
 }
 
-void Homol::update(TimeMs sinceLastCall)
+void WipTration::update(TimeMs sinceLastCall)
 {
     fsm.runCycle();
 }

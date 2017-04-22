@@ -106,16 +106,6 @@ namespace ard
         Lifecycle lifecycle;
         YakardTimer fsmTimer;
         StrategyModel2017 strategy;
-
-        FunnyAction stratFunnyAction;
-        Homol stratHomol;
-        Installation stratInstallation;
-        Invade stratInvade;
-        Match stratMatch;
-        Quentin stratQuentin;
-        Selftest stratSelftest;
-        Tanguy stratTanguy;
-        Willy stratWilly;
 #endif
         //Public RSP interface : because i'm too lazy to hide it, please feel free to implement the decorator
         Navigation nav;
@@ -126,7 +116,7 @@ namespace ard
         //RSP implementation
         HmiThread hmi;
 
-    private:
+    protected:
         LogDispatcher& log;
 #ifdef BUILD_REMOTE_CONTROL
         RemoteControl remoteControl;

@@ -14,14 +14,19 @@
 
 namespace ard
 {
+    class Robot2017;
 
     class FunnyAction: public IStrategy
     {
     public:
-        FunnyAction();
+        FunnyAction(Robot2017* robot);
 
         //Implements IStrategy
         void update(TimeMs sinceLastCall) override;
+
+    private:
+        DelayMs duration;
+        Robot2017* robot;
     };
 
 } /* namespace ard */

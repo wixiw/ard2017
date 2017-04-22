@@ -7,13 +7,14 @@
 
 #include "Match.h"
 #ifdef BUILD_STRATEGY
+#include "Robot2017.h"
 using namespace ard;
 
-Match::Match(TimerInterface& timer):
-        Strategy2017(),
+Match::Match(Robot2017* robot):
+        Strategy2017(robot),
         fsm()
 {
-    //fsm.setTimer(&timer);
+    //fsm.setTimer(&robot->fsmTimer);
 }
 
 void Match::init()

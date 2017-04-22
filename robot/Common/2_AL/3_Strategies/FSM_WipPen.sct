@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_ljr00CYeEeeh1o2kvtdb7w" specification="interface:&#xA;// Define events and&#xA;// and variables here" name="FSM_Tanguy">
+  <sgraph:Statechart xmi:id="_ljr00CYeEeeh1o2kvtdb7w" specification="interface:&#xA;// Define events and&#xA;// and variables here" name="FSM_WipPen">
     <regions xmi:id="_ljsb4iYeEeeh1o2kvtdb7w" name="main region">
       <vertices xsi:type="sgraph:Entry" xmi:id="_ljtC8CYeEeeh1o2kvtdb7w">
         <outgoingTransitions xmi:id="_ljtqBSYeEeeh1o2kvtdb7w" target="_ljtC_CYeEeeh1o2kvtdb7w"/>

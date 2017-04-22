@@ -132,7 +132,7 @@ class RobotPenWidget(RobotWidget):
         carriage.closeSubpath()
         self.p.drawPath(carriage)
         
-        #draw front line
+        #draw front lines
         pen = QPen(ardGray)
         pen.setWidth(1)
         pen.setCosmetic(True)
@@ -141,9 +141,32 @@ class RobotPenWidget(RobotWidget):
         carriage = QPainterPath()
         carriage.moveTo(cfg.xav, cfg.yside)
         carriage.lineTo(cfg.xav, -cfg.yside)
-        carriage.closeSubpath()
+        carriage.moveTo(cfg.xavExtended, cfg.yside)
+        carriage.lineTo(cfg.xavExtended, -cfg.yside)
         self.p.drawPath(carriage)
         self.p.setPen(markPen)
+        
+        #draw actuators
+        self.p.setBrush(jetBlack)
+        drawCircle(self.p, 185,  60, 22)
+        drawCircle(self.p, 185, -60, 22)
+        self.p.setBrush(Qt.gray)
+        drawCircle(self.p, 185,  60, 15)
+        drawCircle(self.p, 185, -60, 15)
+        arm = QPainterPath()
+        arm.moveTo(cfg.xav + 40, 50)
+        arm.lineTo(cfg.xav - 30, 50)
+        arm.lineTo(cfg.xav - 30, 70)
+        arm.lineTo(cfg.xav + 40, 70)
+        arm.closeSubpath()
+        self.p.drawPath(arm)
+        arm = QPainterPath()
+        arm.moveTo(cfg.xav + 40, -50)
+        arm.lineTo(cfg.xav - 30, -50)
+        arm.lineTo(cfg.xav - 30, -70)
+        arm.lineTo(cfg.xav + 40, -70)
+        arm.closeSubpath()
+        self.p.drawPath(arm)
         
     def drawObjects(self, stratInfo):
         if stratInfo.robotCylinderStockNb:

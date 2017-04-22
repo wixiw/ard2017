@@ -7,22 +7,41 @@
 
 #include "Installation.h"
 #ifdef BUILD_STRATEGY
+#include "Robot2017.h"
 using namespace ard;
 
-Installation::Installation(TimerInterface& timer):
-        Strategy2017(),
+InstallPen::InstallPen(Robot2017* robot):
+        Strategy2017(robot),
         fsm()
 {
-    //fsm.setTimer(&timer);
+    //fsm.setTimer(&robot->fsmTimer);
 }
 
-void Installation::init()
+void InstallPen::init()
 {
     Strategy2017::init();
     fsm.init();
 }
 
-void Installation::update(TimeMs sinceLastCall)
+void InstallPen::update(TimeMs sinceLastCall)
+{
+    fsm.runCycle();
+}
+
+InstallTration::InstallTration(Robot2017* robot):
+Strategy2017(robot),
+fsm()
+{
+    //fsm.setTimer(&robot->fsmTimer);
+}
+
+void InstallTration::init()
+{
+    Strategy2017::init();
+    fsm.init();
+}
+
+void InstallTration::update(TimeMs sinceLastCall)
 {
     fsm.runCycle();
 }

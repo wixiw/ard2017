@@ -79,26 +79,16 @@ Robot2017::Robot2017():
     bsp(),
 #ifdef BUILD_STRATEGY
     actuators(),
-    lifecycle(),
+    lifecycle(this),
     fsmTimer(),
     strategy(),
-    stratFunnyAction(),
-    stratHomol(fsmTimer),
-    stratInstallation(fsmTimer),
-    stratInvade(fsmTimer),
-    stratMatch(fsmTimer),
-    stratQuentin(fsmTimer),
-    stratSelftest(fsmTimer),
-    stratTanguy(fsmTimer),
-    stratWilly(fsmTimer),
-
 #endif
     nav(),
     chrono(),
     hmi(TIMER_BUZZER),
     log(LogDispatcher::getInstance()),
 #ifdef BUILD_REMOTE_CONTROL
-    remoteControl(bsp.serial0),
+    remoteControl(this, bsp.serial0),
 #endif
     fileLogger(LOG_QUEUE_SIZE),
     buildDate("unknown"),
@@ -111,31 +101,6 @@ void Robot2017::bootOs()
 {
     nav.updateConf(&m_params);
 
-#ifdef BUILD_REMOTE_CONTROL
-    remoteControl.attachRobot(this);
-#endif
-
-#ifdef BUILD_STRATEGY
-    lifecycle.attachRobot(this);
-    stratInstallation.attachRobot(this);
-    stratWilly.attachRobot(this);
-    lifecycle.registerMatchInstallation(stratInstallation);
-    lifecycle.registerFunnyAction(stratFunnyAction);
-    lifecycle.registerStrategy("Match",          stratMatch);
-    lifecycle.registerStrategy("Homol",          stratHomol);
-    lifecycle.registerStrategy("Invade",         stratInvade);
-    lifecycle.registerStrategy("Selftest",       stratSelftest);
-    lifecycle.registerStrategy("Tanguy",         stratTanguy);
-    lifecycle.registerStrategy("Quentin",        stratQuentin);
-    lifecycle.registerStrategy("Willy",          stratWilly);
-//    lifecycle.registerStrategy("UT LEDs",        Strategy_LedTest);
-//    lifecycle.registerStrategy("UT Button",      Strategy_ButtonTest);
-//    lifecycle.registerStrategy("UT Omron",       Strategy_OmronTest);
-//    lifecycle.registerStrategy("UT CalibRot",    Strategy_CalibRot);
-//    lifecycle.registerStrategy("UT CalibLin",    Strategy_CalibLin);
-//    lifecycle.registerStrategy("UT Motion",      Strategy_MotionTest);
-#endif
-    
     //Connect the log service
     Thread::setLogger(&log);
     log.addLogger(fileLogger);

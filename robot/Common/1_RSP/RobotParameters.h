@@ -41,6 +41,7 @@ public:
     uint32_t xav()                  const;
     uint32_t xar()                  const;
     uint32_t yside()                const;
+    uint32_t xavExtended()          const;
     float leftWheelDiameter()    	const;
     float rightWheelDiameter()  	const;
     float voie()                 	const;
@@ -59,6 +60,7 @@ public:
     void set_xav(uint32_t value);
     void set_xar(uint32_t value);
     void set_yside(uint32_t value);
+    void set_xavExtended(uint32_t value);
     void set_leftWheelDiameter(float value);
     void set_rightWheelDiameter(float value);
     void set_voie(float value);

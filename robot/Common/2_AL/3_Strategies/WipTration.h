@@ -1,26 +1,27 @@
 /*
- * Tanguy.h
+ * WipTration.h
  *
  *  Created on: 18 avr. 2017
  *      Author: wix
  */
 
-#ifndef ROBOT_COMMON_2_AL_STRATEGIES_Tanguy_Tanguy_H_
-#define ROBOT_COMMON_2_AL_STRATEGIES_Tanguy_Tanguy_H_
+#ifndef ROBOT_COMMON_2_AL_STRATEGIES_WipTration_WipTration_H_
+#define ROBOT_COMMON_2_AL_STRATEGIES_WipTration_WipTration_H_
 
 #include "ArdOs.h"
 #include "StratFwk.h"
 
 #ifdef BUILD_STRATEGY
-#include "generated/FSM_Tanguy.h"
+#include "generated/FSM_WipTration.h"
 
 namespace ard
 {
+    class Robot2017;
 
-    class Tanguy: public Strategy2017
+    class WipTration: public Strategy2017
     {
     public:
-        Tanguy(TimerInterface& timer);
+        WipTration(Robot2017* robot);
 
         /**---------------------------------
          * Container thread interface
@@ -34,11 +35,11 @@ namespace ard
         void update(TimeMs sinceLastCall) override;
 
     private:
-        FSM_Tanguy fsm;
+        FSM_WipTration fsm;
     };
 
 } /* namespace ard */
 
 #endif //BUILD_STRATEGY
 
-#endif /* ROBOT_COMMON_2_AL_STRATEGIES_Tanguy_Tanguy_H_ */
+#endif /* ROBOT_COMMON_2_AL_STRATEGIES_WipTration_WipTration_H_ */

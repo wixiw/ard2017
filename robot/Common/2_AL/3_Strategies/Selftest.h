@@ -16,11 +16,12 @@
 
 namespace ard
 {
+    class Robot2017;
 
     class Selftest: public Strategy2017
     {
     public:
-        Selftest(TimerInterface& timer);
+        Selftest(Robot2017* robot);
 
         /**---------------------------------
          * Container thread interface

@@ -37,8 +37,7 @@ namespace ard
     class RemoteControl: public ILogChannel, public IComListener
     {
     public:
-        RemoteControl(ISerialDriver& serialDriver);
-        void attachRobot(Robot2017* robot);
+        RemoteControl(Robot2017* newRobot, ISerialDriver& serialDriver);
         virtual ~RemoteControl() = default;
 
         //Implements ILogChannel : returns true if the communication is established
@@ -87,6 +86,12 @@ namespace ard
         void setSpeedAcc            (apb_RemoteControlRequest const & request);
         void requestGoto            (apb_RemoteControlRequest const & request);
         void requestGotoCap         (apb_RemoteControlRequest const & request);
+        void requestGoForward       (apb_RemoteControlRequest const & request);
+        void requestTurnDelta       (apb_RemoteControlRequest const & request);
+        void requestTurnTo          (apb_RemoteControlRequest const & request);
+        void requestFaceTo          (apb_RemoteControlRequest const & request);
+        void recalFaceOnBorder      (apb_RemoteControlRequest const & request);
+        void recalRearOnBorder      (apb_RemoteControlRequest const & request);
         void requestBlockRobot      (apb_RemoteControlRequest const & request);
         void requestMaxLengthMsg    (apb_RemoteControlRequest const & request);
         void requestCrcFailMsg      (apb_RemoteControlRequest const & request);

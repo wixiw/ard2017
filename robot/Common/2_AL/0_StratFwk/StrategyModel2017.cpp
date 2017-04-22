@@ -12,21 +12,10 @@
 
 using namespace ard;
 
-Strategy2017::Strategy2017():
-        robot(NULL)
-{
-
-}
-
-void Strategy2017::init()
+Strategy2017::Strategy2017(Robot2017* _robot):
+        robot(_robot)
 {
     ASSERT_TEXT(robot, "You did not attached a robot.");
-}
-
-void Strategy2017::attachRobot(Robot2017* _robot)
-{
-    ASSERT_TEXT(robot==NULL, "You attached a robot twice.");
-    robot = _robot;
 }
 
 StrategyModel2017::StrategyModel2017()

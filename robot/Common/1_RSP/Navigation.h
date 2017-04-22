@@ -3,7 +3,7 @@
 #define NAVIGATION_H
 
 #include "BSP.hpp"
-#include "Core/ArdMaths.h"
+#include "core/ArdMaths.h"
 #include "Actuators/AccelStepper.h"
 #include "CommonMsg.pb.h"
 #include "RobotParameters.h"
@@ -141,6 +141,12 @@ namespace ard
          * If an order is already present the call is blocking as if a wait() where done.
          */
         void faceTo(Point p);
+
+        /**
+         * The robot will go to the following border and re localize accordingly
+         */
+        void recalFaceOnBorder(eTableBorder border);
+        void recalRearOnBorder(eTableBorder border);
 
         /**
          * Stops the robot. It interrupts current order.

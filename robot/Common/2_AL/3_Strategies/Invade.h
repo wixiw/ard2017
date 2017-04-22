@@ -16,11 +16,12 @@
 
 namespace ard
 {
+    class Robot2017;
 
     class Invade: public Strategy2017
     {
     public:
-        Invade(TimerInterface& timer);
+        Invade(Robot2017* robot);
 
         /**---------------------------------
          * Container thread interface

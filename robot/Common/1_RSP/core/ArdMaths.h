@@ -11,6 +11,7 @@
 #include "string/WString.h"
 #include <math.h>
 #include "CommonMsg.pb.h"
+#include "wiring_constants.h"
 
 //Checks if a value is in a range
 #define IS_IN_RANGE(min, value, max) if( min <= value && value <= max)
@@ -25,9 +26,6 @@ namespace ard
     class Point
     {
     public:
-        double x;/*mm*/
-        double y;/*mm*/
-
         virtual ~Point()
         {
         }
@@ -48,14 +46,21 @@ namespace ard
 
         //Get the associated proto struct
         apb_Point getProto() const;
+
+        //Translate the point of the following distances in mm
+        void translate(double dx, double dy);
+
+        //Translate the point from the following angle and distance (degree and mm).
+        void translatePolar(double dtheta, double dist);
+
+        double x;/*mm*/
+        double y;/*mm*/
     };
 
     //Represent a pose in a 2D space : Point + heading
     class PointCap: public Point
     {
     public:
-        double h;/*rad*/
-
         PointCap();
         PointCap(Point p);
         PointCap(double x /*mm*/, double y/*mm*/, double h/*degree*/);
@@ -70,6 +75,12 @@ namespace ard
 
         //Build from the associated proto struct
         static PointCap fromProto(apb_PointCap const& p);
+
+        //accessor
+        double hDegree() const {return degrees(h);};
+        void hDegree(double newH){h = radians(newH);};
+
+        double h;/*rad*/
     };
 
 } /* namespace ard */

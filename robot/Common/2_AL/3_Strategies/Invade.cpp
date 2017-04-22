@@ -7,13 +7,14 @@
 
 #include "Invade.h"
 #ifdef BUILD_STRATEGY
+#include "Robot2017.h"
 using namespace ard;
 
-Invade::Invade(TimerInterface& timer):
-        Strategy2017(),
+Invade::Invade(Robot2017* robot):
+        Strategy2017(robot),
         fsm()
 {
-    //fsm.setTimer(&timer);
+    //fsm.setTimer(&robot->fsmTimer);
 }
 
 void Invade::init()

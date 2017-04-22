@@ -12,15 +12,17 @@
 #include "StratFwk.h"
 
 #ifdef BUILD_STRATEGY
-#include "generated/FSM_Installation.h"
+#include "generated/FSM_InstallPen.h"
+#include "generated/FSM_InstallTration.h"
 
 namespace ard
 {
+    class Robot2017;
 
-    class Installation: public Strategy2017
+    class InstallPen: public Strategy2017
     {
     public:
-        Installation(TimerInterface& timer);
+        InstallPen(Robot2017* robot);
 
         /**---------------------------------
          * Container thread interface
@@ -34,8 +36,29 @@ namespace ard
         void update(TimeMs sinceLastCall) override;
 
     private:
-        FSM_Installation fsm;
+        FSM_InstallPen fsm;
     };
+
+    class InstallTration: public Strategy2017
+    {
+    public:
+        InstallTration(Robot2017* robot);
+
+        /**---------------------------------
+         * Container thread interface
+         ---------------------------------*/
+
+        //Implements IMiniThread: init the state machine
+        void init() override;
+
+        //Implements IMiniThread : method to be called by the container thread
+        //                         it's expected to be called periodically
+        void update(TimeMs sinceLastCall) override;
+
+    private:
+        FSM_InstallTration fsm;
+    };
+
 
 } /* namespace ard */
 

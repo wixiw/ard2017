@@ -25,12 +25,8 @@ namespace ard
     class Strategy2017: public IStrategy
     {
     public:
-        Strategy2017();
+        Strategy2017(Robot2017* robot);
 
-        //Overrides IStrategy
-        virtual void init() override;
-
-        void attachRobot(Robot2017* robot);
         void enableAvoidance(bool on);
 
     protected:

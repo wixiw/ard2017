@@ -162,8 +162,6 @@ class VizuMainScreen(QWidget):
     @pyqtSlot(RemoteControl_pb2.SerialNumber)
     def _handleSerialNumber(self, serial):
         #print("New serial received : " + serial.value)
-        if serial.value == "":
-            print("AAAAAAAAAAAAAARGFFGGSDSS")
         self.setWindowTitle('8=> Vizu [' + serial.value + ']') 
         self.tabContexts["Strat"].tab.updateRobot(serial.value)
     

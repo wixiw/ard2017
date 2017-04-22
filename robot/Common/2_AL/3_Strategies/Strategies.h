@@ -22,10 +22,9 @@
 #include "Invade.h"
 #include "Match.h"
 #include "Installation.h"
-#include "Quentin.h"
 #include "Selftest.h"
-#include "Tanguy.h"
-#include "Willy.h"
+#include "WipPen.h"
+#include "WipTration.h"
 
 
 namespace ard

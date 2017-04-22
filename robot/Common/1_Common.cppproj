@@ -386,12 +386,6 @@
     <PreBuildEvent>REM $(MSBuildProjectDirectory)\generateStateMachines.bat $(SolutionDir)</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="0_BSP\ArdOs.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArdOs.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\Arduino.h">
       <SubType>compile</SubType>
     </Compile>
@@ -1127,6 +1121,12 @@
     <Compile Include="1_RSP\Actuators\ServoTimers.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\ArdOs.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\ArdOs.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\Chrono.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1262,12 +1262,6 @@
     <Compile Include="2_AL\3_Strategies\Match.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\Quentin.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Quentin.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\3_Strategies\Selftest.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1277,16 +1271,16 @@
     <Compile Include="2_AL\3_Strategies\Strategies.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\Tanguy.cpp">
+    <Compile Include="2_AL\3_Strategies\WipPen.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\Tanguy.h">
+    <Compile Include="2_AL\3_Strategies\WipPen.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\Willy.cpp">
+    <Compile Include="2_AL\3_Strategies\WipTration.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\Willy.h">
+    <Compile Include="2_AL\3_Strategies\WipTration.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Arms.cpp">
@@ -1301,10 +1295,16 @@
     <Compile Include="2_AL\generated\FSM_Homol.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Installation.cpp">
+    <Compile Include="2_AL\generated\FSM_InstallPen.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Installation.h">
+    <Compile Include="2_AL\generated\FSM_InstallPen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_InstallTration.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_InstallTration.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Invade.cpp">
@@ -1331,28 +1331,22 @@
     <Compile Include="2_AL\generated\FSM_Match.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Quentin.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_Quentin.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\generated\FSM_Selftest.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Selftest.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Tanguy.cpp">
+    <Compile Include="2_AL\generated\FSM_WipPen.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Tanguy.h">
+    <Compile Include="2_AL\generated\FSM_WipPen.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Willy.cpp">
+    <Compile Include="2_AL\generated\FSM_WipTration.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Willy.h">
+    <Compile Include="2_AL\generated\FSM_WipTration.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\sc_types.h">

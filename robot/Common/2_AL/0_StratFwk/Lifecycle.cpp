@@ -71,30 +71,20 @@ String FSM_Lifecycle_Better::state2Str(FSM_LifecycleStates state) const
     }
 }
 
-Lifecycle::Lifecycle():
+Lifecycle::Lifecycle(Robot2017* newRobot):
         Thread("Strategy", PRIO_STRATEGY, STACK_STRATEGY, PERIOD_STRATEGY),
         strategyId(0),
         nbRegisteredStrats(0),
-        matchInstallation(NULL),
-        funnyAction(NULL),
-        robot(NULL)
+        robot(newRobot)
 {
     fsm.setDefaultSCI_OCB(this);
-    INIT_TABLE_TO_ZERO(strategies);
-}
+    INIT_TABLE_TO_ZERO(matchs);
 
-void Lifecycle::attachRobot(Robot2017* newRobot)
-{
     ASSERT_TEXT(newRobot,"You should not attach a NULL robot");
-    ASSERT_TEXT(robot == NULL, "You should not attach robot twice");
-    robot=newRobot;
 }
 
 void Lifecycle::init()
 {
-    ASSERT(robot);
-    ASSERT(matchInstallation);
-    ASSERT(funnyAction);
     ASSERT(nbRegisteredStrats);
 
     Thread::init();
@@ -109,24 +99,15 @@ void Lifecycle::run()
     publishOutputs();
 }
 
-void Lifecycle::registerMatchInstallation(IStrategy& object)
+void Lifecycle::registerMatchType(String const& name, IStrategy* install, IStrategy* match, IStrategy* funny)
 {
-    ASSERT_TEXT(matchInstallation==NULL, "You registered match installation twice.");
-    matchInstallation = &object;
-}
-
-void Lifecycle::registerStrategy(String name, IStrategy& object)
-{
-    ASSERT_TEXT(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many strategies registered.");
-    strategies[nbRegisteredStrats].name = name;
-    strategies[nbRegisteredStrats].object = &object;
+    ASSERT_TEXT(name != "", "Strat name shall not be empty");
+    ASSERT_TEXT(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many matchs registered.");
+    matchs[nbRegisteredStrats].name     = name;
+    matchs[nbRegisteredStrats].install  = install;
+    matchs[nbRegisteredStrats].match    = match;
+    matchs[nbRegisteredStrats].funny    = funny;
     nbRegisteredStrats++;
-}
-
-void Lifecycle::registerFunnyAction(IStrategy& object)
-{
-    ASSERT_TEXT(funnyAction==NULL, "You registered funny action twice.");
-    funnyAction = &object;
 }
 
 void Lifecycle::networkConfigRequest(uint8_t strategyId_, eColor matchColor)
@@ -174,23 +155,27 @@ void Lifecycle::publishOutputs()
 
     if( fsm.isRaised_matchStarted() )
     {
-        robot->nav.enableAvoidance(true);
+        //avoidance system is only activated with start
+        if( !fsm.get_networkStart() )
+            robot->nav.enableAvoidance(true);
+
+        //start coutning match time
         robot->chrono.startMatch();
     }
 
-    if( fsm.isStateActive(FSM_Lifecycle::main_region_Table_installation) )
+    if( fsm.isStateActive(FSM_Lifecycle::main_region_Table_installation) && matchs[strategyId].install != NULL)
     {
-        matchInstallation->update(PERIOD_STRATEGY);
+        matchs[strategyId].install->update(PERIOD_STRATEGY);
     }
 
-    if( fsm.isStateActive(FSM_Lifecycle::main_region_Match) )
+    if( fsm.isStateActive(FSM_Lifecycle::main_region_Match) && matchs[strategyId].match != NULL )
     {
-        strategies[strategyId].object->update(PERIOD_STRATEGY);
+        matchs[strategyId].match->update(PERIOD_STRATEGY);
     }
 
-    if( fsm.isStateActive(FSM_Lifecycle::main_region_Funny_action) )
+    if( fsm.isStateActive(FSM_Lifecycle::main_region_Funny_action) && matchs[strategyId].funny != NULL )
     {
-        funnyAction->update(PERIOD_STRATEGY);
+        matchs[strategyId].funny->update(PERIOD_STRATEGY);
     }
 }
 
@@ -211,13 +196,13 @@ void Lifecycle::displayIntroduction()
     LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
     robot->sendSerialNumber();
 
-    LOG_INFO("Available strategies : ");
+    LOG_INFO("Available matchs : ");
     for (int i = 0; i < NB_MAX_STRATEGIES; ++i)
     {
-        if( strategies[i].object != NULL )
+        if( matchs[i].name != "" )
         {
             sleepMs(10);//Let Log thread do its job
-            LOG_INFO("    [" + String(i) + "]: " + strategies[i].name);
+            LOG_INFO("    [" + String(i) + "]: " + matchs[i].name);
         }
     }
 }
@@ -252,9 +237,9 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)
 
     //Check selected strategy
     ASSERT(strategyId_ < nbRegisteredStrats);
-    ASSERT_TEXT(strategies[strategyId].object != 0, "Selected strategy functor is null.");
+    ASSERT_TEXT(matchs[strategyId].name != "", "Selected strategy is malformed.");
     strategyId = strategyId_;
-    LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + strategies[strategyId].name + ".");
+    LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + matchs[strategyId].name + ".");
 }
 
 #endif

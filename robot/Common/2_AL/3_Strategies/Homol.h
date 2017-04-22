@@ -16,11 +16,12 @@
 
 namespace ard
 {
+    class Robot2017;
 
     class Homol: public Strategy2017
     {
     public:
-        Homol(TimerInterface& timer);
+        Homol(Robot2017* robot);
 
         /**---------------------------------
          * Container thread interface

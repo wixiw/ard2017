@@ -49,8 +49,12 @@ class TabStrat(QWidget):
     def updateRobot(self, name):
         if name == "Pen":
             self.overview.robot = self.overview.robotPen
+            self._setColorButtonState(Types_pb2.UNKNOWN)
+            self._setStartButtonState("color") 
         elif name == "Tration":
             self.overview.robot = self.overview.robotTration
+            self._setColorButtonState(Types_pb2.UNKNOWN)
+            self._setStartButtonState("color") 
         else:
             self.overview.robot = None
             self.robotConfig = None
@@ -65,15 +69,13 @@ class TabStrat(QWidget):
         self.comboStratId.addItem("1 - Homol", 1)
         self.comboStratId.addItem("2 - Invade", 2)
         self.comboStratId.addItem("3 - Selftest", 3)
-        self.comboStratId.addItem("4 - Tanguy", 4)
-        self.comboStratId.addItem("5 - Quentin", 5)
-        self.comboStratId.addItem("6 - Willy", 6)
-        self.comboStratId.addItem("7 - UT LEDs", 7)
-        self.comboStratId.addItem("8 - UT Button", 8)
-        self.comboStratId.addItem("9 - UT Omron", 9)
-        self.comboStratId.addItem("10- UT CalibRot", 10)
-        self.comboStratId.addItem("11- UT CalibLin", 11)
-        self.comboStratId.addItem("12- UT Motion", 12)
+        self.comboStratId.addItem("4 - WIP", 4)
+#         self.comboStratId.addItem("7 - UT LEDs", 7)
+#         self.comboStratId.addItem("8 - UT Button", 8)
+#         self.comboStratId.addItem("9 - UT Omron", 9)
+#         self.comboStratId.addItem("10- UT CalibRot", 10)
+#         self.comboStratId.addItem("11- UT CalibLin", 11)
+#         self.comboStratId.addItem("12- UT Motion", 12)
         self.comboStratId.currentIndexChanged[int].connect(self.selectStrat)
             #retrieve persisted choice
         settings = QSettings("config.ini", QSettings.IniFormat)

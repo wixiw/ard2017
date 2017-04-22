@@ -1,26 +1,27 @@
 /*
- * Willy.h
+ * WipPen.h
  *
  *  Created on: 18 avr. 2017
  *      Author: wix
  */
 
-#ifndef ROBOT_COMMON_2_AL_STRATEGIES_WILLY_WILLY_H_
-#define ROBOT_COMMON_2_AL_STRATEGIES_WILLY_WILLY_H_
+#ifndef ROBOT_COMMON_2_AL_STRATEGIES_WipPen_WipPen_H_
+#define ROBOT_COMMON_2_AL_STRATEGIES_WipPen_WipPen_H_
 
 #include "ArdOs.h"
 #include "StratFwk.h"
 
 #ifdef BUILD_STRATEGY
-#include "generated/FSM_Willy.h"
+#include "generated/FSM_WipPen.h"
 
 namespace ard
 {
+    class Robot2017;
 
-    class Willy: public Strategy2017
+    class WipPen: public Strategy2017
     {
     public:
-        Willy(TimerInterface& timer);
+        WipPen(Robot2017* robot);
 
         /**---------------------------------
          * Container thread interface
@@ -34,11 +35,11 @@ namespace ard
         void update(TimeMs sinceLastCall) override;
 
     private:
-        FSM_Willy fsm;
+        FSM_WipPen fsm;
     };
 
 } /* namespace ard */
 
 #endif //BUILD_STRATEGY
 
-#endif /* ROBOT_COMMON_2_AL_STRATEGIES_WILLY_WILLY_H_ */
+#endif /* ROBOT_COMMON_2_AL_STRATEGIES_WipPen_WipPen_H_ */

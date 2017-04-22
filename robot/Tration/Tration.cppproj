@@ -206,6 +206,12 @@
     <Compile Include="main_tration.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Tration.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Tration.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

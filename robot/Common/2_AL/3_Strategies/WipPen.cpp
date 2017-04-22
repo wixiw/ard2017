@@ -1,29 +1,29 @@
 /*
- * Homol.cpp
+ * WipPen.cpp
  *
  *  Created on: 21 avr. 2017
  *      Author: wix
  */
 
-#include "Homol.h"
+#include "WipPen.h"
 #ifdef BUILD_STRATEGY
 #include "Robot2017.h"
 using namespace ard;
 
-Homol::Homol(Robot2017* robot):
+WipPen::WipPen(Robot2017* robot):
         Strategy2017(robot),
         fsm()
 {
-    //fsm.setTimer(&robot->fsmTimer);
+    //fsm.setTimer&(robot->fsmTimer);
 }
 
-void Homol::init()
+void WipPen::init()
 {
     Strategy2017::init();
     fsm.init();
 }
 
-void Homol::update(TimeMs sinceLastCall)
+void WipPen::update(TimeMs sinceLastCall)
 {
     fsm.runCycle();
 }

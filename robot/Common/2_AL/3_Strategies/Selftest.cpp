@@ -7,13 +7,14 @@
 
 #include "Selftest.h"
 #ifdef BUILD_STRATEGY
+#include "Robot2017.h"
 using namespace ard;
 
-Selftest::Selftest(TimerInterface& timer):
-        Strategy2017(),
+Selftest::Selftest(Robot2017* robot):
+        Strategy2017(robot),
         fsm()
 {
-    //fsm.setTimer(&timer);
+    //fsm.setTimer(&robot->fsmTimer);
 }
 
 void Selftest::init()

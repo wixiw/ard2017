@@ -36,7 +36,16 @@ GeneratorModel for yakindu::cpp {
         }
     }
     
-    statechart FSM_Installation {
+    statechart FSM_InstallPen {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_InstallTration {
 
         feature Outlet {
             targetProject = "ard2017_master"
@@ -63,15 +72,6 @@ GeneratorModel for yakindu::cpp {
         }
     }
     
-    statechart FSM_Quentin {
-
-        feature Outlet {
-            targetProject = "ard2017_master"
-            targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
-        }
-    }
-    
     statechart FSM_Selftest {
 
         feature Outlet {
@@ -81,7 +81,7 @@ GeneratorModel for yakindu::cpp {
         }
     }
     
-    statechart FSM_Tanguy {
+    statechart FSM_WipPen {
 
         feature Outlet {
             targetProject = "ard2017_master"
@@ -90,7 +90,7 @@ GeneratorModel for yakindu::cpp {
         }
     }
         
-    statechart FSM_Willy {
+    statechart FSM_WipTration {
 
         feature Outlet {
             targetProject = "ard2017_master"

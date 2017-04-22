@@ -60,6 +60,7 @@ message Configuration
     required uint32 xav                    = 16; //mm distance from the wheel center to the front of the robot
     required uint32 xar                    = 2; //mm distance from the wheel center to the rear of the robot
     required uint32 yside                  = 3; //mm distance from the robot center to a side
+    required uint32 xavExtended            = 27; //mm distance from the wheel center to the from of the robot with arms out.
     //    calibration params
     required float leftWheelDiameter       = 4; //mm
     required float rightWheelDiameter      = 5; //mm
@@ -126,6 +127,12 @@ message RemoteControlRequest
         SetSpeedAcc         setSpeedAcc         = 201;
         RequestGoto         requestGoto         = 210;
         RequestGotoCap      requestGotoCap      = 211;
+        float               requestGoForward    = 212;
+        float               requestTurnDelta    = 213;
+        float               requestTurnTo       = 214;
+        Point               requestFaceTo       = 215;
+        eTableBorder        recalFaceOnBorder   = 216;
+        eTableBorder        recalRearOnBorder   = 217;
         bool                requestBlockRobot   = 230;
 
         //messages from 300 to 399 for design tests

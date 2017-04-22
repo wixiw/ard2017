@@ -7,7 +7,6 @@
 
 #include "ArdMaths.h"
 #include "ArdFramework.h"
-#include "wiring_constants.h"
 
 using namespace ard;
 
@@ -73,6 +72,23 @@ apb_Point Point::getProto() const
     return p;
 }
 
+void Point::translate(double dx, double dy)
+{
+    x += dx;
+    y += dy;
+}
+
+void Point::translatePolar(double dtheta, double dist)
+{
+    x += dist * cos( radians(dtheta) );
+    y += dist * sin( radians(dtheta) );
+}
+
+
+/**
+ * ----------------------------------------------------------------------------
+ */
+
 PointCap::PointCap()
         : Point(), h(0)
 {
@@ -123,3 +139,4 @@ PointCap PointCap::fromProto(apb_PointCap const& p)
     res.h = p.h;
     return res;
 }
+

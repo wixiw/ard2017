@@ -195,7 +195,6 @@ void UARTClass::IrqHandler( void )
   // Acknowledge errors
   if ((status & UART_SR_OVRE) == UART_SR_OVRE || (status & UART_SR_FRAME) == UART_SR_FRAME || (status & UART_SR_PARE) == UART_SR_PARE)
   {
-    // TODO: error reporting outside ISR
     _pUart->UART_CR |= UART_CR_RSTSTA;
   }
 }

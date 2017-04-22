@@ -15,7 +15,6 @@ ArdObject::ArdObject(String const& name):
         initialized(false),
         name(name)
 {
-    //TODO assert
 }
 
 void ArdObject::init()

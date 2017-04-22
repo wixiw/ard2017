@@ -16,11 +16,12 @@
 
 namespace ard
 {
+    class Robot2017;
 
     class Match: public Strategy2017
     {
     public:
-        Match(TimerInterface& timer);
+        Match(Robot2017* robot);
 
         /**---------------------------------
          * Container thread interface
