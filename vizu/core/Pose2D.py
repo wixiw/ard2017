@@ -13,8 +13,8 @@ class Pose2D(Point):
         if True == isinstance(h,str) and h =='FREE':
             self.h='FREE'
         else:
-            self.h = float(h)
-            assert abs(self.h) < 10., "h is out of range %s" % h
+            self.h = radians(h)
+            assert abs(self.h) < 4., "h is out of range %s" % h
             normalizeAngle(self.h)
     
     #/**
@@ -69,7 +69,7 @@ class Pose2D(Point):
         p = Pose2D()
         p.x = poseMsg.x
         p.y = poseMsg.y
-        p.h = poseMsg.h
+        p.h = radians(poseMsg.h)
         return p
     
     #Convert a Pose2D to a PoseMsg protobuf message
@@ -77,7 +77,7 @@ class Pose2D(Point):
     def toPoseMsg(self, msg):
         msg.x = self.x
         msg.y = self.y
-        msg.h = self.h
+        msg.h = degrees(self.h)
     
     
     def __add__(self, p):

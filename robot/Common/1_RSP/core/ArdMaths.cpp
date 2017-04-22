@@ -127,7 +127,7 @@ apb_PointCap PointCap::getProto() const
     apb_PointCap p = apb_PointCap_init_zero;
     p.x = x;
     p.y = y;
-    p.h = h;
+    p.h = degrees(h);
     return p;
 }
 
@@ -136,7 +136,7 @@ PointCap PointCap::fromProto(apb_PointCap const& p)
     PointCap res;
     res.x = p.x;
     res.y = p.y;
-    res.h = p.h;
+    res.h = radians(p.h);
     return res;
 }
 

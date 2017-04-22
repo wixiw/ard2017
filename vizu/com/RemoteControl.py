@@ -151,6 +151,7 @@ class RemoteControl(QObject):
         msg = RemoteControl_pb2.RemoteControlRequest()
         pose.toPoseMsg(msg.setPosition)
         self._sendMsg(msg)
+        print(msg)
 
     @pyqtSlot(int, int, int, int)
     def setSpeedAcc(self, vMax, vMaxTurn, accMax, accMaxTurn):
@@ -160,22 +161,54 @@ class RemoteControl(QObject):
         msg.setSpeedAcc.accMax = accMax
         msg.setSpeedAcc.accMaxTurn = accMaxTurn
         self._sendMsg(msg)
+        print(msg)
                 
     @pyqtSlot(Pose2D, int)
-    def requestGotoCap(self, pose, dir):
+    def gotoCap(self, pose, dir):
         msg = RemoteControl_pb2.RemoteControlRequest()
         pose.toPoseMsg(msg.requestGotoCap.target)
         msg.requestGotoCap.direction = dir
         self._sendMsg(msg)
+        print(msg)
         
     @pyqtSlot(Point ,int)
-    def requestGoto(self, point, dir):
+    def goto(self, point, dir):
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestGoto.target.x = point.x
         msg.requestGoto.target.y = point.y
         msg.requestGoto.direction = dir
         self._sendMsg(msg)
+        print(msg)
+
+    @pyqtSlot(float)
+    def goForward(self, d):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestGoForward = d
+        self._sendMsg(msg)
+        print(msg)
         
+    @pyqtSlot(float)
+    def turnDelta(self, dh):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestTurnDelta= dh
+        self._sendMsg(msg)
+        print(msg)
+        
+    @pyqtSlot(float)
+    def turnTo(self, h):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestTurnTo = h
+        self._sendMsg(msg)
+        print(msg)
+        
+    @pyqtSlot(Point)
+    def faceTo(self, point):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestFaceTo.x = point.x
+        msg.requestFaceTo.y = point.y
+        self._sendMsg(msg)
+        print(msg)
+                
     @pyqtSlot()
     def requestMaxLengthMsg(self):
         msg = RemoteControl_pb2.RemoteControlRequest()

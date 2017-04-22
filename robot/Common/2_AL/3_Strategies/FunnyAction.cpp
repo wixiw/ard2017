@@ -21,7 +21,8 @@ void FunnyAction::update(TimeMs sinceLastCall)
 {
     if( 1500 < duration )
     {
-        robot->actuators.servoFunnyAction.write(0);
+        //TODO 23° pour prise, à mettre dans installation
+        robot->actuators.servoFunnyAction.write(180);
     }
 
     duration += sinceLastCall;

@@ -291,41 +291,48 @@ void Navigation::goForward(float distanceMm)
 {
     m_mutex.lock();
     PointCap target = m_pose;
-    m_mutex.lock();
+    m_mutex.unlock();
 
     target.translatePolar(m_pose.hDegree(), distanceMm);
 
-    goTo(target);
+    if(0 <= distanceMm)
+    {
+        goTo(target);
+    }
+    else
+    {
+        goTo(target, eDir_BACKWARD);
+    }
 }
 
 void Navigation::turnDelta(float angle)
 {
     m_mutex.lock();
     PointCap target = m_pose;
-    m_mutex.lock();
+    m_mutex.unlock();
     target.hDegree(target.hDegree() + angle);
 
-    goTo(target);
+    goToCap(target);
 }
 
 void Navigation::turnTo(float angle)
 {
     m_mutex.lock();
     PointCap target = m_pose;
-    m_mutex.lock();
+    m_mutex.unlock();
     target.hDegree(angle);
 
-    goTo(target);
+    goToCap(target);
 }
 
 void Navigation::faceTo(Point p)
 {
     m_mutex.lock();
     PointCap target = m_pose;
-    m_mutex.lock();
-    target.hDegree(m_pose.angleTo(p));
+    m_mutex.unlock();
+    target.h = m_pose.angleTo(p);
 
-    goTo(target);
+    goToCap(target);
 }
 
 void Navigation::recalFaceOnBorder(eTableBorder border)
@@ -435,33 +442,34 @@ void Navigation::compute_odom()
 void Navigation::action_startOrder()
 {
     LOG_INFO("   new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
-    double angleToTarget = atan2((m_target.y - m_pose.y), (m_target.x - m_pose.x));
-    if (m_sensTarget == eDir_BACKWARD)
+
+    double distDelta = m_sensTarget * m_pose.distanceTo(m_target);
+    //Do no move if already on target
+    if (fabs(distDelta) <= NO_MOVE_DELTA)
     {
-        angleToTarget = moduloPiPi(angleToTarget + M_PI);
+        action_turningAtTarget();
     }
-    double angleDelta = moduloPiPi(angleToTarget - m_pose.h);
-    //Do not turn if already facing right direction
-    if (fabs(angleDelta) <= NO_TURN_DELTA)
+    else
     {
-        double distDelta = m_sensTarget * m_pose.distanceTo(m_target);
-        //Do no move if already on target
-        if (fabs(distDelta) <= NO_MOVE_DELTA)
+        double angleToTarget = atan2((m_target.y - m_pose.y), (m_target.x - m_pose.x));
+        if (m_sensTarget == eDir_BACKWARD)
         {
-            action_turningAtTarget();
+            angleToTarget = moduloPiPi(angleToTarget + M_PI);
         }
-        else
+        double angleDelta = moduloPiPi(angleToTarget - m_pose.h);
+        //Do not turn if already facing right direction
+        if (fabs(angleDelta) <= NO_TURN_DELTA)
         {
             //Request straight line
             action_goingToTarget();
         }
-    }
-    else
-    {
-        //Request turn
-        applyCmdToTurn(angleDelta);
-        //Change state
-        m_state = eNavState_FACING_DEST;
+        else
+        {
+            //Request turn
+            applyCmdToTurn(angleDelta);
+            //Change state
+            m_state = eNavState_FACING_DEST;
+        }
     }
 }
 
