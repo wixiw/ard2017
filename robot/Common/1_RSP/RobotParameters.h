@@ -41,6 +41,7 @@ public:
     uint32_t xav()                  const;
     uint32_t xar()                  const;
     uint32_t yside()                const;
+    uint32_t xavExtended()          const;
     float leftWheelDiameter()    	const;
     float rightWheelDiameter()  	const;
     float voie()                 	const;
@@ -49,7 +50,7 @@ public:
     uint32_t recalSpeed()           const;
     uint32_t maxTurnSpeed()         const;
     uint32_t deccDist()             const;
-    uint32_t matchDuration()        const;
+    uint32_t strategyDuration()     const;
     uint32_t detectionWaitForOppMove()const;
     bool detectionActive()      	const;
     uint32_t maxSpeed()             const;
@@ -59,6 +60,7 @@ public:
     void set_xav(uint32_t value);
     void set_xar(uint32_t value);
     void set_yside(uint32_t value);
+    void set_xavExtended(uint32_t value);
     void set_leftWheelDiameter(float value);
     void set_rightWheelDiameter(float value);
     void set_voie(float value);
@@ -67,7 +69,7 @@ public:
     void set_recalSpeed(uint32_t value);
     void set_maxTurnSpeed(uint32_t value);
     void set_deccDist(uint32_t value);
-    void set_matchDuration(uint32_t value);
+    void set_strategyDuration(uint32_t value);
     void set_detectionWaitForOppMove(uint32_t value);
     void set_detectionActive(bool value);
 

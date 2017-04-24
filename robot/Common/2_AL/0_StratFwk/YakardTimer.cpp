@@ -6,6 +6,7 @@
  */
 
 #include "YakardTimer.h"
+#ifdef BUILD_STRATEGY
 
 using namespace ard;
 
@@ -70,7 +71,7 @@ void YakardTimer::run(DelayMs time_ms)
     for (int i = 0; i < NB_YAKARD_TIMERS; i++)
     {
         /* ... and process all used. */
-        if (timers[i].pt_evid != NULL)
+        if (timers[i].pt_evid != 0)
         {
 
             if (timers[i].elapsed_time_ms < timers[i].time_ms)
@@ -92,3 +93,4 @@ void YakardTimer::run(DelayMs time_ms)
     }
 }
 
+#endif

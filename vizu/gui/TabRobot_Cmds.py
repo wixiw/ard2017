@@ -103,8 +103,12 @@ class NavigationTeleopWidget(QWidget):
         
         self.navTab["setPosition"] = SetPosForm(self)
         self.navTab["setSpeedAcc"] = SetSpeedAccForm(self)
-        self.navTab["requestGotoCap"] = GotoCapForm(self)
-        self.navTab["requestGoto"] = GotoForm(self)
+        self.navTab["gotoCap"] = GotoCapForm(self)
+        self.navTab["goto"] = GotoForm(self)
+        self.navTab["goForward"] = GoForwardForm(self)
+        self.navTab["turnDelta"] = TurnDeltaForm(self)
+        self.navTab["turnTo"] = TurnToForm(self)
+        self.navTab["faceTo"] = FaceToForm(self)
         self.navCombo = QComboBox(self)
         for tabName, tab in self.navTab.items():
             self.navCombo.addItem(tabName, tab)
@@ -140,7 +144,6 @@ class NavigationTeleopWidget(QWidget):
         self.navTab[self.navCombo.currentText()].reset()
         for name, widget in self.navTab.items():
             widget.reset()
-        print(type(self.layout["NavStack"]))
         self.layout["NavStack"].setCurrentIndex(comboId)
         
     @pyqtSlot()
@@ -317,4 +320,93 @@ class GotoForm(QWidget):
                                 self.y.getValue()), 
                           self.dir.getValue())
         
+class GoForwardForm(QWidget):
+    execute = pyqtSignal(float)
+                        
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.d = IntegerInput(self, -2000, 2000)
+        self.exe = QPushButton('Execute', self)
+        self.exe.clicked.connect(self._execute) 
         
+        layout = QHBoxLayout(self)
+        layoutForm = QFormLayout()
+        layout.addLayout(layoutForm)
+        layout.addWidget(self.exe)
+        layoutForm.addRow("d (mm)", self.d)
+    
+    def reset(self):
+        self.d.clear()
+        
+    @pyqtSlot()
+    def _execute(self):
+        self.execute.emit(self.d.getValue())
+        
+class TurnDeltaForm(QWidget):
+    execute = pyqtSignal(float)
+                        
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.dh = HeadingInput(self)
+        self.exe = QPushButton('Execute', self)
+        self.exe.clicked.connect(self._execute) 
+        
+        layout = QHBoxLayout(self)
+        layoutForm = QFormLayout()
+        layout.addLayout(layoutForm)
+        layout.addWidget(self.exe)
+        layoutForm.addRow("dh (°)", self.dh)
+    
+    def reset(self):
+        self.dh.clear()
+        
+    @pyqtSlot()
+    def _execute(self):
+        self.execute.emit(self.dh.getValue())
+        
+class TurnToForm(QWidget):
+    execute = pyqtSignal(float)
+                        
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.h = HeadingInput(self)
+        self.exe = QPushButton('Execute', self)
+        self.exe.clicked.connect(self._execute) 
+        
+        layout = QHBoxLayout(self)
+        layoutForm = QFormLayout()
+        layout.addLayout(layoutForm)
+        layout.addWidget(self.exe)
+        layoutForm.addRow("h (°)", self.h)
+    
+    def reset(self):
+        self.h.clear()
+        
+    @pyqtSlot()
+    def _execute(self):
+        self.execute.emit(self.h.getValue())
+        
+class FaceToForm(QWidget):
+    execute = pyqtSignal(Point)
+                        
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.x = IntegerInput(self, -2000, 2000)
+        self.y = IntegerInput(self, -1500, 1500)
+        self.exe = QPushButton('Execute', self)
+        self.exe.clicked.connect(self._execute) 
+        
+        layout = QHBoxLayout(self)
+        layoutForm = QFormLayout()
+        layout.addLayout(layoutForm)
+        layout.addWidget(self.exe)
+        layoutForm.addRow("xt (mm)", self.x)
+        layoutForm.addRow("yt (mm)", self.y)
+    
+    def reset(self):
+        self.x.clear()
+        self.y.clear()
+        
+    @pyqtSlot()
+    def _execute(self):
+        self.execute.emit(Point(self.x.getValue(), self.y.getValue()))

@@ -9,10 +9,11 @@
 #define ROBOTS_ACTUATORTHREAD_H_
 
 #include "StratFwk.h"
-#include "Arms.h"
-#include "Lifter.h"
 
 #ifdef BUILD_STRATEGY
+
+#include "Arms.h"
+#include "Lifter.h"
 
 namespace ard
 {
@@ -20,6 +21,28 @@ namespace ard
     {
     public:
         ActuatorThread();
+
+        /**---------------------------------
+         * Strat API
+         ---------------------------------*/
+        //Open arm and make wheel turn to swallow several cylinder on table
+        void swallow(uint8_t nbCylinders);
+
+        //Stop turning wheels and retract arms to be able to move safely on table
+        void retractArms();
+
+        //Take a certain number of cylinders from the dispenser
+        void withdraw(uint8_t nbCylinders);
+
+        //Poo a certain number of cylinder (it doesn't matter if it's on table or in a container)
+        void poo(uint8_t nbCylinders);
+
+        //disable all actuators except those for used in funny actionn (typically used at end of match)
+        void disableAll();
+
+        /**---------------------------------
+         * Container thread interface
+         ---------------------------------*/
 
         //Overrides Thread : register polled objects
         void init() override;

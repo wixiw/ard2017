@@ -25,6 +25,23 @@ RobotParameters::RobotParameters()
                 m_maxSpeed(0),
                 m_configuredOnce(false)
 {
+    strcpy(cfg.serialNumber,    "");
+    cfg.stepByTurn              = 1600;
+    cfg.xav                     = 145;//mm
+    cfg.xar                     = 30;//mm
+    cfg.yside                   = 88;
+    cfg.xavExtended             = 210;//mm
+    cfg.leftWheelDiameter       = 60.000;
+    cfg.rightWheelDiameter      = 60.000;
+    cfg.voie                    = 160.4;
+    cfg.maxAcc                  = 700;
+    cfg.maxTurnAcc              = 300;
+    cfg.recalSpeed              = 210.0;
+    cfg.maxTurnSpeed            = 125.0;
+    cfg.deccDist                = 150.0;
+    cfg.strategyDuration        = 89500;
+    cfg.detectionWaitForOppMove = 1000;
+    cfg.detectionActive         = true;
 }
 
 void RobotParameters::setComputedVars()
@@ -50,8 +67,10 @@ bool RobotParameters::checkConfig(apb_Configuration const& newConf)
     double newMaxSpeed = sqrt(2 * newConf.maxAcc * newConf.deccDist);
 
     //Checks :
+    CHECK_RANGE(5, newConf.xav, 500);
     CHECK_RANGE(5, newConf.xar, 500);
     CHECK_RANGE(5, newConf.yside, 500);
+    CHECK_RANGE(newConf.xav, newConf.xavExtended, 500);
     CHECK_RANGE(50, newConf.leftWheelDiameter, 70);
     CHECK_RANGE(50, newConf.rightWheelDiameter, 70);
     CHECK_RANGE(50, newConf.voie, 300);
@@ -60,9 +79,9 @@ bool RobotParameters::checkConfig(apb_Configuration const& newConf)
     CHECK_RANGE(50, newConf.recalSpeed, 500);
     CHECK_RANGE(MINBOUND_MAXTURNACC, newConf.maxTurnAcc, MAXBOUND_MAXTURNACC);
     CHECK_RANGE(20, newConf.deccDist, 250);
-    if (newConf.matchDuration)
+    if (newConf.strategyDuration)
     {
-        CHECK_RANGE(50000, newConf.matchDuration, 0xFFFFFFFF);
+        CHECK_RANGE(50000, newConf.strategyDuration, 89999);
     }
     CHECK_RANGE(50, newConf.detectionWaitForOppMove, 5000);
     CHECK_RANGE(MINBOUND_MAXSPEED, newMaxSpeed, MAXBOUND_MAXSPEED);
@@ -119,6 +138,12 @@ uint32_t RobotParameters::yside() const
     return cfg.yside;
 }
 
+uint32_t RobotParameters::xavExtended() const
+{
+    ASSERT(m_configuredOnce);
+    return cfg.xavExtended;
+}
+
 float RobotParameters::leftWheelDiameter() const
 {
     ASSERT(m_configuredOnce);
@@ -167,10 +192,10 @@ uint32_t RobotParameters::deccDist() const
     return cfg.deccDist;
 }
 
-uint32_t RobotParameters::matchDuration() const
+uint32_t RobotParameters::strategyDuration() const
 {
     ASSERT(m_configuredOnce);
-    return cfg.matchDuration;
+    return cfg.strategyDuration;
 }
 
 uint32_t RobotParameters::detectionWaitForOppMove() const
@@ -222,6 +247,13 @@ void RobotParameters::set_yside(uint32_t value)
 {
     apb_Configuration newConf = cfg;
     newConf.yside = value;
+    setConfig(newConf);
+}
+
+void RobotParameters::set_xavExtended(uint32_t value)
+{
+    apb_Configuration newConf = cfg;
+    newConf.xavExtended = value;
     setConfig(newConf);
 }
 
@@ -281,10 +313,10 @@ void RobotParameters::set_deccDist(uint32_t value)
     setConfig(newConf);
 }
 
-void RobotParameters::set_matchDuration(uint32_t value)
+void RobotParameters::set_strategyDuration(uint32_t value)
 {
     apb_Configuration newConf = cfg;
-    newConf.matchDuration = value;
+    newConf.strategyDuration = value;
     setConfig(newConf);
 }
 

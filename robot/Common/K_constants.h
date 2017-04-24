@@ -6,7 +6,6 @@
 //Serial buffer set to 3 times the HDLC value in hdlc.h
 #define SERIAL_BUF_SIZE 3*1024
 
-//TODO a degager quand on passera pas une struct et plus des defines
 #ifndef DEG_TO_RAD
 #define DEG_TO_RAD 0.017453292519943295769236907684886
 #endif

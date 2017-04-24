@@ -116,6 +116,70 @@ class RobotWidget():
 class RobotPenWidget(RobotWidget):
     def drawCarriage(self, cfg):
         self.p.setPen(markPen)
+        self.p.setBrush(trafficWhite)
+        carriage = QPainterPath()
+        mouthX = 35
+        mouthY = 35
+        #print("xar = " + str(cfg.xar))
+        carriage.moveTo(-cfg.xar, cfg.yside)
+        carriage.lineTo(cfg.xav, cfg.yside)
+        carriage.lineTo(cfg.xav, mouthX)
+        carriage.lineTo( mouthY, mouthX)
+        carriage.lineTo( mouthY,-mouthX)
+        carriage.lineTo(cfg.xav,-mouthX)
+        carriage.lineTo(cfg.xav,-cfg.yside)
+        carriage.lineTo(-cfg.xar,-cfg.yside)
+        carriage.closeSubpath()
+        self.p.drawPath(carriage)
+        
+        #draw front lines
+        pen = QPen(ardGray)
+        pen.setWidth(1)
+        pen.setCosmetic(True)
+        pen.setDashPattern([2, 3])
+        self.p.setPen(pen)
+        carriage = QPainterPath()
+        carriage.moveTo(cfg.xav, cfg.yside)
+        carriage.lineTo(cfg.xav, -cfg.yside)
+        carriage.moveTo(cfg.xavExtended, cfg.yside)
+        carriage.lineTo(cfg.xavExtended, -cfg.yside)
+        self.p.drawPath(carriage)
+        self.p.setPen(markPen)
+        
+        #draw actuators
+        self.p.setBrush(jetBlack)
+        drawCircle(self.p, 185,  60, 22)
+        drawCircle(self.p, 185, -60, 22)
+        self.p.setBrush(Qt.gray)
+        drawCircle(self.p, 185,  60, 15)
+        drawCircle(self.p, 185, -60, 15)
+        arm = QPainterPath()
+        arm.moveTo(cfg.xav + 40, 50)
+        arm.lineTo(cfg.xav - 30, 50)
+        arm.lineTo(cfg.xav - 30, 70)
+        arm.lineTo(cfg.xav + 40, 70)
+        arm.closeSubpath()
+        self.p.drawPath(arm)
+        arm = QPainterPath()
+        arm.moveTo(cfg.xav + 40, -50)
+        arm.lineTo(cfg.xav - 30, -50)
+        arm.lineTo(cfg.xav - 30, -70)
+        arm.lineTo(cfg.xav + 40, -70)
+        arm.closeSubpath()
+        self.p.drawPath(arm)
+        
+    def drawObjects(self, stratInfo):
+        if stratInfo.robotCylinderStockNb:
+            self.p.setPen(markPen)
+            drawHorizontalCylinder(self.p, stratInfo.matchColor, 85, 0, 0)
+                        
+        if stratInfo.robotCylinderStockNb == 6:
+            drawVerticalCylinder(self.p, stratInfo.matchColor, 180, 0)
+        
+        
+class RobotTrationWidget(RobotWidget):
+    def drawCarriage(self, cfg):
+        self.p.setPen(markPen)
         self.p.setBrush(Qt.gray)
         carriage = QPainterPath()
         mouthX = 35
@@ -132,7 +196,7 @@ class RobotPenWidget(RobotWidget):
         carriage.closeSubpath()
         self.p.drawPath(carriage)
         
-        #draw front line
+        #draw front lines
         pen = QPen(ardGray)
         pen.setWidth(1)
         pen.setCosmetic(True)
@@ -141,9 +205,32 @@ class RobotPenWidget(RobotWidget):
         carriage = QPainterPath()
         carriage.moveTo(cfg.xav, cfg.yside)
         carriage.lineTo(cfg.xav, -cfg.yside)
-        carriage.closeSubpath()
+        carriage.moveTo(cfg.xavExtended, cfg.yside)
+        carriage.lineTo(cfg.xavExtended, -cfg.yside)
         self.p.drawPath(carriage)
         self.p.setPen(markPen)
+        
+        #draw actuators
+        self.p.setBrush(jetBlack)
+        drawCircle(self.p, 185,  60, 22)
+        drawCircle(self.p, 185, -60, 22)
+        self.p.setBrush(Qt.gray)
+        drawCircle(self.p, 185,  60, 15)
+        drawCircle(self.p, 185, -60, 15)
+        arm = QPainterPath()
+        arm.moveTo(cfg.xav + 40, 50)
+        arm.lineTo(cfg.xav - 30, 50)
+        arm.lineTo(cfg.xav - 30, 70)
+        arm.lineTo(cfg.xav + 40, 70)
+        arm.closeSubpath()
+        self.p.drawPath(arm)
+        arm = QPainterPath()
+        arm.moveTo(cfg.xav + 40, -50)
+        arm.lineTo(cfg.xav - 30, -50)
+        arm.lineTo(cfg.xav - 30, -70)
+        arm.lineTo(cfg.xav + 40, -70)
+        arm.closeSubpath()
+        self.p.drawPath(arm)
         
     def drawObjects(self, stratInfo):
         if stratInfo.robotCylinderStockNb:
@@ -152,23 +239,6 @@ class RobotPenWidget(RobotWidget):
                         
         if stratInfo.robotCylinderStockNb == 6:
             drawVerticalCylinder(self.p, stratInfo.matchColor, 180, 0)
-        
-        
-class RobotTrationWidget(RobotWidget):
-    def drawCarriage(self, cfg):
-        self.p.setPen(markPen)
-        self.p.setBrush(Qt.cyan)
-        carriage = QPainterPath()
-        carriage.moveTo(-cfg.xar, cfg.yside)
-        carriage.lineTo(57, cfg.yside)
-        carriage.lineTo(cfg.xav, 0)
-        carriage.lineTo(57,-cfg.yside)
-        carriage.lineTo(-cfg.xar,-cfg.yside)
-        carriage.closeSubpath()
-        self.p.drawPath(carriage)
-
-    def drawObjects(self, stratInfo):
-        pass
 
 
 class TableWidget():

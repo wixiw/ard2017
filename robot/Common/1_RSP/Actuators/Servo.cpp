@@ -27,8 +27,8 @@
 
 #define Servo_VERSION           2     // software version of this library
 
-#define MIN_PULSE_WIDTH       680     // the shortest pulse sent to a servo
-#define MAX_PULSE_WIDTH      2320     // the longest pulse sent to a servo
+#define MIN_PULSE_WIDTH       500     // the shortest pulse sent to a servo
+#define MAX_PULSE_WIDTH      2500     // the longest pulse sent to a servo
 #define DEFAULT_PULSE_WIDTH  1500     // default pulse width when servo is attached
 #define REFRESH_INTERVAL    20000     // minumim time to refresh servos in microseconds
 #define MAX_SERVOS             12     // the maximum number of servos controlled by the library
@@ -133,7 +133,7 @@ static boolean isTimerActive()
 
 /****************** end of static functions ******************************/
 
-Servo::Servo(int pin, uint8_t min, uint8_t max):
+Servo::Servo(int pin, uint16_t min, uint16_t max):
         servoIndex(0),
         minArduino(0),
         maxArduino(0),
@@ -146,11 +146,11 @@ Servo::Servo(int pin, uint8_t min, uint8_t max):
         this->servoIndex = ServoCount++;                    // assign a servo index to this instance
         servos[this->servoIndex].ticks = usToTicks(DEFAULT_PULSE_WIDTH);   // store default values
 
-        if( 180 < angularMin )
-            angularMin = 180;
+        if( 1000 < angularMin )
+            angularMin = 1000;
 
-        if( 180 < angularMax )
-            angularMax = 180;
+        if( 1000 < angularMax )
+            angularMax = 1000;
 
         this->servoIndex = attach(pin, MIN_PULSE_WIDTH, MAX_PULSE_WIDTH);
     }
@@ -211,7 +211,7 @@ void Servo::disable()
     }
 }
 
-void Servo::write(int value)
+void Servo::write(uint16_t value)
 {
     //if servo is not enabled, enable it
     if( !servos[this->servoIndex].Pin.isActive )
@@ -219,8 +219,8 @@ void Servo::write(int value)
 
     if (value < 0)
         value = 0;
-    else if (value > 180)
-        value = 180;
+    else if (value > 1000)
+        value = 1000;
 
     if (value < angularMin)
         value = angularMin;
@@ -230,7 +230,7 @@ void Servo::write(int value)
     currentAngleCommand = value;
 
     //convert into us command
-    value = map(value, 0, 180, SERVO_MIN(), SERVO_MAX());
+    value = map(value, 0, 1000, SERVO_MIN(), SERVO_MAX());
 
     writeMicroseconds(value);
 }
@@ -251,7 +251,7 @@ void Servo::writeMicroseconds(int value)
     }
 }
 
-int Servo::read() // return the value as degrees
+int Servo::read() // return the value as per thousand
 {
     return currentAngleCommand;
 }

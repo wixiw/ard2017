@@ -62,6 +62,7 @@ class TabConfig(QWidget):
         req.setConfig.xav = self.calibConfig.xav.getValue()
         req.setConfig.xar = self.calibConfig.xar.getValue()
         req.setConfig.yside = self.calibConfig.yside.getValue()
+        req.setConfig.xavExtended = self.calibConfig.xavExtended.getValue()
         req.setConfig.leftWheelDiameter = self.calibConfig.leftWheelDiameter.getValue()
         req.setConfig.rightWheelDiameter = self.calibConfig.rightWheelDiameter.getValue()
         req.setConfig.voie = self.calibConfig.voie.getValue()
@@ -77,7 +78,7 @@ class TabConfig(QWidget):
         req.setConfig.detectionActive = self.avoidanceConfig.detectionActive.isChecked()
         
         #Strat
-        req.setConfig.matchDuration = self.stratConfig.matchDuration.getValue()
+        req.setConfig.strategyDuration = self.stratConfig.strategyDuration.getValue()
         
         self.setConfig.emit(req)
         print("New config send to robot")
@@ -95,6 +96,7 @@ class TabConfig(QWidget):
         self.calibConfig.xav.setValue(msg.xav)
         self.calibConfig.xar.setValue(msg.xar)
         self.calibConfig.yside.setValue(msg.yside)
+        self.calibConfig.xavExtended.setValue(msg.xavExtended)
         self.calibConfig.leftWheelDiameter.setValue(msg.leftWheelDiameter)
         self.calibConfig.rightWheelDiameter.setValue(msg.rightWheelDiameter)
         self.calibConfig.voie.setValue(msg.voie)
@@ -110,7 +112,7 @@ class TabConfig(QWidget):
         self.avoidanceConfig.detectionWaitForOppMove.setValue(msg.detectionWaitForOppMove)
         self.avoidanceConfig.detectionActive.setChecked(msg.detectionActive)
         #Strat
-        self.stratConfig.matchDuration.setValue(msg.matchDuration)
+        self.stratConfig.strategyDuration.setValue(msg.strategyDuration)
         
     #Override in order to initialize the view each time the widget is shown
     def showEvent (self, QShowEvent):
@@ -126,6 +128,7 @@ class CalibConfigWidget(QWidget):
         self.xav                = IntegerInput(self, 0, 500)
         self.xar                = IntegerInput(self, 0, 500)
         self.yside              = IntegerInput(self, 0, 500)
+        self.xavExtended        = IntegerInput(self, 0, 500)
         self.leftWheelDiameter  = FloatInput(self, 0, 100, 5)
         self.rightWheelDiameter = FloatInput(self, 0, 100, 5)
         self.voie               = FloatInput(self, 0, 500, 5)
@@ -140,6 +143,7 @@ class CalibConfigWidget(QWidget):
         self.form.addRow("x AV (mm)", self.xav)
         self.form.addRow("x AR (mm)", self.xar)
         self.form.addRow("y side (mm)", self.yside)
+        self.form.addRow("x AV EXT (mm)", self.xavExtended)
         self.form.addRow("left  wheel diameter (mm)", self.leftWheelDiameter)
         self.form.addRow("right wheel diameter (mm)", self.rightWheelDiameter)
         self.form.addRow("voie (mm)", self.voie)
@@ -194,7 +198,7 @@ class StratConfigWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         
-        self.matchDuration  = IntegerInput(self, 0, 2000)
+        self.strategyDuration  = IntegerInput(self, 0, 2000)
         
         self.layoutH = QHBoxLayout(self)
         self.layoutV = QGroupBox("Strategy")
@@ -202,5 +206,5 @@ class StratConfigWidget(QWidget):
         self.form = QFormLayout()
         self.layoutV.setLayout(self.form)
         
-        self.form.addRow("match duration (ms)", self.matchDuration)
+        self.form.addRow("match duration (ms)", self.strategyDuration)
         

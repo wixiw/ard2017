@@ -10,6 +10,7 @@
 
 using namespace ard;
 
+#ifdef BUILD_STRATEGY
 
 Lifter::Lifter(ActuatorThread& parent, TimerInterface& timer):
         fsm(),
@@ -21,16 +22,27 @@ Lifter::Lifter(ActuatorThread& parent, TimerInterface& timer):
 void Lifter::init()
 {
     fsm.init();
+    fsm.enter();
+}
+
+void Lifter::start()
+{
+    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
+    fsm.set_start(true);
 }
 
 void Lifter::update(TimeMs sinceLastCall)
 {
-    fsm.getDefaultSCI()->set_downSwitch(acts.switchLifterDown.read());
-    fsm.getDefaultSCI()->set_upSwitch(acts.switchLifterUp.read());
+    fsm.set_downSwitch(acts.switchLifterDown.read());
+    fsm.set_upSwitch(acts.switchLifterUp.read());
 
     fsm.runCycle();
 
-    //TODO convert 0=>100% to 0=>180
-    //acts.servoLifter.write(fsm.getDefaultSCI()->get_lifter());
+    if( fsm.get_start() )
+    {
+        acts.servoLifter.write(fsm.get_lifter());
+    }
 }
+
+#endif
 

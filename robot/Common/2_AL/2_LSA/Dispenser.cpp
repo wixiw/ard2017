@@ -7,7 +7,7 @@
 
 #include "Dispenser.h"
 #include "Robot2017.h"
-
+#ifdef BUILD_STRATEGY
 using namespace ard;
 
 /**
@@ -19,7 +19,7 @@ DispenserMonocolor::DispenserMonocolor(Robot2017& robot):
 {
 }
 
-result DispenserMonocolor::execute(uint8_t nbItems)
+LSAResult DispenserMonocolor::execute(uint8_t nbItems)
 {
     LOG_INFO("Engage Monocolor Dispenser");
     robot.nav.goToCap(350, 770, 90);
@@ -54,7 +54,7 @@ DispenserBicolor::DispenserBicolor(Robot2017& robot):
 {
 }
 
-result DispenserBicolor::execute(uint8_t nbItems)
+LSAResult DispenserBicolor::execute(uint8_t nbItems)
 {
     LOG_INFO("DispenserBicolor success");
     return Success;
@@ -70,8 +70,10 @@ DispenserOpp::DispenserOpp(Robot2017& robot):
 {
 }
 
-result DispenserOpp::execute(uint8_t nbItems)
+LSAResult DispenserOpp::execute(uint8_t nbItems)
 {
     LOG_INFO("DispenserOpp success");
     return Success;
 }
+
+#endif

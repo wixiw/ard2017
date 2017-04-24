@@ -6,7 +6,6 @@
  */
 
 #include "Robot2017.h"
-#include "3_Strategies/Strategies.h"
 
 //Timer 0 reserved for ARD cpu stats, instanciated for IRQ priority config
 #define TIMER_CPU           Timer0
@@ -76,10 +75,22 @@ void UART_Handler(void)
     //DEBUG_SET_LOW(); //uncomment to check period and delay with oscilloscope : default empty duration (2 io write + 1 function call) is 750ns
 }
 
+bool Robot2017::isPen() const
+{
+    return 0 == strcmp(m_params.serialNumber(), "Pen");
+}
+
+bool Robot2017::isTration() const
+{
+    return 0 == strcmp(m_params.serialNumber(), "Tration");
+}
+
 Robot2017::Robot2017():
     bsp(),
 #ifdef BUILD_STRATEGY
     actuators(),
+    lifecycle(this),
+    fsmTimer(),
     strategy(),
 #endif
     nav(),
@@ -87,7 +98,7 @@ Robot2017::Robot2017():
     hmi(TIMER_BUZZER),
     log(LogDispatcher::getInstance()),
 #ifdef BUILD_REMOTE_CONTROL
-    remoteControl(bsp.serial0),
+    remoteControl(this, bsp.serial0),
 #endif
     fileLogger(LOG_QUEUE_SIZE),
     buildDate("unknown"),
@@ -100,33 +111,13 @@ void Robot2017::bootOs()
 {
     nav.updateConf(&m_params);
 
-#ifdef BUILD_REMOTE_CONTROL
-    remoteControl.attachRobot(this);
-#endif
-
-#ifdef BUILD_STRATEGY
-    strategy.attachRobot(this);
-    strategy.registerStrategy("Match",          Strategy_Match);
-    strategy.registerStrategy("Homol",          Strategy_Homol);
-    strategy.registerStrategy("Invade",         Strategy_Invade);
-    strategy.registerStrategy("Selftest",       Strategy_Selftest);
-    strategy.registerStrategy("Tanguy",         Strategy_Tanguy);
-    strategy.registerStrategy("Quentin",        Strategy_Quentin);
-    strategy.registerStrategy("Willy",          Strategy_Willy);
-    strategy.registerStrategy("UT LEDs",        Strategy_LedTest);
-    strategy.registerStrategy("UT Button",      Strategy_ButtonTest);
-    strategy.registerStrategy("UT Omron",       Strategy_OmronTest);
-    strategy.registerStrategy("UT CalibRot",    Strategy_CalibRot);
-    strategy.registerStrategy("UT CalibLin",    Strategy_CalibLin);
-    strategy.registerStrategy("UT Motion",      Strategy_MotionTest);
-#endif
-    
     //Connect the log service
     Thread::setLogger(&log);
     log.addLogger(fileLogger);
 #ifdef BUILD_REMOTE_CONTROL
     log.addLogger(remoteControl);
 #endif
+
 
     //Map fast periodic functions to timers interrupts
     //GPIO_TIMER is used for CPU stats, see FreeRTOSConfig.h and FreeRTOS_ARM.c
@@ -170,7 +161,7 @@ void Robot2017::dieMotherFucker()
 
     //last action as strategy thread is certainly called^^
 #ifdef BUILD_STRATEGY
-    strategy.stopThread();
+    lifecycle.stopThread();
 #endif
     setRGBled(RED, FAST_BLINK);
     setLed(LED1, OFF);
@@ -179,32 +170,12 @@ void Robot2017::dieMotherFucker()
     setLed(LED4, OFF);
 }
 
-IEvent* ard::Robot2017::getRemoteControlEvt(eRemoteControlEvtId id)
-{
-#ifdef BUILD_REMOTE_CONTROL
-    return remoteControl.getEvent(id);
-#else
-    static Event<1> defaultEvent;
-    return &defaultEvent;
-#endif
-}
-
 bool Robot2017::isStartPlugged() const
 {
     return hmi.tirette.read();
 }
 
-IEvent* Robot2017::getStartInEvt()
-{
-    return hmi.tirette.getEvent(RISING_EDGE);
-}
-
-IEvent* Robot2017::getStartOutEvt()
-{
-    return hmi.tirette.getEvent(FALLING_EDGE);
-}
-
-bool Robot2017::isPreferedColor() const
+bool Robot2017::isColorSwitchOnPrefered() const
 {
     return hmi.matchColor.read();
 }

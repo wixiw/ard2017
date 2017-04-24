@@ -506,11 +506,6 @@ PollerThread::PollerThread(String const& name,
 void PollerThread::init()
 {
     Thread::init();
-
-    for(int i = 0 ; i < nextRank ; ++i)
-    {
-        polledObjects[i]->init();
-    }
 }
 
 void PollerThread::run()
@@ -550,7 +545,7 @@ void ArdOs::init()
 
     for( uint8_t i = 0; i<objectCount ; i++)
     {
-        ASSERT(objectList!=NULL);
+        ASSERT(objectList[i]!=NULL);
         objectList[i]->init();
     }
 
@@ -585,56 +580,4 @@ void ArdOs::sleepMs(DelayMs delay)
 {
     ASSERT(state==eOsState::RUNNING);
     vTaskDelay(delay);
-}
-
-//-------------------------------------------------------------------------------
-//                      Events
-//-------------------------------------------------------------------------------
-//the compiler requires that for some optimizations ...
-IEventListener::~IEventListener(){}
-IEvent::~IEvent(){}
-
-IEvent* EventListener::waitEvents(IEvent* listenedEvts[], int nbEvents)
-{
-    ASSERT_TEXT(listenedEvts != NULL, "EventListener::waitEvents : null pointer to table.");
-
-    //subsribe to the event list
-    for( int i = 0 ; i < nbEvents ; ++i )
-    {
-        ASSERT_TEXT(listenedEvts[i] != NULL, "EventListener::waitEvents : null pointer to event.");
-        listenedEvts[i]->subscribe(this);
-    }
-
-    IEvent* receivedEvent = NULL;
-    //block until one event is emitted
-    if (!xQueueReceive(queue, &receivedEvent, portMAX_DELAY))
-    {
-        ASSERT_TEXT(false, "EventListener::wait : unexpected return code");
-    }
-
-    //unsubsribe to the event list
-    for( int i = 0 ; i < nbEvents ; ++i )
-    {
-        listenedEvts[i]->unsubscribe(this);
-    }
-
-    return receivedEvent;
-}
-
-void EventListener::privateSend(IEvent* publisher)
-{
-    ASSERT_TEXT(publisher != NULL, "EventListener::privateSend don't expect an invalid event.");
-    if (!xQueueSendToBack(queue, &publisher, 0))
-    {
-        ASSERT_TEXT(false, "EventListener::privateSend : queue is full");
-    }
-}
-
-void EventListener::privateSendFromISR(IEvent* publisher)
-{
-    ASSERT(publisher != NULL);
-    if (!xQueueSendToBackFromISR(queue, &publisher, 0))
-    {
-        ASSERT(false);
-    }
 }

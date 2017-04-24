@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "core/ArdFramework.h"
 #include "K_constants.h"
 #include "Log.h"
 #include "Navigation.h"
@@ -247,6 +248,8 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
 
 void Navigation::goTo(Point target, eDir sens)
 {
+    LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
+
     m_mutex.lock();
 
     if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
@@ -267,6 +270,8 @@ void Navigation::goTo(Point target, eDir sens)
 
 void Navigation::goToCap(PointCap target, eDir sens)
 {
+    LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
+
     m_mutex.lock();
 
     //If an order is present, wait
@@ -288,68 +293,67 @@ void Navigation::goToCap(PointCap target, eDir sens)
 
 void Navigation::goForward(float distanceMm)
 {
-    ASSERT_TEXT(false, "not implemented");
+    LOG_INFO(String("   new request : goForward(") + distanceMm + "mm).");
+
     m_mutex.lock();
-
-    //If an order is present, wait
-    if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
-    {
-        LOG_DEBUG("new order pending until current order is finished");
-        m_mutex.unlock();
-        wait();
-        m_mutex.lock();
-    }
-
-    //TODO
-//  m_order = XXX;
-//  m_target = target.toAmbiPose(m_color);
-//  m_sensTarget = sens;
-
+    PointCap target = m_pose;
     m_mutex.unlock();
+
+    target.translatePolar(m_pose.hDegree(), distanceMm);
+
+    if(0 <= distanceMm)
+    {
+        goTo(target);
+    }
+    else
+    {
+        goTo(target, eDir_BACKWARD);
+    }
+}
+
+void Navigation::turnDelta(float angle)
+{
+    LOG_INFO(String("   new request : turnDelta(") + angle + "°).");
+
+    m_mutex.lock();
+    PointCap target = m_pose;
+    m_mutex.unlock();
+    target.hDegree(target.hDegree() + angle);
+
+    goToCap(target);
 }
 
 void Navigation::turnTo(float angle)
 {
-    ASSERT_TEXT(false, "not implemented");
+    LOG_INFO(String("   new request : turnTo(") + angle + "°).");
+
     m_mutex.lock();
-
-    //If an order is present, wait
-    if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
-    {
-        LOG_DEBUG("new order pending until current order is finished");
-        m_mutex.unlock();
-        wait();
-        m_mutex.lock();
-    }
-
-    //TODO
-//  m_order = XXX;
-//  m_target = target.toAmbiPose(m_color);
-//  m_sensTarget = sens;
-
+    PointCap target = m_pose;
     m_mutex.unlock();
+    target.hDegree(angle);
+
+    goToCap(target);
 }
 
 void Navigation::faceTo(Point p)
 {
-    ASSERT_TEXT(false, "not implemented");
+    LOG_INFO(String("   new request : faceTo") + p.toString() + ".");
     m_mutex.lock();
-
-    //If an order is present, wait
-    if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
-    {
-        LOG_DEBUG("new order pending until current order is finished");
-        m_mutex.unlock();
-        wait();
-        m_mutex.lock();
-    }
-
-    //TODO
-//  m_order = XXX;
-//  m_target = target.toAmbiPose(m_color);
-//  m_sensTarget = sens;
-
+    PointCap target = m_pose;
     m_mutex.unlock();
+    target.h = m_pose.angleTo(p);
+
+    goToCap(target);
+}
+
+void Navigation::recalFace(eTableBorder border)
+{
+    NOT_IMPLEMENTED();
+}
+
+void Navigation::recalRear(eTableBorder border)
+{
+    NOT_IMPLEMENTED();
 }
 
 void Navigation::stopMoving()
@@ -448,34 +452,35 @@ void Navigation::compute_odom()
 
 void Navigation::action_startOrder()
 {
-    LOG_INFO("   new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
-    double angleToTarget = atan2((m_target.y - m_pose.y), (m_target.x - m_pose.x));
-    if (m_sensTarget == eDir_BACKWARD)
+    LOG_DEBUG("   new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
+
+    double distDelta = m_sensTarget * m_pose.distanceTo(m_target);
+    //Do no move if already on target
+    if (fabs(distDelta) <= NO_MOVE_DELTA)
     {
-        angleToTarget = moduloPiPi(angleToTarget + M_PI);
+        action_turningAtTarget();
     }
-    double angleDelta = moduloPiPi(angleToTarget - m_pose.h);
-    //Do not turn if already facing right direction
-    if (fabs(angleDelta) <= NO_TURN_DELTA)
+    else
     {
-        double distDelta = m_sensTarget * m_pose.distanceTo(m_target);
-        //Do no move if already on target
-        if (fabs(distDelta) <= NO_MOVE_DELTA)
+        double angleToTarget = atan2((m_target.y - m_pose.y), (m_target.x - m_pose.x));
+        if (m_sensTarget == eDir_BACKWARD)
         {
-            action_turningAtTarget();
+            angleToTarget = moduloPiPi(angleToTarget + M_PI);
         }
-        else
+        double angleDelta = moduloPiPi(angleToTarget - m_pose.h);
+        //Do not turn if already facing right direction
+        if (fabs(angleDelta) <= NO_TURN_DELTA)
         {
             //Request straight line
             action_goingToTarget();
         }
-    }
-    else
-    {
-        //Request turn
-        applyCmdToTurn(angleDelta);
-        //Change state
-        m_state = eNavState_FACING_DEST;
+        else
+        {
+            //Request turn
+            applyCmdToTurn(angleDelta);
+            //Change state
+            m_state = eNavState_FACING_DEST;
+        }
     }
 }
 

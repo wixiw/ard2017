@@ -8,6 +8,9 @@
 #ifndef ROBOT_COMMON_2_AL_ACTUATORSCTRL_LIFTER_H_
 #define ROBOT_COMMON_2_AL_ACTUATORSCTRL_LIFTER_H_
 
+#include "RSP.h"
+#ifdef BUILD_STRATEGY
+
 #include "StratFwk.h"
 #include "generated/FSM_Lifter.h"
 
@@ -55,4 +58,5 @@ namespace ard
 
 } /* namespace ard */
 
+#endif
 #endif /* ROBOT_COMMON_2_AL_ACTUATORSCTRL_LIFTER_H_ */

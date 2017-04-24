@@ -3,7 +3,7 @@
 #define NAVIGATION_H
 
 #include "BSP.hpp"
-#include "Core/ArdMaths.h"
+#include "core/ArdMaths.h"
 #include "Actuators/AccelStepper.h"
 #include "CommonMsg.pb.h"
 #include "RobotParameters.h"
@@ -82,8 +82,7 @@ namespace ard
          x,y in mm
 
          */
-        void
-        goTo(Point target, eDir sens = eDir_FORWARD);
+        void goTo(Point target, eDir sens = eDir_FORWARD);
         void goTo(float x /*mm*/, float y/*mm*/, eDir sens = eDir_FORWARD)
         {
             goTo(Point(x, y), sens);
@@ -105,8 +104,7 @@ namespace ard
          heading in degrees
 
          */
-        void
-        goToCap(PointCap target, eDir sens = eDir_FORWARD);
+        void goToCap(PointCap target, eDir sens = eDir_FORWARD);
         void goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD)
         {
             goToCap(PointCap(x, y, h), sens);
@@ -119,8 +117,7 @@ namespace ard
          *
          * If an order is already present the call is blocking as if a wait() where done.
          */
-        void
-        goForward(float distanceMm);
+        void goForward(float distanceMm);
 
         /**
          * The robot will turn of the angle in parameter (absolute or relative)
@@ -128,10 +125,8 @@ namespace ard
          *
          * If an order is already present the call is blocking as if a wait() where done.
          */
-        void
-        turnDelta(float angle);
-        void
-        turnTo(float angle);
+        void turnDelta(float angle/*deg*/);
+        void turnTo(float angle/*deg*/);
 
         /**
          * The robot will turn to face the point in parameter
@@ -141,6 +136,16 @@ namespace ard
          * If an order is already present the call is blocking as if a wait() where done.
          */
         void faceTo(Point p);
+        void faceTo(float x/*mm*/, float y/*mm*/)
+        {
+            faceTo(Point(x,y));
+        }
+
+        /**
+         * The robot will go to the following border and re localize accordingly
+         */
+        void recalFace(eTableBorder border);
+        void recalRear(eTableBorder border);
 
         /**
          * Stops the robot. It interrupts current order.

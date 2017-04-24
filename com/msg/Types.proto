@@ -32,6 +32,13 @@ enum eNavOrder {
     STOP             = 3;
 }
 
+enum eLogLevel {
+    DEBUG             = 0;
+    INFO              = 1;
+    ERROR             = 2;
+    ASSERT            = 3;
+}
+
 // Specific 2017
 enum eObjectColor {
     UNDEF            = 0;
@@ -40,9 +47,12 @@ enum eObjectColor {
     WHITE            = 3;
 }
 
-enum eLogLevel {
-    DEBUG             = 0;
-    INFO              = 1;
-    ERROR             = 2;
-    ASSERT            = 3;
+// Specific 2017
+enum eTableBorder {
+    TOP_Y           = 0;
+    OWN_SIDE_X      = 1;
+    OPP_SIDE_X      = 2;
+    START_AREA_Y    = 3;
+    BOT_Y           = 4;
 }
+

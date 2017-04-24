@@ -10,9 +10,13 @@
 
 #include "BSP.hpp"
 #include "RSP.h"
-#include "0_StratFwk/StrategyThread.h"
-#include "1_ActuatorsCtrl/ActuatorThread.h"
+
 #include "RemoteControl.h"
+
+#include "0_StratFwk/Lifecycle.h"
+#include "0_StratFwk/StrategyModel2017.h"
+#include "1_ActuatorsCtrl/ActuatorThread.h"
+#include "3_Strategies/Strategies.h"
 
 namespace ard
 {
@@ -42,14 +46,8 @@ namespace ard
         //answer true if the start is plugged
         bool isStartPlugged() const;
 
-        //Retrieve the event published when the start is inserted
-        IEvent* getStartInEvt();
-
-        //Retrieve the event published when the start is withdrawn
-        IEvent* getStartOutEvt();
-
         //answer true when color switch is on the preferred color
-        bool isPreferedColor() const;
+        bool isColorSwitchOnPrefered() const;
 
         //Combines strategy switch to creates an integer. Left switch represent highest bit, Right one lowest one.
         uint8_t getStrategyId() const;
@@ -63,9 +61,6 @@ namespace ard
 
         //buzzer accessor
         Buzzer2017& buzzer(){return hmi.buzzer;};
-
-        //Retrive any of the teleop events
-        IEvent* getRemoteControlEvt(eRemoteControlEvtId id);
 
         apb_HmiState const& getHmiState(){return hmi.getState();};
 
@@ -102,13 +97,21 @@ namespace ard
         //retrieve the robot serial nunmber
         char const * const getSerialNumber() const;
 
+        //returns true if the robot is "Pen"
+        bool isPen() const;
+
+        //returns true if the robot is "Tration"
+        bool isTration() const;
+
         //hardware layer
         BSP bsp;
 
         //Applicative layer
 #ifdef BUILD_STRATEGY
         ActuatorThread actuators;
-        StrategyThread strategy;
+        Lifecycle lifecycle;
+        YakardTimer fsmTimer;
+        StrategyModel2017 strategy;
 #endif
         //Public RSP interface : because i'm too lazy to hide it, please feel free to implement the decorator
         Navigation nav;
@@ -116,10 +119,10 @@ namespace ard
         //Chrono keeps track of the time during the match
         Chrono chrono;
 
-    private:
-
         //RSP implementation
         HmiThread hmi;
+
+    protected:
         LogDispatcher& log;
 #ifdef BUILD_REMOTE_CONTROL
         RemoteControl remoteControl;

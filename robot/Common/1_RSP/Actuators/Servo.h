@@ -28,21 +28,6 @@
   Timers are seized as needed in groups of 12 servos - 24 servos use two 
   timers, 48 servos will use four.
   The sequence used to sieze timers is defined in timers.h
-
-  The methods are:
-
-    Servo - Class for manipulating servo motors connected to Arduino pins.
-
-    attach(pin )  - Attaches a servo motor to an i/o pin.
-    attach(pin, min, max  ) - Attaches to a pin setting min and max values in microseconds
-    default min is 544, max is 2400  
- 
-    write()     - Sets the servo angle in degrees.  (invalid angle that is valid as pulse in microseconds is treated as microseconds)
-    writeMicroseconds() - Sets the servo pulse width in microseconds 
-    read()      - Gets the last written servo pulse width as an angle between 0 and 180. 
-    readMicroseconds()   - Gets the last written servo pulse width in microseconds. (was read_us() in first release)
-    attached()  - Returns true if there is a servo attached. 
-    detach()    - Stops an attached servos from pulsing its i/o pin. 
  */
 
 #ifndef Servo_h
@@ -73,25 +58,25 @@ typedef struct {
 class Servo
 {
 public:
-    //ARD addon : Set minimal angular commands in degrees (SW limits)
-  Servo(int pin, uint8_t min = 0, uint8_t max = 180);
+    //ARD addon : Set minimal angular commands in per thousand (SW limits)
+  Servo(int pin, uint16_t min = 0U, uint16_t max = 1000U);
 
   bool enable();                    //Start generating the PWM. return false is the servo has an invalid configuration.
   void disable();                   //Stop generating the PWM.
 
-  void write(int value);             // set servo position as an angle between 0 and 180 degrees
-  int read();                        // returns servo position as an angle between 0 and 180 degrees
+  void write(uint16_t value);             // set servo position as an angle between 0 and 1000 per thousand
+  int read();                        // returns servo position as an angle between 0 and 1000 per thousand
 
 private:
   void writeMicroseconds(int value); // Write pulse width in microseconds
   int readMicroseconds();            // returns current pulse width in microseconds for this servo (was read_us() in first release)
   uint8_t attach(int pin, int min, int max); // as above but also sets min and max values for writes. //ARD : function made private as min/max management is unclear
    uint8_t servoIndex;               // index into the channel data for this servo
-   int8_t minArduino;                       // minimum is this value times 4 added to MIN_PULSE_WIDTH    
-   int8_t maxArduino;                       // maximum is this value times 4 added to MAX_PULSE_WIDTH   
-   uint8_t angularMin;               // ARD addons : minimal angular command in degrees (i.e. SW limit), default 0
-   uint8_t angularMax;               // ARD addons : maximal angular command in degrees (i.e. SW limit), default 180
-   uint8_t currentAngleCommand;
+   uint16_t minArduino;                       // minimum is this value times 4 added to MIN_PULSE_WIDTH
+   uint16_t maxArduino;                       // maximum is this value times 4 added to MAX_PULSE_WIDTH
+   uint16_t angularMin;               // ARD addons : minimal angular command in per thousand (i.e. SW limit), default 0
+   uint16_t angularMax;               // ARD addons : maximal angular command in per thousand (i.e. SW limit), default 1000
+   uint16_t currentAngleCommand;
 };
 
 #endif

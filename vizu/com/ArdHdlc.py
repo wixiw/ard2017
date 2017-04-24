@@ -77,7 +77,6 @@ class ArdHdlc(QObject):
     def sendMsg(self, msg):
         assert self._connected
         #---DEBUG---- print("msg to send : 0x[%s]" % msg.hex())
-        # TODO sequence id is not used yet, as RemoteControl doesn't require any robustness, 
         # in order to use this com with a robot to robot com, it'll be required
         try:
             frame = ardHdlc.createDataFrame(msg, ardHdlc.FRAME_DATA, self.sendSedNumber)

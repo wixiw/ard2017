@@ -19,24 +19,13 @@ case apb_RemoteControlRequest_##msg##_tag:     \
     break;                              \
 }
 
-RemoteControl::RemoteControl(ISerialDriver& serialDriver):
+RemoteControl::RemoteControl(Robot2017* newRobot, ISerialDriver& serialDriver):
     com("RemCtl", serialDriver, LOG_QUEUE_SIZE),
-    robot(NULL)
+    robot(newRobot)
 {
     INIT_TABLE_TO_ZERO(msg_send_buffer);
     com.setListener(this);
-}
-
-void ard::RemoteControl::attachRobot(Robot2017* newRobot)
-{
     ASSERT_TEXT(newRobot,"You should not attach a NULL robot");
-    ASSERT_TEXT(robot == NULL, "You should not attach robot twice");
-    robot=newRobot;
-}
-
-IEvent* RemoteControl::getEvent(eRemoteControlEvtId id)
-{
-    return &events[id];
 }
 
 bool RemoteControl::isReady() const
@@ -79,6 +68,12 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(setSpeedAcc)
         HANDLE_MSG(requestGoto)
         HANDLE_MSG(requestGotoCap)
+        HANDLE_MSG(requestGoForward)
+        HANDLE_MSG(requestTurnDelta)
+        HANDLE_MSG(requestTurnTo)
+        HANDLE_MSG(requestFaceTo)
+        HANDLE_MSG(recalFaceOnBorder)
+        HANDLE_MSG(recalRearOnBorder)
         HANDLE_MSG(requestBlockRobot)
         HANDLE_MSG(requestMaxLengthMsg)
         HANDLE_MSG(requestCrcFailMsg)
@@ -87,7 +82,6 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         default:
         {
             LOG_ERROR("Failed to identify message type : " + String((int)request.which_type));
-            ASSERT(msg[1] != 0);//TODO a virer
             //message is sent back to the sender for analysis
             ASSERT(com.sendMsg(msg, msgLength));
             break;
@@ -193,7 +187,7 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
     response.type.telemetry.stratInfo       = robot->strategy.getStratInfo();
 #endif
     response.type.telemetry.hmi            = robot->getHmiState();
-    response.type.telemetry.chrono         = robot->chrono.getChrono();
+    response.type.telemetry.chrono         = robot->chrono.serialize();
 
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode telemetry message.");
@@ -249,18 +243,20 @@ void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
     uint8_t strategy = request.type.configureMatch.strategy;
     eColor color = (eColor)(request.type.configureMatch.matchColor);
 
-    robot->strategy.configureMatch(strategy, color);
+    robot->lifecycle.networkConfigRequest(strategy, color);
 #endif
-    events[EVT_CONFIGURE].publish();
 }
 
 void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
 {
-    events[EVT_START_MATCH].publish();
+#ifdef BUILD_STRATEGY
+    robot->lifecycle.startMatch();
+#endif
 }
 
 void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)
 {
+#ifdef BUILD_STRATEGY
     if( request.type.requestActuators.has_lifter )
         robot->actuators.servoLifter.write(request.type.requestActuators.lifter);
     if( request.type.requestActuators.has_leftArm )
@@ -273,6 +269,7 @@ void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)
         robot->actuators.servoRightWheel.write(request.type.requestActuators.rightWheel);
     if( request.type.requestActuators.has_funnyAction )
         robot->actuators.servoFunnyAction.write(request.type.requestActuators.funnyAction);
+#endif
 }
 
 void RemoteControl::setPosition(apb_RemoteControlRequest const & request)
@@ -304,6 +301,37 @@ void RemoteControl::requestGotoCap(apb_RemoteControlRequest const & request)
             request.type.requestGotoCap.target.y,
             request.type.requestGotoCap.target.h,
             request.type.requestGotoCap.direction);
+}
+
+void RemoteControl::requestGoForward(apb_RemoteControlRequest const & request)
+{
+    robot->nav.goForward(request.type.requestGoForward);
+}
+
+void RemoteControl::requestTurnDelta(apb_RemoteControlRequest const & request)
+{
+    robot->nav.turnDelta(request.type.requestTurnDelta);
+}
+
+void RemoteControl::requestTurnTo(apb_RemoteControlRequest const & request)
+{
+    robot->nav.turnTo(request.type.requestTurnTo);
+}
+
+void RemoteControl::requestFaceTo(apb_RemoteControlRequest const & request)
+{
+    robot->nav.faceTo(Point(request.type.requestFaceTo.x,
+                      request.type.requestFaceTo.y));
+}
+
+void RemoteControl::recalFaceOnBorder(apb_RemoteControlRequest const & request)
+{
+    robot->nav.recalFace(request.type.recalFaceOnBorder);
+}
+
+void RemoteControl::recalRearOnBorder(apb_RemoteControlRequest const & request)
+{
+    robot->nav.recalRear(request.type.recalRearOnBorder);
 }
 
 void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)

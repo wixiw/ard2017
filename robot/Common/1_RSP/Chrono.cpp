@@ -9,9 +9,8 @@ Chrono::Chrono()
         :
         startDate_ms(UINT32_MAX),
         matchStarted(false),
-        funnyActionStarted(false),
-        matchDuration_ms(90000),
-        funnyActionDuration_ms(5000)
+        strategyDuration_ms(90000)//,
+//        funnyActionDuration_ms(5000)
 {
 }
 
@@ -24,8 +23,8 @@ Chrono::startMatch()
     matchStarted = true;
 }
 
-uint32_t
-Chrono::getChrono_ms()
+TimeMs
+Chrono::getTime() const
 {
     if (matchStarted)
         return millis() - startDate_ms;
@@ -33,29 +32,33 @@ Chrono::getChrono_ms()
         return 0;
 }
 
-uint32_t
-Chrono::getTimeLeftMatch_ms()
+TimeMs
+Chrono::getStrategyRemainingTime() const
 {
     if (matchStarted)
     {
         uint32_t date = millis();
-        if (matchDuration_ms > (date - startDate_ms))
-            return (matchDuration_ms - (date - startDate_ms));
+        if (strategyDuration_ms > (date - startDate_ms))
+            return (strategyDuration_ms - (date - startDate_ms));
         else
             return 0;
     }
     else
-        return matchDuration_ms;
+        return strategyDuration_ms;
 }
 
 apb_Chrono
-Chrono::getChrono()
+Chrono::serialize() const
 {
     apb_Chrono chrono;
     chrono.started = matchStarted;
-    chrono.chrono_ms = getChrono_ms();
-    chrono.timeLeft_ms = getTimeLeftMatch_ms();
+    chrono.chrono_ms = getTime();
+    chrono.timeLeft_ms = getStrategyRemainingTime();
     return chrono;
 }
 
-
+void Chrono::updateConf(RobotParameters* newConf)
+{
+    ASSERT(newConf);
+    strategyDuration_ms = newConf->strategyDuration();
+}

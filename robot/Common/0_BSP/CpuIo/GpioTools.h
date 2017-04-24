@@ -64,20 +64,13 @@ namespace ard
          *        level change to consider it (in milliseconds)
          *        set to 0 to deactivate
          */
-        void
-        setDebounceLow(uint32_t debounce);
-
-        /**
-         * Get the event reference to be able to wait for it
-         */
-        IEvent* getEvent(eGpioEdge edge);
+        void setDebounceLow(uint32_t debounce);
 
         /**
          * Reset the filter
          * Note : the ouput filter value is set to HIGH when the signal is inverted.
          */
-        void
-        reset();
+        void reset();
 
         /**
          * Read the filtered value (note the the inversion in taken into account)
@@ -127,9 +120,6 @@ namespace ard
         volatile uint32_t debounceHighCount;
         DelayUs debounceLowDuration;
         volatile uint32_t debounceLowCount;
-        Event<1> eventAny;
-        Event<1> eventFalling;
-        Event<1> eventRising;
     };
 
     /**

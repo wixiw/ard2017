@@ -8,6 +8,9 @@
 #ifndef ROBOT_COMMON_2_AL_ACTUATORSCTRL_ARMS_H_
 #define ROBOT_COMMON_2_AL_ACTUATORSCTRL_ARMS_H_
 
+#include "RSP.h"
+#ifdef BUILD_STRATEGY
+
 #include "generated/FSM_Arms.h"
 #include "StratFwk.h"
 #include "Lifter.h"
@@ -26,6 +29,21 @@ namespace ard
         Arms(ActuatorThread& parent, TimerInterface& timer);
 
         /**---------------------------------
+         * Strat API
+         ---------------------------------*/
+        //Open arm and make wheel turn to swallow several cylinder on table
+        void swallow(uint8_t nbCylinders);
+
+        //Stop turning wheels and retract arms to be able to move safely on table
+        void retractArms();
+
+        //Take a certain number of cylinders from the dispenser
+        void withdraw(uint8_t nbCylinders);
+
+        //Poo a certain number of cylinder (it doesn't matter if it's on table or in a container)
+        void poo(uint8_t nbCylinders);
+
+        /**---------------------------------
          * Container thread interface
          ---------------------------------*/
 
@@ -41,9 +59,6 @@ namespace ard
         //Call this to enable the state machine (ex : after start is inside robot)
         void start();
 
-        //Retrive the Strategy API to emit/receive events
-        FSM_Arms::SCI_Strategy* getEvents();
-
     private:
         //the yakindu generated code
         FSM_Arms fsm;
@@ -57,4 +72,5 @@ namespace ard
 
 } /* namespace ard */
 
+#endif
 #endif /* ROBOT_COMMON_2_AL_ACTUATORSCTRL_ARMS_H_ */

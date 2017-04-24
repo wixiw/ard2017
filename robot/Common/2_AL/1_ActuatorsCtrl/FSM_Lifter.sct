@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_om_nECOoEee69bN6ehHnlw" specification="interface Strategy:&#xA;&#x9;in event lift &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the lifter to lift a new element&#xA;&#x9;in event poo &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the lifter to poo an element&#xA;&#x9;var readyForNext : boolean &#x9;&#x9;&#x9;&#x9;//a new cylinder can enter the mouth&#xA;&#x9;var stockCount : integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//number of cylinder in  the stock. When count is 5 it means that one cylinder is on floor and lifter may never be ready&#xA;&#xA;interface:&#xA;&#x9;in event start&#xA;&#x9;var started : boolean&#xA;&#x9;out event startFailed&#xA;&#xA;&#x9;//Servo commands (from 0 to 100%)&#xA;&#x9;var lifter : integer&#xA;&#x9;&#xA;&#x9;//Micro switch contact when value is True&#xA;&#x9;var upSwitch : boolean&#xA;&#x9;var downSwitch : boolean&#xA;&#x9;" name="FSM_Lifter" documentation="The arm FSM has to synchronize with the lifter FSM">
+  <sgraph:Statechart xmi:id="_om_nECOoEee69bN6ehHnlw" specification="interface Strategy:&#xA;&#x9;in event lift &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the lifter to lift a new element&#xA;&#x9;in event poo &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the lifter to poo an element&#xA;&#x9;var readyForNext : boolean &#x9;&#x9;&#x9;&#x9;//a new cylinder can enter the mouth&#xA;&#x9;var stockCount : integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//number of cylinder in  the stock. When count is 5 it means that one cylinder is on floor and lifter may never be ready&#xA;&#xA;interface:&#xA;&#x9;var start&#x9;: boolean&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//Set to true when machine is active&#xA;&#x9;out event homingDone &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//actuators are ready to operate&#xA;&#x9;out event homingFailed&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//failed to execute the homing sequence&#xA;&#xA;&#x9;//Servo commands (from 0 to 100%)&#xA;&#x9;var lifter : integer&#xA;&#x9;&#xA;&#x9;//Micro switch contact when value is True&#xA;&#x9;var upSwitch : boolean&#xA;&#x9;var downSwitch : boolean&#xA;&#x9;" name="FSM_Lifter" documentation="The arm FSM has to synchronize with the lifter FSM">
     <regions xmi:id="_onAOJCOoEee69bN6ehHnlw" name="main region">
       <vertices xsi:type="sgraph:Entry" xmi:id="_onA1NiOoEee69bN6ehHnlw">
         <outgoingTransitions xmi:id="_onCDWSOoEee69bN6ehHnlw" target="_onBcRyOoEee69bN6ehHnlw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_onBcRyOoEee69bN6ehHnlw" name="WaitStart" incomingTransitions="_onCDWSOoEee69bN6ehHnlw _afO20CPXEeefRbrwNF-IRQ _m2qGgCPXEeefRbrwNF-IRQ">
-        <outgoingTransitions xmi:id="_tbUFICO9EeefRbrwNF-IRQ" specification="start" target="_JPdYICPXEeefRbrwNF-IRQ"/>
+        <outgoingTransitions xmi:id="_tbUFICO9EeefRbrwNF-IRQ" specification="[start]" target="_JPdYICPXEeefRbrwNF-IRQ"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_JPdYICPXEeefRbrwNF-IRQ" name="Rising lifter for zeroing" incomingTransitions="_tbUFICO9EeefRbrwNF-IRQ">
-        <outgoingTransitions xmi:id="_afO20CPXEeefRbrwNF-IRQ" specification="after 5s / &#xD;&#xA;raise startFailed" target="_onBcRyOoEee69bN6ehHnlw"/>
+        <outgoingTransitions xmi:id="_afO20CPXEeefRbrwNF-IRQ" specification="after 5s / &#xD;&#xA;raise homingFailed" target="_onBcRyOoEee69bN6ehHnlw"/>
         <outgoingTransitions xmi:id="_hFdj8CPXEeefRbrwNF-IRQ" specification="[upSwitch]" target="_egrTACPXEeefRbrwNF-IRQ"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_egrTACPXEeefRbrwNF-IRQ" name="Lowering lifter for zeroing" incomingTransitions="_hFdj8CPXEeefRbrwNF-IRQ">
-        <outgoingTransitions xmi:id="_m2qGgCPXEeefRbrwNF-IRQ" specification="after 5s / &#xD;&#xA;raise startFailed" target="_onBcRyOoEee69bN6ehHnlw"/>
-        <outgoingTransitions xmi:id="_re414CPXEeefRbrwNF-IRQ" specification="[downSwitch] / started = true" target="_qjCRoCPXEeefRbrwNF-IRQ"/>
+        <outgoingTransitions xmi:id="_m2qGgCPXEeefRbrwNF-IRQ" specification="after 5s / &#xD;&#xA;raise homingFailed" target="_onBcRyOoEee69bN6ehHnlw"/>
+        <outgoingTransitions xmi:id="_re414CPXEeefRbrwNF-IRQ" specification="[downSwitch] / raise homingDone" target="_qjCRoCPXEeefRbrwNF-IRQ"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_qjCRoCPXEeefRbrwNF-IRQ" name="Idle" incomingTransitions="_re414CPXEeefRbrwNF-IRQ"/>
     </regions>
@@ -116,7 +116,7 @@
       <children xsi:type="notation:Shape" xmi:id="_onDRcyOoEee69bN6ehHnlw" type="StatechartTextExpression" fontName="Verdana" lineColor="4210752">
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_onDRdCOoEee69bN6ehHnlw"/>
       </children>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_onDRdSOoEee69bN6ehHnlw" x="10" y="10" width="200" height="400"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_onDRdSOoEee69bN6ehHnlw" x="55" y="745" width="1235" height="326"/>
     </children>
     <styles xsi:type="notation:DiagramStyle" xmi:id="_onAOIyOoEee69bN6ehHnlw"/>
     <edges xmi:id="_onCqYCOoEee69bN6ehHnlw" type="Transition" element="_onCDWSOoEee69bN6ehHnlw" source="_onA1NyOoEee69bN6ehHnlw" target="_onBcSiOoEee69bN6ehHnlw">

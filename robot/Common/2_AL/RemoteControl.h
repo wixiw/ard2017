@@ -37,12 +37,8 @@ namespace ard
     class RemoteControl: public ILogChannel, public IComListener
     {
     public:
-        RemoteControl(ISerialDriver& serialDriver);
-        void attachRobot(Robot2017* robot);
+        RemoteControl(Robot2017* newRobot, ISerialDriver& serialDriver);
         virtual ~RemoteControl() = default;
-
-        //Get any teleop event (non-const on purpose)
-        IEvent* getEvent(eRemoteControlEvtId id);
 
         //Implements ILogChannel : returns true if the communication is established
         virtual bool isReady() const override;
@@ -67,7 +63,6 @@ namespace ard
 
     private:
         Mutex mutex;
-        Event<1> events[EVT_MAX];
         ComOnUart com;
         Robot2017* robot;
         char msg_send_buffer[HDLC_FRAME_LENGTH];
@@ -91,6 +86,12 @@ namespace ard
         void setSpeedAcc            (apb_RemoteControlRequest const & request);
         void requestGoto            (apb_RemoteControlRequest const & request);
         void requestGotoCap         (apb_RemoteControlRequest const & request);
+        void requestGoForward       (apb_RemoteControlRequest const & request);
+        void requestTurnDelta       (apb_RemoteControlRequest const & request);
+        void requestTurnTo          (apb_RemoteControlRequest const & request);
+        void requestFaceTo          (apb_RemoteControlRequest const & request);
+        void recalFaceOnBorder      (apb_RemoteControlRequest const & request);
+        void recalRearOnBorder      (apb_RemoteControlRequest const & request);
         void requestBlockRobot      (apb_RemoteControlRequest const & request);
         void requestMaxLengthMsg    (apb_RemoteControlRequest const & request);
         void requestCrcFailMsg      (apb_RemoteControlRequest const & request);

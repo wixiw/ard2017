@@ -7,9 +7,8 @@
 
 #include "Poo.h"
 #include "Robot2017.h"
+#ifdef BUILD_STRATEGY
 
-namespace ard
-{
+using namespace ard;
 
-
-} /* namespace ard */
+#endif
