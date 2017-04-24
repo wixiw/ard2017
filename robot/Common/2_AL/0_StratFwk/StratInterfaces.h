@@ -57,6 +57,8 @@ namespace ard
      */
     class IStrategy: public PolledObject
     {
+    public:
+        IStrategy(String const& name):PolledObject(name){};
     };
 }
 

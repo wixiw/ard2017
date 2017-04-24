@@ -37,10 +37,11 @@ namespace ard
         static Tration* instance2;
 
 #ifdef BUILD_STRATEGY
-        FunnyAction stratFunnyAction;
-        InstallPen stratInstallation;
-        Invade stratInvade;
+        InstallTration stratInstall;
+        Selftest stratSelftest;
+        HomolTration stratHomol;
         WipTration stratWIP;
+        FunnyAction stratFunnyAction;
 #endif
     };
 

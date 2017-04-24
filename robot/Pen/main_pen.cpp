@@ -9,10 +9,6 @@ using namespace ard;
  * The new 2017 robot
  */
 
-#ifdef BUILD_STRATEGY
-
-#endif
-
 int main( void )
 {   
     Pen& robotPen = Pen::getInstance();

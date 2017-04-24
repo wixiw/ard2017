@@ -18,7 +18,7 @@ namespace ard
 {
     class Robot2017;
 
-    class WipPen: public Strategy2017
+    class WipPen: public Strategy2017, public FSM_WipPen::DefaultSCI_OCB
     {
     public:
         WipPen(Robot2017* robot);
@@ -33,6 +33,8 @@ namespace ard
         //Implements IMiniThread : method to be called by the container thread
         //                         it's expected to be called periodically
         void update(TimeMs sinceLastCall) override;
+
+        STRAT_2017_API_ITF();
 
     private:
         FSM_WipPen fsm;

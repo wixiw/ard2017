@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_weQCoCUmEeeHgPR3RzRZqA" specification="interface:&#xD;&#xA;&#x9;var networkStart: boolean&#xD;&#xA;&#x9;var startIn: boolean&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//user has insert the start&#xD;&#xA;&#x9;in event startMatch&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//a network request from Vizy ask to automatically start the match&#xD;&#xA;&#x9;in event networkConfigRequest&#x9;&#x9;&#x9;&#x9;//a network request from Vizu ask to automatically configure the robot (color/strategy)&#xD;&#xA;&#x9;in event strategyFinished&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//strategy has finished it's job&#xD;&#xA;&#x9;in event funnyActionFinished&#x9;&#x9;&#x9;&#x9;&#x9;//funny action is done&#xD;&#xA;&#x9;out event readHmiConfig&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that it shall read the HMI configuration (color/strategy)&#xD;&#xA;&#x9;out event matchStarted&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the match has started&#xD;&#xA;&#x9;var strategyRemainingTime: integer&#x9;&#x9;&#x9;//remaining duration in milliseconds until the end of time allocated to  strategy (it's in general less than the match duration to prevent overshoot&#xD;&#xA;&#x9;var matchDuration: integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//time spent in match in milliseconds&#xD;&#xA;&#x9;operation beep(nb : integer)&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the robot to beep several times&#xD;&#xA;&#x9;operation displayIntroduction()&#x9;&#x9;&#x9;&#x9;//display the boot message" name="FSM_Lifecycle">
+  <sgraph:Statechart xmi:id="_weQCoCUmEeeHgPR3RzRZqA" specification="interface:&#xD;&#xA;&#x9;var networkStart: boolean&#xD;&#xA;&#x9;var startIn: boolean&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//user has insert the start&#xD;&#xA;&#x9;in event startMatch&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//a network request from Vizy ask to automatically start the match&#xD;&#xA;&#x9;in event networkConfigRequest&#x9;&#x9;&#x9;&#x9;//a network request from Vizu ask to automatically configure the robot (color/strategy)&#xD;&#xA;&#x9;in event strategyFinished&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//strategy has finished it's job&#xD;&#xA;&#x9;in event funnyActionFinished&#x9;&#x9;&#x9;&#x9;&#x9;//funny action is done&#xD;&#xA;&#x9;out event readHmiConfig&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that it shall read the HMI configuration (color/strategy)&#xD;&#xA;&#x9;out event matchStarted&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the match has started&#xD;&#xA;&#x9;out event matchEnded&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the match is ended&#xD;&#xA;&#x9;var strategyRemainingTime: integer&#x9;&#x9;&#x9;//remaining duration in milliseconds until the end of time allocated to  strategy (it's in general less than the match duration to prevent overshoot&#xD;&#xA;&#x9;var matchDuration: integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//time spent in match in milliseconds&#xD;&#xA;&#x9;operation beep(nb : integer)&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the robot to beep several times&#xD;&#xA;&#x9;operation displayIntroduction()&#x9;&#x9;&#x9;&#x9;//display the boot message" name="FSM_Lifecycle">
     <regions xmi:id="_wemA4CUmEeeHgPR3RzRZqA" name="main region">
       <vertices xsi:type="sgraph:Entry" xmi:id="_whC38CUmEeeHgPR3RzRZqA">
         <outgoingTransitions xmi:id="_whYPICUmEeeHgPR3RzRZqA" target="_Y1R-oCYVEeeh1o2kvtdb7w"/>
@@ -16,18 +16,19 @@
         <outgoingTransitions xmi:id="_EAQNYCVNEeeHgPR3RzRZqA" specification="startMatch [networkStart == true]" target="_qzOe4CU5EeeHgPR3RzRZqA"/>
         <outgoingTransitions xmi:id="_OqougCbkEeeF6Kxss4qBFA" specification="networkConfigRequest&#xD;&#xA;[networkStart == true]" documentation="Change mind on color" target="_i8UpgCU4EeeHgPR3RzRZqA"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_qzOe4CU5EeeHgPR3RzRZqA" specification="entry/beep(1); raise matchStarted" name="Match" incomingTransitions="_tmkwQCU5EeeHgPR3RzRZqA _EAQNYCVNEeeHgPR3RzRZqA">
+      <vertices xsi:type="sgraph:State" xmi:id="_qzOe4CU5EeeHgPR3RzRZqA" specification="entry/beep(1); raise matchStarted&#xD;&#xA;exit/ raise matchEnded" name="Match" incomingTransitions="_tmkwQCU5EeeHgPR3RzRZqA _EAQNYCVNEeeHgPR3RzRZqA">
         <outgoingTransitions xmi:id="_EN7-sCU6EeeHgPR3RzRZqA" specification="[strategyRemainingTime &lt;= 0]" target="_yosmUCU5EeeHgPR3RzRZqA"/>
         <outgoingTransitions xmi:id="_BsrbgCU9EeeHgPR3RzRZqA" specification="strategyFinished" target="_yosmUCU5EeeHgPR3RzRZqA"/>
+        <outgoingTransitions xmi:id="_m--KEChuEee2wZoqYkppsA" specification="[90000 &lt;= matchDuration]" target="__qBHkCU5EeeHgPR3RzRZqA"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_yosmUCU5EeeHgPR3RzRZqA" specification="entry/beep(3)" name="Waiting match end" incomingTransitions="_EN7-sCU6EeeHgPR3RzRZqA _BsrbgCU9EeeHgPR3RzRZqA">
         <outgoingTransitions xmi:id="_FDqs0CU6EeeHgPR3RzRZqA" specification="[90000 &lt;= matchDuration]" target="__qBHkCU5EeeHgPR3RzRZqA"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="__qBHkCU5EeeHgPR3RzRZqA" specification="entry/beep(1)" name="Funny action" incomingTransitions="_FDqs0CU6EeeHgPR3RzRZqA">
+      <vertices xsi:type="sgraph:State" xmi:id="__qBHkCU5EeeHgPR3RzRZqA" specification="entry/beep(1)" name="Funny action" incomingTransitions="_FDqs0CU6EeeHgPR3RzRZqA _m--KEChuEee2wZoqYkppsA">
         <outgoingTransitions xmi:id="_GHN0gCU6EeeHgPR3RzRZqA" specification="[95000 &lt;= matchDuration]" target="_B6VkYCU6EeeHgPR3RzRZqA"/>
         <outgoingTransitions xmi:id="_O7514CU9EeeHgPR3RzRZqA" specification="funnyActionFinished" target="_B6VkYCU6EeeHgPR3RzRZqA"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_B6VkYCU6EeeHgPR3RzRZqA" specification="entry/beep(1)" name="Match ended" incomingTransitions="_GHN0gCU6EeeHgPR3RzRZqA _O7514CU9EeeHgPR3RzRZqA"/>
+      <vertices xsi:type="sgraph:State" xmi:id="_B6VkYCU6EeeHgPR3RzRZqA" specification="entry/beep(1)" name="Finished" incomingTransitions="_GHN0gCU6EeeHgPR3RzRZqA _O7514CU9EeeHgPR3RzRZqA"/>
       <vertices xsi:type="sgraph:State" xmi:id="_EQqtICU7EeeHgPR3RzRZqA" specification="entry/ beep(2); displayIntroduction()" name="Waiting start" incomingTransitions="_atfdcCYVEeeh1o2kvtdb7w">
         <outgoingTransitions xmi:id="_Kdv6cCU7EeeHgPR3RzRZqA" specification="[startIn]" target="_whGiUCUmEeeHgPR3RzRZqA"/>
         <outgoingTransitions xmi:id="_V01j8CU6EeeHgPR3RzRZqA" specification="networkConfigRequest&#xD;&#xA;/networkStart = true" documentation="Network command" target="_i8UpgCU4EeeHgPR3RzRZqA"/>
@@ -361,6 +362,17 @@
       <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_OqsY4ibkEeeF6Kxss4qBFA" points="[37, 5, 15, -9]$[104, 5, 82, -9]$[104, 29, 82, 15]$[37, 29, 15, 15]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_OqvcMCbkEeeF6Kxss4qBFA" id="(0.8664259927797834,0.37735849056603776)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_OqvcMSbkEeeF6Kxss4qBFA" id="(0.9458483754512635,0.6792452830188679)"/>
+    </edges>
+    <edges xmi:id="_m-__QChuEee2wZoqYkppsA" type="Transition" element="_m--KEChuEee2wZoqYkppsA" source="_qzPtACU5EeeHgPR3RzRZqA" target="__qBuoCU5EeeHgPR3RzRZqA">
+      <children xsi:type="notation:DecorationNode" xmi:id="_m_BNYChuEee2wZoqYkppsA" type="TransitionExpression">
+        <styles xsi:type="notation:ShapeStyle" xmi:id="_m_BNYShuEee2wZoqYkppsA"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_m_BNYihuEee2wZoqYkppsA" x="45"/>
+      </children>
+      <styles xsi:type="notation:ConnectorStyle" xmi:id="_m-__QShuEee2wZoqYkppsA" routing="Rectilinear" lineColor="4210752"/>
+      <styles xsi:type="notation:FontStyle" xmi:id="_m_AmUChuEee2wZoqYkppsA" fontName="Verdana"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_m-__QihuEee2wZoqYkppsA" points="[171, -22, 186, -150]$[355, -22, 370, -150]$[355, 145, 370, 17]$[187, 145, 202, 17]"/>
+      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_m_DCkChuEee2wZoqYkppsA" id="(0.3333333333333333,1.0)"/>
+      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_m_DCkShuEee2wZoqYkppsA" id="(0.259927797833935,0.18867924528301888)"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>

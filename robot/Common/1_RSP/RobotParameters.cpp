@@ -25,6 +25,23 @@ RobotParameters::RobotParameters()
                 m_maxSpeed(0),
                 m_configuredOnce(false)
 {
+    strcpy(cfg.serialNumber,    "");
+    cfg.stepByTurn              = 1600;
+    cfg.xav                     = 145;//mm
+    cfg.xar                     = 30;//mm
+    cfg.yside                   = 88;
+    cfg.xavExtended             = 210;//mm
+    cfg.leftWheelDiameter       = 60.000;
+    cfg.rightWheelDiameter      = 60.000;
+    cfg.voie                    = 160.4;
+    cfg.maxAcc                  = 700;
+    cfg.maxTurnAcc              = 300;
+    cfg.recalSpeed              = 210.0;
+    cfg.maxTurnSpeed            = 125.0;
+    cfg.deccDist                = 150.0;
+    cfg.strategyDuration        = 89500;
+    cfg.detectionWaitForOppMove = 1000;
+    cfg.detectionActive         = true;
 }
 
 void RobotParameters::setComputedVars()
@@ -64,7 +81,7 @@ bool RobotParameters::checkConfig(apb_Configuration const& newConf)
     CHECK_RANGE(20, newConf.deccDist, 250);
     if (newConf.strategyDuration)
     {
-        CHECK_RANGE(50000, newConf.strategyDuration, 0xFFFFFFFF);
+        CHECK_RANGE(50000, newConf.strategyDuration, 89999);
     }
     CHECK_RANGE(50, newConf.detectionWaitForOppMove, 5000);
     CHECK_RANGE(MINBOUND_MAXSPEED, newMaxSpeed, MAXBOUND_MAXSPEED);

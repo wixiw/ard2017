@@ -75,6 +75,16 @@ void UART_Handler(void)
     //DEBUG_SET_LOW(); //uncomment to check period and delay with oscilloscope : default empty duration (2 io write + 1 function call) is 750ns
 }
 
+bool Robot2017::isPen() const
+{
+    return 0 == strcmp(m_params.serialNumber(), "Pen");
+}
+
+bool Robot2017::isTration() const
+{
+    return 0 == strcmp(m_params.serialNumber(), "Tration");
+}
+
 Robot2017::Robot2017():
     bsp(),
 #ifdef BUILD_STRATEGY
@@ -107,6 +117,7 @@ void Robot2017::bootOs()
 #ifdef BUILD_REMOTE_CONTROL
     log.addLogger(remoteControl);
 #endif
+
 
     //Map fast periodic functions to timers interrupts
     //GPIO_TIMER is used for CPU stats, see FreeRTOSConfig.h and FreeRTOS_ARM.c

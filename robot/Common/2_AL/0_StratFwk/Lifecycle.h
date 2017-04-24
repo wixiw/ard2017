@@ -9,13 +9,15 @@
 #define ROBOTS_LIFECYCLE_H_
 
 #include "RSP.h"
-#include "StratInterfaces.h"
 
+#ifdef BUILD_STRATEGY
+
+#include "StratInterfaces.h"
 #define private protected //workaround to gain instropection
 #include "generated/FSM_Lifecycle.h"
 #undef private
 
-#ifdef BUILD_STRATEGY
+
 
 #define NB_MAX_STRATEGIES 15
 

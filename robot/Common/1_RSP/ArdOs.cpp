@@ -506,11 +506,6 @@ PollerThread::PollerThread(String const& name,
 void PollerThread::init()
 {
     Thread::init();
-
-    for(int i = 0 ; i < nextRank ; ++i)
-    {
-        polledObjects[i]->init();
-    }
 }
 
 void PollerThread::run()

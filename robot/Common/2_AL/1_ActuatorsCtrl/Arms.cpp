@@ -24,30 +24,53 @@ void Arms::init()
 {
     ASSERT(lifter!=NULL);
     fsm.init();
+    fsm.enter();
 }
 
 void Arms::start()
 {
-    fsm.enter();
-    fsm.getDefaultSCI()->raise_start();
+    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
+    fsm.set_start(true);
 }
 
 void Arms::update(TimeMs sinceLastCall)
 {
-    fsm.getDefaultSCI()->set_leftExtendedSwitch(acts.switchArmLout.read());
-    fsm.getDefaultSCI()->set_rightExtendedSwitch(acts.switchArmRout.read());
-    fsm.getDefaultSCI()->set_leftRetractedSwitch(acts.switchArmLin.read());
-    fsm.getDefaultSCI()->set_rightRetractedSwitch(acts.switchArmRin.read());
+    fsm.set_leftExtendedSwitch(acts.switchArmLout.read());
+    fsm.set_rightExtendedSwitch(acts.switchArmRout.read());
+    fsm.set_leftRetractedSwitch(acts.switchArmLin.read());
+    fsm.set_rightRetractedSwitch(acts.switchArmRin.read());
 
     fsm.getSCI_Strategy()->set_lifterReady(lifter->isReadyForNextCylinder());
 
     fsm.runCycle();
 
-    //TODO convert 0=>100% to 0=>180
-//    acts.servoLeftArm.      write(fsm.getDefaultSCI()->get_leftArm());
-//    acts.servoRightArm.     write(fsm.getDefaultSCI()->get_rightArm());
-//    acts.servoLeftWheel.    write(fsm.getDefaultSCI()->get_leftWheel());
-//    acts.servoRightWheel.   write(fsm.getDefaultSCI()->get_rightWheel());
+    if( fsm.get_start() )
+    {
+        acts.servoLeftArm.      write(fsm.get_leftArm());
+        acts.servoRightArm.     write(fsm.get_rightArm());
+        acts.servoLeftWheel.    write(fsm.get_leftWheel());
+        acts.servoRightWheel.   write(fsm.get_rightWheel());
+    }
+}
+
+void ard::Arms::swallow(uint8_t nbCylinders)
+{
+    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
+}
+
+void ard::Arms::retractArms()
+{
+    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
+}
+
+void ard::Arms::withdraw(uint8_t nbCylinders)
+{
+    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
+}
+
+void ard::Arms::poo(uint8_t nbCylinders)
+{
+    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
 }
 
 #endif

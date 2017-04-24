@@ -7,7 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from ArdWidgets import *
 from core import *
-import _tkinter
+import time
 
 #
 # This class is a pre-built widget which is designed to display 
@@ -78,13 +78,13 @@ class ServoWidget(QWidget):
         self.name = name
         self.signal = signal
         
-        self.label = QLabel("0°")
+        self.label = QLabel("0/1000")
         self.label.setFixedWidth(50)
         self.label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         
         self.slider = QSlider(Qt.Horizontal)
         self.slider.setMinimum(0)
-        self.slider.setMaximum(+180) 
+        self.slider.setMaximum(+1000) 
         self.slider.setPageStep(10)
         self.slider.setSingleStep(1)
         self.slider.setTracking(True)
@@ -108,10 +108,11 @@ class ServoWidget(QWidget):
     #(either from HMI or from network request)
     @pyqtSlot(int)
     def valueChanged(self, value):  
-        self.label.setText(str(value)+"°")
+        self.label.setText(str(value)+"/1000")
         self.signal.emit(value)
+        time.sleep(0.025)
 
     #Use this when a new value comes from the robot (ie not from the HMI)
     def setValue(self, value):
-        self.label.setText(str(value)+"°")
+        self.label.setText(str(value)+"/1000")
         self.slider.setValue(value)

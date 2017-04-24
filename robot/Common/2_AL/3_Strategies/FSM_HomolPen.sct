@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_KdQaECYeEeeh1o2kvtdb7w" specification="interface:&#xA;// Define events and&#xA;// and variables here" name="FSM_Homol">
+  <sgraph:Statechart xmi:id="_KdQaECYeEeeh1o2kvtdb7w" specification="interface:&#xA;// Define events and&#xA;// and variables here&#xA;" name="FSM_HomolPen">
     <regions xmi:id="_KdRoMiYeEeeh1o2kvtdb7w" name="main region">
       <vertices xsi:type="sgraph:Entry" xmi:id="_KdS2UCYeEeeh1o2kvtdb7w">
         <outgoingTransitions xmi:id="_KdUrgCYeEeeh1o2kvtdb7w" target="_KdTdYSYeEeeh1o2kvtdb7w"/>

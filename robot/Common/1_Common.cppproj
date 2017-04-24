@@ -1244,28 +1244,22 @@
     <Compile Include="2_AL\3_Strategies\FunnyAction.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\Homol.cpp">
+    <Compile Include="2_AL\3_Strategies\HomolPen.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\Homol.h">
+    <Compile Include="2_AL\3_Strategies\HomolPen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\HomolTration.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\HomolTration.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\Installation.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\Installation.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Invade.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Invade.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Match.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Match.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\Selftest.cpp">
@@ -1301,10 +1295,16 @@
     <Compile Include="2_AL\generated\FSM_Arms.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Homol.cpp">
+    <Compile Include="2_AL\generated\FSM_HomolPen.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Homol.h">
+    <Compile Include="2_AL\generated\FSM_HomolPen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_HomolTration.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_HomolTration.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_InstallPen.cpp">
@@ -1319,12 +1319,6 @@
     <Compile Include="2_AL\generated\FSM_InstallTration.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_Invade.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_Invade.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\generated\FSM_Lifecycle.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1335,12 +1329,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Lifter.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_Match.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_Match.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Selftest.cpp">

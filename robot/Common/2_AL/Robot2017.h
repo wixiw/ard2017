@@ -97,6 +97,12 @@ namespace ard
         //retrieve the robot serial nunmber
         char const * const getSerialNumber() const;
 
+        //returns true if the robot is "Pen"
+        bool isPen() const;
+
+        //returns true if the robot is "Tration"
+        bool isTration() const;
+
         //hardware layer
         BSP bsp;
 

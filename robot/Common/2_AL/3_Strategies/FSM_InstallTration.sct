@@ -44,6 +44,18 @@
           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_u2Uttyb2EeeF6Kxss4qBFA" name="isHorizontal" booleanValue="true"/>
           <layoutConstraint xsi:type="notation:Bounds" xmi:id="_u2VUwCb2EeeF6Kxss4qBFA" x="40" y="80"/>
         </children>
+        <children xsi:type="notation:Shape" xmi:id="_79qMsCh9Eee2wZoqYkppsA" type="Note" fontName="Verdana" description="Penser à position le ressort pour la funny action" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
+          <children xsi:type="notation:BasicDecorationNode" xmi:id="_79sB4Ch9Eee2wZoqYkppsA" type="DiagramName">
+            <element xsi:nil="true"/>
+          </children>
+          <children xsi:type="notation:BasicDecorationNode" xmi:id="_79sB4Sh9Eee2wZoqYkppsA" type="Description">
+            <element xsi:nil="true"/>
+          </children>
+          <styles xsi:type="notation:TextStyle" xmi:id="_79qzwCh9Eee2wZoqYkppsA"/>
+          <styles xsi:type="notation:LineTypeStyle" xmi:id="_79qzwSh9Eee2wZoqYkppsA"/>
+          <element xsi:nil="true"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_79qzwih9Eee2wZoqYkppsA" x="10" y="152"/>
+        </children>
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_u2SRdCb2EeeF6Kxss4qBFA"/>
       </children>
       <styles xsi:type="notation:ShapeStyle" xmi:id="_u2RDUSb2EeeF6Kxss4qBFA" fontName="Verdana" fillColor="15790320" lineColor="12632256"/>

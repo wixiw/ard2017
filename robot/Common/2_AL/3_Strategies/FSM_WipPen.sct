@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_ljr00CYeEeeh1o2kvtdb7w" specification="interface:&#xA;// Define events and&#xA;// and variables here" name="FSM_WipPen">
+  <sgraph:Statechart xmi:id="_ljr00CYeEeeh1o2kvtdb7w" specification="interface:&#xA;&#x9;//HMI interface&#xA;&#x9;operation beep(nb : integer)&#xA;&#x9;operation led1(blink : integer)&#xA;&#x9;operation led2(blink : integer)&#xA;&#x9;operation led3(blink : integer)&#xA;&#x9;operation led4(blink : integer)&#xA;&#x9;operation ledRGB(color : integer, blink : integer)&#xA;&#x9;operation isStartPlugged() : boolean&#xA;&#x9;operation isColorSwitchOnPrefered() : boolean&#xA;&#x9;operation isUser1SwitchOn() : boolean&#xA;&#x9;operation isUser2SwitchOn() : boolean&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;//Navigation interface&#xA;&#x9;operation enableAvoidance(on : boolean)&#xA;&#x9;operation setPosition(x : real, y : real, h : real)&#xA;&#x9;operation setSpeedAcc(vMax : integer, vMaxTurn : integer, accMax : integer, accMaxTurn : integer)&#xA;&#x9;operation goTo(x : real, y : real, dir : integer)&#xA;&#x9;operation goToCap(x : real, y : real, h : real, dir : integer)&#xA;&#x9;operation goForward(d : real)&#xA;&#x9;operation turnDelta(dh : real)&#xA;&#x9;operation turnTo(h : real)&#xA;&#x9;operation faceTo(x : real, y : real)&#xA;&#x9;operation recalFace(border : integer)&#xA;&#x9;operation recalRear(border : integer)&#xA;&#x9;operation stopMoving()&#xA;&#x9;operation targetReached() : boolean&#xA;&#xA;&#x9;&#x9;&#xA;&#x9;//Actuators interface&#xA;&#x9;operation swallow(nbCylinders : integer)&#xA;&#x9;operation retractArms()&#xA;&#x9;operation withdraw(nbCylinders : integer)&#xA;&#x9;operation poo(nbCylinders : integer)&#xA;&#x9;operation disableActuators()&#xA;&#x9;&#xA;&#x9;//Servo commands (from 0 to 1000 per thousand)&#xA;&#x9;var leftArm : integer&#xA;&#x9;var rightArm : integer&#xA;&#x9;var leftWheel : integer&#xA;&#x9;var rightWheel : integer&#xA;&#x9;var lifter : integer&#xA;&#x9;&#xA;internal:&#xA;&#x9;&#x9;//direction enum&#xA;&#x9;&#x9;var readonly FWD : integer =  1&#xA;&#x9;&#x9;var readonly BWD : integer = -1&#xA;&#x9;&#x9;//border enum&#xA;&#x9;&#x9;var readonly TOP_Y : integer = 0&#xA;&#x9;&#x9;var readonly OWN_SIDE_X : integer = 1&#xA;&#x9;&#x9;var readonly OPP_SIDE_X : integer = 2&#xA;&#x9;&#x9;var readonly START_AREA_Y : integer = 3&#xA;&#x9;&#x9;var readonly BOT_Y : integer = 4&#xA;&#x9;&#x9;&#xA;&#x9;&#x9;//blink enum&#xA;&#x9;&#x9;var readonly LED_OFF : integer = 0&#xA;&#x9;&#x9;var readonly LED_ON : integer = 1&#xA;&#x9;&#x9;var readonly SLOW_BLINK : integer = 2&#xA;&#x9;&#x9;var readonly FAST_BLINK : integer = 3&#xA;&#x9;&#x9;//color enum&#xA;&#x9;&#x9;var readonly RED : integer = 0&#xA;&#x9;&#x9;var readonly GREEN: integer = 1 &#x9;&#x9;&#xA;&#x9;&#x9;var readonly BLUE: integer = 2&#xA;&#x9;&#x9;var readonly YELLOW: integer = 3&#xA;&#x9;&#x9;var readonly CYAN: integer = 4&#x9;&#x9;&#xA;&#x9;&#x9;var readonly PURPLE: integer = 5 &#x9;&#x9;&#xA;&#x9;&#x9;var readonly WHITE: integer = 6" name="FSM_WipPen">
     <regions xmi:id="_ljsb4iYeEeeh1o2kvtdb7w" name="main region">
       <vertices xsi:type="sgraph:Entry" xmi:id="_ljtC8CYeEeeh1o2kvtdb7w">
         <outgoingTransitions xmi:id="_ljtqBSYeEeeh1o2kvtdb7w" target="_ljtC_CYeEeeh1o2kvtdb7w"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_ljtC_CYeEeeh1o2kvtdb7w" name="StateA" incomingTransitions="_ljtqBSYeEeeh1o2kvtdb7w"/>
+      <vertices xsi:type="sgraph:State" xmi:id="_ljtC_CYeEeeh1o2kvtdb7w" specification="entry / beep(1)" name="StateA" incomingTransitions="_ljtqBSYeEeeh1o2kvtdb7w"/>
     </regions>
   </sgraph:Statechart>
   <notation:Diagram xmi:id="_ljsb4CYeEeeh1o2kvtdb7w" type="org.yakindu.sct.ui.editor.editor.StatechartDiagramEditor" element="_ljr00CYeEeeh1o2kvtdb7w" measurementUnit="Pixel">
@@ -47,7 +47,7 @@
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ljsb6iYeEeeh1o2kvtdb7w"/>
       </children>
       <styles xsi:type="notation:ShapeStyle" xmi:id="_ljsb5CYeEeeh1o2kvtdb7w" fontName="Verdana" fillColor="15790320" lineColor="12632256"/>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ljsb6yYeEeeh1o2kvtdb7w" x="220" y="10" width="400" height="400"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ljsb6yYeEeeh1o2kvtdb7w" x="510" y="10" width="400" height="400"/>
     </children>
     <children xsi:type="notation:Shape" xmi:id="_ljtqDSYeEeeh1o2kvtdb7w" type="StatechartText" fontName="Verdana" lineColor="4210752">
       <children xsi:type="notation:DecorationNode" xmi:id="_ljtqDyYeEeeh1o2kvtdb7w" type="StatechartName">
@@ -57,7 +57,7 @@
       <children xsi:type="notation:Shape" xmi:id="_ljtqEiYeEeeh1o2kvtdb7w" type="StatechartTextExpression" fontName="Verdana" lineColor="4210752">
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ljtqEyYeEeeh1o2kvtdb7w"/>
       </children>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ljuRECYeEeeh1o2kvtdb7w" x="10" y="10" width="200" height="400"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ljuRECYeEeeh1o2kvtdb7w" x="25" y="445" width="672" height="910"/>
     </children>
     <styles xsi:type="notation:DiagramStyle" xmi:id="_ljsb4SYeEeeh1o2kvtdb7w"/>
     <edges xmi:id="_ljtqBiYeEeeh1o2kvtdb7w" type="Transition" element="_ljtqBSYeEeeh1o2kvtdb7w" source="_ljtC8SYeEeeh1o2kvtdb7w" target="_ljtC_yYeEeeh1o2kvtdb7w">

@@ -27,15 +27,6 @@ GeneratorModel for yakindu::cpp {
         }
     }
     
-    statechart FSM_Homol {
-
-        feature Outlet {
-            targetProject = "ard2017_master"
-            targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
-        }
-    }
-    
     statechart FSM_InstallPen {
 
         feature Outlet {
@@ -54,7 +45,7 @@ GeneratorModel for yakindu::cpp {
         }
     }
     
-    statechart FSM_Invade {
+    statechart FSM_HomolPen {
 
         feature Outlet {
             targetProject = "ard2017_master"
@@ -63,7 +54,7 @@ GeneratorModel for yakindu::cpp {
         }
     }
     
-    statechart FSM_Match {
+    statechart FSM_HomolTration {
 
         feature Outlet {
             targetProject = "ard2017_master"

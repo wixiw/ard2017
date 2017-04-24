@@ -18,9 +18,8 @@
 
 
 #include "FunnyAction.h"
-#include "Homol.h"
-#include "Invade.h"
-#include "Match.h"
+#include "HomolPen.h"
+#include "HomolTration.h"
 #include "Installation.h"
 #include "Selftest.h"
 #include "WipPen.h"

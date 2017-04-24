@@ -1,8 +1,7 @@
 /**
  * This file is the main file of the operationnal embedded robot code.
  */
-#include "Robot2017.h"
-#include "3_Strategies/Strategies.h"
+#include "Tration.h"
 
 using namespace ard;
 
@@ -12,19 +11,7 @@ using namespace ard;
 
 int main( void )
 {   
-    Robot2017& robotTration = Robot2017::getInstance();
-
-#ifdef BUILD_STRATEGY
-    FunnyAction stratFunnyAction(&robotTration);
-    Homol stratHomol(&robotTration);
-    InstallPen stratInstallation(&robotTration);
-    Invade stratInvade(&robotTration);
-    Match stratMatch(&robotTration);
-    Quentin stratQuentin(&robotTration);
-    Selftest stratSelftest(&robotTration);
-    Tanguy stratTanguy(&robotTration);
-    Willy stratWilly(&robotTration);
-
+    Tration& robotTration = Tration::getInstance();
 
     //Build and start robot
     robotTration.bootOs();

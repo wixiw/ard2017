@@ -37,9 +37,8 @@ namespace ard
         static Pen* instance2;
 
 #ifdef BUILD_STRATEGY
-        Homol stratHomol;
-        InstallPen stratInstallation;
-        Match stratMatch;
+        HomolPen stratHomol;
+        InstallPen stratInstall;
         Selftest stratSelftest;
         WipPen stratWIP;
 #endif

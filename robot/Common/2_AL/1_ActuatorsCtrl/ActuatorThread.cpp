@@ -23,12 +23,12 @@ ActuatorThread::ActuatorThread():
         omronSpare(         OMRON_SPARE, 50, 50),
         switchLifterUp(     SWITCH_LIFTER_UP, 100, 10),
         switchLifterDown(   SWITCH_LIFTER_DOWN, 100, 10),
-        servoLifter(        SERVO1, 0, 180),
-        servoLeftArm(       SERVO2, 0, 180),
-        servoRightArm(      SERVO3, 0, 180),
-        servoLeftWheel(     SERVO4, 0, 180),
-        servoRightWheel(    SERVO5, 0, 180),
-        servoFunnyAction(   SERVO6, 0, 180),
+        servoLifter(        SERVO1, 0, 1000),
+        servoLeftArm(       SERVO2, 0, 1000),
+        servoRightArm(      SERVO3, 0, 1000),
+        servoLeftWheel(     SERVO4, 0, 1000),
+        servoRightWheel(    SERVO5, 0, 1000),
+        servoFunnyAction(   SERVO6, 0, 1000),
         fsmTimeWheel(),
         lifter(*this, fsmTimeWheel),
         arms(*this, fsmTimeWheel)
@@ -102,6 +102,15 @@ void ActuatorThread::withdraw(uint8_t nbCylinders)
 void ActuatorThread::poo(uint8_t nbCylinders)
 {
     arms.poo(nbCylinders);
+}
+
+void ActuatorThread::disableAll()
+{
+    servoLifter.disable();
+    servoLeftArm.disable();
+    servoRightArm.disable();
+    servoLeftWheel.disable();
+    servoRightWheel.disable();
 }
 
 #endif

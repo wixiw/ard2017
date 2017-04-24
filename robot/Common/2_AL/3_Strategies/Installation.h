@@ -35,6 +35,8 @@ namespace ard
         //                         it's expected to be called periodically
         void update(TimeMs sinceLastCall) override;
 
+        STRAT_2017_API_ITF();
+
     private:
         FSM_InstallPen fsm;
     };
@@ -54,6 +56,8 @@ namespace ard
         //Implements IMiniThread : method to be called by the container thread
         //                         it's expected to be called periodically
         void update(TimeMs sinceLastCall) override;
+
+        STRAT_2017_API_ITF();
 
     private:
         FSM_InstallTration fsm;

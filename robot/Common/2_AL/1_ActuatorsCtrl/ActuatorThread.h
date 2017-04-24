@@ -37,6 +37,9 @@ namespace ard
         //Poo a certain number of cylinder (it doesn't matter if it's on table or in a container)
         void poo(uint8_t nbCylinders);
 
+        //disable all actuators except those for used in funny actionn (typically used at end of match)
+        void disableAll();
+
         /**---------------------------------
          * Container thread interface
          ---------------------------------*/

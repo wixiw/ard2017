@@ -12,13 +12,33 @@
 #include "StratFwk.h"
 
 #ifdef BUILD_STRATEGY
+
+#define private protected //workaround to gain instropection
 #include "generated/FSM_Selftest.h"
+#undef private
 
 namespace ard
 {
     class Robot2017;
 
-    class Selftest: public Strategy2017
+    /**
+     * This class is used to create the instrospection that Yakindu refuses to do
+     */
+    class FSM_Selftest_Better: public FSM_Selftest
+    {
+    public:
+        FSM_Selftest_Better();
+        void run();
+        FSM_SelftestStates getState() const {return stateConfVector[0];};
+        String state2Str(FSM_SelftestStates state) const;
+    protected:
+        FSM_SelftestStates lastState;
+    };
+
+    /**
+     *
+     */
+    class Selftest: public Strategy2017, public FSM_Selftest::DefaultSCI_OCB
     {
     public:
         Selftest(Robot2017* robot);
@@ -34,8 +54,10 @@ namespace ard
         //                         it's expected to be called periodically
         void update(TimeMs sinceLastCall) override;
 
+        STRAT_2017_API_ITF();
+
     private:
-        FSM_Selftest fsm;
+        FSM_Selftest_Better fsm;
     };
 
 } /* namespace ard */

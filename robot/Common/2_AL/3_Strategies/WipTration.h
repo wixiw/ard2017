@@ -34,6 +34,8 @@ namespace ard
         //                         it's expected to be called periodically
         void update(TimeMs sinceLastCall) override;
 
+        STRAT_2017_API_ITF();
+
     private:
         FSM_WipTration fsm;
     };

@@ -59,9 +59,6 @@ namespace ard
         //Call this to enable the state machine (ex : after start is inside robot)
         void start();
 
-        //Retrive the Strategy API to emit/receive events
-        FSM_Arms::SCI_Strategy* getEvents();
-
     private:
         //the yakindu generated code
         FSM_Arms fsm;

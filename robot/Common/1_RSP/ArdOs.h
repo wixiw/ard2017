@@ -96,7 +96,7 @@ namespace ard
     public:
         Mutex();
 
-        //Implements ArdObject : creates the OS object
+        //Implements OsObject : creates the OS object
         //User should not call this, it is automatically called during the ArdOs::init() call
         void init() override;
 
@@ -142,7 +142,7 @@ namespace ard
     public:
         Signal();
 
-        //Implements ArdObject : creates the OS object
+        //Implements OsObject : creates the OS object
         //User should not call this, it is automatically called during the ArdOs::init() call
         void init() override;
 
@@ -183,7 +183,7 @@ namespace ard
     public:
         Semaphore(uint16_t maxCount, uint16_t startingCount);
 
-        //Implements ArdObject : creates the OS object
+        //Implements OsObject : creates the OS object
         //User should not call this, it is automatically called during the ArdOs::init() call
         void init() override;
 
@@ -244,7 +244,7 @@ namespace ard
          */
         Queue(uint8_t nbItems, size_t itemSize);
 
-        //Implements ArdObject : creates the OS object
+        //Implements OsObject : creates the OS object
         void init() override;
 
         //Push an object into the queue
@@ -336,7 +336,7 @@ namespace ard
                 StackSize stackSize,
                 DelayMs period=0);
 
-        //Implements ArdObject : creates the thread OS object
+        //Implements OsObject : creates the thread OS object
         //User should not call this, it is automatically called during the ArdOs::init() call
         virtual void init() override;
 
@@ -452,9 +452,11 @@ namespace ard
      * Use a PolledObject when you need be updated periodically
      * without having enougth to do to justify a periodic thread creation
      */
-    class PolledObject: public ArdObject
+    class PolledObject: public OsObject
     {
     public:
+        PolledObject(String const& name = String::empty):OsObject(name){};
+
         //polling event
         virtual void update(DelayMs sinceLastCall) = 0;
     };
@@ -549,7 +551,7 @@ namespace ard
         }
 
         //Maximal number of Objects that can be registerObject()'ed
-        static const uint8_t MAX_OBJECT_NB = 20;
+        static const uint8_t MAX_OBJECT_NB = 60;
 
     private:
         //Tracking of initialization status to prevent stupid errors

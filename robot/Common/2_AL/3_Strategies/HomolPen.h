@@ -1,27 +1,27 @@
 /*
- * Match.h
+ * HomolPen.h
  *
  *  Created on: 18 avr. 2017
  *      Author: wix
  */
 
-#ifndef ROBOT_COMMON_2_AL_STRATEGIES_Match_Match_H_
-#define ROBOT_COMMON_2_AL_STRATEGIES_Match_Match_H_
+#ifndef ROBOT_COMMON_2_AL_STRATEGIES_HomolPen_HomolPen_H_
+#define ROBOT_COMMON_2_AL_STRATEGIES_HomolPen_HomolPen_H_
 
 #include "ArdOs.h"
 #include "StratFwk.h"
 
 #ifdef BUILD_STRATEGY
-#include "generated/FSM_Match.h"
+#include "generated/FSM_HomolPen.h"
 
 namespace ard
 {
     class Robot2017;
 
-    class Match: public Strategy2017
+    class HomolPen: public Strategy2017
     {
     public:
-        Match(Robot2017* robot);
+        HomolPen(Robot2017* robot);
 
         /**---------------------------------
          * Container thread interface
@@ -34,12 +34,14 @@ namespace ard
         //                         it's expected to be called periodically
         void update(TimeMs sinceLastCall) override;
 
+        STRAT_2017_API_ITF();
+
     private:
-        FSM_Match fsm;
+        FSM_HomolPen fsm;
     };
 
 } /* namespace ard */
 
 #endif //BUILD_STRATEGY
 
-#endif /* ROBOT_COMMON_2_AL_STRATEGIES_Match_Match_H_ */
+#endif /* ROBOT_COMMON_2_AL_STRATEGIES_HomolPen_HomolPen_H_ */

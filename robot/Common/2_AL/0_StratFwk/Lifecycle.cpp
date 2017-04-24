@@ -52,8 +52,8 @@ String FSM_Lifecycle_Better::state2Str(FSM_LifecycleStates state) const
         case main_region_Funny_action:
             return "Funny_action";
             break;
-        case main_region_Match_ended:
-            return "Match_ended";
+        case main_region_Finished:
+            return "Finished";
             break;
         case main_region_Waiting_start:
             return "Waiting_start";
@@ -94,6 +94,7 @@ void Lifecycle::init()
 
 void Lifecycle::run()
 {
+    robot->fsmTimer.run(PERIOD_STRATEGY);
     readInputs();
     fsm.run();
     publishOutputs();
@@ -174,6 +175,12 @@ void Lifecycle::publishOutputs()
 
         //start coutning match time
         robot->chrono.startMatch();
+    }
+
+    if( fsm.isRaised_matchEnded() )
+    {
+        robot->actuators.disableAll();
+        robot->nav.stopMoving();
     }
 
     //Robot installation strategy

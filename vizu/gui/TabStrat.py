@@ -26,6 +26,7 @@ class TabStrat(QWidget):
         self.uiStarted = False
         self.uiColor = Types_pb2.UNKNOWN
         self.uiStrategy = 0 
+        self.stratCount = 0
         
         #build info tab
         self.label = dict()
@@ -65,17 +66,17 @@ class TabStrat(QWidget):
                 
         #Strategy choice
         self.comboStratId = QComboBox(self)
-        self.comboStratId.addItem("0 - Match", 0)
-        self.comboStratId.addItem("1 - Homol", 1)
-        self.comboStratId.addItem("2 - Selftest", 2)
-        self.comboStratId.addItem("3 - WIP", 3)
-        self.comboStratId.addItem("4 - Old Tanguy", 4)
-#         self.comboStratId.addItem("7 - UT LEDs", 7)
-#         self.comboStratId.addItem("8 - UT Button", 8)
-#         self.comboStratId.addItem("9 - UT Omron", 9)
-#         self.comboStratId.addItem("10- UT CalibRot", 10)
-#         self.comboStratId.addItem("11- UT CalibLin", 11)
-#         self.comboStratId.addItem("12- UT Motion", 12)
+        self.addStrategy("Match")
+        self.addStrategy("Homol")
+        self.addStrategy("Selftest")
+        self.addStrategy("WIP")
+        self.addStrategy("Old Tanguy")
+        self.addStrategy("UT LEDs")
+        self.addStrategy("UT Button")
+        self.addStrategy("UT Omron")
+        self.addStrategy("UT CalibRot")
+        self.addStrategy("UT CalibLin")
+        self.addStrategy("UT Motion")
         self.comboStratId.currentIndexChanged[int].connect(self.selectStrat)
             #retrieve persisted choice
         settings = QSettings("config.ini", QSettings.IniFormat)
@@ -109,6 +110,10 @@ class TabStrat(QWidget):
         box_layout.addRow("color: ", self.buttonColor)
         box_layout.addRow("start: ", self.buttonStart)
         self.box_general.setLayout(box_layout)
+        
+    def addStrategy(self, name):
+        self.comboStratId.addItem(str(self.stratCount) + " - " + name, self.stratCount)
+        self.stratCount = self.stratCount + 1
         
     def buildPosInfo(self):
         self.box_pos = QGroupBox("Position")
@@ -283,14 +288,17 @@ class TabStrat(QWidget):
         if state == "go":
             self.uiStarted = False
             self.buttonStart.setDisabled(False)
+            self.comboStratId.setEnabled(False)
             self.buttonStart.setText("GO !") 
         elif state == "reset":
             self.uiStarted = True
             self.buttonStart.setDisabled(False)
+            self.comboStratId.setEnabled(False)
             self.buttonStart.setText("reset")
         elif state == "color":
             self.uiStarted = False
             self.buttonStart.setDisabled(True)
+            self.comboStratId.setEnabled(True)
             self.buttonStart.setText("color missing")
         else:
             assert False

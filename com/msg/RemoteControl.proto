@@ -83,12 +83,12 @@ message Configuration
 
 message ActuatorsCmd
 {
-    optional int32 lifter       = 1; //angle in °
-    optional int32 leftArm      = 2; //angle in °
-    optional int32 rightArm     = 3; //angle in °
-    optional int32 leftWheel    = 4; //angle in °
-    optional int32 rightWheel   = 5; //angle in °
-    optional int32 funnyAction  = 6; //angle in °
+    optional int32 lifter       = 1; //angle in per thousand
+    optional int32 leftArm      = 2; //angle in per thousand
+    optional int32 rightArm     = 3; //angle in per thousand
+    optional int32 leftWheel    = 4; //angle in per thousand
+    optional int32 rightWheel   = 5; //angle in per thousand
+    optional int32 funnyAction  = 6; //angle in per thousand
 }
 
 message SerialNumber
