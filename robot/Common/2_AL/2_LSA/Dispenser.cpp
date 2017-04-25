@@ -33,7 +33,7 @@ LSAResult DispenserMonocolor::execute(uint8_t nbItems)
     for(int i = nbItems ; 0 < i ; i--)
     {
         ArdOs::sleepMs(500);
-        robot.strategy.informWithdraw_MonocolorDispenser(1);
+        robot.strategy.informWithdraw_A(1);
     }
 
     LOG_INFO("Leave Monocolor Dispenser");

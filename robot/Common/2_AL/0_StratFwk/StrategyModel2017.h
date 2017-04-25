@@ -13,6 +13,9 @@
 
 namespace ard
 {
+
+//	On trouve le nommage des elements de jeu dans ARD_svn\1_Eurobot_2017\Plans Strat "Nommage elements table.png"
+
     class StrategyModel2017
     {
     public:
@@ -21,83 +24,83 @@ namespace ard
         //Selects the match color
         void setColor(eColor color);
 
-        //Inform strategy that a cylinder has been withdrawn from our mono-color dispenser, 0 means all available
-        void informWithdraw_MonocolorDispenser(uint8_t nb = 0);
+        //Inform strategy that a cylinder has been withdrawn from our mono-color dispenser (A), 0 means all available
+        void informWithdraw_A(uint8_t nb = 0);
 
-        //Inform strategy that a cylinder has been withdrawn from our bi-color dispenser, 0 means all available
-        void informWithdraw_BicolorDispenser(uint8_t nb = 0);
+        //Inform strategy that a cylinder has been withdrawn from our bi-color dispenser (G), 0 means all available
+        void informWithdraw_G(uint8_t nb = 0);
 
-        //Inform strategy that a cylinder has been withdrawn from opponent bi-color dispenser, 0 means all available
-        void informWithdraw_OppDispenser(uint8_t nb = 0);
+        //Inform strategy that a cylinder has been withdrawn from opponent bi-color dispenser (Opp_G), 0 means all available
+        void informWithdraw_Opp_G(uint8_t nb = 0);
 
-        //Inform strategy that a cylinder has been pooed in the middle center container, and decrease stock count, 0 means all available
-        void informPooed_MiddleCenter(uint8_t nb = 0);
+        //Inform strategy that a cylinder has been pooed in the middle center container(zone 3), and decrease stock count, 0 means all available
+        void informPooed_3(uint8_t nb = 0);
 
-        //Inform strategy that a cylinder has been pooed in the middle container on our side, and decrease stock count, 0 means all available
-        void informPooed_MiddleOwn(uint8_t nb = 0);
+        //Inform strategy that a cylinder has been pooed in the middle container on our side (zone 4), and decrease stock count, 0 means all available
+        void informPooed_4(uint8_t nb = 0);
 
-        //Inform strategy that a cylinder has been pooed in the middle container on opponent side, and decrease stock count, 0 means all available
-        void informPooed_MiddleOpp(uint8_t nb = 0);
+        //Inform strategy that a cylinder has been pooed in the middle container on opponent side (zone 2), and decrease stock count, 0 means all available
+        void informPooed_2(uint8_t nb = 0);
 
-        //Inform strategy that a cylinder has been pooed in the border container on our side, and decrease stock count, 0 means all available
-        void informPooed_Border(uint8_t nb = 0);
+        //Inform strategy that a cylinder has been pooed in the border container on our side (zone 5), and decrease stock count, 0 means all available
+        void informPooed_5(uint8_t nb = 0);
 
-        //Inform strategy that a cylinder has been pooed in the border container on opponent side, and decrease stock count, 0 means all available
-        void informPooed_BorderOpp(uint8_t nb = 0);
+        //Inform strategy that a cylinder has been pooed in the border container on opponent side (zone Opp_5), and decrease stock count, 0 means all available
+        void informPooed_Opp_5(uint8_t nb = 0);
 
-        //Inform strategy that a cylinder has been pooed in our start area, and decrease stock count, 0 means all available
-        void informPooed_Start(uint8_t nb = 0);
+        //Inform strategy that a cylinder has been pooed in our start area (zone 6), and decrease stock count, 0 means all available
+        void informPooed_6(uint8_t nb = 0);
 
         //Inform strategy that a cylinder has been pooed on table, 0 means all available
         void informPooed_OnTable(uint8_t nb = 0);
 
-        //Inform stategy that a cylinder has been taken on table (close to our start position)
-        void informTaken_Start();
+        //Inform strategy that a cylinder (D) has been taken on table (close to our start position)
+        void informTaken_D();
 
-        //Inform stategy that a cylinder has been taken on table (close to our midle center container)
-        void informTaken_Container();
+        //Inform strategy that a cylinder (F) has been taken on table (close to our middle center container)
+        void informTaken_F();
 
-        //Inform stategy that a cylinder has been taken on table (in the middle of our table side)
-        void informTaken_Center();
+        //Inform strategy that a cylinder (E) has been taken on table (in the middle of our table side)
+        void informTaken_E();
 
-        //Inform stategy that a cylinder has been taken on table (close to our start position table corner)
-        void informTaken_Corner();
+        //Inform strategy that a cylinder (B) has been taken on table (close to our start position table corner)
+        void informTaken_B();
 
-        //Inform stategy that a cylinder has been taken on table (close to our bottom craters)
-        void informTaken_Crater();
+        //Inform strategy that a cylinder (C) has been taken on table (close to our bottom craters)
+        void informTaken_C();
 
-        //Inform stategy that a cylinder has been taken on table (close to opponent start position)
-        void informTaken_OppStart();
+        //Inform strategy that a cylinder (Opp_D) has been taken on table (close to opponent start position)
+        void informTaken_Opp_D();
 
-        //Inform stategy that a cylinder has been taken on table (close to opponent midle center container)
-        void informTaken_OppContainer();
+        //Inform strategy that a cylinder (Opp_F) has been taken on table (close to opponent middle center container)
+        void informTaken_Opp_F();
 
-        //Inform stategy that a cylinder has been taken on table (in the middle of opponent table side)
-        void informTaken_OppCenter();
+        //Inform strategy that a cylinder (Opp_E) has been taken on table (in the middle of opponent table side)
+        void informTaken_Opp_E();
 
-        //Inform stategy that a cylinder has been push away from its default position (close to our start position)
-        void informPushedAway_Start();
+        //Inform strategy that a cylinder (D) has been push away from its default position (close to our start position)
+        void informPushedAway_D();
 
-        //Inform stategy that a cylinder has been push away from its default position (close to our midle center container)
-        void informPushedAway_Container();
+        //Inform strategy that a cylinder (F) has been push away from its default position (close to our middle center container)
+        void informPushedAway_F();
 
-        //Inform stategy that a cylinder has been push away from its default position (in the middle of our table side)
-        void informPushedAway_Center();
+        //Inform strategy that a cylinder (E) has been push away from its default position (in the middle of our table side)
+        void informPushedAway_E();
 
-        //Inform stategy that a cylinder has been push away from its default position (close to our start position table corner)
-        void informPushedAway_Corner();
+        //Inform strategy that a cylinder (B) has been push away from its default position (close to our start position table corner)
+        void informPushedAway_B();
 
-        //Inform stategy that a cylinder has been push away from its default position (close to our bottom craters)
-        void informPushedAway_Crater();
+        //Inform strategy that a cylinder (C) has been push away from its default position (close to our bottom craters)
+        void informPushedAway_C();
 
-        //Inform stategy that a cylinder has been push away from its default position (close to opponent start position)
-        void informPushedAway_OppStart();
+        //Inform strategy that a cylinder (Opp_D) has been push away from its default position (close to opponent start position)
+        void informPushedAway_Opp_D();
 
-        //Inform stategy that a cylinder has been push away from its default position (close to opponent midle center container)
-        void informPushedAway_OppContainer();
+        //Inform strategy that a cylinder (Opp_F) has been push away from its default position (close to opponent middle center container)
+        void informPushedAway_Opp_F();
 
-        //Inform stategy that a cylinder has been push away from its default position (in the middle of opponent table side)
-        void informPushedAway_OppCenter();
+        //Inform strategy that a cylinder (Opp_E) has been push away from its default position (in the middle of opponent table side)
+        void informPushedAway_Opp_E();
 
         //Used by telemetry to get fresh data
         apb_StratInfo2017 const& getStratInfo();
