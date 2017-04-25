@@ -32,4 +32,5 @@ void HomolPen::update(TimeMs sinceLastCall)
 
 STRAT_2017_API_IMPL(HomolPen);
 
+
 #endif

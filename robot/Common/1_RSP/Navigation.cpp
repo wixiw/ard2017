@@ -34,7 +34,6 @@ Navigation::Navigation()
                 switchRecalRC(BORDURE_ARC, 1000, 10),
                 m_color(eColor_PREF),
                 m_mutex(),
-                m_targetReached(),
                 oldStepL(0),
                 oldStepR(0),
                 oppTimer(),
@@ -248,7 +247,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
 
 void Navigation::goTo(Point target, eDir sens)
 {
-    LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
+    LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(sens) + ".");
 
     m_mutex.lock();
 
@@ -270,7 +269,7 @@ void Navigation::goTo(Point target, eDir sens)
 
 void Navigation::goToCap(PointCap target, eDir sens)
 {
-    LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
+    LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(sens) + ".");
 
     m_mutex.lock();
 
@@ -377,13 +376,16 @@ void Navigation::stopMoving()
 void Navigation::wait()
 {
     //obviously don't put a mutex, it's a blocking call ... !
-    m_targetReached.wait();
+    while(!targetReached())
+    {
+        ArdOs::sleepMs(20);
+    }
 }
 
 bool Navigation::targetReached()
 {
     m_mutex.lock();
-    bool res = m_state == eNavState_IDLE;
+    bool res = m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING;
     m_mutex.unlock();
     return res;
 }
@@ -453,7 +455,6 @@ void Navigation::compute_odom()
 void Navigation::action_startOrder()
 {
     LOG_DEBUG("   new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_sensTarget) + ".");
-
     double distDelta = m_sensTarget * m_pose.distanceTo(m_target);
     //Do no move if already on target
     if (fabs(distDelta) <= NO_MOVE_DELTA)
@@ -547,7 +548,6 @@ void Navigation::action_finishOrder()
     
     m_state = eNavState_IDLE;
     m_order = eNavOrder_NOTHING;
-    m_targetReached.set();
     LOG_INFO("   order finished.");
 }
 

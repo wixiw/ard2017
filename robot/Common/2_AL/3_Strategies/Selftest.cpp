@@ -11,7 +11,7 @@
 using namespace ard;
 
 FSM_Selftest_Better::FSM_Selftest_Better():
-        lastState(FSM_Selftest_last_state)
+        lastState(FSM_Selftest::FSM_Selftest_last_state)
 {
 
 }
@@ -41,8 +41,7 @@ String FSM_Selftest_Better::state2Str(FSM_SelftestStates state) const
             return "init state";
             break;
         default:
-            ASSERT(false);
-            return "";
+            return String("[Selftest] unknown state (") + state + ")";
             break;
     }
 }
@@ -59,20 +58,13 @@ void Selftest::init()
 {
     Strategy2017::init();
     fsm.init();
+    fsm.enter();
 }
 
 void Selftest::update(TimeMs sinceLastCall)
 {
-    if(!fsm.isActive())
-        fsm.enter();
-
+    Strategy2017::update(sinceLastCall);
     fsm.run();
-
-    robot.actuators.servoLeftArm.      write(fsm.getDefaultSCI()->get_leftArm());
-    robot.actuators.servoRightArm.     write(fsm.getDefaultSCI()->get_rightArm());
-    robot.actuators.servoLeftWheel.    write(fsm.getDefaultSCI()->get_leftWheel());
-    robot.actuators.servoRightWheel.   write(fsm.getDefaultSCI()->get_rightWheel());
-    robot.actuators.servoLifter.       write(fsm.getDefaultSCI()->get_lifter());
 }
 
 STRAT_2017_API_IMPL(Selftest);

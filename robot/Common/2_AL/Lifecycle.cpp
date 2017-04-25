@@ -65,8 +65,7 @@ String FSM_Lifecycle_Better::state2Str(FSM_LifecycleStates state) const
             return "init state";
             break;
         default:
-            ASSERT(false);
-            return "";
+            return String("unknown state (") + state + ")";
             break;
     }
 }
@@ -100,7 +99,7 @@ void Lifecycle::run()
     publishOutputs();
 }
 
-void Lifecycle::registerMatchType(String const& name, IStrategy* install, IStrategy* match, IStrategy* funny)
+void Lifecycle::registerMatchType(String const& name, Strategy2017* install, Strategy2017* match, Strategy2017* funny)
 {
     ASSERT_TEXT(name != "", "Strat name shall not be empty");
     ASSERT_TEXT(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many matchs registered.");
@@ -135,7 +134,7 @@ void Lifecycle::startMatch()
     fsm.raise_startMatch();
 }
 
-void Lifecycle::endMatch()
+void Lifecycle::endStrategy()
 {
     fsm.raise_strategyFinished();
 }

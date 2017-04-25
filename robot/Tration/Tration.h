@@ -8,8 +8,8 @@
 #ifndef ROBOT_TRATION_TRATION_H_
 #define ROBOT_TRATION_TRATION_H_
 
+#include "../Common/2_AL/3_Strategies/0_Strategy2017.h"
 #include "Robot2017.h"
-#include "3_Strategies/Strategies.h"
 
 namespace ard
 {

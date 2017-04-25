@@ -11,12 +11,13 @@
 #include "BSP.hpp"
 #include "RSP.h"
 
-#include "RemoteControl.h"
+#include "StratFwk.h"
+#include "ActuatorsCtrl.h"
+#include "LSA.h"
+#include "Strategies.h"
 
-#include "0_StratFwk/Lifecycle.h"
-#include "0_StratFwk/StrategyModel2017.h"
-#include "1_ActuatorsCtrl/ActuatorThread.h"
-#include "3_Strategies/Strategies.h"
+#include "RemoteControl.h"
+#include "Lifecycle.h"
 
 namespace ard
 {

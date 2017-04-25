@@ -61,13 +61,13 @@ public:
     //ARD addon : Set minimal angular commands in per thousand (SW limits)
   Servo(int pin, uint16_t min = 0U, uint16_t max = 1000U);
 
-  bool enable();                    //Start generating the PWM. return false is the servo has an invalid configuration.
   void disable();                   //Stop generating the PWM.
 
   void write(uint16_t value);             // set servo position as an angle between 0 and 1000 per thousand
   int read();                        // returns servo position as an angle between 0 and 1000 per thousand
 
 private:
+  bool enable();                    //Start generating the PWM. return false is the servo has an invalid configuration.
   void writeMicroseconds(int value); // Write pulse width in microseconds
   int readMicroseconds();            // returns current pulse width in microseconds for this servo (was read_us() in first release)
   uint8_t attach(int pin, int min, int max); // as above but also sets min and max values for writes. //ARD : function made private as min/max management is unclear

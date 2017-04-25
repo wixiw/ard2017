@@ -12,13 +12,13 @@
 
 #ifdef BUILD_STRATEGY
 
+#include "0_StratFwk/Action2017.h"
 #include "0_StratFwk/YakardTimer.h"
-#include "0_StratFwk/StratInterfaces.h"
-#include "0_StratFwk/Strategy2017.h"
 #include "0_StratFwk/StrategyModel2017.h"
 #include "generated/StatemachineInterface.h"
 #include "generated/TimedStatemachineInterface.h"
 #include "generated/TimerInterface.h"
+#include "generated/sc_types.h"
 
 #endif
 
