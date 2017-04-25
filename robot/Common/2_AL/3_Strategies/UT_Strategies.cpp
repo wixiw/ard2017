@@ -5,7 +5,7 @@
  * Author: wix
  */
 
-#include "Strategies.h"
+#include "0_Strategy2017.h"
 #include "Robot2017.h"
 
 #ifdef BUILD_STRATEGY

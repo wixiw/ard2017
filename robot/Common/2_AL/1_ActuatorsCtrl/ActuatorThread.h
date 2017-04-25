@@ -26,16 +26,13 @@ namespace ard
          * Strat API
          ---------------------------------*/
         //Open arm and make wheel turn to swallow several cylinder on table
-        void swallow(uint8_t nbCylinders);
+        void swallow(bool on);
 
-        //Stop turning wheels and retract arms to be able to move safely on table
-        void retractArms();
+        //1 : swallow, -1 : expusle, 0 : stops
+        void turnWheels(uint8_t on);
 
-        //Take a certain number of cylinders from the dispenser
-        void withdraw(uint8_t nbCylinders);
-
-        //Poo a certain number of cylinder (it doesn't matter if it's on table or in a container)
-        void poo(uint8_t nbCylinders);
+        //Rise lifter when true, lower if false
+        void lifterCmd(bool up);
 
         //disable all actuators except those for used in funny actionn (typically used at end of match)
         void disableAll();

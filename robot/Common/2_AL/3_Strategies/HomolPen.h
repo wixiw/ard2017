@@ -8,8 +8,7 @@
 #ifndef ROBOT_COMMON_2_AL_STRATEGIES_HomolPen_HomolPen_H_
 #define ROBOT_COMMON_2_AL_STRATEGIES_HomolPen_HomolPen_H_
 
-#include "ArdOs.h"
-#include "StratFwk.h"
+#include "0_Strategy2017.h"
 
 #ifdef BUILD_STRATEGY
 #include "generated/FSM_HomolPen.h"
@@ -18,6 +17,16 @@ namespace ard
 {
     class Robot2017;
 
+    typedef enum
+    {
+        RESERVED,
+        LSA1,
+        NB_LSA
+    } eHomolPenId;
+
+    /**
+     * This class will simply run LSA in a raw
+     */
     class HomolPen: public Strategy2017
     {
     public:
@@ -38,6 +47,7 @@ namespace ard
 
     private:
         FSM_HomolPen fsm;
+
     };
 
 } /* namespace ard */

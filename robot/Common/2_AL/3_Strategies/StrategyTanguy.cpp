@@ -1,4 +1,4 @@
-#include "Strategies.h"
+#include "0_Strategy2017.h"
 #include "Robot2017.h"
 
 using namespace ard;
@@ -11,12 +11,12 @@ void ard::Strategy_Tanguy (Robot2017& robot)
 
 //	robot.nav.goToCap(x_target + 260*cos(radians(theta)), y_target + 260*sin(radians(theta)), theta + 180, eDir_FORWARD);
 
-	DispenserMonocolor lsaTopDisp(robot);
-	LOG_INFO("Go to Own Dispenser_Monocolor Rush entry point");
-//	robot.nav.goToCap(lsaTopDisp.getEntryPoint());
-	robot.nav.goToCap(350, 730, 0, eDir_BACKWARD);
-	robot.nav.wait();
-	lsaTopDisp.execute(/*get all cylinders*/);
+//	DispenserMonocolor lsaTopDisp(robot);
+//	LOG_INFO("Go to Own Dispenser_Monocolor Rush entry point");
+////	robot.nav.goToCap(lsaTopDisp.getEntryPoint());
+//	robot.nav.goToCap(350, 730, 0, eDir_BACKWARD);
+//	robot.nav.wait();
+//	//lsaTopDisp.execute(/*get all cylinders*/);
 
 	LOG_INFO("Avoiding D");
 	robot.nav.goTo(350, -100,  eDir_BACKWARD);

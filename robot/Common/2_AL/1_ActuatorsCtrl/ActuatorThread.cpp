@@ -84,26 +84,6 @@ apb_ActuatorsState const& ActuatorThread::getState()
     return state;
 }
 
-void ActuatorThread::swallow(uint8_t nbCylinders)
-{
-    arms.swallow(nbCylinders);
-}
-
-void ActuatorThread::retractArms()
-{
-    arms.retractArms();
-}
-
-void ActuatorThread::withdraw(uint8_t nbCylinders)
-{
-    arms.withdraw(nbCylinders);
-}
-
-void ActuatorThread::poo(uint8_t nbCylinders)
-{
-    arms.poo(nbCylinders);
-}
-
 void ActuatorThread::disableAll()
 {
     servoLifter.disable();
@@ -111,6 +91,37 @@ void ActuatorThread::disableAll()
     servoRightArm.disable();
     servoLeftWheel.disable();
     servoRightWheel.disable();
+}
+
+void ActuatorThread::swallow(bool on)
+{
+    NOT_IMPLEMENTED();
+}
+
+void ActuatorThread::turnWheels(uint8_t on)
+{
+    if(on)
+    {
+        servoLeftWheel.write(0);
+        servoRightWheel.write(1000);
+    }
+    else
+    {
+        servoLeftWheel.write(480);
+        servoRightWheel.write(480);
+    }
+}
+
+void ActuatorThread::lifterCmd(bool up)
+{
+    if(up)
+    {
+        servoLifter.write(750);
+    }
+    else
+    {
+        servoLifter.write(345);
+    }
 }
 
 #endif

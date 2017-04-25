@@ -12,12 +12,10 @@
 
 #ifdef BUILD_STRATEGY
 
-#include "StratInterfaces.h"
+#include "Strategies.h"
 #define private protected //workaround to gain instropection
 #include "generated/FSM_Lifecycle.h"
 #undef private
-
-
 
 #define NB_MAX_STRATEGIES 15
 
@@ -31,9 +29,9 @@ namespace ard
 	//Used to display the list of existing strategies
 	struct MatchDescriptor{
 		String name;
-		IStrategy* install;
-		IStrategy* match;
-		IStrategy* funny;
+		Strategy2017* install;
+		Strategy2017* match;
+		Strategy2017* funny;
 		StrategyFunctor linear;
 	};
 
@@ -75,7 +73,7 @@ namespace ard
     //@param install : the strategy to run before the match to prepare the robot, or NULL to skip
     //@param match : the strategy to run during the match, or NULL to skip
     //@param funny : the funny action to run at the match end, or NULL to skip
-	void registerMatchType(String const& name, IStrategy* install, IStrategy* match, IStrategy* funny);
+	void registerMatchType(String const& name, Strategy2017* install, Strategy2017* match, Strategy2017* funny);
 
 	//register a new simple linear (not periodic) strategy.
 	//For backward compatibility with previous design
@@ -88,7 +86,7 @@ namespace ard
 	void startMatch();
 
 	//robot strategy may request to end the match sooner than expected
-	void endMatch();
+	void endStrategy();
 
 	//robot strategy may request to end the funny action sooner than expected
 	void endFunnyAction();

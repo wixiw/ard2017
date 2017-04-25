@@ -12,19 +12,13 @@
 
 #ifdef BUILD_STRATEGY
 
-#include "2_LSA/Dispenser.h"
-#include "2_LSA/GetCylinder.h"
-#include "2_LSA/Poo.h"
-
-
-#include "FunnyAction.h"
-#include "HomolPen.h"
-#include "HomolTration.h"
-#include "Installation.h"
-#include "Selftest.h"
-#include "WipPen.h"
-#include "WipTration.h"
-
+#include "3_Strategies/FunnyAction.h"
+#include "3_Strategies/HomolPen.h"
+#include "3_Strategies/HomolTration.h"
+#include "3_Strategies/Installation.h"
+#include "3_Strategies/Selftest.h"
+#include "3_Strategies/WipPen.h"
+#include "3_Strategies/WipTration.h"
 
 namespace ard
 {

@@ -8,7 +8,7 @@
 #ifndef ROBOT_COMMON_2_AL_3_STRATEGIES_FUNNYACTION_H_
 #define ROBOT_COMMON_2_AL_3_STRATEGIES_FUNNYACTION_H_
 
-#include "StratFwk.h"
+#include "0_Strategy2017.h"
 
 #ifdef BUILD_STRATEGY
 
@@ -16,7 +16,7 @@ namespace ard
 {
     class Robot2017;
 
-    class FunnyAction: public IStrategy
+    class FunnyAction: public Strategy2017
     {
     public:
         FunnyAction(Robot2017* robot);
@@ -26,7 +26,6 @@ namespace ard
 
     private:
         DelayMs duration;
-        Robot2017* robot;
     };
 
 } /* namespace ard */

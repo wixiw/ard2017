@@ -1199,25 +1199,16 @@
     <Compile Include="1_RSP\Sensors\ColorSensor.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\0_StratFwk\Lifecycle.cpp">
+    <Compile Include="2_AL\0_StratFwk\Action2017.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\0_StratFwk\Lifecycle.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\0_StratFwk\Strategy2017.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\0_StratFwk\Strategy2017.h">
+    <Compile Include="2_AL\0_StratFwk\Action2017.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\0_StratFwk\StrategyModel2017.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\0_StratFwk\StrategyModel2017.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\0_StratFwk\StratInterfaces.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\1_ActuatorsCtrl\ActuatorThread.cpp">
@@ -1236,6 +1227,15 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\1_ActuatorsCtrl\Lifter.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\2_LSA\0_LSAitf.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\0_Strategy2017.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\0_Strategy2017.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\FunnyAction.cpp">
@@ -1266,9 +1266,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\Selftest.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Strategies.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\StrategyTanguy.cpp">
@@ -1331,6 +1328,12 @@
     <Compile Include="2_AL\generated\FSM_Lifter.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_Dispenser.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_Dispenser.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\generated\FSM_Selftest.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1379,7 +1382,13 @@
     <Compile Include="2_AL\2_LSA\Poo.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\LSA\StratInterfaces.h">
+    <Compile Include="2_AL\Lifecycle.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Lifecycle.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\LSA.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\RemoteControl.cpp">
@@ -1398,6 +1407,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\0_StratFwk\YakardTimer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\Strategies.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\StratFwk.h">
@@ -1450,7 +1462,6 @@
     <Folder Include="2_AL\2_LSA" />
     <Folder Include="2_AL\3_Strategies" />
     <Folder Include="2_AL\0_StratFwk" />
-    <Folder Include="2_AL\LSA\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="0_BSP\ArduinoCore\linker_scripts\flash.ld">

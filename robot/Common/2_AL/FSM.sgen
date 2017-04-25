@@ -27,6 +27,15 @@ GeneratorModel for yakindu::cpp {
         }
     }
     
+    statechart FSM_LSA_Dispenser {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
     statechart FSM_InstallPen {
 
         feature Outlet {

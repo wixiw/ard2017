@@ -77,8 +77,6 @@ namespace ard
          Note that the target is automatically symetrized depending
          on the color configured with setColor()
 
-         In order to wait until the order is complete, use the wait()/targetReached() functions
-
          x,y in mm
 
          */
@@ -114,26 +112,24 @@ namespace ard
         /**
          * The robot will go ahead of the distance in parameter
          * note : the distance may be negative to go rear-way
-         *
-         * If an order is already present the call is blocking as if a wait() where done.
          */
         void goForward(float distanceMm);
 
         /**
-         * The robot will turn of the angle in parameter (absolute or relative)
+         * The robot will turn relatively of the angle in parameter
          * note : the angle may be negative to go clockwise
-         *
-         * If an order is already present the call is blocking as if a wait() where done.
          */
         void turnDelta(float angle/*deg*/);
+
+        /**
+         * The robot will turn to face the parametered heading (absolute)
+         */
         void turnTo(float angle/*deg*/);
 
         /**
          * The robot will turn to face the point in parameter
          * Note that the target is automatically symetrized depending
          * on the color configured with setColor()
-         *
-         * If an order is already present the call is blocking as if a wait() where done.
          */
         void faceTo(Point p);
         void faceTo(float x/*mm*/, float y/*mm*/)
@@ -229,8 +225,8 @@ namespace ard
         eNavOrder m_order;
 
         //move constraints
-        uint16_t userMaxSpeed;          //mm/s
-        uint16_t userMaxTurnSpeed;      //°/s
+        uint16_t userMaxSpeed;      //mm/s
+        uint16_t userMaxTurnSpeed;  //°/s
         uint16_t userMaxAcc;        //mm/s²
         uint16_t userMaxTurnAcc;    //°/s²
 
@@ -253,7 +249,6 @@ namespace ard
         eColor m_color;
 
         Mutex m_mutex;
-        Signal m_targetReached;
 
         long oldStepL; //critical section
         long oldStepR; //critical section

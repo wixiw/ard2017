@@ -8,8 +8,7 @@
 #ifndef ROBOT_COMMON_2_AL_STRATEGIES_WipTration_WipTration_H_
 #define ROBOT_COMMON_2_AL_STRATEGIES_WipTration_WipTration_H_
 
-#include "ArdOs.h"
-#include "StratFwk.h"
+#include "0_Strategy2017.h"
 
 #ifdef BUILD_STRATEGY
 #include "generated/FSM_WipTration.h"

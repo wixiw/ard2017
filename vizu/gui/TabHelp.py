@@ -78,8 +78,8 @@ class TabHelp(QWidget):
         self.tab["Shortcuts"]   = TabShortcuts(self)
         self.tab["Strat API"]   = TabStratAPI(self)
         self.tab["Table plan"]  = ImageWidget(self, "img/plan_table.png")
-        self.tab["Pen plan"]    = ImageWidget(self, "img/plan_pen.png")
-        self.tab["Tration plan"]= ImageWidget(self, "img/plan_tration.png")
+        self.tab["Robot plan"]    = ImageWidget(self, "img/plan_pen.png")
+        self.tab["Elements ID"]= ImageWidget(self, "img/idElements.png")
         
         #retrieve saved tab
         settings = QSettings("config.ini", QSettings.IniFormat)

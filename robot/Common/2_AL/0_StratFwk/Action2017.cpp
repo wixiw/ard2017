@@ -5,20 +5,16 @@
  *      Author: wix
  */
 
-#include "Strategy2017.h"
+#include "Action2017.h"
 #ifdef BUILD_STRATEGY
-#include "Robot2017.h"
 
 using namespace ard;
 
-Strategy2017::Strategy2017(Robot2017* _robot, String const& name):
-        IStrategy(name),
+Action2017::Action2017(Robot2017* _robot, String const& name):
+        PolledObject(name),
         robot(*_robot)
 {
     ASSERT_TEXT(_robot, "You did not attached a robot.");
 }
-
-
-
 
 #endif
