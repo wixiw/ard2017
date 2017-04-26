@@ -58,16 +58,16 @@ void turnWheels(sc_integer on);\
 void lifter(sc_boolean up);\
 void arms(sc_integer left, sc_integer right);\
 \
-void informWithdraw_A(uint8_t nb);\
-void informWithdraw_G(uint8_t nb);\
-void informWithdraw_Opp_G(uint8_t nb);\
-void informPooed_3(uint8_t nb);\
-void informPooed_4(uint8_t nb);\
-void informPooed_2(uint8_t nb);\
-void informPooed_5(uint8_t nb);\
-void informPooed_Opp_5(uint8_t nb);\
-void informPooed_6(uint8_t nb);\
-void informPooed_OnTable(uint8_t nb);\
+void informWithdraw_A(sc_integer nb);\
+void informWithdraw_G(sc_integer nb);\
+void informWithdraw_Opp_G(sc_integer nb);\
+void informPooed_3(sc_integer nb);\
+void informPooed_4(sc_integer nb);\
+void informPooed_2(sc_integer nb);\
+void informPooed_5(sc_integer nb);\
+void informPooed_Opp_5(sc_integer nb);\
+void informPooed_6(sc_integer nb);\
+void informPooed_OnTable(sc_integer nb);\
 void informTaken_D();\
 void informTaken_F();\
 void informTaken_E();\
@@ -87,9 +87,6 @@ void informPushedAway_Opp_E();
 
 } /* namespace ard */
 #endif
-
-
-
 
 
 
@@ -215,83 +212,110 @@ void myclass::arms(sc_integer left, sc_integer right)\
     robot.actuators.servoLeftArm.write(left);\
     robot.actuators.servoRightArm.write(right);\
 }\
-void myclass::informWithdraw_A(uint8_t nb)\
+void myclass::informWithdraw_A(sc_integer nb)\
 {\
+    robot.strategy.informWithdraw_A(nb);\
 }\
-void myclass::informWithdraw_G(uint8_t nb)\
+void myclass::informWithdraw_G(sc_integer nb)\
 {\
+    robot.strategy.informWithdraw_G(nb);\
 }\
-void myclass::informWithdraw_Opp_G(uint8_t nb)\
+void myclass::informWithdraw_Opp_G(sc_integer nb)\
 {\
+    robot.strategy.informWithdraw_Opp_G(nb);\
 }\
-void myclass::informPooed_3(uint8_t nb)\
+void myclass::informPooed_3(sc_integer nb)\
 {\
+    robot.strategy.informPooed_3(nb);\
 }\
-void myclass::informPooed_4(uint8_t nb)\
+void myclass::informPooed_4(sc_integer nb)\
 {\
+    robot.strategy.informPooed_4(nb);\
 }\
-void myclass::informPooed_2(uint8_t nb)\
+void myclass::informPooed_2(sc_integer nb)\
 {\
+    robot.strategy.informPooed_2(nb);\
 }\
-void myclass::informPooed_5(uint8_t nb)\
+void myclass::informPooed_5(sc_integer nb)\
 {\
+    robot.strategy.informPooed_5(nb);\
 }\
-void myclass::informPooed_Opp_5(uint8_t nb)\
+void myclass::informPooed_Opp_5(sc_integer nb)\
 {\
+    robot.strategy.informPooed_Opp_5(nb);\
 }\
-void myclass::informPooed_6(uint8_t nb)\
+void myclass::informPooed_6(sc_integer nb)\
 {\
+    robot.strategy.informPooed_6(nb);\
 }\
-void myclass::informPooed_OnTable(uint8_t nb)\
+void myclass::informPooed_OnTable(sc_integer nb)\
 {\
+    robot.strategy.informPooed_OnTable(nb);\
 }\
 void myclass::informTaken_D()\
 {\
+    robot.strategy.informTaken_D();\
 }\
 void myclass::informTaken_F()\
 {\
+    robot.strategy.informTaken_F();\
 }\
 void myclass::informTaken_E()\
 {\
+    robot.strategy.informTaken_E();\
 }\
 void myclass::informTaken_B()\
 {\
+    robot.strategy.informTaken_B();\
 }\
 void myclass::informTaken_C()\
 {\
+    robot.strategy.informTaken_C();\
 }\
 void myclass::informTaken_Opp_D()\
 {\
+    robot.strategy.informTaken_Opp_D();\
 }\
 void myclass::informTaken_Opp_F()\
 {\
+    robot.strategy.informTaken_Opp_F();\
 }\
 void myclass::informTaken_Opp_E()\
 {\
+    robot.strategy.informTaken_Opp_E();\
 }\
 void myclass::informPushedAway_D()\
 {\
+    robot.strategy.informPushedAway_D();\
 }\
 void myclass::informPushedAway_F()\
 {\
+    robot.strategy.informPushedAway_F();\
 }\
 void myclass::informPushedAway_E()\
 {\
+    robot.strategy.informPushedAway_E();\
 }\
 void myclass::informPushedAway_B()\
 {\
+    robot.strategy.informPushedAway_B();\
 }\
 void myclass::informPushedAway_C()\
 {\
+    robot.strategy.informPushedAway_C();\
 }\
 void myclass::informPushedAway_Opp_D()\
 {\
+    robot.strategy.informPushedAway_Opp_D();\
 }\
 void myclass::informPushedAway_Opp_F()\
 {\
+    robot.strategy.informPushedAway_Opp_F();\
 }\
 void myclass::informPushedAway_Opp_E()\
 {\
+    robot.strategy.informPushedAway_Opp_E();\
 }\
+
 
 #endif /* ROBOT_COMMON_2_AL_0_STRATFWK_ACTION2017_H_ */

@@ -31,16 +31,28 @@ String FSM_LSA_Dispenser_Better::state2Str(FSM_LSA_DispenserStates state) const
 {
     switch(state)
     {
-        default:
-            return String("[LSA_Dispenser] unknown state (") + state + ")";
-            break;
+    case main_region_Engage_dispenser:
+        return "Engage_dispenser";
+        break;
+    case main_region_Get_1_cylinder:
+        return "Get_1_cylinder";
+        break;
+    case main_region__final_:
+        return "_final_";
+        break;
+    case main_region_Exit_dispenser:
+        return "Exit_dispenser";
+        break;
+    default:
+        return String("[LSA_Dispenser] unknown state (") + state + ")";
+        break;
     }
 }
 
 LSA_Dispenser::LSA_Dispenser(Robot2017* robot, eLSA_DispType type):
         LSA(robot, "DispenserMonocolor")
 {
-    //fsm.setTimer(&robot->fsmTimer);
+    fsm.setTimer(&robot->fsmTimer);
     fsm.setDefaultSCI_OCB(this);
 
     switch (type) {
@@ -58,39 +70,16 @@ LSA_Dispenser::LSA_Dispenser(Robot2017* robot, eLSA_DispType type):
     }
 }
 
-//    LOG_INFO("Engage Monocolor Dispenser");
-//    robot.nav.goToCap(350, 770, 90);
-//    robot.nav.wait();
-//
-//    LOG_INFO("Get 4 Cylinders from Monocolor dispenser");
-//
-//    if( nbItems == 0 )
-//        nbItems = robot.strategy.getStratInfo().dispenserMonocolorNb;
-//
-//    for(int i = nbItems ; 0 < i ; i--)
-//    {
-//        ArdOs::sleepMs(500);
-//        robot.strategy.informWithdraw_MonocolorDispenser(1);
-//    }
-//
-//    LOG_INFO("Leave Monocolor Dispenser");
-//    robot.nav.goTo(entryPoint, eDir_BACKWARD);
-//    robot.nav.wait();
-//
-//    LOG_INFO("Dispenser_Monocolor success");
-//    return Success;
-
 void LSA_Dispenser::init()
 {
     Action2017::init();
     fsm.init();
-    fsm.enter();
 }
 
 void LSA_Dispenser::start()
 {
-    //reset FSM and reset status
-    //TODO
+    fsm.init();
+    fsm.enter();
 }
 
 void LSA_Dispenser::update(TimeMs sinceLastCall)
@@ -98,10 +87,20 @@ void LSA_Dispenser::update(TimeMs sinceLastCall)
     fsm.runCycle();
 }
 
-LSAResult LSA_Dispenser::isFinished() const
+LSAResult LSA_Dispenser::isFinished()
 {
-    //TODO
-    return Success;
+    if(!fsm.isActive())
+        return NoLsa;
+
+    if(fsm.isFinal())
+        return Success;
+
+    return InProgress;
+}
+
+void LSA_Dispenser::goToEntryPoint()
+{
+    robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
 }
 
 ACTION_2017_API_IMPL(LSA_Dispenser);

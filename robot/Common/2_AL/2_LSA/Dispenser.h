@@ -54,7 +54,10 @@ namespace ard
         void start() override;
 
         //Implements LSA
-        LSAResult isFinished() const override;
+        LSAResult isFinished() override;
+
+        //Implements FSM_LSA_Dispenser::DefaultSCI_OCB
+        void goToEntryPoint() override;
 
         ACTION_2017_API_ITF();
 
