@@ -18,7 +18,6 @@
 
     //Configure build
 #define BUILD_REMOTE_CONTROL
-#define BUILD_STRATEGY
 //#define ARD_DEBUG
 
 #define LOG_QUEUE_SIZE 20       //number of logs that can be queued before being sent on the network

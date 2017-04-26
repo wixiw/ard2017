@@ -32,7 +32,7 @@
 
 #ifndef Servo_h
 #define Servo_h
-
+#include "sam3x8e.h"
 #include <inttypes.h>
 
 /* 

@@ -11,10 +11,11 @@ using namespace ard;
 
 int main( void )
 {   
-    Pen& robotPen = Pen::getInstance();
+    //new required to handle the fact that FreeRtos will destroy the default stack
+    g_robot = new Pen();
 
     //Build and start robot
-    robotPen.bootOs();
+    g_robot->bootOs();
 
     return 0;
 }

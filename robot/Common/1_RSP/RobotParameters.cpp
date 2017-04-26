@@ -103,8 +103,11 @@ bool RobotParameters::setConfig(apb_Configuration const& newConf)
     {
         cfg = newConf;
         setComputedVars();
-        m_configuredOnce = true;
-        LOG_INFO("New configuration applied");
+        if( m_configuredOnce )
+            LOG_INFO("New configuration applied");
+        else
+            m_configuredOnce = true;
+        
         return true;
     }
     else

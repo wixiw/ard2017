@@ -213,10 +213,6 @@ void Servo::disable()
 
 void Servo::write(uint16_t value)
 {
-    //if servo is not enabled, enable it
-    if( !servos[this->servoIndex].Pin.isActive )
-        enable();
-
     if (value < 0)
         value = 0;
     else if (value > 1000)
@@ -233,6 +229,10 @@ void Servo::write(uint16_t value)
     value = map(value, 0, 1000, SERVO_MIN(), SERVO_MAX());
 
     writeMicroseconds(value);
+
+    //if servo is not enabled, enable it
+    if( !servos[this->servoIndex].Pin.isActive )
+        enable();
 }
 
 void Servo::writeMicroseconds(int value)

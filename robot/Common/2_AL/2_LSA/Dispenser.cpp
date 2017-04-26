@@ -6,41 +6,22 @@
  */
 
 #include "Dispenser.h"
-#ifdef BUILD_STRATEGY
-#include "Robot2017.h"
 using namespace ard;
 
-FSM_LSA_Dispenser_Better::FSM_LSA_Dispenser_Better():
-        lastState(FSM_LSA_Dispenser::FSM_LSA_Dispenser_last_state)
-{
-
-}
-
-void FSM_LSA_Dispenser_Better::run()
-{
-    runCycle();
-    FSM_LSA_DispenserStates newState = getState();
-    if( lastState != newState)
-    {
-        LOG_INFO(String("[LSA_Dispenser] state changed :  ") + state2Str(lastState) + " => state " + state2Str(newState));
-        lastState = newState;
-    }
-}
-
-String FSM_LSA_Dispenser_Better::state2Str(FSM_LSA_DispenserStates state) const
+String LSA_Dispenser::state2Str(FSM_LSA_Dispenser::FSM_LSA_DispenserStates state) const
 {
     switch(state)
     {
-    case main_region_Engage_dispenser:
+    case FSM_LSA_Dispenser::main_region_Engage_dispenser:
         return "Engage_dispenser";
         break;
-    case main_region_Get_1_cylinder:
+    case FSM_LSA_Dispenser::main_region_Get_1_cylinder:
         return "Get_1_cylinder";
         break;
-    case main_region__final_:
+    case FSM_LSA_Dispenser::main_region__final_:
         return "_final_";
         break;
-    case main_region_Exit_dispenser:
+    case FSM_LSA_Dispenser::main_region_Exit_dispenser:
         return "Exit_dispenser";
         break;
     default:
@@ -49,10 +30,10 @@ String FSM_LSA_Dispenser_Better::state2Str(FSM_LSA_DispenserStates state) const
     }
 }
 
-LSA_Dispenser::LSA_Dispenser(Robot2017* robot, eLSA_DispType type):
-        LSA(robot, "DispenserMonocolor")
+LSA_Dispenser::LSA_Dispenser(Robot2017& robot, eLSA_DispType type):
+        LSA2017(robot, "DispenserMonocolor")
 {
-    fsm.setTimer(&robot->fsmTimer);
+    fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);
 
     switch (type) {
@@ -68,23 +49,6 @@ LSA_Dispenser::LSA_Dispenser(Robot2017* robot, eLSA_DispType type):
         default:
             break;
     }
-}
-
-void LSA_Dispenser::init()
-{
-    Action2017::init();
-    fsm.init();
-}
-
-void LSA_Dispenser::start()
-{
-    fsm.init();
-    fsm.enter();
-}
-
-void LSA_Dispenser::update(TimeMs sinceLastCall)
-{
-    fsm.runCycle();
 }
 
 LSAResult LSA_Dispenser::isFinished()
@@ -103,6 +67,3 @@ void LSA_Dispenser::goToEntryPoint()
     robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
 }
 
-ACTION_2017_API_IMPL(LSA_Dispenser);
-
-#endif

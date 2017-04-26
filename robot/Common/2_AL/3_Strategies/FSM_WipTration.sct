@@ -6,7 +6,7 @@
         <outgoingTransitions xmi:id="_LRWTCSO5EeefRbrwNF-IRQ" target="_LRVr9yO5EeefRbrwNF-IRQ"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_LRVr9yO5EeefRbrwNF-IRQ" name="StateA" incomingTransitions="_LRWTCSO5EeefRbrwNF-IRQ _h_VdICPVEeefRbrwNF-IRQ">
-        <outgoingTransitions xmi:id="_h_VdICPVEeefRbrwNF-IRQ" specification="after 999999s" target="_LRVr9yO5EeefRbrwNF-IRQ"/>
+        <outgoingTransitions xmi:id="_h_VdICPVEeefRbrwNF-IRQ" specification="after 1s [false]" target="_LRVr9yO5EeefRbrwNF-IRQ"/>
       </vertices>
     </regions>
   </sgraph:Statechart>

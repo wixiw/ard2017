@@ -8,28 +8,26 @@
 #ifndef ROBOT_COMMON_2_AL_3_STRATEGIES_FUNNYACTION_H_
 #define ROBOT_COMMON_2_AL_3_STRATEGIES_FUNNYACTION_H_
 
-#include "0_Strategy2017.h"
-
-#ifdef BUILD_STRATEGY
+#include "Robot2017.h"
 
 namespace ard
 {
-    class Robot2017;
-
-    class FunnyAction: public Strategy2017
+    class FunnyAction: public IStrategy
     {
     public:
-        FunnyAction(Robot2017* robot);
+        FunnyAction(Robot2017& robot);
+
+        //Implements IStrategy
+        void start();
 
         //Implements IStrategy
         void update(TimeMs sinceLastCall) override;
 
     private:
         DelayMs duration;
+        Robot2017& robot;
     };
 
 } /* namespace ard */
-
-#endif //BUILD_STRATEGY
 
 #endif /* ROBOT_COMMON_2_AL_3_STRATEGIES_FUNNYACTION_H_ */

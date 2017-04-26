@@ -11,10 +11,10 @@ using namespace ard;
 
 int main( void )
 {   
-    Tration& robotTration = Tration::getInstance();
+    g_robot = new Tration();
 
     //Build and start robot
-    robotTration.bootOs();
+    g_robot->bootOs();
 
     return 0;
 }

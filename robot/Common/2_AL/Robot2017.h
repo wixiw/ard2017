@@ -1,152 +1,20 @@
 /*
- * Robot2017.h
+ * ActuatorsCtrl.h
  *
- *  Created on: 20 oct. 2016
+ *  Created on: 25 avr. 2017
  *      Author: wix
  */
 
-#ifndef ROBOTS_ROBOT2017_H_
-#define ROBOTS_ROBOT2017_H_
+#ifndef ROBOT_COMMON_2_AL_ROBOT2017_H_
+#define ROBOT_COMMON_2_AL_ROBOT2017_H_
 
-#include "BSP.hpp"
-#include "RSP.h"
+#include "1_Robot2017/IStrategy.h"
+#include "1_Robot2017/ActuatorThread.h"
+#include "1_Robot2017/Arms.h"
+#include "1_Robot2017/Lifter.h"
+#include "1_Robot2017/Lifecycle.h"
+#include "1_Robot2017/RemoteControl.h"
+#include "1_Robot2017/Robot2017class.h"
+#include "1_Robot2017/StrategyModel2017.h"
 
-#include "StratFwk.h"
-#include "ActuatorsCtrl.h"
-#include "LSA.h"
-#include "Strategies.h"
-
-#include "RemoteControl.h"
-#include "Lifecycle.h"
-
-namespace ard
-{
-    /**
-     * This class assemble all the robot SW elements into a system
-     * It aims at being the unique global var so that var creation order is managed
-     * by this class constructor.
-     *
-     * Most members are public as this class aims at gathering all object references
-     * It would be a pain (and stupid) to catch all them with non-const getter
-     */
-    class Robot2017
-    {
-    public:
-        //-------------------------------------------------------------------
-        // start of Strategy API
-        //-------------------------------------------------------------------
-
-        //Get the robot parameters
-        RobotParameters const& params() const {return m_params;};
-
-        //Freeze the robot so we are sure it doesn't do
-        //anything until the end of the match
-        // Caution : cannot be called from interrupt.
-        void dieMotherFucker();
-
-        //answer true if the start is plugged
-        bool isStartPlugged() const;
-
-        //answer true when color switch is on the preferred color
-        bool isColorSwitchOnPrefered() const;
-
-        //Combines strategy switch to creates an integer. Left switch represent highest bit, Right one lowest one.
-        uint8_t getStrategyId() const;
-
-        //Drive the RGB LED
-        void setRGBled(eRgb color, eLedState blink);
-
-        //Drive the 4 green leds
-        //for param led see BSH.h : LED1, LED2, LED3, LED4
-        void setLed(uint8_t led, eLedState blink);
-
-        //buzzer accessor
-        Buzzer2017& buzzer(){return hmi.buzzer;};
-
-        apb_HmiState const& getHmiState(){return hmi.getState();};
-
-        //-------------------------------------------------------------------
-        // End of Strategy API
-        //-------------------------------------------------------------------
-
-        //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
-        static Robot2017&
-        getInstance()
-        {
-            if(instance==NULL)
-                instance = new Robot2017();
-
-            return *instance;
-        };
-
-        //Initialize instances and start the robot OS
-        //This function never ends, you may continue initialization in run()
-        void bootOs();
-
-        //Utility function to get version info
-        String const& getVersion(){return buildDate;};
-
-        //Get the robot config
-        apb_Configuration const& getConfig() const {return m_params.getConfig();};
-
-        //Set the robot config (you cannot do this at any time, think twice before using)
-        void setConfig(apb_Configuration const& newConf);
-
-        //Send the robot serial number on communication link
-        void sendSerialNumber();
-
-        //retrieve the robot serial nunmber
-        char const * const getSerialNumber() const;
-
-        //returns true if the robot is "Pen"
-        bool isPen() const;
-
-        //returns true if the robot is "Tration"
-        bool isTration() const;
-
-        //hardware layer
-        BSP bsp;
-
-        //Applicative layer
-#ifdef BUILD_STRATEGY
-        ActuatorThread actuators;
-        Lifecycle lifecycle;
-        YakardTimer fsmTimer;
-        StrategyModel2017 strategy;
-#endif
-        //Public RSP interface : because i'm too lazy to hide it, please feel free to implement the decorator
-        Navigation nav;
-
-        //Chrono keeps track of the time during the match
-        Chrono chrono;
-
-        //RSP implementation
-        HmiThread hmi;
-
-    protected:
-        LogDispatcher& log;
-#ifdef BUILD_REMOTE_CONTROL
-        RemoteControl remoteControl;
-#endif
-        SdCardLogger fileLogger;
-
-        //Singleton instance
-        static Robot2017* instance;
-
-        //Save the ARD library build date in the binary
-        String buildDate;
-
-        //Robot parameters
-        RobotParameters m_params;
-
-        //Assemble all object instances
-        //private constructor as its a singleton class
-        Robot2017();
-        Robot2017& operator=(const Robot2017& p) = delete;
-        Robot2017(const Robot2017& p) = delete;
-
-    };
-
-} /* namespace ard */
-
-#endif /* ROBOTS_ROBOT2017_H_ */
+#endif /* ROBOT_COMMON_2_AL_ROBOT2017_H_ */
