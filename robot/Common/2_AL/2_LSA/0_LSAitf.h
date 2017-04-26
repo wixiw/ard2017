@@ -50,7 +50,7 @@ namespace ard
         virtual void start() = 0;
 
         //Get information about machine status
-        virtual LSAResult isFinished() const = 0;
+        virtual LSAResult isFinished() = 0;
 
     protected:
         PointCap entryPoint;
