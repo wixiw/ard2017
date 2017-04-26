@@ -1178,6 +1178,12 @@
     <Compile Include="1_RSP\Navigation.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\Robot.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Robot.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\RobotParameters.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1199,43 +1205,70 @@
     <Compile Include="1_RSP\Sensors\ColorSensor.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\0_StratFwk\Action2017.cpp">
+    <Compile Include="2_AL\1_Robot2017\ActuatorThread.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\0_StratFwk\Action2017.h">
+    <Compile Include="2_AL\1_Robot2017\ActuatorThread.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\0_StratFwk\StrategyModel2017.cpp">
+    <Compile Include="2_AL\1_Robot2017\Arms.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\0_StratFwk\StrategyModel2017.h">
+    <Compile Include="2_AL\1_Robot2017\Arms.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_ActuatorsCtrl\ActuatorThread.cpp">
+    <Compile Include="2_AL\1_Robot2017\IStrategy.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_ActuatorsCtrl\ActuatorThread.h">
+    <Compile Include="2_AL\1_Robot2017\Lifecycle.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_ActuatorsCtrl\Arms.cpp">
+    <Compile Include="2_AL\1_Robot2017\Lifecycle.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_ActuatorsCtrl\Arms.h">
+    <Compile Include="2_AL\1_Robot2017\Lifter.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_ActuatorsCtrl\Lifter.cpp">
+    <Compile Include="2_AL\1_Robot2017\Lifter.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_ActuatorsCtrl\Lifter.h">
+    <Compile Include="2_AL\1_Robot2017\RemoteControl.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\2_LSA\0_LSAitf.h">
+    <Compile Include="2_AL\1_Robot2017\RemoteControl.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\0_Strategy2017.cpp">
+    <Compile Include="2_AL\1_Robot2017\Robot2017.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\1_Robot2017\Robot2017class.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\1_Robot2017\StrategyModel2017.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\1_Robot2017\StrategyModel2017.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\1_Robot2017\YakardTimer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\1_Robot2017\YakardTimer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\2_LSA\0_Action2017.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\2_LSA\LSA2017.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\0_Strategy2017.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\FsmStrategies.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\FsmStrategies.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\FunnyAction.cpp">
@@ -1244,28 +1277,7 @@
     <Compile Include="2_AL\3_Strategies\FunnyAction.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\HomolPen.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\HomolPen.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\HomolTration.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\HomolTration.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Installation.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Installation.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Selftest.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\Selftest.h">
+    <Compile Include="2_AL\3_Strategies\LinearStrategies.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\StrategyTanguy.cpp">
@@ -1274,16 +1286,7 @@
     <Compile Include="2_AL\3_Strategies\UT_Strategies.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\WipPen.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\WipPen.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\WipTration.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\WipTration.h">
+    <Compile Include="2_AL\AL.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Arms.cpp">
@@ -1382,37 +1385,13 @@
     <Compile Include="2_AL\2_LSA\Poo.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\Lifecycle.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\Lifecycle.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\LSA.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\RemoteControl.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\RemoteControl.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\Robot2017.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Robot2017.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\0_StratFwk\YakardTimer.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\0_StratFwk\YakardTimer.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\Strategies.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\StratFwk.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="K_constants.h">
@@ -1457,11 +1436,10 @@
     <Folder Include="1_RSP\Actuators" />
     <Folder Include="1_RSP\Sensors" />
     <Folder Include="2_AL" />
-    <Folder Include="2_AL\1_ActuatorsCtrl" />
+    <Folder Include="2_AL\1_Robot2017" />
     <Folder Include="2_AL\generated\" />
     <Folder Include="2_AL\2_LSA" />
     <Folder Include="2_AL\3_Strategies" />
-    <Folder Include="2_AL\0_StratFwk" />
   </ItemGroup>
   <ItemGroup>
     <None Include="0_BSP\ArduinoCore\linker_scripts\flash.ld">

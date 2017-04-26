@@ -6,15 +6,13 @@
  */
 
 #include "FunnyAction.h"
-#ifdef BUILD_STRATEGY
-#include "Robot2017.h"
 using namespace ard;
 
-FunnyAction::FunnyAction(Robot2017* robot):
-        Strategy2017(robot, "FunnyAction"),
-        duration(0)
+FunnyAction::FunnyAction(Robot2017& robot):
+        IStrategy("FunnyAction"),
+        duration(0),
+        robot(robot)
 {
-    ASSERT(robot);
 }
 
 void FunnyAction::update(TimeMs sinceLastCall)
@@ -32,5 +30,3 @@ void FunnyAction::update(TimeMs sinceLastCall)
 
     duration += sinceLastCall;
 }
-
-#endif

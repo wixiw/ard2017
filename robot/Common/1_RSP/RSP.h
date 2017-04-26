@@ -8,6 +8,8 @@
 #ifndef ROBOTS_RSP_H_
 #define ROBOTS_RSP_H_
 
+#include "K_thread_config.h"
+
 #include "ComStack/ComOnUart.h"
 #include "Core/ArdFramework.h"
 #include "Core/ArdMaths.h"
@@ -17,12 +19,11 @@
 #include "Sensors/Adafruit_TCS34725.h"
 #include "Sensors/ColorSensor.h"
 
-#include "Chrono.h"
-#include "Hmi.h"
-#include "Log.h"
-#include "Navigation.h"
-
-#include "K_thread_config.h"
 #include "RobotParameters.h"
+#include "Chrono.h"
+#include "Log.h"
+#include "Hmi.h"
+#include "Navigation.h"
+#include "Robot.h"
 
 #endif /* ROBOTS_RSP_H_ */

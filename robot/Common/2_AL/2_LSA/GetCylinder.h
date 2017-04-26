@@ -8,8 +8,7 @@
 #ifndef ROBOT_COMMON_2_AL_STRATEGIES_GETCYLINDER_H_
 #define ROBOT_COMMON_2_AL_STRATEGIES_GETCYLINDER_H_
 
-#include "0_LSAItf.h"
-#ifdef BUILD_STRATEGY
+#include "LSA2017.h"
 
 //namespace ard
 //{
@@ -42,5 +41,4 @@
 //
 //} /* namespace ard */
 
-#endif
 #endif /* ROBOT_COMMON_2_AL_STRATEGIES_GETCYLINDER_H_ */

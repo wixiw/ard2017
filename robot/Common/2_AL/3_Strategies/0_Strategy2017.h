@@ -9,14 +9,11 @@
 #define ROBOT_COMMON_2_AL_STRATEGIES_2017_H_
 
 #include "RSP.h"
-
-#ifdef BUILD_STRATEGY
+#include "Robot2017.h"
 #include "LSA.h"
 
 namespace ard
 {
-    class Robot2017;
-    
     //
     // CAUTION : keep in sync with each FSM API
     //
@@ -46,13 +43,51 @@ namespace ard
      * This class contains a standard robot actuators/sensors interface
      * so that each build strategy doesn't have to redefine its own
      */
-    class Strategy2017: public Action2017
+    template<class FSM, class States_t>
+    class Strategy2017: public Action2017<FSM, States_t>
     {
     public:
-        Strategy2017(Robot2017* robot, String const& name);
+        virtual ~Strategy2017() = default;
+        Strategy2017(Robot2017& _robot, String const& name):
+                Action2017<FSM, States_t>(_robot, name),
+                lsaId(0),
+                lsaStatus(NoLsa),
+                lsa1(_robot, Monocolor)
+        {
+            INIT_TABLE_TO_ZERO(actions);
+            actions[0] = &lsa1;
+        }
 
         //Implements Action2017 : drive LSA
-        virtual void update(DelayMs sinceLastCall);
+        void update(DelayMs sinceLastCall)
+        {
+            //Run our machine
+            Action2017<FSM, States_t>::update(sinceLastCall);
+
+            //Run the current submachine
+            ASSERT(actions[lsaId]);
+            if( lsaStatus == InProgress)
+                actions[lsaId]->updateLSA(sinceLastCall);
+            lsaStatus = actions[lsaId]->isFinished();
+        }
+
+        //FSM API : LSA
+        void startLSA(sc_integer id)
+        {
+            lsaId = id;
+            lsaStatus = InProgress;
+            getLSA((eLsaId)(id)).startLSA();
+        }
+
+        sc_integer getLSAStatus(sc_integer id)
+        {
+            return (sc_integer)(lsaStatus);
+        }
+
+        void goToLSAEntry(sc_integer id, sc_integer dir)
+        {
+            Action2017<FSM, States_t>::robot.nav.goToCap(getLSA((eLsaId)(id)).getEntryPoint(), (eDir)(dir));
+        }
 
     protected:
         uint8_t lsaId;
@@ -61,36 +96,15 @@ namespace ard
 
         LSA_Dispenser lsa1;
 
-        LSA& getLSA(eLsaId lsaId);
+        LSA& getLSA(eLsaId lsaId)
+        {
+            ASSERT(actions[lsaId]);
+            return *actions[lsaId];
+        }
 
     };
 
 }
-
-#define STRAT_2017_API_ITF()\
-    ACTION_2017_API_ITF()\
-    void startLSA(sc_integer id);\
-    sc_integer getLSAStatus(sc_integer id);\
-    void goToLSAEntry(sc_integer id, sc_integer dir);
-
-#define STRAT_2017_API_IMPL(myclass)\
-ACTION_2017_API_IMPL(myclass)\
-void myclass::startLSA(sc_integer id)\
-{\
-    lsaId = id;\
-    lsaStatus = InProgress;\
-    getLSA((eLsaId)(id)).start();\
-}\
-sc_integer myclass::getLSAStatus(sc_integer id)\
-{\
-    return (sc_integer)(lsaStatus);\
-}\
-void myclass::goToLSAEntry(sc_integer id, sc_integer dir)\
-{\
-    robot.nav.goToCap(getLSA((eLsaId)(id)).getEntryPoint(), (eDir)(dir));\
-}
-
-#endif //BUILD_STRATEGY
 
 #endif /* ROBOT_COMMON_2_AL_STRATEGIES_2017_H_ */
 

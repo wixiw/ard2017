@@ -5,15 +5,15 @@
  * Author: wix
  */
 
-#include "0_Strategy2017.h"
-#include "Robot2017.h"
-
-#ifdef BUILD_STRATEGY
+#include "LinearStrategies.h"
+#include "Robot.h"
 
 using namespace ard;
 
-void ard::Strategy_LedTest(Robot2017& robot)
+void ard::Strategy_LedTest(void* robotOpaque)
 {
+    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
+
     auto WAIT = 200;
     LOG_INFO("STRAT : Strategy_LedTest.");
 
@@ -38,8 +38,10 @@ void ard::Strategy_LedTest(Robot2017& robot)
     }
 }
 
-void ard::Strategy_ButtonTest(Robot2017& robot)
+void ard::Strategy_ButtonTest(void* robotOpaque)
 {
+    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
+
     LOG_INFO("STRAT : Strategy_ButtonTest.");
     while (1)
     {
@@ -83,8 +85,10 @@ void ard::Strategy_ButtonTest(Robot2017& robot)
     }
 }
 
-void ard::Strategy_OmronTest(Robot2017& robot)
+void ard::Strategy_OmronTest(void* robotOpaque)
 {
+    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
+
     LOG_INFO("STRAT : Strategy_OmronTest.");
 
     apb_NavState nav;
@@ -117,13 +121,15 @@ void ard::Strategy_OmronTest(Robot2017& robot)
     }
 }
 
-void ard::Strategy_CalibRot(Robot2017& robot)
+void ard::Strategy_CalibRot(void* robotOpaque)
 {
     LOG_ERROR("Strategy_CalibRot is not implemented.");
 }
 
-void ard::Strategy_CalibLin(Robot2017& robot)
+void ard::Strategy_CalibLin(void* robotOpaque)
 {
+    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
+
     LOG_INFO("STRAT : Strategy_CalibRot.");
 
     while( !robot.isStartPlugged() )
@@ -162,8 +168,10 @@ void ard::Strategy_CalibLin(Robot2017& robot)
     robot.dieMotherFucker();
 }
 
-void ard::Strategy_MotionTest(Robot2017& robot)
+void ard::Strategy_MotionTest(void* robotOpaque)
 {
+    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
+
     LOG_INFO("STRAT : Strategy_Alpha.");
 
     //robot.nav.setPosition(610,820,-90);
@@ -226,4 +234,3 @@ void ard::Strategy_MotionTest(Robot2017& robot)
     robot.dieMotherFucker();
 }
 
-#endif

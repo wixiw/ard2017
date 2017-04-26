@@ -8,8 +8,7 @@
 #ifndef ROBOT_TRATION_TRATION_H_
 #define ROBOT_TRATION_TRATION_H_
 
-#include "../Common/2_AL/3_Strategies/0_Strategy2017.h"
-#include "Robot2017.h"
+#include "AL.h"
 
 namespace ard
 {
@@ -19,30 +18,11 @@ namespace ard
     public:
         Tration();
         
-        //retrieve the singleton instance (you should prefer the use of the g_ArdOs maccro)
-        static Tration&
-        getInstance()
-        {
-            if(instance2==NULL)
-            {
-                ASSERT(instance == NULL);
-                instance2 = new Tration();
-                instance = instance2;
-            }
-
-            return *instance2;
-        };
-        
-    protected:
-        static Tration* instance2;
-
-#ifdef BUILD_STRATEGY
+        HomolTration stratHomol;
         InstallTration stratInstall;
         Selftest stratSelftest;
-        HomolTration stratHomol;
         WipTration stratWIP;
         FunnyAction stratFunnyAction;
-#endif
     };
 
 } /* namespace ard */

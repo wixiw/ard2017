@@ -9,25 +9,19 @@
 
 namespace ard
 {
-    //singleton instanciation
-    Tration* Tration::instance2 = NULL;
-
     Tration::Tration():
-        Robot2017()
-#ifdef BUILD_STRATEGY
-        , stratInstall(this),
-        stratSelftest(this),
-        stratHomol(this),
-        stratWIP(this),
-        stratFunnyAction(this)
-#endif
+        Robot2017(),
+        stratHomol(*this),
+        stratInstall(*this),
+        stratSelftest(*this),
+        stratWIP(*this),
+        stratFunnyAction(*this)
     {
-#ifdef BUILD_STRATEGY
         //register strategies
-        lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    NULL);
-        lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    NULL);
+        lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    &stratFunnyAction);
+        lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
         lifecycle.registerMatchType("Selftest",       NULL,               &stratSelftest, NULL);
-        lifecycle.registerMatchType("WIP",            NULL,               &stratWIP,      NULL);
+        lifecycle.registerMatchType("WIP",            NULL,               &stratWIP,      &stratFunnyAction);
         lifecycle.registerLinearStrat("Old Tanguy",   Strategy_Tanguy);
         lifecycle.registerLinearStrat("UT LEDs",      Strategy_LedTest);
         lifecycle.registerLinearStrat("UT Button",    Strategy_ButtonTest);
@@ -35,7 +29,6 @@ namespace ard
         lifecycle.registerLinearStrat("UT CalibRot",  Strategy_CalibRot);
         lifecycle.registerLinearStrat("UT CalibLin",  Strategy_CalibLin);
         lifecycle.registerLinearStrat("UT Motion",    Strategy_MotionTest);
-#endif
 
         //Retrieve and modify config
         apb_Configuration cfg = getConfig();

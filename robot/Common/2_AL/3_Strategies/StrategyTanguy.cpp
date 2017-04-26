@@ -1,10 +1,11 @@
-#include "0_Strategy2017.h"
-#include "Robot2017.h"
+#include "LinearStrategies.h"
 
 using namespace ard;
 
-void ard::Strategy_Tanguy (Robot2017& robot)
+void ard::Strategy_Tanguy (void* robotOpaque)
 {
+    Robot2017& robot = *reinterpret_cast<Robot2017*>(robotOpaque);
+
 	LOG_INFO("Strategy_Tanguy.");
 
 	robot.nav.setPosition(640,730,0);
@@ -28,7 +29,7 @@ void ard::Strategy_Tanguy (Robot2017& robot)
 
 	LOG_INFO("Get B");
 	ArdOs::sleepMs(1000);
-	robot.strategy.informTaken_B();
+	robot.stratInfo.informTaken_B();
 
 	LOG_INFO("Recal en X");
 	robot.nav.goTo(1355, 460, eDir_FORWARD);
@@ -56,7 +57,7 @@ void ard::Strategy_Tanguy (Robot2017& robot)
     while(!robot.nav.targetReached())
     {
         ArdOs::sleepMs(1000);
-        robot.strategy.informTaken_F();
+        robot.stratInfo.informTaken_F();
     }
 
 	LOG_INFO("Going Bwd");
@@ -71,7 +72,7 @@ void ard::Strategy_Tanguy (Robot2017& robot)
     while(!robot.nav.targetReached())
     {
         ArdOs::sleepMs(500);
-        robot.strategy.informPooed_OnTable(1);
+        robot.stratInfo.informPooed_OnTable(1);
     }
 
 	LOG_INFO("Goto C");
@@ -85,7 +86,7 @@ void ard::Strategy_Tanguy (Robot2017& robot)
 
 	LOG_INFO("Get C");
 	ArdOs::sleepMs(1000);
-	robot.strategy.informTaken_C();
+	robot.stratInfo.informTaken_C();
 
 	LOG_INFO("Goto 4");
 	robot.nav.goTo(800, -150,eDir_FORWARD);
@@ -99,13 +100,13 @@ void ard::Strategy_Tanguy (Robot2017& robot)
     for(int i = 6 ; 0 < i ; i--)
     {
         ArdOs::sleepMs(500);
-        robot.strategy.informPooed_4(1);
+        robot.stratInfo.informPooed_4(1);
     }
 
 //	LOG_INFO("Avoiding obstacles");
 //	robot.nav.goTo(700, -300, eDir_FORWARD);
 //	robot.nav.wait();
-//	robot.strategy.informPushedAway_Container();
+//	robot.stratInfo.informPushedAway_Container();
 
 	LOG_INFO("Leave 4");
 	robot.nav.goToCap(750, -350, 0,  eDir_BACKWARD);
@@ -119,7 +120,7 @@ void ard::Strategy_Tanguy (Robot2017& robot)
     for(int i = 4 ; 0 < i ; i--)
     {
         ArdOs::sleepMs(500);
-        robot.strategy.informWithdraw_G(1);
+        robot.stratInfo.informWithdraw_G(1);
     }
 
 	LOG_INFO("Leave G");
@@ -129,12 +130,12 @@ void ard::Strategy_Tanguy (Robot2017& robot)
 	LOG_INFO("Get E");
 	robot.nav.goTo(1000, -100, eDir_FORWARD);
 	robot.nav.wait();
-	robot.strategy.informTaken_E();
+	robot.stratInfo.informTaken_E();
 
 	LOG_INFO("Get D");
 	robot.nav.goTo(500, 400, eDir_FORWARD);
 	robot.nav.wait();
-	robot.strategy.informTaken_D();
+	robot.stratInfo.informTaken_D();
 
 	LOG_INFO("Goto 6");
 	robot.nav.goTo(550, 650, eDir_FORWARD);
@@ -144,7 +145,7 @@ void ard::Strategy_Tanguy (Robot2017& robot)
     for(int i = 6 ; 0 < i ; i--)
     {
         ArdOs::sleepMs(500);
-        robot.strategy.informPooed_6(1);
+        robot.stratInfo.informPooed_6(1);
     }
 
     LOG_INFO("Finished.");
