@@ -41,7 +41,7 @@ namespace ard
         strcpy(cfg.serialNumber,    "Pen");
         cfg.leftWheelDiameter       = 60.000;
         cfg.rightWheelDiameter      = 60.000;
-        cfg.voie                    = 160.4;
+        cfg.voie                    = 168;
         cfg.maxAcc                  = 700;
         cfg.maxTurnAcc              = 300;
         cfg.maxTurnSpeed            = 125.0;
