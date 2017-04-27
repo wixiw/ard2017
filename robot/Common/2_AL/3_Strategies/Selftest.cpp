@@ -34,15 +34,11 @@ String FSM_Selftest_Better::state2Str(FSM_SelftestStates state) const
         case main_region_StateA:
             return "main_region_StateA";
             break;
-        case main_region_StateB:
-            return "main_region_StateB";
-            break;
         case FSM_Selftest_last_state:
             return "init state";
             break;
         default:
-            ASSERT(false);
-            return "";
+            return String("unknown state (") + state + ")";
             break;
     }
 }
