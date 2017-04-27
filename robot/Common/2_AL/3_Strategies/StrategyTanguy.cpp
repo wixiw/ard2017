@@ -5,12 +5,26 @@ using namespace ard;
 void ard::Strategy_Tanguy (void* robotOpaque)
 {
     Robot2017& robot = *reinterpret_cast<Robot2017*>(robotOpaque);
+<<<<<<< HEAD
+=======
+
+	LOG_INFO("Strategy_Tanguy.");
+>>>>>>> 47c8f5df3f245d1a6d1a376ebf746dc9ee2e0a2c
 
     LOG_INFO("Strategy_Tanguy.");
 
     robot.nav.setPosition(640,730,0);
 
+<<<<<<< HEAD
 //  robot.nav.goToCap(x_target + 260*cos(radians(theta)), y_target + 260*sin(radians(theta)), theta + 180, eDir_FORWARD);
+=======
+//	DispenserMonocolor lsaTopDisp(robot);
+//	LOG_INFO("Go to Own Dispenser_Monocolor Rush entry point");
+////	robot.nav.goToCap(lsaTopDisp.getEntryPoint());
+//	robot.nav.goToCap(350, 730, 0, eDir_BACKWARD);
+//	robot.nav.wait();
+//	//lsaTopDisp.execute(/*get all cylinders*/);
+>>>>>>> 47c8f5df3f245d1a6d1a376ebf746dc9ee2e0a2c
 
 //    DispenserMonocolor lsaTopDisp(robot);
     LOG_INFO("Go to Own Dispenser_Monocolor Rush entry point");
@@ -23,9 +37,15 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     robot.nav.goTo(350, 300 + 260*sin(radians(225)),  eDir_BACKWARD);
     robot.nav.wait();
 
+<<<<<<< HEAD
     LOG_INFO("Goto B");
     robot.nav.goToCap(1200 + 260*cos(radians(225)), 300 + 260*sin(radians(225)), 225 + 180, eDir_FORWARD);
     robot.nav.wait();
+=======
+	LOG_INFO("Get B");
+	ArdOs::sleepMs(1000);
+	robot.stratInfo.informTaken_B();
+>>>>>>> 47c8f5df3f245d1a6d1a376ebf746dc9ee2e0a2c
 
     LOG_INFO("Approach B");
     robot.nav.goTo(1200, 300, eDir_FORWARD);
@@ -44,9 +64,18 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     robot.nav.wait();
     ArdOs::sleepMs(1000);
 
+<<<<<<< HEAD
 //  LOG_INFO("Recal en Y");
 //  robot.nav.goTo(1140, 500, eDir_FORWARD);
 //  robot.nav.wait();
+=======
+	LOG_INFO("Get F");
+    while(!robot.nav.targetReached())
+    {
+        ArdOs::sleepMs(1000);
+        robot.stratInfo.informTaken_F();
+    }
+>>>>>>> 47c8f5df3f245d1a6d1a376ebf746dc9ee2e0a2c
 
     LOG_INFO("Going Bwd");
     robot.nav.goToCap(1200, 370, 225, eDir_BACKWARD);
@@ -56,6 +85,7 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     robot.nav.goToCap(1300, 470, 180, eDir_BACKWARD);
     robot.nav.wait();
 
+<<<<<<< HEAD
     LOG_INFO("Recal top X");
     robot.nav.goTo(1470, 470, eDir_BACKWARD);
     robot.nav.wait();
@@ -68,6 +98,14 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     LOG_INFO("Avoiding E while going F");
     robot.nav.goTo(800, 0, eDir_FORWARD);
     robot.nav.wait();
+=======
+	LOG_INFO("Poo F on table");
+    while(!robot.nav.targetReached())
+    {
+        ArdOs::sleepMs(500);
+        robot.stratInfo.informPooed_OnTable(1);
+    }
+>>>>>>> 47c8f5df3f245d1a6d1a376ebf746dc9ee2e0a2c
 
     LOG_INFO("Approach F");
     robot.nav.goToCap(775, -225,  -135, eDir_FORWARD);
@@ -77,9 +115,15 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     robot.nav.goForward(65);
     robot.nav.wait();
 
+<<<<<<< HEAD
     LOG_INFO("Get F");
     ArdOs::sleepMs(1000);
     robot.stratInfo.informTaken_F();
+=======
+	LOG_INFO("Get C");
+	ArdOs::sleepMs(1000);
+	robot.stratInfo.informTaken_C();
+>>>>>>> 47c8f5df3f245d1a6d1a376ebf746dc9ee2e0a2c
 
     LOG_INFO("Going Bwd");
     robot.nav.goForward(-65);
@@ -133,10 +177,17 @@ void ard::Strategy_Tanguy (void* robotOpaque)
         robot.stratInfo.informPooed_4(1);
     }
 
+<<<<<<< HEAD
 //  LOG_INFO("Avoiding obstacles");
 //  robot.nav.goTo(700, -300, eDir_FORWARD);
 //  robot.nav.wait();
 //  robot.stratInfo.informPushedAway_Container();
+=======
+//	LOG_INFO("Avoiding obstacles");
+//	robot.nav.goTo(700, -300, eDir_FORWARD);
+//	robot.nav.wait();
+//	robot.stratInfo.informPushedAway_Container();
+>>>>>>> 47c8f5df3f245d1a6d1a376ebf746dc9ee2e0a2c
 
     LOG_INFO("Leave 4");
     robot.nav.goForward(-50);
@@ -167,6 +218,7 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     robot.nav.wait();
     robot.stratInfo.informTaken_E();
 
+<<<<<<< HEAD
     LOG_INFO("Get dropped F");
     robot.nav.goTo(750, 150,  eDir_FORWARD);
     robot.nav.wait();
@@ -176,6 +228,17 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     robot.nav.goTo(500, 400, eDir_FORWARD);
     robot.nav.wait();
     robot.stratInfo.informTaken_D();
+=======
+	LOG_INFO("Get E");
+	robot.nav.goTo(1000, -100, eDir_FORWARD);
+	robot.nav.wait();
+	robot.stratInfo.informTaken_E();
+
+	LOG_INFO("Get D");
+	robot.nav.goTo(500, 400, eDir_FORWARD);
+	robot.nav.wait();
+	robot.stratInfo.informTaken_D();
+>>>>>>> 47c8f5df3f245d1a6d1a376ebf746dc9ee2e0a2c
 
     LOG_INFO("Goto 6");
     robot.nav.goTo(550, 550, eDir_FORWARD);

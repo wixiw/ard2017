@@ -16,9 +16,12 @@ namespace ard
     {
     public:
         FunnyAction(Robot2017& robot);
+<<<<<<< HEAD
 
         //Implements IStrategy
         void start();
+=======
+>>>>>>> 47c8f5df3f245d1a6d1a376ebf746dc9ee2e0a2c
 
         //Implements IStrategy
         void update(TimeMs sinceLastCall) override;
