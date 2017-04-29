@@ -31,6 +31,7 @@ set PYTHON_OUT_PATH=%ARD_PATH%\com\generated
 set C_OUT_PATH=%ARD_PATH%\com\generated
 
 REM inform user about configuration
+echo Using python              : %PYTHON36_PATH%
 echo Running from folder       : %ARD_PATH% 
 echo Using protoc              : %PROTOC%
 echo Reading messages          : %MSG_PATH%
@@ -49,6 +50,6 @@ echo
 echo -------------------------------------------------------
 
 cd %ARD_PATH%/com
-python setup.py build_ext --inplace
+%PYTHON36_PATH%\python setup.py build_ext --inplace
 
 echo -------------------------------------------------------
