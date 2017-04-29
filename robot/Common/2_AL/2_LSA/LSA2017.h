@@ -70,9 +70,6 @@ namespace ard
 
         virtual ~LSA2017() = default;
 
-        //Implements Action2017
-        String state2Str(States_t state) const = 0;
-
         //Implements LSA
         PointCap const& getEntryPoint() const override { return entryPoint;}
 

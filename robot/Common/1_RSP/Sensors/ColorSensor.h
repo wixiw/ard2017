@@ -38,6 +38,8 @@ namespace ard
 
         apb_ColorSensorState const& getState();
 
+        eObjectColor getColor() const {return color.c;};
+
     private:
         Adafruit_TCS34725 tcs;
         ObjectColor color;

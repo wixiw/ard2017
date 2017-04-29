@@ -29,7 +29,8 @@ ActuatorThread::ActuatorThread():
         servoFunnyAction(   SERVO6, 0, 1000),
         fsmTimeWheel(),
         lifter(*this, fsmTimeWheel),
-        arms(*this, fsmTimeWheel)
+        arms(*this, fsmTimeWheel),
+        faceUp()
 {
     state = apb_ActuatorsState_init_default;
 
@@ -61,6 +62,21 @@ void ActuatorThread::run()
 {
     fsmTimeWheel.run(getPeriod());
     PollerThread::run();
+}
+
+void ard::ActuatorThread::turnCylinder(bool turn)
+{
+    digitalWrite(MOSFET1, turn);
+}
+
+void ard::ActuatorThread::faceUpCylinder()
+{
+    faceUp.faceUpCylinder();
+}
+
+eFaceUpStatus ard::ActuatorThread::getFaceUpStatus()
+{
+    return faceUp.getFaceUpStatus();
 }
 
 apb_ActuatorsState const& ActuatorThread::getState()

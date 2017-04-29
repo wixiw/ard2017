@@ -27,9 +27,6 @@ namespace ard
             fsm.setDefaultSCI_OCB(this);
         }
 
-        //Convert a state to string for logging
-        virtual String state2Str(States_t state) const = 0;
-
         //Implements IStrategy: init the state machine
         void init() override
         {
@@ -47,16 +44,7 @@ namespace ard
         void update(DelayMs sinceLastCall) override
         {
             fsm.runCycle();
-            States_t newState = getState();
-            if( lastState != newState)
-            {
-                LOG_INFO(String("[LSA_Dispenser] state changed :  ") + state2Str(lastState) + " => state " + state2Str(newState));
-                lastState = newState;
-            }
         }
-
-        //Provide a state accessor as Yakindu doesn't provide it.
-        States_t getState() const {return fsm.stateConfVector[0];};
 
         /**
          * HMI
@@ -129,6 +117,11 @@ namespace ard
         /**
          * Navigation
          */
+        void dieMotherFucker()
+        {
+            robot.dieMotherFucker();
+        }
+
         void enableAvoidance(sc_boolean on)
         {
             robot.nav.enableAvoidance(on);
@@ -264,6 +257,21 @@ namespace ard
                     &&robot.actuators.servoRightArm.isTargetReached();
         }
 
+        void turnCylinder(sc_boolean on)
+        {
+            return robot.actuators.turnCylinder(on);
+        }
+
+        void faceUpCylinder()
+        {
+            robot.actuators.faceUpCylinder();
+        }
+
+        sc_integer getFaceUpStatus()
+        {
+            return robot.actuators.getFaceUpStatus();
+        }
+
         sc_boolean switchArmLout()
         {
             return robot.actuators.switchArmLout.read();
@@ -302,6 +310,11 @@ namespace ard
         sc_boolean switchLifterDown()
         {
             return robot.actuators.switchLifterDown.read();
+        }
+
+        sc_integer stockColor()
+        {
+            return robot.actuators.stockColor.getColor();
         }
 
         /**
@@ -440,9 +453,6 @@ namespace ard
     protected:
         Robot2017& robot;
         FSM fsm;
-
-    private:
-        States_t lastState;
     };
 
 

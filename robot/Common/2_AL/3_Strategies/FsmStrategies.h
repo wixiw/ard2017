@@ -23,7 +23,6 @@
     class stratName: public Strategy2017<FSM_##stratName, FSM_##stratName::FSM_##stratName##States>{\
     public:\
         stratName(Robot2017& robot) : Strategy2017<FSM_##stratName, FSM_##stratName::FSM_##stratName##States>(robot, #stratName){};\
-        String state2Str(FSM_##stratName::FSM_##stratName##States state) const;\
     };}
 
 

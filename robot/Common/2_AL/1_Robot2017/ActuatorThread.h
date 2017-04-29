@@ -13,6 +13,7 @@
 #include "YakardTimer.h"
 #include "Lifter.h"
 #include "Arms.h"
+#include "FaceUp.h"
 
 namespace ard
 {
@@ -32,6 +33,15 @@ namespace ard
 
         //Rise lifter when true, lower if false
         void lifterCmd(bool up);
+
+        //Cylinder rotation cmd
+        void turnCylinder(bool turn);
+
+        //Turn the cylinder
+        void faceUpCylinder();
+
+        //Return the state of faceUpCylinderCmd()
+        eFaceUpStatus getFaceUpStatus();
 
         //disable all actuators except those for used in funny actionn (typically used at end of match)
         void disableAll();
@@ -75,6 +85,7 @@ namespace ard
         YakardTimer   fsmTimeWheel;
         Lifter        lifter;
         Arms          arms;
+        FaceUp        faceUp;
     };
 
 } /* namespace ard */

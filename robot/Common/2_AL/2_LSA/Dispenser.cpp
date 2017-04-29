@@ -8,28 +8,6 @@
 #include "Dispenser.h"
 using namespace ard;
 
-String LSA_Dispenser::state2Str(FSM_LSA_Dispenser::FSM_LSA_DispenserStates state) const
-{
-    switch(state)
-    {
-    case FSM_LSA_Dispenser::main_region_Engage_dispenser:
-        return "Engage_dispenser";
-        break;
-    case FSM_LSA_Dispenser::main_region_Get_1_cylinder:
-        return "Get_1_cylinder";
-        break;
-    case FSM_LSA_Dispenser::main_region__final_:
-        return "_final_";
-        break;
-    case FSM_LSA_Dispenser::main_region_Exit_dispenser:
-        return "Exit_dispenser";
-        break;
-    default:
-        return String("[LSA_Dispenser] unknown state (") + state + ")";
-        break;
-    }
-}
-
 LSA_Dispenser::LSA_Dispenser(Robot2017& robot, eLSA_DispType type):
         LSA2017(robot, "LSADispenser")
 {

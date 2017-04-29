@@ -8,28 +8,6 @@
 #include "Poo.h"
 using namespace ard;
 
-String LSA_PooMiddle::state2Str(FSM_LSA_PooMiddle::FSM_LSA_PooMiddleStates state) const
-{
-    switch(state)
-    {
-    case FSM_LSA_PooMiddle::main_region_Engage_PooArea:
-        return "Engage_PooArea";
-        break;
-    case FSM_LSA_PooMiddle::main_region_Put_1_cylinder:
-        return "Put_1_cylinder";
-        break;
-    case FSM_LSA_PooMiddle::main_region__final_:
-        return "_final_";
-        break;
-    case FSM_LSA_PooMiddle::main_region_Exit_Poo_Area:
-        return "Exit_Poo_Area";
-        break;
-    default:
-        return String("[LSA_PooMiddle] unknown state (") + state + ")";
-        break;
-    }
-}
-
 LSA_PooMiddle::LSA_PooMiddle(Robot2017& robot, eLSA_PooMidArea type):
         LSA2017(robot, "LSAPooMiddle")
 {
@@ -71,19 +49,6 @@ void LSA_PooMiddle::goToEntryPoint()
  * ------------------------
  */
 
-String LSA_PooBorderOwn::state2Str(FSM_LSA_PooBorderOwn::FSM_LSA_PooBorderOwnStates state) const
-{
-    switch(state)
-    {
-    case FSM_LSA_PooBorderOwn::main_region_Engage_PooArea:
-        return "Engage_PooArea";
-        break;
-    default:
-        return String("[LSA_PooBorderOwn] unknown state (") + state + ")";
-        break;
-    }
-}
-
 LSA_PooBorderOwn::LSA_PooBorderOwn(Robot2017& robot):
         LSA2017(robot, "LSAPooMiddle", PointCap(0, 0, 0)) //TODO define real point
 {
@@ -110,20 +75,6 @@ void LSA_PooBorderOwn::goToEntryPoint()
 /**
  * ------------------------
  */
-
-String LSA_PooBorderOpp::state2Str(FSM_LSA_PooBorderOpp::FSM_LSA_PooBorderOppStates state) const
-{
-    switch(state)
-    {
-    case FSM_LSA_PooBorderOpp::main_region_Engage_PooArea:
-        return "Engage_PooArea";
-        break;
-    default:
-        return String("[LSA_PooBorderOpp] unknown state (") + state + ")";
-        break;
-    }
-}
-
 LSA_PooBorderOpp::LSA_PooBorderOpp(Robot2017& robot):
         LSA2017(robot, "LSAPooMiddle", PointCap(0, 0, 0)) //TODO define real point
 {
@@ -150,19 +101,6 @@ void LSA_PooBorderOpp::goToEntryPoint()
 /**
  * ------------------------
  */
-
-String LSA_PooStartArea::state2Str(FSM_LSA_PooStartArea::FSM_LSA_PooStartAreaStates state) const
-{
-    switch(state)
-    {
-    case FSM_LSA_PooStartArea::main_region_Engage_PooArea:
-        return "Engage_PooArea";
-        break;
-    default:
-        return String("[LSA_PooStartArea] unknown state (") + state + ")";
-        break;
-    }
-}
 
 LSA_PooStartArea::LSA_PooStartArea(Robot2017& robot):
         LSA2017(robot, "LSAPooMiddle", PointCap(0, 0, 0)) //TODO define real point

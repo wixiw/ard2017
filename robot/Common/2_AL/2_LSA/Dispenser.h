@@ -33,9 +33,6 @@ namespace ard
 
         //Implements FSM_LSA_Dispenser::DefaultSCI_OCB
         void goToEntryPoint() override;
-
-        //Implements Action2017
-        String state2Str(FSM_LSA_Dispenser::FSM_LSA_DispenserStates state) const;
     };
 
 } /* namespace ard */

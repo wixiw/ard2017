@@ -36,9 +36,6 @@ namespace ard
 
         //Implements FSM_LSA_PooMiddle::DefaultSCI_OCB
         void goToEntryPoint() override;
-
-        //Implements Action2017
-        String state2Str(FSM_LSA_PooMiddle::FSM_LSA_PooMiddleStates state) const;
     };
 
     class LSA_PooBorderOwn: public LSA2017<FSM_LSA_PooBorderOwn, FSM_LSA_PooBorderOwn::FSM_LSA_PooBorderOwnStates>
@@ -51,9 +48,6 @@ namespace ard
 
         //Implements FSM_LSA_PooBorderOwn::DefaultSCI_OCB
         void goToEntryPoint() override;
-
-        //Implements Action2017
-        String state2Str(FSM_LSA_PooBorderOwn::FSM_LSA_PooBorderOwnStates state) const;
     };
 
     class LSA_PooBorderOpp: public LSA2017<FSM_LSA_PooBorderOpp, FSM_LSA_PooBorderOpp::FSM_LSA_PooBorderOppStates>
@@ -66,9 +60,6 @@ namespace ard
 
         //Implements FSM_LSA_PooBorderOpp::DefaultSCI_OCB
         void goToEntryPoint() override;
-
-        //Implements Action2017
-        String state2Str(FSM_LSA_PooBorderOpp::FSM_LSA_PooBorderOppStates state) const;
     };
 
     class LSA_PooStartArea: public LSA2017<FSM_LSA_PooStartArea, FSM_LSA_PooStartArea::FSM_LSA_PooStartAreaStates>
@@ -81,9 +72,6 @@ namespace ard
 
         //Implements FSM_LSA_PooStartArea::DefaultSCI_OCB
         void goToEntryPoint() override;
-
-        //Implements Action2017
-        String state2Str(FSM_LSA_PooStartArea::FSM_LSA_PooStartAreaStates state) const;
     };
 
 } /* namespace ard */

@@ -1223,6 +1223,12 @@
     <Compile Include="2_AL\1_Robot2017\Arms.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\1_Robot2017\FaceUp.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\1_Robot2017\FaceUp.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\1_Robot2017\IStrategy.h">
       <SubType>compile</SubType>
     </Compile>
