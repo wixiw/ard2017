@@ -176,6 +176,17 @@ namespace ard
 
         apb_NavState const& getState();
 
+        //Avoidance sensors
+        FilteredInput omronFrontLeft;
+        FilteredInput omronFrontRight;
+        FilteredInput omronRearLeft;
+        FilteredInput omronRearRight;
+
+        //Recal sensors
+        FilteredInput switchRecalFL;
+        FilteredInput switchRecalFR;
+        FilteredInput switchRecalRC;
+
     private:
         //Integrates the new displacement mesures with current position
         //This function modifies critical section variables with no protection
@@ -233,17 +244,6 @@ namespace ard
         //HW interface
         AccelStepper stepperL; //critical section
         AccelStepper stepperR; //critical section
-
-        //Avoidance sensors
-        FilteredInput omronFrontLeft;
-        FilteredInput omronFrontRight;
-        FilteredInput omronRearLeft;
-        FilteredInput omronRearRight;
-
-        //Recal sensors
-        FilteredInput switchRecalFL;
-        FilteredInput switchRecalFR;
-        FilteredInput switchRecalRC;
 
         //match color
         eColor m_color;

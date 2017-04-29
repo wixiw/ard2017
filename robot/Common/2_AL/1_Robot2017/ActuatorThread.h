@@ -62,9 +62,9 @@ namespace ard
         FilteredInput switchLifterUp;
         FilteredInput switchLifterDown;
 
-        Servo         servoLifter;
-        Servo         servoLeftArm;
-        Servo         servoRightArm;
+        AccelServo    servoLifter;
+        AccelServo    servoLeftArm;
+        AccelServo    servoRightArm;
         Servo         servoLeftWheel;
         Servo         servoRightWheel;
         Servo         servoFunnyAction;
@@ -72,9 +72,9 @@ namespace ard
     private:
         apb_ActuatorsState state; //cache to hold telemetry data
 
-        YakardTimer fsmTimeWheel;
-        Lifter      lifter;
-        Arms        arms;
+        YakardTimer   fsmTimeWheel;
+        Lifter        lifter;
+        Arms          arms;
     };
 
 } /* namespace ard */

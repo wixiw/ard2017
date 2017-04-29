@@ -10,6 +10,9 @@
 
 #include "K_thread_config.h"
 
+#include "BSP.hpp"
+
+#include "ArdOs.h"
 #include "ComStack/ComOnUart.h"
 #include "Core/ArdFramework.h"
 #include "Core/ArdMaths.h"

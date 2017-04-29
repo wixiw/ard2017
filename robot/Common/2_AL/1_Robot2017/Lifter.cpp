@@ -39,7 +39,7 @@ void Lifter::update(TimeMs sinceLastCall)
 
     if( fsm.get_start() )
     {
-        acts.servoLifter.write(fsm.get_lifter());
+        acts.servoLifter.goTo(fsm.get_lifter());
     }
 }
 

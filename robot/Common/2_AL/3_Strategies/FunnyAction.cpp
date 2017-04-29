@@ -24,7 +24,7 @@ void FunnyAction::update(TimeMs sinceLastCall)
     if( 1500 < duration )
     {
         //TODO 23° pour prise, à mettre dans installation
-        robot.actuators.servoFunnyAction.write(1000);
+        robot.actuators.servoFunnyAction.goTo(1000);
     }
 
     if( 4500 < duration )

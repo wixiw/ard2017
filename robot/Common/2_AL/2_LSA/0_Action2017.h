@@ -58,6 +58,9 @@ namespace ard
         //Provide a state accessor as Yakindu doesn't provide it.
         States_t getState() const {return fsm.stateConfVector[0];};
 
+        /**
+         * HMI
+         */
         void beep(sc_integer nb)
         {
             robot.buzzer().bip((uint8_t)(nb));
@@ -123,6 +126,9 @@ namespace ard
             LOG_ERROR(String(msg));
         }
 
+        /**
+         * Navigation
+         */
         void enableAvoidance(sc_boolean on)
         {
             robot.nav.enableAvoidance(on);
@@ -188,6 +194,44 @@ namespace ard
             return robot.nav.targetReached();
         }
 
+        sc_boolean omronFrontLeft()
+        {
+            return robot.nav.omronFrontLeft.read();
+        }
+
+        sc_boolean omronFrontRight()
+        {
+            return robot.nav.omronFrontRight.read();
+        }
+
+        sc_boolean omronRearLeft()
+        {
+            return robot.nav.omronRearLeft.read();
+        }
+
+        sc_boolean omronRearRight()
+        {
+            return robot.nav.omronRearRight.read();
+        }
+
+        sc_boolean switchRecalFL()
+        {
+            return robot.nav.switchRecalFL.read();
+        }
+
+        sc_boolean switchRecalFR()
+        {
+            return robot.nav.switchRecalFR.read();
+        }
+
+        sc_boolean switchRecalRC()
+        {
+            return robot.nav.switchRecalRC.read();
+        }
+
+        /**
+         * Actionneurs
+         */
         void swallow(sc_boolean on)
         {
             robot.actuators.swallow(on);
@@ -203,12 +247,66 @@ namespace ard
             robot.actuators.lifterCmd(up);
         }
 
-        void arms(sc_integer left, sc_integer right)
+        sc_boolean lifterAtTarget()
         {
-            robot.actuators.servoLeftArm.write((uint16_t)left);
-            robot.actuators.servoRightArm.write((uint16_t)right);
+            return robot.actuators.servoLifter.isTargetReached();
         }
 
+        void arms(sc_integer left, sc_integer right)
+        {
+            robot.actuators.servoLeftArm.goTo((uint16_t)left);
+            robot.actuators.servoRightArm.goTo((uint16_t)right);
+        }
+
+        sc_boolean armsAtTarget()
+        {
+            return robot.actuators.servoLeftArm.isTargetReached()
+                    &&robot.actuators.servoRightArm.isTargetReached();
+        }
+
+        sc_boolean switchArmLout()
+        {
+            return robot.actuators.switchArmLout.read();
+        }
+
+        sc_boolean switchArmLin()
+        {
+            return robot.actuators.switchArmLin.read();
+        }
+
+        sc_boolean switchArmRout()
+        {
+            return robot.actuators.switchArmRout.read();
+        }
+
+        sc_boolean switchArmRin()
+        {
+            return robot.actuators.switchArmRin.read();
+        }
+
+        sc_boolean omronCylinder()
+        {
+            return robot.actuators.omronCylinder.read();
+        }
+
+        sc_boolean switchCylinder()
+        {
+            return robot.actuators.switchCylinder.read();
+        }
+
+        sc_boolean switchLifterUp()
+        {
+            return robot.actuators.switchLifterUp.read();
+        }
+
+        sc_boolean switchLifterDown()
+        {
+            return robot.actuators.switchLifterDown.read();
+        }
+
+        /**
+         * Strategy Info
+         */
         void informWithdraw_A(sc_integer nb)
         {
             robot.stratInfo.informWithdraw_A((uint8_t)nb);

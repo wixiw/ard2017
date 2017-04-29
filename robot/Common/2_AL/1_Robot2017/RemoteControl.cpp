@@ -251,17 +251,17 @@ void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
 void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)
 {
     if( request.type.requestActuators.has_lifter )
-        robot->actuators.servoLifter.write(request.type.requestActuators.lifter);
+        robot->actuators.servoLifter.goTo(request.type.requestActuators.lifter);
     if( request.type.requestActuators.has_leftArm )
-        robot->actuators.servoLeftArm.write(request.type.requestActuators.leftArm);
+        robot->actuators.servoLeftArm.goTo(request.type.requestActuators.leftArm);
     if( request.type.requestActuators.has_rightArm )
-        robot->actuators.servoRightArm.write(request.type.requestActuators.rightArm);
+        robot->actuators.servoRightArm.goTo(request.type.requestActuators.rightArm);
     if( request.type.requestActuators.has_leftWheel )
-        robot->actuators.servoLeftWheel.write(request.type.requestActuators.leftWheel);
+        robot->actuators.servoLeftWheel.goTo(request.type.requestActuators.leftWheel);
     if( request.type.requestActuators.has_rightWheel )
-        robot->actuators.servoRightWheel.write(request.type.requestActuators.rightWheel);
+        robot->actuators.servoRightWheel.goTo(request.type.requestActuators.rightWheel);
     if( request.type.requestActuators.has_funnyAction )
-        robot->actuators.servoFunnyAction.write(request.type.requestActuators.funnyAction);
+        robot->actuators.servoFunnyAction.goTo(request.type.requestActuators.funnyAction);
 }
 
 void RemoteControl::setPosition(apb_RemoteControlRequest const & request)

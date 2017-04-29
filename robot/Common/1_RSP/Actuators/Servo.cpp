@@ -18,9 +18,9 @@
 
 #if defined(ARDUINO_ARCH_SAM)
 
-#include "../ArduinoCore/Arduino.h"
 #include "Servo.h"
-#include "BSP.h"
+#include "BSP.hpp"
+#include "ArdOs.h"
 
 // Architecture specific include
 #include "ServoTimers.h"
@@ -29,7 +29,6 @@
 
 #define MIN_PULSE_WIDTH       500     // the shortest pulse sent to a servo
 #define MAX_PULSE_WIDTH      2500     // the longest pulse sent to a servo
-#define DEFAULT_PULSE_WIDTH  1500     // default pulse width when servo is attached
 #define REFRESH_INTERVAL    20000     // minumim time to refresh servos in microseconds
 #define MAX_SERVOS             12     // the maximum number of servos controlled by the library
 #define INVALID_SERVO         255     // flag indicating an invalid servo index
@@ -144,8 +143,7 @@ Servo::Servo(int pin, uint16_t min, uint16_t max):
     if (ServoCount < MAX_SERVOS)
     {
         this->servoIndex = ServoCount++;                    // assign a servo index to this instance
-        servos[this->servoIndex].ticks = usToTicks(DEFAULT_PULSE_WIDTH);   // store default values
-
+        writeMicroseconds(currentAngleCommand);
         if( 1000 < angularMin )
             angularMin = 1000;
 
@@ -211,13 +209,8 @@ void Servo::disable()
     }
 }
 
-void Servo::write(uint16_t value)
+void Servo::goTo(uint16_t value)
 {
-    if (value < 0)
-        value = 0;
-    else if (value > 1000)
-        value = 1000;
-
     if (value < angularMin)
         value = angularMin;
     else if (value > angularMax)
@@ -226,13 +219,18 @@ void Servo::write(uint16_t value)
     currentAngleCommand = value;
 
     //convert into us command
-    value = map(value, 0, 1000, SERVO_MIN(), SERVO_MAX());
-
-    writeMicroseconds(value);
+    value = perThousandToUs(value);
 
     //if servo is not enabled, enable it
     if( !servos[this->servoIndex].Pin.isActive )
         enable();
+
+    writeMicroseconds(value);
+}
+
+uint16_t Servo::perThousandToUs(uint16_t value)
+{
+    return map(value, 0, 1000, SERVO_MIN(), SERVO_MAX());
 }
 
 void Servo::writeMicroseconds(int value)
@@ -249,11 +247,6 @@ void Servo::writeMicroseconds(int value)
         value = usToTicks(value);  // convert to ticks after compensating for interrupt overhead
         servos[channel].ticks = value;
     }
-}
-
-int Servo::read() // return the value as per thousand
-{
-    return currentAngleCommand;
 }
 
 int Servo::readMicroseconds()

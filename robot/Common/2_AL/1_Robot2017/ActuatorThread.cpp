@@ -10,7 +10,7 @@
 using namespace ard;
 
 ActuatorThread::ActuatorThread():
-        PollerThread("Actuator", PRIO_ACTUATORS, STACK_ACTUATORS, PERIOD_ACTUATORS, 3),
+        PollerThread("Actuator", PRIO_ACTUATORS, STACK_ACTUATORS, PERIOD_ACTUATORS, 6),
         stockColor(),
         switchArmLout(      SWITCH_ARM_L_OUT, 100, 10),
         switchArmLin(       SWITCH_ARM_L_IN, 100, 10),
@@ -21,9 +21,9 @@ ActuatorThread::ActuatorThread():
         omronSpare(         OMRON_SPARE, 50, 50),
         switchLifterUp(     SWITCH_LIFTER_UP, 100, 10),
         switchLifterDown(   SWITCH_LIFTER_DOWN, 100, 10),
-        servoLifter(        SERVO1, 0, 1000),
-        servoLeftArm(       SERVO2, 0, 1000),
-        servoRightArm(      SERVO3, 0, 1000),
+        servoLifter(        "Lifter", SERVO1, 100, 900),
+        servoLeftArm(       "LeftArm", SERVO2, 100, 900),
+        servoRightArm(      "RightArm", SERVO3, 100, 900),
         servoLeftWheel(     SERVO4, 0, 1000),
         servoRightWheel(    SERVO5, 0, 1000),
         servoFunnyAction(   SERVO6, 0, 1000),
@@ -32,12 +32,16 @@ ActuatorThread::ActuatorThread():
         arms(*this, fsmTimeWheel)
 {
     state = apb_ActuatorsState_init_default;
-//    ASSERT(servoLifter.enable());
-//    ASSERT(servoLeftArm.enable());
-//    ASSERT(servoRightArm.enable());
-//    ASSERT(servoLeftWheel.enable());
-//    ASSERT(servoRightWheel.enable());
-//    ASSERT(servoFunnyAction.enable());
+
+    servoLifter.setAccMax(30);
+    servoLeftArm.setAccMax(30);
+    servoRightArm.setAccMax(30);
+
+
+    servoLifter.setVmax(150);
+    servoLeftArm.setVmax(150);
+    servoRightArm.setVmax(150);
+
 }
 
 void ActuatorThread::init()
@@ -46,6 +50,9 @@ void ActuatorThread::init()
     addPolledObject(stockColor);
     addPolledObject(lifter);
     addPolledObject(arms);
+    addPolledObject(servoLifter);
+    addPolledObject(servoLeftArm);
+    addPolledObject(servoRightArm);
 
     PollerThread::init();
 }
@@ -100,13 +107,13 @@ void ActuatorThread::turnWheels(uint8_t on)
 {
     if(on)
     {
-        servoLeftWheel.write(0);
-        servoRightWheel.write(1000);
+        servoLeftWheel.goTo(0);
+        servoRightWheel.goTo(1000);
     }
     else
     {
-        servoLeftWheel.write(480);
-        servoRightWheel.write(480);
+        servoLeftWheel.goTo(480);
+        servoRightWheel.goTo(480);
     }
 }
 
@@ -114,11 +121,11 @@ void ActuatorThread::lifterCmd(bool up)
 {
     if(up)
     {
-        servoLifter.write(750);
+        servoLifter.goTo(750);
     }
     else
     {
-        servoLifter.write(345);
+        servoLifter.goTo(345);
     }
 }
 

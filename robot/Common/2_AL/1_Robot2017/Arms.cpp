@@ -44,10 +44,10 @@ void Arms::update(TimeMs sinceLastCall)
 
     if( fsm.get_start() )
     {
-        acts.servoLeftArm.      write(fsm.get_leftArm());
-        acts.servoRightArm.     write(fsm.get_rightArm());
-        acts.servoLeftWheel.    write(fsm.get_leftWheel());
-        acts.servoRightWheel.   write(fsm.get_rightWheel());
+        acts.servoLeftArm.      goTo(fsm.get_leftArm());
+        acts.servoRightArm.     goTo(fsm.get_rightArm());
+        acts.servoLeftWheel.    goTo(fsm.get_leftWheel());
+        acts.servoRightWheel.   goTo(fsm.get_rightWheel());
     }
 }
 

@@ -13,8 +13,7 @@
 #endif
 
 #include "BSP.h"
-
-#include "ArdOs.h"
+#include "ArduinoCore/Arduino.h"
 #include "CpuIo/ArdUART.h"
 #include "CpuIo/DueTimer.h"
 #include "CpuIo/GpioTools.h"

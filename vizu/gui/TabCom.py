@@ -15,7 +15,7 @@ class TabCom(QWidget):
         settings = QSettings("config.ini", QSettings.IniFormat)
         settings.beginGroup("Com")
         defaultPort = settings.value("port", "COM1")
-        defaultBaudrate = settings.value("baudrate", "250000")
+        defaultBaudrate = settings.value("baudrate", "125000")
         ports, baudrates = self.com.getSerialPortInfo()
           
         #Serial port configuration
