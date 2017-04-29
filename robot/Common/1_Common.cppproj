@@ -1088,6 +1088,12 @@
     <Compile Include="0_BSP\variant.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\Actuators\AccelServo.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Actuators\AccelServo.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\Actuators\AccelStepper.cpp">
       <SubType>compile</SubType>
     </Compile>

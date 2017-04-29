@@ -10,36 +10,86 @@
 
 #include "LSA2017.h"
 
-//namespace ard
-//{
-//
-//    class PooMiddleCenter: public LSA
-//    {
-//    public:
-//        PooMiddleCenter(Robot2017& robot);
-//
-//        //Implements LSA
-//        virtual LSAResult execute(uint8_t nbItems = 0) override;
-//    };
-//
-//    class PooMiddleOwn: public LSA
-//    {
-//    public:
-//        PooMiddleOwn(Robot2017& robot);
-//
-//        //Implements LSA
-//        virtual LSAResult execute(uint8_t nbItems = 0) override;
-//    };
-//
-//    class PooMiddleOpp: public LSA
-//    {
-//    public:
-//        PooMiddleOpp(Robot2017& robot);
-//
-//        //Implements LSA
-//        virtual LSAResult execute(uint8_t nbItems = 0) override;
-//    };
-//
+#define private public //workaround to gain introspection
+#include "generated/FSM_LSA_PooMiddle.h"
+#include "generated/FSM_LSA_PooBorderOwn.h"
+#include "generated/FSM_LSA_PooBorderOpp.h"
+#include "generated/FSM_LSA_PooStartArea.h"
+#undef private
+
+namespace ard
+{
+    typedef enum
+    {
+        Opp,
+        Center,
+        Own
+    } eLSA_PooMidArea;
+
+    class LSA_PooMiddle: public LSA2017<FSM_LSA_PooMiddle, FSM_LSA_PooMiddle::FSM_LSA_PooMiddleStates>
+    {
+    public:
+        LSA_PooMiddle(Robot2017& robot, eLSA_PooMidArea type);
+
+        //Implements LSA
+        LSAResult isFinished() override;
+
+        //Implements FSM_LSA_PooMiddle::DefaultSCI_OCB
+        void goToEntryPoint() override;
+
+        //Implements Action2017
+        String state2Str(FSM_LSA_PooMiddle::FSM_LSA_PooMiddleStates state) const;
+    };
+
+    class LSA_PooBorderOwn: public LSA2017<FSM_LSA_PooBorderOwn, FSM_LSA_PooBorderOwn::FSM_LSA_PooBorderOwnStates>
+    {
+    public:
+        LSA_PooBorderOwn(Robot2017& robot);
+
+        //Implements LSA
+        LSAResult isFinished() override;
+
+        //Implements FSM_LSA_PooBorderOwn::DefaultSCI_OCB
+        void goToEntryPoint() override;
+
+        //Implements Action2017
+        String state2Str(FSM_LSA_PooBorderOwn::FSM_LSA_PooBorderOwnStates state) const;
+    };
+
+    class LSA_PooBorderOpp: public LSA2017<FSM_LSA_PooBorderOpp, FSM_LSA_PooBorderOpp::FSM_LSA_PooBorderOppStates>
+    {
+    public:
+        LSA_PooBorderOpp(Robot2017& robot);
+
+        //Implements LSA
+        LSAResult isFinished() override;
+
+        //Implements FSM_LSA_PooBorderOpp::DefaultSCI_OCB
+        void goToEntryPoint() override;
+
+        //Implements Action2017
+        String state2Str(FSM_LSA_PooBorderOpp::FSM_LSA_PooBorderOppStates state) const;
+    };
+
+    class LSA_PooStartArea: public LSA2017<FSM_LSA_PooStartArea, FSM_LSA_PooStartArea::FSM_LSA_PooStartAreaStates>
+    {
+    public:
+        LSA_PooStartArea(Robot2017& robot);
+
+        //Implements LSA
+        LSAResult isFinished() override;
+
+        //Implements FSM_LSA_PooStartArea::DefaultSCI_OCB
+        void goToEntryPoint() override;
+
+        //Implements Action2017
+        String state2Str(FSM_LSA_PooStartArea::FSM_LSA_PooStartAreaStates state) const;
+    };
+
+} /* namespace ard */
+
+
+//FSM_LSA_PooStartArea
 //    class PooBorder: public LSA
 //    {
 //    public:

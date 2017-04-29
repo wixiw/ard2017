@@ -39,17 +39,27 @@
       </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.samice</avrtool>
-    <avrtoolserialnumber>158006664</avrtoolserialnumber>
+    <avrtoolserialnumber>158002621</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x285E0A60</avrdeviceexpectedsignature>
     <com_atmel_avrdbg_tool_samice>
       <ToolOptions>
         <InterfaceProperties>
           <JtagDbgClock>4000000</JtagDbgClock>
+          <JtagEnableExtResetOnStartSession>true</JtagEnableExtResetOnStartSession>
+          <JtagInChain>false</JtagInChain>
+          <JtagDevicesBefore>0</JtagDevicesBefore>
+          <JtagDevicesAfter>0</JtagDevicesAfter>
+          <JtagInstrBitsBefore>0</JtagInstrBitsBefore>
+          <JtagInstrBitsAfter>0</JtagInstrBitsAfter>
+          <JtagSelectedDeviceIndexInChain>
+          </JtagSelectedDeviceIndexInChain>
+          <JtagDaisyChainDevices>
+          </JtagDaisyChainDevices>
         </InterfaceProperties>
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.samice</ToolType>
-      <ToolNumber>158006664</ToolNumber>
+      <ToolNumber>158002621</ToolNumber>
       <ToolName>J-Link</ToolName>
     </com_atmel_avrdbg_tool_samice>
     <avrtoolinterface>JTAG</avrtoolinterface>
@@ -222,13 +232,16 @@
     <PreBuildEvent>DEL $(OutputDirectory)\UT_Actuators* /Q</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="leds.cpp">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="stepper.cpp">
+    <Compile Include="UT_AccelServo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UT_Leds.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UT_Stepper.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

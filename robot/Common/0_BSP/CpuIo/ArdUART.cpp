@@ -223,7 +223,7 @@ void ArdUART::IrqHandler(void)
         rxByte = baseAddr->UART_RHR;
         if ( circular_appendByte(&rxBuf, rxByte) )
         {
-            ASSERT(rxSem.giveFromISR());
+            ASSERT(rxSem.giveFromISR()); //When it asserts here it's certainly because some IT interrupt are not properly sets, which provokes some conflicts in interrupts priorities
 //            dh_publish_event_fromISR("it::RX", rxByte, 0);
         }
         else

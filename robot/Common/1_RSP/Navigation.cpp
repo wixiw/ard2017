@@ -207,7 +207,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
     if( vMax != 0 )
     {
         LOG_ERROR("New vMax config saturated");
-        userMaxSpeed = constrain(vMax, RobotParameters::MINBOUND_MAXSPEED, RobotParameters::MAXBOUND_MAXSPEED);
+        userMaxSpeed = saturate(vMax, RobotParameters::MINBOUND_MAXSPEED, RobotParameters::MAXBOUND_MAXSPEED);
     }
     else
         userMaxSpeed = conf->maxSpeed();
@@ -216,7 +216,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
     if( vMaxTurn    != 0 )
     {
         LOG_ERROR("New vMaxTurn config saturated");
-        userMaxTurnSpeed = constrain(vMaxTurn, RobotParameters::MINBOUND_MAXTURNSPEED, RobotParameters::MAXBOUND_MAXTURNSPEED);
+        userMaxTurnSpeed = saturate(vMaxTurn, RobotParameters::MINBOUND_MAXTURNSPEED, RobotParameters::MAXBOUND_MAXTURNSPEED);
     }
     else
         userMaxTurnSpeed = conf->maxTurnSpeed();
@@ -225,7 +225,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
     if( accMax != 0 )
     {
         LOG_ERROR("New accMax config saturated");
-        userMaxAcc = constrain(accMax, RobotParameters::MINBOUND_MAXACC, RobotParameters::MAXBOUND_MAXACC);
+        userMaxAcc = saturate(accMax, RobotParameters::MINBOUND_MAXACC, RobotParameters::MAXBOUND_MAXACC);
     }
     else
         userMaxAcc = conf->maxAcc();
@@ -234,7 +234,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
     if( accMaxTurn != 0 )
     {
         LOG_ERROR("New accMaxTurn config saturated");
-        userMaxTurnAcc = constrain(accMaxTurn, RobotParameters::MINBOUND_MAXTURNACC, RobotParameters::MAXBOUND_MAXTURNACC);
+        userMaxTurnAcc = saturate(accMaxTurn, RobotParameters::MINBOUND_MAXTURNACC, RobotParameters::MAXBOUND_MAXTURNACC);
     }
     else
         userMaxTurnAcc = conf->maxTurnAcc();

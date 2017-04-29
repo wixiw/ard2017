@@ -6,16 +6,21 @@
  */ 
 
 
-#include "Arduino.h"
-extern void UT_Steppers(void);
-extern void UT_LEDs(void);
+#include "BSP.hpp"
+#include "UT_AccelServo.h"
+#include "UT_Stepper.h"
+#include "UT_Leds.h"
+
+using namespace ard;
 
 int main(void)
 {
-    UT_LEDs();
+    //UT_LEDs();
     //UT_Steppers();
+    UT_AccelServo();
     
     // should never return
+    ASSERT(false);
 	while(1);
 }
 

@@ -31,7 +31,7 @@ String LSA_Dispenser::state2Str(FSM_LSA_Dispenser::FSM_LSA_DispenserStates state
 }
 
 LSA_Dispenser::LSA_Dispenser(Robot2017& robot, eLSA_DispType type):
-        LSA2017(robot, "DispenserMonocolor")
+        LSA2017(robot, "LSADispenser")
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);

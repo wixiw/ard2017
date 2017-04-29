@@ -36,6 +36,74 @@ GeneratorModel for yakindu::cpp {
         }
     }
     
+    statechart FSM_LSA_GetCylinder_B {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_LSA_GetCylinder_C {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+        
+    statechart FSM_LSA_PooBorderOwn {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_LSA_PooBorderOpp {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_LSA_PooMiddle {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_LSA_PooStartArea {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    statechart FSM_LSA_PooMiddle {
+
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/2_AL/generated"
+        }
+    }
+    
+    
+    
+    
+    
+       
     statechart FSM_InstallPen {
 
         feature Outlet {

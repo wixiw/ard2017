@@ -551,7 +551,7 @@ namespace ard
         }
 
         //Maximal number of Objects that can be registerObject()'ed
-        static const uint8_t MAX_OBJECT_NB = 60;
+        static const uint8_t MAX_OBJECT_NB = 100;
 
     private:
         //Tracking of initialization status to prevent stupid errors

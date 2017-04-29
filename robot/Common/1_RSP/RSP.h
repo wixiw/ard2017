@@ -13,6 +13,7 @@
 #include "ComStack/ComOnUart.h"
 #include "Core/ArdFramework.h"
 #include "Core/ArdMaths.h"
+#include "Actuators/AccelServo.h"
 #include "Actuators/AccelStepper.h"
 #include "Actuators/Buzzer.h"
 #include "Actuators/Servo.h"
