@@ -23,6 +23,10 @@ enum eNavState {
     TURNING_AT_TARGET = 3;
     STOPPING          = 4;
     WAIT_OPP_MOVE     = 5;
+    FACING_WALL       = 6;
+    CONTACTING_WALL   = 7;
+    ESCAPING_WALL     = 8;
+    WAIT_OPP_ESCAPE_RECALL = 9;
 }
 
 enum eNavOrder {
@@ -30,6 +34,8 @@ enum eNavOrder {
     GOTO             = 1;
     GOTO_CAP         = 2;
     STOP             = 3;
+    RECAL_FACE       = 4;
+    RECAL_REAR       = 5;
 }
 
 enum eLogLevel {
@@ -54,5 +60,6 @@ enum eTableBorder {
     OPP_SIDE_X      = 2;
     START_AREA_Y    = 3;
     BOT_Y           = 4;
+    START_AREA_X    = 5;
 }
 

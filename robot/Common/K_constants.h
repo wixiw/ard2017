@@ -23,6 +23,9 @@
 #define LOG_QUEUE_SIZE 20       //number of logs that can be queued before being sent on the network
 #define LOG_MAX_SIZE 200       //maximal log string length in characters
 
+#define TABLE_TOP_Y         1000
+#define TABLE_BORDER_X      1500
+
 #define SERIAL_BAUDRATE 125000 //bit/s from 600 to 250k
 #endif
 

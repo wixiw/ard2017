@@ -3,14 +3,18 @@
 #include "K_constants.h"
 #include "Log.h"
 #include "Navigation.h"
+#include "Actuators/Buzzer.h"
 
 using namespace ard;
 
 /* Angle delta under which we consider target is reached 2.5mm on 5m */
-#define NO_TURN_DELTA 0.0005
-#define NO_MOVE_DELTA 1
+#define NO_TURN_DELTA 0.0005 //rad
+#define NO_MOVE_DELTA 1      //mm
+#define KLAXON_FREQ 1000     //Hz
+#define RECAL_FORCING 400     //mm
+#define RECAL_ESCAPE_MARGIN 30 //mm
 
-Navigation::Navigation()
+Navigation::Navigation(Buzzer& klaxon)
         :
                 Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
                 fakeRobot(false),
@@ -38,7 +42,10 @@ Navigation::Navigation()
                 oldStepR(0),
                 oppTimer(),
                 avoidanceActive(false),//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
-                conf(NULL)
+                conf(NULL),
+                noSwitchMode(false),
+                state(),
+                klaxon(klaxon)
 {
     state = apb_NavState_init_default;
 }
@@ -74,26 +81,17 @@ void Navigation::run()
     switch (m_state)
     {
         default:
+            ASSERT_TEXT(false,"Nav : Default state in switch case.");
+            break;
+
         case eNavState_IDLE:
         {
-            switch (m_order)
-            {
-                default:
-                case eNavOrder_NOTHING:
-                {
-                    break;
-                }
-
-                case eNavOrder_GOTO:
-                case eNavOrder_GOTO_CAP:
-                {
-                    action_startOrder();
-                    break;
-                }
-            }
             break;
         }
 
+/** -----------------------------------------------------------------------------------
+ * GOTO
+ --------------------------------------------------------------------------------------*/
         case eNavState_FACING_DEST:
         {
             if (subOrderFinished())
@@ -134,6 +132,10 @@ void Navigation::run()
             break;
         }
 
+
+/** -----------------------------------------------------------------------------------
+ * Order interruption
+ --------------------------------------------------------------------------------------*/
         case eNavState_STOPPING:
         {
             if (subOrderFinished())
@@ -145,6 +147,10 @@ void Navigation::run()
             }
             break;
         }
+
+/** -----------------------------------------------------------------------------------
+ * Avoidance
+ --------------------------------------------------------------------------------------*/
 
         case eNavState_WAIT_OPP_MOVE:
         {
@@ -165,6 +171,117 @@ void Navigation::run()
                 }
             }
 
+            break;
+        }
+
+/** -----------------------------------------------------------------------------------
+ * Recal on Border
+ --------------------------------------------------------------------------------------*/
+
+        case eNavState_FACING_WALL:
+        {
+            if (subOrderFinished())
+            {
+                switch (m_order) {
+                    case eNavOrder_RECAL_FACE:
+                        //Request straight line
+                        applyCmdToGoStraight(RECAL_FORCING, conf->recalSpeed(), userMaxAcc);
+                        break;
+                    case eNavOrder_RECAL_REAR:
+                        //Request straight line
+                        applyCmdToGoStraight(-RECAL_FORCING, conf->recalSpeed(), userMaxAcc);
+                        break;
+                    default:
+                        ASSERT(false); //should not be reached, dev bug
+                        break;
+                }
+
+                m_state = eNavState_CONTACTING_WALL;
+            }
+            break;
+        }
+
+        case eNavState_CONTACTING_WALL:
+        {
+            //If target is reached (in switch mode) then the recal failed
+            if(!noSwitchMode && subOrderFinished())
+            {
+                LOG_ERROR("Failed to recal on border.");
+                klaxon.bip(5);
+                m_order = eNavOrder_NOTHING;
+                m_state = eNavState_IDLE;
+            }
+            //If both switch are contacted (or target reached in no switch mode)
+            else if( (noSwitchMode  && subOrderFinished())
+                  || (!noSwitchMode && m_order == eNavOrder_RECAL_FACE && switchRecalFL.read() && switchRecalFR.read())
+                  || (!noSwitchMode && m_order == eNavOrder_RECAL_REAR && switchRecalRC.read()))
+            {
+                enterCriticalSection();
+                stepperL.move(0); //move(0) is equivalent to stay on current position
+                stepperR.move(0);
+                setPosition(m_target);
+                exitCriticalSection();
+
+                //Escape from wall
+                if(m_order == eNavOrder_RECAL_FACE)
+                {
+                    m_target.translatePolar(m_pose.hDegree(), conf->xouter() - conf->xav() + RECAL_ESCAPE_MARGIN);
+                    m_sensTarget = eDir_BACKWARD;
+                }
+                if(m_order == eNavOrder_RECAL_REAR)
+                {
+                    m_target.translatePolar(m_pose.hDegree(), conf->xouter() - conf->xar() + RECAL_ESCAPE_MARGIN);
+                    m_sensTarget = eDir_FORWARD;
+                }
+                applyCmdToGoStraight(m_sensTarget * m_pose.distanceTo(m_target), userMaxSpeed, userMaxAcc);
+                m_state = eNavState_ESCAPING_WALL;
+                LOG_INFO("       Wall touched, recal ok.");
+                klaxon.bip(1);
+            }
+            break;
+        }
+
+        case eNavState_ESCAPING_WALL:
+        {
+            //check for opponent presence (if avoidance system is active)
+            if( (m_order == eNavOrder_RECAL_REAR && isOpponentAhead())
+            || (m_order == eNavOrder_RECAL_FACE && isOpponentBehind()) )
+            {
+                //Stops as an opponent is detected
+                enterCriticalSection();
+                stepperL.stop();
+                stepperR.stop();
+                exitCriticalSection();
+
+                m_state = eNavState_WAIT_OPP_ESCAPE_RECALL;
+                LOG_INFO("       Opponent is blocking recal escape");
+            }
+            else if(subOrderFinished())
+            {
+                LOG_INFO("   order finished.");
+                m_order = eNavOrder_NOTHING;
+                m_state = eNavState_IDLE;
+            }
+            break;
+        }
+
+        //This avoidance case is particular as the robot is stucked against the wall, so it will try to move as soon as possible
+        case eNavState_WAIT_OPP_ESCAPE_RECALL:
+        {
+            //check for opponent presence (if avoidance system is active)
+            if( (m_order == eNavOrder_RECAL_REAR && isOpponentAhead())
+            || (m_order == eNavOrder_RECAL_FACE && isOpponentBehind()) )
+            {
+                klaxon.playTone(KLAXON_FREQ, PERIOD_NAVIGATION);
+            }
+            else
+            {
+                m_state = eNavState_ESCAPING_WALL;
+                LOG_INFO("       Opponent moved away");
+
+                //Reset order
+                applyCmdToGoStraight(m_sensTarget * m_pose.distanceTo(m_target), userMaxSpeed, userMaxAcc);
+            }
             break;
         }
     }
@@ -250,14 +367,7 @@ void Navigation::goTo(Point target, eDir sens)
     LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(sens) + ".");
 
     m_mutex.lock();
-
-    if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
-    {
-        LOG_DEBUG("new order pending until current order is finished");
-        m_mutex.unlock();
-        wait();
-        m_mutex.lock();
-    }
+    ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
     m_order = eNavOrder_GOTO;
     m_target = target.toAmbiPose(m_color);
@@ -272,15 +382,7 @@ void Navigation::goToCap(PointCap target, eDir sens)
     LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(sens) + ".");
 
     m_mutex.lock();
-
-    //If an order is present, wait
-    if (m_state != eNavState_IDLE || m_order != eNavOrder_NOTHING)
-    {
-        LOG_DEBUG("new order pending until current order is finished");
-        m_mutex.unlock();
-        wait();
-        m_mutex.lock();
-    }
+    ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
     m_order = eNavOrder_GOTO_CAP;
     m_target = target.toAmbiPose(m_color);
@@ -347,12 +449,52 @@ void Navigation::faceTo(Point p)
 
 void Navigation::recalFace(eTableBorder border)
 {
-    NOT_IMPLEMENTED();
+    LOG_INFO(String("   new request : recalFace on border=") + border + ".");
+
+    m_mutex.lock();
+    ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
+    m_order = eNavOrder_RECAL_FACE;
+    m_sensTarget = eDir_FORWARD;
+    m_target = getRecalPointFace(border);
+    double angleDelta = moduloPiPi(m_target.h - m_pose.h);
+
+    //In case the switch are not mapped, they will always be set to 1, so we deactivate the switch reading
+    if( switchRecalFL.read() && switchRecalFR.read() )
+        noSwitchMode = true;
+    else
+        noSwitchMode = false;
+
+    //Request turn
+    LOG_INFO("        Facing wall ...");
+    applyCmdToTurn(angleDelta, userMaxSpeed, userMaxAcc); //We will go to reset position, so let do it quickly ^^
+    m_state = eNavState_FACING_WALL;
+
+    m_mutex.unlock();
 }
 
 void Navigation::recalRear(eTableBorder border)
 {
-    NOT_IMPLEMENTED();
+    LOG_INFO(String("   new request : recalRear on border=") + border + ".");
+
+    m_mutex.lock();
+    ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
+    m_order = eNavOrder_RECAL_REAR;
+    m_sensTarget = eDir_BACKWARD;
+    m_target = getRecalPointRear(border);
+    double angleDelta = moduloPiPi(m_target.h - m_pose.h);
+
+    //In case the switch are not mapped, they will always be set to 1, so we deactivate the switch reading
+    if( switchRecalRC.read() )
+        noSwitchMode = true;
+    else
+        noSwitchMode = false;
+
+    //Request turn
+    LOG_INFO("Facing table...");
+    applyCmdToTurn(angleDelta, userMaxSpeed, userMaxAcc); //We will go to reset position, so let do it quickly ^^
+    m_state = eNavState_FACING_WALL;
+
+    m_mutex.unlock();
 }
 
 void Navigation::stopMoving()
@@ -478,7 +620,7 @@ void Navigation::action_startOrder()
         else
         {
             //Request turn
-            applyCmdToTurn(angleDelta);
+            applyCmdToTurn(angleDelta, userMaxTurnSpeed, userMaxTurnAcc);
             //Change state
             m_state = eNavState_FACING_DEST;
         }
@@ -488,7 +630,7 @@ void Navigation::action_startOrder()
 void Navigation::action_goingToTarget()
 {
     //Request straight line
-    applyCmdToGoStraight(m_sensTarget * m_pose.distanceTo(m_target));
+    applyCmdToGoStraight(m_sensTarget * m_pose.distanceTo(m_target), userMaxSpeed, userMaxAcc);
     //Change state
     m_state = eNavState_GOING_TO_TARGET;
 }
@@ -508,7 +650,7 @@ void Navigation::action_turningAtTarget()
         else
         {
             //Request turn
-            applyCmdToTurn(angleDelta);
+            applyCmdToTurn(angleDelta, userMaxTurnSpeed, userMaxTurnAcc);
             LOG_DEBUG("target destination reached, facing end move heading.");
             //Change state
             m_state = eNavState_TURNING_AT_TARGET;
@@ -560,17 +702,20 @@ void Navigation::action_waitOppMove()
 
     oppTimer.arm(conf->detectionWaitForOppMove());
     m_state = eNavState_WAIT_OPP_MOVE;
+
+    //Inform user
     LOG_INFO("Waiting that opponent moves away...");
+    klaxon.playTone(KLAXON_FREQ, conf->detectionWaitForOppMove());
 }
 
-void Navigation::applyCmdToGoStraight(double mm)
+void Navigation::applyCmdToGoStraight(double mm, double maxSpeed, double maxAcc)
 {
     LOG_DEBUG(String("applyCmdToGoStraight : ") + mm + " mm");
 
-    double maxAccLeft = fabs(userMaxAcc * conf->GAIN_MM_2_STEPS_LEFT);
-    double maxAccRight = fabs(userMaxAcc * conf->GAIN_MM_2_STEPS_RIGHT);
-    double maxSpeedLeft = fabs(userMaxSpeed * conf->GAIN_MM_2_STEPS_LEFT);
-    double maxSpeedRight = fabs(userMaxSpeed * conf->GAIN_MM_2_STEPS_RIGHT);
+    double maxAccLeft = fabs(maxAcc * conf->GAIN_MM_2_STEPS_LEFT);
+    double maxAccRight = fabs(maxAcc * conf->GAIN_MM_2_STEPS_RIGHT);
+    double maxSpeedLeft = fabs(maxSpeed * conf->GAIN_MM_2_STEPS_LEFT);
+    double maxSpeedRight = fabs(maxSpeed * conf->GAIN_MM_2_STEPS_RIGHT);
     double distLeft = mm * conf->GAIN_MM_2_STEPS_LEFT;
     double distRight = mm * conf->GAIN_MM_2_STEPS_RIGHT;
 
@@ -585,14 +730,14 @@ void Navigation::applyCmdToGoStraight(double mm)
     exitCriticalSection();
 }
 
-void Navigation::applyCmdToTurn(double angleInRad)
+void Navigation::applyCmdToTurn(double angleInRad, double maxSpeed, double maxAcc)
 {
     LOG_DEBUG(String("applyCmdToTurn : ") + angleInRad + " rad");
 
-    double maxAccLeft = fabs(userMaxTurnAcc * conf->GAIN_MM_2_STEPS_LEFT);
-    double maxAccRight = fabs(userMaxTurnAcc * conf->GAIN_MM_2_STEPS_RIGHT);
-    double maxSpeedLeft = fabs(userMaxTurnSpeed * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_LEFT);
-    double maxSpeedRight = fabs(userMaxTurnSpeed * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_RIGHT);
+    double maxAccLeft = fabs(maxAcc * conf->GAIN_MM_2_STEPS_LEFT);
+    double maxAccRight = fabs(maxAcc * conf->GAIN_MM_2_STEPS_RIGHT);
+    double maxSpeedLeft = fabs(maxSpeed * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_LEFT);
+    double maxSpeedRight = fabs(maxSpeed * DEG_TO_RAD * conf->GAIN_RAD_2_STEPS_RIGHT);
     double distLeft = -angleInRad * conf->GAIN_RAD_2_STEPS_LEFT;
     double distRight = angleInRad * conf->GAIN_RAD_2_STEPS_RIGHT;
 
@@ -628,6 +773,74 @@ bool Navigation::subOrderFinished()
     bool res = stepperL.distanceToGo() == 0 || stepperR.distanceToGo() == 0;
     exitCriticalSection();
     return res;
+}
+
+PointCap Navigation::getRecalPointFace(eTableBorder border)
+{
+    switch (border) {
+        case eTableBorder_TOP_Y:
+            return PointCap(m_pose.x, TABLE_TOP_Y - conf->xav(), 90);
+            break;
+
+        case eTableBorder_START_AREA_Y:
+            return PointCap(m_pose.x, 618 - conf->xav(), 90);
+            break;
+
+        case eTableBorder_BOT_Y:
+            return PointCap(m_pose.x, -TABLE_TOP_Y + conf->xav(), -90);
+            break;
+
+        case eTableBorder_OPP_SIDE_X:
+            return PointCap(-TABLE_BORDER_X + conf->xav(), m_pose.y, 180);
+            break;
+
+        case eTableBorder_OWN_SIDE_X:
+            return PointCap(TABLE_BORDER_X - conf->xav(), m_pose.y, 0);
+            break;
+
+        case eTableBorder_START_AREA_X:
+            return PointCap(790 - conf->xav(), m_pose.y, 0);
+            break;
+
+        default:
+            ASSERT(false);
+            return PointCap();
+            break;
+    }
+}
+
+PointCap Navigation::getRecalPointRear(eTableBorder border)
+{
+    switch (border) {
+        case eTableBorder_TOP_Y:
+            return PointCap(m_pose.x, TABLE_TOP_Y - conf->xar(), -90);
+            break;
+
+        case eTableBorder_START_AREA_Y:
+            return PointCap(m_pose.x, 618 - conf->xar(), -90);
+            break;
+
+        case eTableBorder_BOT_Y:
+            return PointCap(m_pose.x, -TABLE_TOP_Y + conf->xar(), 90);
+            break;
+
+        case eTableBorder_OPP_SIDE_X:
+            return PointCap(-TABLE_BORDER_X + conf->xar(), m_pose.y, 0);
+            break;
+
+        case eTableBorder_OWN_SIDE_X:
+            return PointCap(TABLE_BORDER_X - conf->xar(), m_pose.y, 180);
+            break;
+
+        case eTableBorder_START_AREA_X:
+            return PointCap(790 - conf->xar(), m_pose.y, 180);
+            break;
+
+        default:
+            ASSERT(false);
+            return PointCap();
+            break;
+    }
 }
 
 bool Navigation::isOpponentAhead()
@@ -697,6 +910,10 @@ String Navigation::stateToString(eNavState state)
         ENUM2STR(eNavState_TURNING_AT_TARGET);
         ENUM2STR(eNavState_STOPPING);
         ENUM2STR(eNavState_WAIT_OPP_MOVE);
+        ENUM2STR(eNavState_FACING_WALL);
+        ENUM2STR(eNavState_CONTACTING_WALL);
+        ENUM2STR(eNavState_ESCAPING_WALL);
+        ENUM2STR(eNavState_WAIT_OPP_ESCAPE_RECALL);
     }
 }
 

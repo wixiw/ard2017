@@ -23,6 +23,7 @@ trafficYellow   = QColor(0xFCBD1F) #RAL1023
 skyBlue         = QColor(0x1761AB) #RAL5015
 ardGray         = QColor(66,66,66)
 ardBackground   = QColor(0xADAFAF)
+transparent     = QColor(0,0,0,0)
 
 markPen = QPen(ardGray)
 markPen.setWidth(1)
@@ -89,7 +90,8 @@ class RobotWidget():
     def draw(self, pose, cfg, stratInfo):
         self.p.save()
         self.p.setRenderHint(QPainter.Antialiasing)
-        self.p.translate(pose.x, pose.y)
+        x, y = self.filterPosition(cfg, pose.x, pose.y,pose.h)
+        self.p.translate(x, y)
         self.p.rotate(180 - math.degrees(pose.h))
         self.drawCarriage(cfg)
         self.drawWheels(cfg)
@@ -112,11 +114,18 @@ class RobotWidget():
         
         self.p.drawLine(-cfg.xar*1.5, 0, cfg.xav*1.5, 0)
         self.p.drawLine(0, cfg.yside*1.5, 0, -cfg.yside*1.5)
-
-class RobotPenWidget(RobotWidget):
+    
+    def drawObjects(self, stratInfo):
+        if stratInfo.robotCylinderStockNb:
+            self.p.setPen(markPen)
+            drawHorizontalCylinder(self.p, stratInfo.matchColor, 85, 0, 0)
+                        
+        if stratInfo.robotCylinderStockNb == 6:
+            drawVerticalCylinder(self.p, stratInfo.matchColor, 180, 0)
+        
     def drawCarriage(self, cfg):
         self.p.setPen(markPen)
-        self.p.setBrush(trafficWhite)
+        self.p.setBrush(self.color)
         carriage = QPainterPath()
         mouthX = 35
         mouthY = 35
@@ -144,9 +153,14 @@ class RobotPenWidget(RobotWidget):
         carriage.moveTo(cfg.xavExtended, cfg.yside)
         carriage.lineTo(cfg.xavExtended, -cfg.yside)
         self.p.drawPath(carriage)
-        self.p.setPen(markPen)
+        
+        #draw carriage safety zone
+        self.p.setBrush(transparent)
+        drawCircle(self.p, 0,  0, 220)
+        drawCircle(self.p, 0,  0, 170)
         
         #draw actuators
+        self.p.setPen(markPen)
         self.p.setBrush(jetBlack)
         drawCircle(self.p, 185,  60, 22)
         drawCircle(self.p, 185, -60, 22)
@@ -168,78 +182,87 @@ class RobotPenWidget(RobotWidget):
         arm.closeSubpath()
         self.p.drawPath(arm)
         
-    def drawObjects(self, stratInfo):
-        if stratInfo.robotCylinderStockNb:
-            self.p.setPen(markPen)
-            drawHorizontalCylinder(self.p, stratInfo.matchColor, 85, 0, 0)
-                        
-        if stratInfo.robotCylinderStockNb == 6:
-            drawVerticalCylinder(self.p, stratInfo.matchColor, 180, 0)
-        
+    def filterPosition(self, cfg, x, y, h):
+        xf = x
+        yf = y
+        #
+        # Reacal AV
+        #-------------------
+        #Robot is facing up
+        if fabs(h - 1.57) < 0.05:
+            #Robot is recal'ing against top table border 
+            if fabs(x) < 790 and 1000 < y + cfg.xav :
+                yf = 1000 - cfg.xav
+            #Robot is recal'ing against start wall
+            if 790 < fabs(x) and 618 < y + cfg.xav :
+                yf = 618 - cfg.xav
+        #Robot is facing down
+        if fabs(h + 1.57) < 0.05:
+            #Robot is recal'ing against bot table border 
+            if y - cfg.xav < -1000 :
+                yf = -1000 + cfg.xav
+        #Robot is facing left
+        if 3.09 < fabs(h):
+            #Robot is recal'ing against left table border 
+            if y < 618 and x - cfg.xav < -1500 :
+                xf = -1500 + cfg.xav
+            #Robot is recal'ing against start bascule
+            if 618 < y  and x - cfg.xav < -790 :
+                xf = -790 + cfg.xav
+        #Robot is facing right
+        if fabs(h) < 0.05 :
+            #Robot is recal'ing against right table border 
+            if y < 618 and 1500 < x + cfg.xav :
+                xf = 1500 - cfg.xav
+            #Robot is recal'ing against start bascule
+            if 618 < y  and 790 < x + cfg.xav :
+                xf = 790 - cfg.xav    
+                
+        #
+        # Reacal AR
+        #-----------------
+        #Robot is facing up
+        if fabs(h - 1.57) < 0.05:
+            #Robot is recal'ing against bot table border 
+            if y - cfg.xar < -1000 :
+                yf = -1000 + cfg.xar
+        #Robot is facing down
+        if fabs(h + 1.57) < 0.05:
+            #Robot is recal'ing against top table border 
+            if fabs(x) < 790 and 1000 < y + cfg.xar :
+                yf = 1000 - cfg.xar
+            #Robot is recal'ing against start wall
+            if 790 < fabs(x) and 618 < y + cfg.xar :
+                yf = 618 - cfg.xar
+        #Robot is facing left
+        if 3.09 < fabs(h):
+            #Robot is recal'ing against right table border 
+            if y < 618 and 1500 < x + cfg.xar :
+                xf = 1500 - cfg.xar
+            #Robot is recal'ing against start bascule
+            if 618 < y  and 790 < x + cfg.xar :
+                xf = 790 - cfg.xar  
+        #Robot is facing right
+        if fabs(h) < 0.05 :
+            #Robot is recal'ing against left table border 
+            if y < 618 and x - cfg.xar < -1500 :
+                xf = -1500 + cfg.xar
+            #Robot is recal'ing against start bascule
+            if 618 < y  and x - cfg.xar < -790 :
+                xf = -790 + cfg.xar
+                
+        return xf,yf
+                
+                
+class RobotPenWidget(RobotWidget):
+    def __init__(self, painter):
+        super().__init__(painter)
+        self.color = trafficWhite 
         
 class RobotTrationWidget(RobotWidget):
-    def drawCarriage(self, cfg):
-        self.p.setPen(markPen)
-        self.p.setBrush(Qt.gray)
-        carriage = QPainterPath()
-        mouthX = 35
-        mouthY = 35
-        #print("xar = " + str(cfg.xar))
-        carriage.moveTo(-cfg.xar, cfg.yside)
-        carriage.lineTo(cfg.xav, cfg.yside)
-        carriage.lineTo(cfg.xav, mouthX)
-        carriage.lineTo( mouthY, mouthX)
-        carriage.lineTo( mouthY,-mouthX)
-        carriage.lineTo(cfg.xav,-mouthX)
-        carriage.lineTo(cfg.xav,-cfg.yside)
-        carriage.lineTo(-cfg.xar,-cfg.yside)
-        carriage.closeSubpath()
-        self.p.drawPath(carriage)
-        
-        #draw front lines
-        pen = QPen(ardGray)
-        pen.setWidth(1)
-        pen.setCosmetic(True)
-        pen.setDashPattern([2, 3])
-        self.p.setPen(pen)
-        carriage = QPainterPath()
-        carriage.moveTo(cfg.xav, cfg.yside)
-        carriage.lineTo(cfg.xav, -cfg.yside)
-        carriage.moveTo(cfg.xavExtended, cfg.yside)
-        carriage.lineTo(cfg.xavExtended, -cfg.yside)
-        self.p.drawPath(carriage)
-        self.p.setPen(markPen)
-        
-        #draw actuators
-        self.p.setBrush(jetBlack)
-        drawCircle(self.p, 185,  60, 22)
-        drawCircle(self.p, 185, -60, 22)
-        self.p.setBrush(Qt.gray)
-        drawCircle(self.p, 185,  60, 15)
-        drawCircle(self.p, 185, -60, 15)
-        arm = QPainterPath()
-        arm.moveTo(cfg.xav + 40, 50)
-        arm.lineTo(cfg.xav - 30, 50)
-        arm.lineTo(cfg.xav - 30, 70)
-        arm.lineTo(cfg.xav + 40, 70)
-        arm.closeSubpath()
-        self.p.drawPath(arm)
-        arm = QPainterPath()
-        arm.moveTo(cfg.xav + 40, -50)
-        arm.lineTo(cfg.xav - 30, -50)
-        arm.lineTo(cfg.xav - 30, -70)
-        arm.lineTo(cfg.xav + 40, -70)
-        arm.closeSubpath()
-        self.p.drawPath(arm)
-        
-    def drawObjects(self, stratInfo):
-        if stratInfo.robotCylinderStockNb:
-            self.p.setPen(markPen)
-            drawHorizontalCylinder(self.p, stratInfo.matchColor, 85, 0, 0)
-                        
-        if stratInfo.robotCylinderStockNb == 6:
-            drawVerticalCylinder(self.p, stratInfo.matchColor, 180, 0)
-
+    def __init__(self, painter):
+        super().__init__(painter)
+        self.color = Qt.gray 
 
 class TableWidget():
     

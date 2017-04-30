@@ -27,7 +27,7 @@ class TabRobot_Status(QWidget):
         self.columns[3] = QFormLayout()
         for key, column in self.columns.items():
             self.Hlayout.addLayout(column)
-            column.setLabelAlignment(Qt.AlignVCenter)
+            column.setLabelAlignment(Qt.AlignRight)
         self.Hlayout.addStretch()
         
         #self.addSensorXor("led1", 0) #LED1 is currently driven as ledDue_Rx

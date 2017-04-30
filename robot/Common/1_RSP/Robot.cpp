@@ -82,9 +82,9 @@ bool Robot::isTration() const
 
 Robot::Robot():
     bsp(),
-    nav(),
-    chrono(),
     hmi(TIMER_BUZZER),
+    nav(hmi.buzzer),
+    chrono(),
     log(LogDispatcher::getInstance()),
     fileLogger(LOG_QUEUE_SIZE),
     buildDate("unknown"),

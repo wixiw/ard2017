@@ -42,6 +42,7 @@ public:
     uint32_t xar()                  const;
     uint32_t yside()                const;
     uint32_t xavExtended()          const;
+    uint32_t xouter()               const;
     float leftWheelDiameter()    	const;
     float rightWheelDiameter()  	const;
     float voie()                 	const;
@@ -55,23 +56,6 @@ public:
     bool detectionActive()      	const;
     uint32_t maxSpeed()             const;
     char const* const serialNumber() const;
-
-    void set_stepByTurn(uint32_t value);
-    void set_xav(uint32_t value);
-    void set_xar(uint32_t value);
-    void set_yside(uint32_t value);
-    void set_xavExtended(uint32_t value);
-    void set_leftWheelDiameter(float value);
-    void set_rightWheelDiameter(float value);
-    void set_voie(float value);
-    void set_maxAcc(uint32_t value);
-    void set_maxTurnAcc(uint32_t value);
-    void set_recalSpeed(uint32_t value);
-    void set_maxTurnSpeed(uint32_t value);
-    void set_deccDist(uint32_t value);
-    void set_strategyDuration(uint32_t value);
-    void set_detectionWaitForOppMove(uint32_t value);
-    void set_detectionActive(bool value);
 
     static const uint32_t MINBOUND_MAXSPEED         = 50;   //mm/s
     static const uint32_t MAXBOUND_MAXSPEED         = 2000; //mm/s

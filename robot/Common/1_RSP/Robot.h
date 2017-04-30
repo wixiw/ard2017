@@ -96,14 +96,15 @@ namespace ard
         //hardware layer
         BSP bsp;
 
+        //RSP implementation
+        HmiThread hmi;
+
         //Public RSP interface : because i'm too lazy to hide it, please feel free to implement the decorator
         Navigation nav;
 
         //Chrono keeps track of the time during the match
         Chrono chrono;
 
-        //RSP implementation
-        HmiThread hmi;
         
     protected:
         LogDispatcher& log;

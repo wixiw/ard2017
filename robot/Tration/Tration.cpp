@@ -20,8 +20,8 @@ namespace ard
         //register strategies
         lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    &stratFunnyAction);
         lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
-        lifecycle.registerMatchType("Selftest",       NULL,               &stratSelftest, NULL);
-        lifecycle.registerMatchType("WIP",            NULL,               &stratWIP,      &stratFunnyAction);
+        lifecycle.registerMatchType("Selftest",       &stratInstall,      &stratSelftest, NULL);
+        lifecycle.registerMatchType("WIP",            &stratInstall,      &stratWIP,      &stratFunnyAction);
         lifecycle.registerLinearStrat("Old Tanguy",   Strategy_Tanguy);
         lifecycle.registerLinearStrat("UT LEDs",      Strategy_LedTest);
         lifecycle.registerLinearStrat("UT Button",    Strategy_ButtonTest);

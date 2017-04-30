@@ -10,6 +10,8 @@
 
 namespace ard
 {
+    class Buzzer;
+
     /**
      * This class manage the robot position movements, and avoidance
      * It is isolated from the rest of the code to prevent something
@@ -18,7 +20,7 @@ namespace ard
     class Navigation: public Thread
     {
     public:
-        Navigation();
+        Navigation(Buzzer& klaxon);
 
         //Reread the configuration and maps default config. Shall be called at least once
         //before the OS is initialized
@@ -187,6 +189,9 @@ namespace ard
         FilteredInput switchRecalFR;
         FilteredInput switchRecalRC;
 
+    protected:
+        void recalSwitchContacted(bool contactOk, double escapeDist);
+
     private:
         //Integrates the new displacement mesures with current position
         //This function modifies critical section variables with no protection
@@ -202,16 +207,20 @@ namespace ard
         void action_waitOppMove();
 
         //used to send a straight line trajectory to the motors, it's a relative order
-        void applyCmdToGoStraight(double distInMm);
+        void applyCmdToGoStraight(double distInMm, double maxSpeed, double maxAcc);
 
         //used to send an on place rotation trajectory to the motors, its a relative order
-        void applyCmdToTurn(double angleInRad);
+        void applyCmdToTurn(double angleInRad, double maxSpeed, double maxAcc);
 
         //interrupt the current movement
         void interruptCurrentMove();
 
         //used internally after a straight/turn/face order to check completeness
         bool subOrderFinished();
+
+        //Compute the point at which the recal shall set the new robot position
+        PointCap getRecalPointFace(eTableBorder border);
+        PointCap getRecalPointRear(eTableBorder border);
 
         String
         sensToString(eDir sens);
@@ -259,8 +268,14 @@ namespace ard
 
         RobotParameters* conf;
 
+        //recal managemement
+        bool noSwitchMode;
+
         //for telemetry
         apb_NavState state;
+
+        //klaxon to warn for failure and request opponent to move
+        Buzzer& klaxon;
     };
 }    //end namespace
 

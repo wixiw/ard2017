@@ -31,13 +31,14 @@ RobotParameters::RobotParameters()
     cfg.xar                     = 30;//mm
     cfg.yside                   = 88;
     cfg.xavExtended             = 210;//mm
+    cfg.xouter                  = 170;//mm
     cfg.leftWheelDiameter       = 60.000;
     cfg.rightWheelDiameter      = 60.000;
     cfg.voie                    = 160.4;
     cfg.maxAcc                  = 700;
     cfg.maxTurnAcc              = 300;
     cfg.recalSpeed              = 210.0;
-    cfg.maxTurnSpeed            = 125.0;
+    cfg.maxTurnSpeed            = 250.0;
     cfg.deccDist                = 150.0;
     cfg.strategyDuration        = 89500;
     cfg.detectionWaitForOppMove = 1000;
@@ -46,13 +47,13 @@ RobotParameters::RobotParameters()
 
 void RobotParameters::setComputedVars()
 {
-    GAIN_MM_2_STEPS_LEFT = -(cfg.stepByTurn / (cfg.leftWheelDiameter * M_PI));
+    GAIN_MM_2_STEPS_LEFT = -(cfg.stepByTurn / (cfg.leftWheelDiameter * M_PI));  //Typ : 8.50
     GAIN_MM_2_STEPS_RIGHT = cfg.stepByTurn / (cfg.rightWheelDiameter * M_PI);
     GAIN_STEPS_2_MM_LEFT = 1 / GAIN_MM_2_STEPS_LEFT;
     GAIN_STEPS_2_MM_RIGHT = 1 / GAIN_MM_2_STEPS_RIGHT;
-    GAIN_RAD_2_STEPS_LEFT = cfg.voie * GAIN_MM_2_STEPS_LEFT / 2.;
+    GAIN_RAD_2_STEPS_LEFT = cfg.voie * GAIN_MM_2_STEPS_LEFT / 2.;               //Typ : 680
     GAIN_RAD_2_STEPS_RIGHT = cfg.voie * GAIN_MM_2_STEPS_RIGHT / 2.;
-    m_maxSpeed = sqrt(2 * cfg.maxAcc * cfg.deccDist);
+    m_maxSpeed = sqrt(2 * cfg.maxAcc * cfg.deccDist);                           //Typ : dec = 700, dist = 150 => 450mm
 }
 
 #define CHECK_RANGE(min, value, max) IS_OUT_RANGE(min, value, max) \
@@ -147,6 +148,12 @@ uint32_t RobotParameters::xavExtended() const
     return cfg.xavExtended;
 }
 
+uint32_t RobotParameters::xouter() const
+{
+    ASSERT(m_configuredOnce);
+    return cfg.xouter;
+}
+
 float RobotParameters::leftWheelDiameter() const
 {
     ASSERT(m_configuredOnce);
@@ -223,116 +230,4 @@ char const* const RobotParameters::serialNumber() const
 {
     ASSERT(m_configuredOnce);
     return cfg.serialNumber;
-}
-
-void RobotParameters::set_stepByTurn(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.stepByTurn = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_xav(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.xav = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_xar(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.xar = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_yside(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.yside = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_xavExtended(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.xavExtended = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_leftWheelDiameter(float value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.leftWheelDiameter = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_rightWheelDiameter(float value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.rightWheelDiameter = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_voie(float value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.voie = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_maxAcc(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.maxAcc = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_maxTurnAcc(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.maxTurnAcc = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_recalSpeed(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.recalSpeed = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_maxTurnSpeed(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.maxTurnSpeed = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_deccDist(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.deccDist = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_strategyDuration(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.strategyDuration = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_detectionWaitForOppMove(uint32_t value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.detectionWaitForOppMove = value;
-    setConfig(newConf);
-}
-
-void RobotParameters::set_detectionActive(bool value)
-{
-    apb_Configuration newConf = cfg;
-    newConf.detectionActive = value;
-    setConfig(newConf);
 }
