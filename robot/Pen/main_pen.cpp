@@ -2,6 +2,7 @@
  * This file is the main file of the operationnal embedded robot code.
  */
 #include "Pen.h"
+#include "AL.h"
 
 using namespace ard;
 
@@ -11,17 +12,18 @@ using namespace ard;
 
 int main( void )
 {   
-    //new required to handle the fact that FreeRtos will destroy the default stack
-    g_robot = new Pen();
+    //a call to new() is required to handle the fact that FreeRtos will destroy the default stack
+    Pen* robot = new Pen();
+    ASSERT(robot);
+    RemoteControl* remoteControl = new RemoteControl(*robot);
+    ASSERT(remoteControl);
 
     //Build and start robot
-    g_robot->bootOs();
-
+    robot->init(remoteControl);
+    remoteControl->start();
+    robot->boot();
+    
     return 0;
 }
 
-extern String getExeVersion()
-{
-    return String("Version Pen : ") + __DATE__ + " " + __TIME__;
-}
 

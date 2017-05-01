@@ -16,13 +16,21 @@ namespace ard
     {
     public:
         Pen();
-        
+
+        //Overrides Robot20017
+        void init(Robot2017Listener* client) override;
+
+        //Implements Robot2017
+        String const& getExeVersion() override;
+
         //Strategy layer
         HomolPen stratHomol;
         InstallPen stratInstall;
         Selftest stratSelftest;
         WipPen stratWIP;
 
+    protected:
+        String exeBuildDate;
     };
 
 } /* namespace ard */

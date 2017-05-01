@@ -10,6 +10,7 @@
 
 #include <Com.h>
 #include "RSP.h"
+#include "Robot.h"
 #include "RemoteControl.pb.h"
 #include "ComInterfaces.h"
 
@@ -22,8 +23,6 @@ namespace ard
         EVT_MAX
     } eRemoteControlEvtId;
 
-#ifdef BUILD_REMOTE_CONTROL
-
     //forward declaration
     class Robot2017;
 
@@ -35,11 +34,14 @@ namespace ard
      * We choosed not to set up a telemetry thread which would provide precise period or event-based data,
      * in order to save embedded ressource. The partner SW is responsible for polling telemetry
      */
-    class RemoteControl: public ILogChannel, public IComListener
+    class RemoteControl: public ILogChannel, public IComListener, public Robot2017Listener
     {
     public:
-        RemoteControl(Robot2017* newRobot, ISerialDriver& serialDriver);
+        RemoteControl(Robot2017& robot);
         virtual ~RemoteControl() = default;
+
+        //start
+        void start();
 
         //Implements ILogChannel : returns true if the communication is established
         virtual bool isReady() const override;
@@ -59,14 +61,22 @@ namespace ard
         //Implements ILogChannel : push a log on the serial link
         virtual void log(LogMsg const & log) override;
 
-        //Send serial number on communication link
-        void sendSerialNumber();
+        /**------------------------------
+         * RobotListener
+         --------------------------------*/
+        //Send a the serial number on communication link
+        void bootUp() override;
 
     private:
         Mutex mutex;
+    public://For Interrupt mapping, better solution welcomed
+        static RemoteControl* instance;
+        ArdUART serialDriver;
+    protected:
         ComOnUart com;
-        Robot2017* robot;
+        Robot2017& robot;
         char msg_send_buffer[HDLC_FRAME_LENGTH];
+        //Rx0 / Tx0 serial driver
 
         /**------------------------------
          * Receive COM API
@@ -99,8 +109,6 @@ namespace ard
         void requestTooLittleMsg    (apb_RemoteControlRequest const & request);
 
     };
-
-#endif //BUILD_REMOTE_CONTROLs
 
 } /* namespace ard */
 

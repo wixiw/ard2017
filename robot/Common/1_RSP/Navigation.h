@@ -176,7 +176,7 @@ namespace ard
          * Publish state
          ---------------------------------*/
 
-        apb_NavState const& getState();
+        apb_NavState const& serealize();
 
         //Avoidance sensors
         FilteredInput omronFrontLeft;

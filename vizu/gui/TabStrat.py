@@ -142,9 +142,12 @@ class TabStrat(QWidget):
         
     def buildStratInfo(self):
         self.box_stratInfo = QGroupBox("Strat Info")
+        self.label["score"] = QLabel("?")
         self.label["stock"] = QLabel("?")
+        self.label["score"].setAlignment(Qt.AlignRight)
         self.label["stock"].setAlignment(Qt.AlignRight)
         box_layout = QFormLayout()
+        box_layout.addRow("score : ", self.label["score"])
         box_layout.addRow("stock : ", self.label["stock"])
         self.box_stratInfo.setLayout(box_layout)
        
@@ -188,6 +191,7 @@ class TabStrat(QWidget):
             self.label["h"].setText("%0.0f" % math.degrees(pose.h))
             self.label["state"].setText(self.getMotionStateStr())
             self.label["order"].setText(self.getMotionOrderStr())
+            self.label["score"].setText(str(msg.stratInfo.score))
             self.label["stock"].setText(str(msg.stratInfo.robotCylinderStockNb))
             
             if chrono > 90.0:

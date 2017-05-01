@@ -1,24 +1,25 @@
+#include "../Robot.h"
 #include "Strategies.h"
-#include "Robot2017.h"
 
 using namespace ard;
-
-void ard::Strategy_Tanguy (void* robotOpaque)
+    
+void ard::Strategy_Tanguy (Robot2017& robot)
 {
-    Robot2017& robot = *reinterpret_cast<Robot2017*>(robotOpaque);
+    LSA_Dispenser lsaTopDisp(robot, Monocolor);
+    LSA_Dispenser lsaBotDisp(robot, Bicolor);
 
     LOG_INFO("Strategy_Tanguy.");
 
     robot.nav.setPosition(640,730,0);
 
-//  robot.nav.goToCap(x_target + 260*cos(radians(theta)), y_target + 260*sin(radians(theta)), theta + 180, eDir_FORWARD);
-
-//    DispenserMonocolor lsaTopDisp(robot);
     LOG_INFO("Go to Own Dispenser_Monocolor Rush entry point");
-//  robot.nav.goToCap(lsaTopDisp.getEntryPoint());
-    robot.nav.goToCap(350, 730, 0, eDir_BACKWARD);
-    robot.nav.wait();
-//    lsaTopDisp.execute(/*get all cylinders*/);
+    robot.nav.goToCap(350, 730, 90, eDir_FORWARD);
+    lsaTopDisp.startLSA();
+    while( Success != lsaTopDisp.isFinished() )
+    {
+        lsaTopDisp.updateLSA(PERIOD_STRATEGY);
+        ArdOs::sleepMs(PERIOD_STRATEGY);
+    }
 
     LOG_INFO("Avoiding D");
     robot.nav.goTo(350, 300 + 260*sin(radians(225)),  eDir_BACKWARD);
@@ -36,38 +37,25 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     ArdOs::sleepMs(1000);
     robot.stratInfo.informTaken_B();
 
-    LOG_INFO("Face Recal top Y");
-    robot.nav.turnTo(90);
-    robot.nav.wait();
-
     LOG_INFO("Recal Y");
-    robot.nav.goTo(1200, 470, eDir_FORWARD);
+    robot.nav.recalFace(eTableBorder_START_AREA_Y);
     robot.nav.wait();
-    ArdOs::sleepMs(1000);
 
-//  LOG_INFO("Recal en Y");
-//  robot.nav.goTo(1140, 500, eDir_FORWARD);
-//    while(!robot.nav.targetReached())
-//    {
-//        ArdOs::sleepMs(1000);
-//    }
-
-    LOG_INFO("Going Bwd");
-    robot.nav.goToCap(1200, 370, 225, eDir_BACKWARD);
-    robot.nav.wait();
+//    LOG_INFO("Going Bwd");
+//    robot.nav.goToCap(1200, 370, 225, eDir_BACKWARD);
+//    robot.nav.wait();
 
     LOG_INFO("Going Recal top X");
     robot.nav.goToCap(1300, 470, 180, eDir_BACKWARD);
     robot.nav.wait();
 
     LOG_INFO("Recal top X");
-    robot.nav.goTo(1470, 470, eDir_BACKWARD);
+    robot.nav.recalRear(eTableBorder_OWN_SIDE_X);
     robot.nav.wait();
-    ArdOs::sleepMs(1000);
 
-    LOG_INFO("Going Exit point");
-    robot.nav.goTo(1300, 470, eDir_FORWARD);
-    robot.nav.wait();
+//    LOG_INFO("Going Exit point");
+//    robot.nav.goTo(1300, 470, eDir_FORWARD);
+//    robot.nav.wait();
 
     LOG_INFO("Avoiding E while going F");
     robot.nav.goTo(800, 0, eDir_FORWARD);
@@ -96,6 +84,7 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     LOG_INFO("Poo F on table");
     ArdOs::sleepMs(500);
     robot.stratInfo.informPooed_OnTable(1);
+    robot.nav.goForward(-40);//goBackward a bit to prevent to touch the cylinder during a rotation
 
     LOG_INFO("Goto C");
     robot.nav.goToCap(790 + 260*cos(radians(60)), -690 + 260*sin(radians(60)), 60 + 180, eDir_BACKWARD);
@@ -109,18 +98,13 @@ void ard::Strategy_Tanguy (void* robotOpaque)
     ArdOs::sleepMs(1000);
     robot.stratInfo.informTaken_C();
 
-    LOG_INFO("Going Recal bottom X");
-    robot.nav.turnTo(90);
-    robot.nav.wait();
-
     LOG_INFO("Recal bottom X");
-    robot.nav.goTo(790, -980, eDir_BACKWARD);
+    robot.nav.recalRear(eTableBorder_BOT_Y);
     robot.nav.wait();
 
-    LOG_INFO("Going Fwd");
-        ArdOs::sleepMs(1000);
-robot.nav.goForward(65);
-    robot.nav.wait();
+//    LOG_INFO("Going Fwd");
+//    robot.nav.goForward(65);
+//    robot.nav.wait();
 
     LOG_INFO("Goto 4");
     robot.nav.goToCap(760, -250,  -135, eDir_FORWARD);
@@ -148,18 +132,15 @@ robot.nav.goForward(65);
     robot.nav.wait();
 
     LOG_INFO("Goto G");
-    robot.nav.goToCap(1170, -350, 0, eDir_FORWARD);
-    robot.nav.wait();
-
-    LOG_INFO("Approach G");
-    robot.nav.goForward(100);
+    robot.nav.goToCap(lsaBotDisp.getEntryPoint(), eDir_FORWARD);
     robot.nav.wait();
 
     LOG_INFO("Get 4 Cylinders");
-    for(int i = 4 ; 0 < i ; i--)
+    lsaBotDisp.startLSA();
+    while( Success != lsaBotDisp.isFinished() )
     {
-        ArdOs::sleepMs(500);
-        robot.stratInfo.informWithdraw_G(1);
+        lsaBotDisp.updateLSA(PERIOD_STRATEGY);
+        ArdOs::sleepMs(PERIOD_STRATEGY);
     }
 
     LOG_INFO("Leave G");
@@ -194,5 +175,5 @@ robot.nav.goForward(65);
 
     LOG_INFO("Finished.");
 
-    robot.dieMotherFucker();
+    while(1){};
 }

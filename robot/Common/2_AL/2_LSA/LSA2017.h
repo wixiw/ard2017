@@ -8,8 +8,8 @@
 #ifndef ROBOT_COMMON_2_AL_2_LSA_LSA2017_H_
 #define ROBOT_COMMON_2_AL_2_LSA_LSA2017_H_
 
+#include "Action2017.h"
 #include "RSP.h"
-#include "0_Action2017.h"
 
 namespace ard
 {

@@ -8,16 +8,17 @@
 #include "BSP.hpp"
 
 extern bool UT_buffer_tools();
+using namespace ard;
 
-BSP bsp;
+ArdUART serial0(UART, ID_UART, SERIAL_BUF_SIZE /*RX bvuf size*/, SERIAL_BUF_SIZE /*TX bvuf size*/);
 
 int main(void)
 {
     bool res = true;
 
     digitalWrite(LED_DUE_L, HIGH);
-    bsp.serial0.setInterruptPriority(0);
-    bsp.serial0.start(/*baurate = */115200);
+    serial0.setInterruptPriority(0);
+    serial0.start(/*baurate = */115200);
 
 
 
@@ -42,9 +43,4 @@ int main(void)
     }
 
     while(1){};
-}
-
-extern String getExeVersion()
-{
-    return String("Version test : ") + __DATE__ + " " + __TIME__;
 }

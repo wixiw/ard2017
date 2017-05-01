@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include "BSP.hpp"
-#include "Actuators/Buzzer2017.h"
+#include "Actuators/Buzzer.h"
 #include <Com.h>
 
 namespace ard
@@ -21,12 +21,12 @@ namespace ard
 
     typedef enum
     {
-        RED, GREEN, BLUE, YELLOW, CYAN, PURPLE, WHITE, MULTI /*Change colors regularly*/
+        RED, GREEN, BLUE, YELLOW, CYAN, PURPLE, WHITE, MULTI, eRgb_Max /*Change colors regularly*/
     } eRgb;
 
     typedef enum
     {
-        OFF, ON, SLOW_BLINK, FAST_BLINK
+        OFF, ON, SLOW_BLINK, FAST_BLINK, eLedState_Max
     } eLedState;
 
     class RgbLed
@@ -122,6 +122,27 @@ namespace ard
         //Implements Thread : makes LED blinking
         void run() override;
 
+        /* -----------
+         * UiMsg
+         * -------------
+         */
+
+        //answer true if the start is plugged
+        bool isStartPlugged() const;
+
+        //answer true when color switch is on the preferred color
+        bool isColorSwitchOnPrefered() const;
+
+        //Combines strategy switch to creates an integer. Left switch represent highest bit, Right one lowest one.
+        uint8_t getStrategyId() const;
+
+        //Drive the RGB LED
+        void setRGBled(eRgb color, eLedState blink);
+
+        //Drive the 4 green leds
+        //for param led see BSH.h : LED1, LED2, LED3, LED4
+        void setLed(uint8_t led, eLedState blink);
+
         RgbLed ledRGB;
         Led led1;
         Led led2;
@@ -136,9 +157,9 @@ namespace ard
         FilteredInput user1; //user1 is on the left (1/2 choice)
         FilteredInput user2; //user2 is on the right (test/master choice)
 
-        Buzzer2017 buzzer;
+        Buzzer buzzer;
 
-        apb_HmiState const& getState();
+        apb_HmiState const& serealize();
 
     private:
         apb_HmiState state;

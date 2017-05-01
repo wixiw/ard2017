@@ -23,6 +23,7 @@ trafficYellow   = QColor(0xFCBD1F) #RAL1023
 skyBlue         = QColor(0x1761AB) #RAL5015
 ardGray         = QColor(66,66,66)
 ardBackground   = QColor(0xADAFAF)
+darkRed         = QColor(0x800000)
 transparent     = QColor(0,0,0,0)
 
 markPen = QPen(ardGray)
@@ -262,7 +263,7 @@ class RobotPenWidget(RobotWidget):
 class RobotTrationWidget(RobotWidget):
     def __init__(self, painter):
         super().__init__(painter)
-        self.color = Qt.gray 
+        self.color = darkRed 
 
 class TableWidget():
     

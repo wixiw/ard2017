@@ -16,6 +16,14 @@ Pen::Pen():
     stratSelftest(*this),
     stratWIP(*this)
 {
+    exeBuildDate = String(__DATE__) + " " + __TIME__;
+}
+
+void Pen::init(Robot2017Listener* client)
+{
+    //Parent first
+    Robot2017::init(client);
+
     //register strategies
     lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    NULL);
     lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    NULL);
@@ -43,4 +51,9 @@ Pen::Pen():
     cfg.detectionWaitForOppMove = 1000;
     setConfig(cfg);
 
+}
+
+String const& Pen::getExeVersion()
+{
+    return exeBuildDate;
 }

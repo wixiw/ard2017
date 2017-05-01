@@ -61,5 +61,13 @@ enum eTableBorder {
     START_AREA_Y    = 3;
     BOT_Y           = 4;
     START_AREA_X    = 5;
+    MAX = 6;
+}
+
+//Specific 2017
+enum eCylinderType {
+    NO_CYLINDER      = 0;
+    BICOLOR          = 1;
+    MONOCOLOR        = 2;
 }
 

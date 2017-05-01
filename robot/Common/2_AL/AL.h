@@ -9,8 +9,9 @@
 #define ROBOT_COMMON_2_AL_AL_H_
 
 #include "RSP.h"
-#include "Robot2017.h"
+#include "Robot.h"
 #include "LSA.h"
+#include "4_RemoteControl/RemoteControl.h"
 #include "Strategies.h"
 
 

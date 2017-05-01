@@ -8,20 +8,20 @@
 #ifndef ROBOT_COMMON_2_AL_3_STRATEGIES_LINEARSTRATEGIES_H_
 #define ROBOT_COMMON_2_AL_3_STRATEGIES_LINEARSTRATEGIES_H_
 
-#include "Robot2017.h"
+#include "../Robot.h"
 
 namespace ard
 {
     //development in progress
-    void Strategy_Tanguy(void* robot);
+    void Strategy_Tanguy(Robot2017& robot);
 
     //testing purposes
-    void Strategy_LedTest(void* robot);
-    void Strategy_ButtonTest(void* robot);
-    void Strategy_OmronTest(void* robot);
-    void Strategy_CalibRot(void* robot);
-    void Strategy_CalibLin(void* robot);
-    void Strategy_MotionTest(void* robot);
+    void Strategy_LedTest(Robot2017& robot);
+    void Strategy_ButtonTest(Robot2017& robot);
+    void Strategy_OmronTest(Robot2017& robot);
+    void Strategy_CalibRot(Robot2017& robot);
+    void Strategy_CalibLin(Robot2017& robot);
+    void Strategy_MotionTest(Robot2017& robot);
 }
 
 #endif /* ROBOT_COMMON_2_AL_3_STRATEGIES_LINEARSTRATEGIES_H_ */

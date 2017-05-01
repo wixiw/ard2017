@@ -20,8 +20,7 @@ class UT_AccelServo_Thread: public Thread
         void run() override
         {
             //init
-            //bsp.serial0.println("UT_Actuators");
-            //bsp.serial0.printStringln("Positioning servo to 0");
+            serial0.println("UT_Actuators");
             servo.setAccMax(0);
             servo.setVmax(10000);
             servo.goTo(0);
@@ -71,12 +70,15 @@ class UT_AccelServo_Thread: public Thread
             servo.setVmax(150);
             servo.goTo(1000);
             digitalWrite(LED_DUE_TX, LOW);
+            serial0.printStringln("Moving servo from 0 to 1000 at nominal values");
+            TimeMs start = millis();
             while(!servo.isTargetReached())
             {
                 servo.update(PERIOD_ACTUATORS);
                 sleepMs(PERIOD_ACTUATORS);
             }
             digitalWrite(LED_DUE_TX, HIGH);
+            serial0.printStringln(String("Target reached at (ms) : ") + String(millis()-start) + " (ms).");
             sleepMs(1000);
             //Move from 1000 to 10 at infinite speed
             servo.goTo(10);
@@ -180,7 +182,6 @@ class UT_AccelServo_Thread: public Thread
             }
             digitalWrite(LED_DUE_TX, HIGH);
             sleepMs(1000);
-            //bsp.serial0.printStringln(String("Target reached at (ms) : ") + String(millis()-start) + " (ms).");
         }
 
 };
@@ -189,8 +190,8 @@ UT_AccelServo_Thread* threadAccelServo;
 
 void UT_AccelServo(void)
 {
-    //bsp.serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
-    //bsp.serial0.start(/*baurate = */250000);
+    serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
+    serial0.start(/*baurate = */SERIAL_BAUDRATE, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
 
     threadAccelServo = new UT_AccelServo_Thread();
     pinMode(LED_DUE_TX, OUTPUT);

@@ -6,9 +6,9 @@
  */
 
 #include "Lifecycle.h"
+#include "Robot2017.h"
 
 using namespace ard;
-extern String getExeVersion();
 
 FSM_Lifecycle_Better::FSM_Lifecycle_Better():
         lastState(FSM_Lifecycle_last_state)
@@ -67,22 +67,30 @@ String FSM_Lifecycle_Better::state2Str(FSM_LifecycleStates state) const
     }
 }
 
-Lifecycle::Lifecycle(Robot* newRobot):
+Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi):
         Thread("Strategy", PRIO_STRATEGY, STACK_STRATEGY, PERIOD_STRATEGY),
         strategyId(0),
         nbRegisteredStrats(0),
-        robot(newRobot)
+        listener(NULL),
+        nav(nav),
+        chrono(chrono),
+        hmi(hmi)
 {
     fsm.setDefaultSCI_OCB(this);
+    fsm.setTimer(&fsmTimer);
     INIT_TABLE_TO_ZERO(matchs);
+}
 
-    ASSERT_TEXT(newRobot,"You should not attach a NULL robot");
+//Dependency injection
+void Lifecycle::attach(LifecycleListener* client)
+{
+    ASSERT_TEXT(client,"You should not attach a NULL robot");
+    listener = client;
 }
 
 void Lifecycle::init()
 {
     ASSERT(nbRegisteredStrats);
-
     Thread::init();
     fsm.init();
     fsm.enter();
@@ -143,9 +151,9 @@ void Lifecycle::endFunnyAction()
 
 void Lifecycle::readInputs()
 {
-    fsm.set_startIn                 (robot->isStartPlugged());
-    fsm.set_strategyRemainingTime   (robot->chrono.getStrategyRemainingTime());
-    fsm.set_matchDuration           (robot->chrono.getTime());
+    fsm.set_startIn                 (hmi.isStartPlugged());
+    fsm.set_strategyRemainingTime   (chrono.getStrategyRemainingTime());
+    fsm.set_matchDuration           (chrono.getTime());
 }
 
 void Lifecycle::publishOutputs()
@@ -154,13 +162,13 @@ void Lifecycle::publishOutputs()
     {
         //Read color input
         eColor selectedColor = eColor_UNKNOWN;
-        if ( robot->isColorSwitchOnPrefered() )
+        if ( hmi.isColorSwitchOnPrefered() )
             selectedColor = eColor_PREF;
         else
             selectedColor = eColor_SYM;
 
         //Read strat config
-        configureMatch(robot->getStrategyId(), selectedColor);
+        configureMatch(hmi.getStrategyId(), selectedColor);
 
         matchs[strategyId].install->start();
     }
@@ -169,10 +177,10 @@ void Lifecycle::publishOutputs()
     {
         //avoidance system is only activated with start
         if( !fsm.get_networkStart() )
-            robot->nav.enableAvoidance(true);
+            nav.enableAvoidance(true);
 
         //start coutning match time
-        robot->chrono.startMatch();
+        chrono.startMatch();
 
         //starts the machine
         if( matchs[strategyId].match != NULL)
@@ -186,7 +194,8 @@ void Lifecycle::publishOutputs()
 
     if( fsm.isRaised_matchEnded() )
     {
-        robot->dieMotherFucker();
+        if(listener)
+            listener->matchEnded();
     }
 
     //Robot installation strategy
@@ -197,7 +206,7 @@ void Lifecycle::publishOutputs()
     if( fsm.isStateActive(FSM_Lifecycle::main_region_Match))
     {
         if( matchs[strategyId].linear != NULL)
-            matchs[strategyId].linear(robot);
+            matchs[strategyId].linear(*reinterpret_cast<Robot2017*>(listener) /* #porky */);
 
         if( matchs[strategyId].match != NULL)
             matchs[strategyId].match->update(PERIOD_STRATEGY);
@@ -208,23 +217,15 @@ void Lifecycle::publishOutputs()
         matchs[strategyId].funny->update(PERIOD_STRATEGY);
 }
 
-void Lifecycle::displayIntroduction()
+void Lifecycle::bootUp()
 {
-    LOG_INFO("--------------------------------------");
-
-    #ifdef ARD_DEBUG
-    LOG_INFO(" --- DEBUG --- (see ARD_DEBUG in K_constants.h) ");
-    #else
-    LOG_INFO("Tips : In order to see debug logs, define ARD_DEBUG in ArdOs.h.");
-    #endif
-
-    //Trace binary version to prevent miss build error and usage error during the middle of the night.
-    LOG_INFO("Version libArd : " + robot->getVersion());
-    LOG_INFO(getExeVersion());
-
     LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
-    robot->sendSerialNumber();
+    if( listener )
+        listener->bootUp();
+}
 
+void Lifecycle::displayStrategies()
+{
     LOG_INFO("Available matchs : ");
     for (int i = 0; i < NB_MAX_STRATEGIES; ++i)
     {
@@ -238,7 +239,7 @@ void Lifecycle::displayIntroduction()
 
 void Lifecycle::beep(sc_integer nb)
 {
-    robot->buzzer().bip(nb);
+    hmi.buzzer.bip(nb);
 }
 
 void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)
@@ -255,5 +256,6 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)
     LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + matchs[strategyId].name + ".");
 
     //Configure color
-    robot->setMatchColor(matchColor);
+    if(listener)
+        listener->colorChoosed(matchColor);
 }

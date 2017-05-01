@@ -8,12 +8,12 @@
 #ifndef ROBOTS_ACTUATORTHREAD_H_
 #define ROBOTS_ACTUATORTHREAD_H_
 
+#include "../1_Robot/Arms.h"
+#include "../1_Robot/FaceUp.h"
+#include "../1_Robot/Lifter.h"
+#include "../1_Robot/YakardTimer.h"
 #include "Com.h"
 #include "RSP.h"
-#include "YakardTimer.h"
-#include "Lifter.h"
-#include "Arms.h"
-#include "FaceUp.h"
 
 namespace ard
 {
@@ -57,7 +57,10 @@ namespace ard
         void run();
 
         //used for telemetry or any instropection
-        apb_ActuatorsState const& getState();
+        apb_ActuatorsState const& serealize();
+
+        //Selects the match color
+        void setColor(eColor color);
 
         //data are public to prevent having to write a decorator, but anyone is welcome to do it
         ColorSensor stockColor;

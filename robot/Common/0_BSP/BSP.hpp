@@ -21,10 +21,6 @@
 #include "CpuIo/SD.h"
 #include "CpuIo/TWI_I2C.h"
 
-
-typedef void(*IrqCB)(void);
-extern IrqCB UART_Handler_CB;
-
 class BSP
 {
     public:
@@ -33,10 +29,6 @@ class BSP
         //whatever if libs re-init them later, it's better to do it twice than to forget
         //and risk an HW prob
         BSP();
-
-
-        //Rx0 / Tx0 serial driver
-        ard::ArdUART serial0;
 };
 
 #endif /* BSP_HPP_ */

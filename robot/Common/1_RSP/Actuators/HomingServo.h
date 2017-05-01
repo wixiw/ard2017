@@ -8,6 +8,8 @@
 #ifndef ROBOT_COMMON_1_RSP_ACTUATORS_HOMINGSERVO_H_
 #define ROBOT_COMMON_1_RSP_ACTUATORS_HOMINGSERVO_H_
 
+#include "RSP.h"
+
 namespace ard
 {
     /**

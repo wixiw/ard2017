@@ -207,7 +207,7 @@ HmiThread::HmiThread(DueTimer& timer):
     matchColor(BUTTON_COLOR, HMI_DEBOUNCE, HMI_DEBOUNCE),
     user1(BUTTON_USER1, HMI_DEBOUNCE, HMI_DEBOUNCE),
     user2(BUTTON_USER2, HMI_DEBOUNCE, HMI_DEBOUNCE),
-    buzzer(timer)
+    buzzer(timer, BUZZER, 150)
 {
     state = apb_HmiState_init_default;
 }
@@ -224,7 +224,52 @@ void HmiThread::run()
     ledDue_L.run();
 }
 
-apb_HmiState const& HmiThread::getState()
+bool HmiThread::isStartPlugged() const
+{
+    return tirette.read();
+}
+
+bool HmiThread::isColorSwitchOnPrefered() const
+{
+    return matchColor.read();
+}
+
+uint8_t HmiThread::getStrategyId() const
+{
+    return (user1.read() << 1) + (user2.read());
+}
+
+void HmiThread::setRGBled(eRgb color, eLedState blink)
+{
+    ledRGB.set(color, blink);
+}
+
+void HmiThread::setLed(uint8_t led, eLedState blink)
+{
+    switch (led)
+    {
+    case LED1:
+        led1.set(blink);
+        break;
+
+    case LED2:
+        led2.set(blink);
+        break;
+
+    case LED3:
+        led3.set(blink);
+        break;
+
+    case LED4:
+        led4.set(blink);
+        break;
+    default:
+        ASSERT_TEXT(false, "Unexpected value in setLed()");
+        break;
+    }
+}
+
+apb_HmiState const& HmiThread::serealize()
 {
     state = apb_HmiState_init_default;
     state.led1 = led1.getState();

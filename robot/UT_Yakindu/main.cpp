@@ -6,9 +6,9 @@
 #include "AL.h"
 #include "BlinkLED.h"
 #include "BlinkLEDWrapper.h"
-BSP bsp;
-
 using namespace ard;
+
+ArdUART serial0(UART, ID_UART, SERIAL_BUF_SIZE /*RX bvuf size*/, SERIAL_BUF_SIZE /*TX bvuf size*/);
 
 int main(void)
 {
@@ -16,8 +16,8 @@ int main(void)
 
     //Init drivers
     digitalWrite(LED_DUE_L, HIGH);
-    bsp.serial0.setInterruptPriority(0);
-    bsp.serial0.start(/*baurate = */115200);
+    serial0.setInterruptPriority(0);
+    serial0.start(/*baurate = */SERIAL_BAUDRATE);
 
     BlinkLED sm;
     YakardTimer yakTim;
@@ -67,7 +67,3 @@ int main(void)
     while(1){};
 }
 
-extern String getExeVersion()
-{
-    return String("Version test : ") + __DATE__ + " " + __TIME__;
-}

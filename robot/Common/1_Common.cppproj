@@ -938,24 +938,6 @@
     <Compile Include="0_BSP\CpuIo\GpioTools.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\CpuIo\legacy_uart\RingBuffer.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\CpuIo\legacy_uart\RingBuffer.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\CpuIo\legacy_uart\UARTClass.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\CpuIo\legacy_uart\UARTClass.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\CpuIo\legacy_uart\USARTClass.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\CpuIo\legacy_uart\USARTClass.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\CpuIo\SD.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1106,10 +1088,10 @@
     <Compile Include="1_RSP\Actuators\Buzzer.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Actuators\Buzzer2017.cpp">
+    <Compile Include="1_RSP\Actuators\HomingServo.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Actuators\Buzzer2017.h">
+    <Compile Include="1_RSP\Actuators\HomingServo.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\Actuators\MultiStepper.cpp">
@@ -1151,19 +1133,19 @@
     <Compile Include="1_RSP\ComStack\ComOnUart.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Core\abi.cpp">
+    <Compile Include="1_RSP\core\abi.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Core\ArdFramework.cpp">
+    <Compile Include="1_RSP\core\ArdFramework.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Core\ArdFramework.h">
+    <Compile Include="1_RSP\core\ArdFramework.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Core\ArdMaths.cpp">
+    <Compile Include="1_RSP\core\ArdMaths.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Core\ArdMaths.h">
+    <Compile Include="1_RSP\core\ArdMaths.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\Hmi.cpp">
@@ -1182,12 +1164,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\Navigation.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\Robot.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\Robot.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\RobotParameters.cpp">
@@ -1211,67 +1187,82 @@
     <Compile Include="1_RSP\Sensors\ColorSensor.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\ActuatorThread.cpp">
+    <Compile Include="2_AL\1_Robot\ActuatorThread.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\ActuatorThread.h">
+    <Compile Include="2_AL\1_Robot\ActuatorThread.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\Arms.cpp">
+    <Compile Include="2_AL\1_Robot\Arms.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\Arms.h">
+    <Compile Include="2_AL\1_Robot\Arms.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\FaceUp.cpp">
+    <Compile Include="2_AL\1_Robot\FaceUp.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\FaceUp.h">
+    <Compile Include="2_AL\1_Robot\FaceUp.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\IStrategy.h">
+    <Compile Include="2_AL\1_Robot\IStrategy.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\Lifecycle.cpp">
+    <Compile Include="2_AL\1_Robot\Lifecycle.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\Lifecycle.h">
+    <Compile Include="2_AL\1_Robot\Lifecycle.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\Lifter.cpp">
+    <Compile Include="2_AL\1_Robot\Lifter.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\Lifter.h">
+    <Compile Include="2_AL\1_Robot\Lifter.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\RemoteControl.cpp">
+    <Compile Include="2_AL\1_Robot\Robot2017.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\RemoteControl.h">
+    <Compile Include="2_AL\1_Robot\Robot2017.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\Robot2017.cpp">
+    <Compile Include="2_AL\1_Robot\Robot2017_wrappers.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\Robot2017class.h">
+    <Compile Include="2_AL\1_Robot\StrategyModel2017.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\StrategyModel2017.cpp">
+    <Compile Include="2_AL\1_Robot\StrategyModel2017.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\StrategyModel2017.h">
+    <Compile Include="2_AL\1_Robot\YakardTimer.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\YakardTimer.cpp">
+    <Compile Include="2_AL\1_Robot\YakardTimer.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot2017\YakardTimer.h">
+    <Compile Include="2_AL\2_LSA\Action2017.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\2_LSA\0_Action2017.h">
+    <Compile Include="2_AL\2_LSA\Dispenser.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\2_LSA\Dispenser.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\2_LSA\GetCylinder.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\2_LSA\GetCylinder.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\2_LSA\LSA2017.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\2_LSA\Poo.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\2_LSA\Poo.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\0_Strategy2017.h">
@@ -1296,6 +1287,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\UT_Strategies.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\4_RemoteControl\RemoteControl.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\4_RemoteControl\RemoteControl.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\AL.h">
@@ -1349,6 +1346,42 @@
     <Compile Include="2_AL\generated\FSM_LSA_Dispenser.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_GetCylinder_B.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_GetCylinder_B.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_GetCylinder_C.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_GetCylinder_C.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_PooBorderOpp.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_PooBorderOpp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_PooBorderOwn.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_PooBorderOwn.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_PooMiddle.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_PooMiddle.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_PooStartArea.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\generated\FSM_LSA_PooStartArea.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\generated\FSM_Selftest.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1379,28 +1412,10 @@
     <Compile Include="2_AL\generated\TimerInterface.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\2_LSA\Dispenser.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\2_LSA\Dispenser.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\2_LSA\GetCylinder.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\2_LSA\GetCylinder.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\2_LSA\Poo.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\2_LSA\Poo.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\LSA.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\Robot2017.h">
+    <Compile Include="2_AL\Robot.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\Strategies.h">
@@ -1439,19 +1454,19 @@
     <Folder Include="0_BSP\CMSIS\Device\ATMEL\sam3xa\source\" />
     <Folder Include="0_BSP\CMSIS\Device\ATMEL\sam3xa\source\gcc\" />
     <Folder Include="0_BSP\CpuIo\" />
-    <Folder Include="0_BSP\CpuIo\legacy_uart\" />
     <Folder Include="0_BSP\CpuIo\utility\" />
     <Folder Include="0_BSP\FreeRTOS" />
-    <Folder Include="1_RSP" />
-    <Folder Include="1_RSP\ComStack" />
-    <Folder Include="1_RSP\Core" />
-    <Folder Include="1_RSP\Actuators" />
-    <Folder Include="1_RSP\Sensors" />
+    <Folder Include="1_RSP\" />
+    <Folder Include="1_RSP\Actuators\" />
+    <Folder Include="1_RSP\ComStack\" />
+    <Folder Include="1_RSP\core\" />
+    <Folder Include="1_RSP\Sensors\" />
     <Folder Include="2_AL" />
-    <Folder Include="2_AL\1_Robot2017" />
+    <Folder Include="2_AL\1_Robot\" />
+    <Folder Include="2_AL\2_LSA\" />
+    <Folder Include="2_AL\3_Strategies\" />
+    <Folder Include="2_AL\4_RemoteControl\" />
     <Folder Include="2_AL\generated\" />
-    <Folder Include="2_AL\2_LSA" />
-    <Folder Include="2_AL\3_Strategies" />
   </ItemGroup>
   <ItemGroup>
     <None Include="0_BSP\ArduinoCore\linker_scripts\flash.ld">

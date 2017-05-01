@@ -35,7 +35,9 @@ UT_LEDs_Thread* threadLeds;
 
 void UT_LEDs()
 {
-    bsp = new BSP();
+    serial0.setInterruptPriority(PRIORITY_IRQ_UART0);
+    serial0.start(/*baurate = */SERIAL_BAUDRATE, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
+
     threadLeds = new UT_LEDs_Thread();
     ArdOs::init();
     ArdOs::start();

@@ -38,7 +38,3 @@ int main(void)
     while(1){};
 }
 
-extern String getExeVersion()
-{
-    return String("Version test : ") + __DATE__ + " " + __TIME__;
-}

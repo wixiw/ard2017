@@ -8,6 +8,11 @@
 #ifndef ROBOT_UT_ACTUATORS_COMMON_H_
 #define ROBOT_UT_ACTUATORS_COMMON_H_
 
-BSP* bsp;
+#include "BSP.hpp"
+
+using namespace ard;
+
+ArdUART serial0(UART, ID_UART, SERIAL_BUF_SIZE /*RX bvuf size*/, SERIAL_BUF_SIZE /*TX bvuf size*/);
+
 
 #endif /* ROBOT_UT_ACTUATORS_COMMON_H_ */

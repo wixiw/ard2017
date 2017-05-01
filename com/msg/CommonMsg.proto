@@ -93,7 +93,7 @@ message Tone
 
 message Melody
 {
-    repeated Tone tones = 1 [(nanopb).max_count = 150]; //size to be adjusted with Buzzer2017.cpp
+    repeated Tone tones = 1 [(nanopb).max_count = 150]; //size to be adjusted with Buzzer.cpp
 }
 
 message StratInfo2017
@@ -123,4 +123,7 @@ message StratInfo2017
     required bool   cylinderOppCenter              = 17; //Cylinder in the middle of opponent table side is present on table
 
     required uint32 robotCylinderStockNb           = 18; //Number of cylinders stocked properly inside the robot
+    //repeated eCylinderType stock                   = 19 [(nanopb).max_count = 6]; //The type of each stocked cylinder (index 0 is highest level, and 5 is stocked in arms)
+
+    required uint32 score                          = 20; //Expected match point count
 }

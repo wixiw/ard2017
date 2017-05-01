@@ -9,7 +9,8 @@
 using namespace ard;
 
 LSA_Dispenser::LSA_Dispenser(Robot2017& robot, eLSA_DispType type):
-        LSA2017(robot, "LSADispenser")
+        LSA2017(robot, "LSADispenser"),
+        type(type)
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);
@@ -45,3 +46,39 @@ void LSA_Dispenser::goToEntryPoint()
     robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
 }
 
+void LSA_Dispenser::informStratWithdraw()
+{
+    switch (type) {
+        case Monocolor:
+            informWithdraw_A(1);
+            break;
+        case Bicolor:
+            informWithdraw_G(1);
+            break;
+        case OppBicolor:
+            informWithdraw_OppG(1);
+            break;
+        default:
+            break;
+    }
+}
+
+sc_integer LSA_Dispenser::dispenserCount()
+{
+    sc_integer count;
+    switch (type) {
+        case Monocolor:
+            count = dispenserA_Count();
+            break;
+        case Bicolor:
+            count = dispenserG_Count();
+            break;
+        case OppBicolor:
+            count = dispenserOppG_Count();
+            break;
+        default:
+            break;
+    }
+
+    return count;
+}

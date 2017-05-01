@@ -28,6 +28,5 @@
 #include "Log.h"
 #include "Hmi.h"
 #include "Navigation.h"
-#include "Robot.h"
 
 #endif /* ROBOTS_RSP_H_ */

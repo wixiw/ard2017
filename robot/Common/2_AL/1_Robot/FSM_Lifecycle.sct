@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_weQCoCUmEeeHgPR3RzRZqA" specification="interface:&#xD;&#xA;&#x9;var networkStart: boolean&#xD;&#xA;&#x9;var startIn: boolean&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//user has insert the start&#xD;&#xA;&#x9;in event startMatch&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//a network request from Vizy ask to automatically start the match&#xD;&#xA;&#x9;in event networkConfigRequest&#x9;&#x9;&#x9;&#x9;//a network request from Vizu ask to automatically configure the robot (color/strategy)&#xD;&#xA;&#x9;in event strategyFinished&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//strategy has finished it's job&#xD;&#xA;&#x9;in event funnyActionFinished&#x9;&#x9;&#x9;&#x9;&#x9;//funny action is done&#xD;&#xA;&#x9;out event installStarted&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the install has started&#xD;&#xA;&#x9;out event matchStarted&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the match has started&#xD;&#xA;&#x9;out event funnyStarted&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the funny action has started&#xD;&#xA;&#x9;out event matchEnded&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the match is ended&#xD;&#xA;&#x9;var strategyRemainingTime: integer&#x9;&#x9;&#x9;//remaining duration in milliseconds until the end of time allocated to  strategy (it's in general less than the match duration to prevent overshoot&#xD;&#xA;&#x9;var matchDuration: integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//time spent in match in milliseconds&#xD;&#xA;&#x9;operation beep(nb : integer)&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the robot to beep several times&#xD;&#xA;&#x9;operation displayIntroduction()&#x9;&#x9;&#x9;&#x9;//display the boot message" name="FSM_Lifecycle">
+  <sgraph:Statechart xmi:id="_weQCoCUmEeeHgPR3RzRZqA" specification="interface:&#xD;&#xA;&#x9;var networkStart: boolean&#xD;&#xA;&#x9;var startIn: boolean&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//user has insert the start&#xD;&#xA;&#x9;in event startMatch&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//a network request from Vizy ask to automatically start the match&#xD;&#xA;&#x9;in event networkConfigRequest&#x9;&#x9;&#x9;&#x9;//a network request from Vizu ask to automatically configure the robot (color/strategy)&#xD;&#xA;&#x9;in event strategyFinished&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//strategy has finished it's job&#xD;&#xA;&#x9;in event funnyActionFinished&#x9;&#x9;&#x9;&#x9;&#x9;//funny action is done&#xD;&#xA;&#x9;out event installStarted&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the install has started&#xD;&#xA;&#x9;out event matchStarted&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the match has started&#xD;&#xA;&#x9;out event funnyStarted&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the funny action has started&#xD;&#xA;&#x9;out event matchEnded&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform the robot that the match is ended&#xD;&#xA;&#x9;var strategyRemainingTime: integer&#x9;&#x9;&#x9;//remaining duration in milliseconds until the end of time allocated to  strategy (it's in general less than the match duration to prevent overshoot&#xD;&#xA;&#x9;var matchDuration: integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//time spent in match in milliseconds&#xD;&#xA;&#x9;operation beep(nb : integer)&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the robot to beep several times&#xD;&#xA;&#x9;operation bootUp()&#x9;&#x9;&#x9;&#x9;//display the boot message" name="FSM_Lifecycle">
     <regions xmi:id="_wemA4CUmEeeHgPR3RzRZqA" name="main region">
       <vertices xsi:type="sgraph:Entry" xmi:id="_whC38CUmEeeHgPR3RzRZqA">
         <outgoingTransitions xmi:id="_whYPICUmEeeHgPR3RzRZqA" target="_Y1R-oCYVEeeh1o2kvtdb7w"/>
@@ -29,12 +29,12 @@
         <outgoingTransitions xmi:id="_O7514CU9EeeHgPR3RzRZqA" specification="funnyActionFinished" target="_B6VkYCU6EeeHgPR3RzRZqA"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_B6VkYCU6EeeHgPR3RzRZqA" specification="entry/beep(1)" name="Finished" incomingTransitions="_GHN0gCU6EeeHgPR3RzRZqA _O7514CU9EeeHgPR3RzRZqA"/>
-      <vertices xsi:type="sgraph:State" xmi:id="_EQqtICU7EeeHgPR3RzRZqA" specification="entry/ beep(2); displayIntroduction()" name="Waiting start" incomingTransitions="_atfdcCYVEeeh1o2kvtdb7w">
+      <vertices xsi:type="sgraph:State" xmi:id="_EQqtICU7EeeHgPR3RzRZqA" specification="entry/ beep(2); bootUp()" name="Waiting start" incomingTransitions="_atfdcCYVEeeh1o2kvtdb7w">
         <outgoingTransitions xmi:id="_Kdv6cCU7EeeHgPR3RzRZqA" specification="[startIn]" target="_whGiUCUmEeeHgPR3RzRZqA"/>
         <outgoingTransitions xmi:id="_V01j8CU6EeeHgPR3RzRZqA" specification="networkConfigRequest&#xD;&#xA;/networkStart = true" documentation="Network command" target="_i8UpgCU4EeeHgPR3RzRZqA"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_Y1R-oCYVEeeh1o2kvtdb7w" name="Booting" incomingTransitions="_whYPICUmEeeHgPR3RzRZqA">
-        <outgoingTransitions xmi:id="_atfdcCYVEeeh1o2kvtdb7w" specification="always" target="_EQqtICU7EeeHgPR3RzRZqA"/>
+        <outgoingTransitions xmi:id="_atfdcCYVEeeh1o2kvtdb7w" specification="after 200ms" target="_EQqtICU7EeeHgPR3RzRZqA"/>
       </vertices>
     </regions>
   </sgraph:Statechart>
@@ -345,7 +345,7 @@
     <edges xmi:id="_atgrkCYVEeeh1o2kvtdb7w" type="Transition" element="_atfdcCYVEeeh1o2kvtdb7w" source="_Y1oj8CYVEeeh1o2kvtdb7w" target="_EQrUMCU7EeeHgPR3RzRZqA">
       <children xsi:type="notation:DecorationNode" xmi:id="_athSoSYVEeeh1o2kvtdb7w" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_athSoiYVEeeh1o2kvtdb7w"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_athSoyYVEeeh1o2kvtdb7w" x="-3" y="-34"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_athSoyYVEeeh1o2kvtdb7w" x="-3" y="-50"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_atgrkSYVEeeh1o2kvtdb7w" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_athSoCYVEeeh1o2kvtdb7w" fontName="Verdana"/>

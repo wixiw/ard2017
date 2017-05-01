@@ -108,7 +108,7 @@ bool RobotParameters::setConfig(apb_Configuration const& newConf)
             LOG_INFO("New configuration applied");
         else
             m_configuredOnce = true;
-        
+
         return true;
     }
     else

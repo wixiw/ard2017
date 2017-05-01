@@ -8,9 +8,9 @@
 #ifndef ROBOT_COMMON_2_AL_0_STRATFWK_ACTION2017_H_
 #define ROBOT_COMMON_2_AL_0_STRATFWK_ACTION2017_H_
 
-#include "../Robot2017.h"
+#include "../Robot.h"
+#include "../Robot.h"
 #include "RSP.h"
-#include "Robot2017.h"
 
 namespace ard
 {
@@ -23,7 +23,7 @@ namespace ard
                   robot(_robot)
         {
             ASSERT_TEXT(fsm.maxOrthogonalStates == 1, "Orthogonoal regions limited to 1 on ARD.");
-            fsm.setTimer(&robot.lifecycle.fsmTimer);
+            fsm.setTimer(&robot.getFsmTimer());
             fsm.setDefaultSCI_OCB(this);
         }
 
@@ -51,42 +51,48 @@ namespace ard
          */
         void beep(sc_integer nb)
         {
-            robot.buzzer().bip((uint8_t)(nb));
+            robot.hmi.buzzer.bip((uint8_t)(nb));
         }
 
         void led1(sc_integer blink)
         {
+            ASSERT(blink < eLedState_Max);
             robot.hmi.led1.set((eLedState)(blink));
         }
 
         void led2(sc_integer blink)
         {
+            ASSERT(blink < eLedState_Max);
             robot.hmi.led2.set((eLedState)(blink));
         }
 
         void led3(sc_integer blink)
         {
+            ASSERT(blink < eLedState_Max);
             robot.hmi.led3.set((eLedState)(blink));
         }
 
         void led4(sc_integer blink)
         {
+            ASSERT(blink < eLedState_Max);
             robot.hmi.led4.set((eLedState)(blink));
         }
 
         void ledRGB(sc_integer color, sc_integer blink)
         {
+            ASSERT(color < eRgb_Max);
+            ASSERT(blink < eLedState_Max);
             robot.hmi.ledRGB.set((eRgb)(color), eLedState(blink));
         }
 
         bool isStartPlugged()
         {
-            return robot.isStartPlugged();
+            return robot.hmi.isStartPlugged();
         }
 
         bool isColorSwitchOnPrefered()
         {
-            return robot.isColorSwitchOnPrefered();
+            return robot.hmi.isColorSwitchOnPrefered();
         }
 
         bool isUser1SwitchOn()
@@ -101,27 +107,55 @@ namespace ard
 
         void logDebug(sc_string msg)
         {
-            LOG_DEBUG(String(msg));
+            LOG_DEBUG(msg);
         }
 
         void logInfo(sc_string msg)
         {
-            LOG_INFO(String(msg));
+            LOG_INFO(msg);
         }
 
         void logError(sc_string msg)
         {
-            LOG_ERROR(String(msg));
+            LOG_ERROR(msg);
         }
 
         /**
-         * Navigation
+         * General
          */
         void dieMotherFucker()
         {
             robot.dieMotherFucker();
         }
 
+        sc_integer xav()
+        {
+            return robot.getConfig().xav;
+        }
+        sc_integer xar()
+        {
+            return robot.getConfig().xar;
+        }
+        sc_integer yside()
+        {
+            return robot.getConfig().yside;
+        }
+        sc_integer xavExtended()
+        {
+            return robot.getConfig().xavExtended;
+        }
+        sc_integer xouter()
+        {
+            return robot.getConfig().xouter;
+        }
+        sc_integer getRemainingTime()
+        {
+            return robot.chrono.getStrategyRemainingTime();
+        }
+
+        /**
+         * Navigation
+         */
         void enableAvoidance(sc_boolean on)
         {
             robot.nav.enableAvoidance(on);
@@ -139,11 +173,13 @@ namespace ard
 
         void goTo_ID(sc_real x, sc_real y, sc_integer sens)
         {
+            ASSERT(sens == -1 || sens == 1);
             robot.nav.goTo(x, y, (eDir)(sens));
         }
 
         void goToCap(sc_real x, sc_real y, sc_real h, sc_integer sens)
         {
+            ASSERT(sens == -1 || sens == 1);
             robot.nav.goToCap(x, y, h, (eDir)(sens));
         }
 
@@ -169,11 +205,13 @@ namespace ard
 
         void recalFace(sc_integer border)
         {
+            ASSERT(border < eTableBorder_MAX);
             robot.nav.recalFace((eTableBorder)(border));
         }
 
         void recalRear(sc_integer border)
         {
+            ASSERT(border < eTableBorder_MAX);
             robot.nav.recalRear((eTableBorder)(border));
         }
 
@@ -247,6 +285,8 @@ namespace ard
 
         void arms(sc_integer left, sc_integer right)
         {
+            ASSERT(left <= 1000);
+            ASSERT(right <= 1000);
             robot.actuators.servoLeftArm.goTo((uint16_t)left);
             robot.actuators.servoRightArm.goTo((uint16_t)right);
         }
@@ -320,6 +360,66 @@ namespace ard
         /**
          * Strategy Info
          */
+        sc_integer score()
+        {
+            return robot.stratInfo.data.score;
+        }
+
+        sc_integer robotStockCount()
+        {
+            return robot.stratInfo.data.robotCylinderStockNb;
+        }
+
+        sc_integer nextCylinderColor()
+        {
+            NOT_IMPLEMENTED();
+            return 0;
+            //TODO WIX return robot.stratInfo.data.stock[robot.stratInfo.data.robotCylinderStockNb];
+        }
+
+        sc_integer containerCount(sc_integer containerId)
+        {
+            switch (containerId) {
+                case 1:
+                    return robot.stratInfo.data.containerBorderOppNb;
+                    break;
+                case 2:
+                    return robot.stratInfo.data.containerMidleOppNb;
+                    break;
+                case 3:
+                    return robot.stratInfo.data.containerMidleCenterNb;
+                    break;
+                case 4:
+                    return robot.stratInfo.data.containerMidleOwnNb;
+                    break;
+                case 5:
+                    return robot.stratInfo.data.containerBorderNb;
+                    break;
+                case 6:
+                    return robot.stratInfo.data.containerStartNb;
+                    break;
+                default:
+                    ASSERT(false);
+                    return 0;
+                    break;
+            }
+        }
+
+        sc_integer dispenserA_Count()
+        {
+            return robot.stratInfo.data.dispenserMonocolorNb;
+        }
+
+        sc_integer dispenserG_Count()
+        {
+            return robot.stratInfo.data.dispenserBicolorNb;
+        }
+
+        sc_integer dispenserOppG_Count()
+        {
+            return robot.stratInfo.data.dispenserOppNb;
+        }
+
         void informWithdraw_A(sc_integer nb)
         {
             robot.stratInfo.informWithdraw_A((uint8_t)nb);
@@ -330,9 +430,9 @@ namespace ard
             robot.stratInfo.informWithdraw_G((uint8_t)nb);
         }
 
-        void informWithdraw_Opp_G(sc_integer nb)
+        void informWithdraw_OppG(sc_integer nb)
         {
-            robot.stratInfo.informWithdraw_Opp_G((uint8_t)nb);
+            robot.stratInfo.informWithdraw_OppG((uint8_t)nb);
         }
 
         void informPooed_3(sc_integer nb)
@@ -355,9 +455,9 @@ namespace ard
             robot.stratInfo.informPooed_5((uint8_t)nb);
         }
 
-        void informPooed_Opp_5(sc_integer nb)
+        void informPooed_1(sc_integer nb)
         {
-            robot.stratInfo.informPooed_Opp_5((uint8_t)nb);
+            robot.stratInfo.informPooed_1((uint8_t)nb);
         }
 
         void informPooed_6(sc_integer nb)

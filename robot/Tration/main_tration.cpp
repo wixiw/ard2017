@@ -11,16 +11,17 @@ using namespace ard;
 
 int main( void )
 {   
-    g_robot = new Tration();
+    //new required to handle the fact that FreeRtos will destroy the default stack
+    Tration* robot = new Tration();
+    ASSERT(robot);
+    RemoteControl* remoteControl = new RemoteControl(*robot);
+    ASSERT(remoteControl);
 
     //Build and start robot
-    g_robot->bootOs();
+    robot->init(remoteControl);
+    remoteControl->start();
+    robot->boot();
 
     return 0;
-}
-
-extern String getExeVersion()
-{
-    return String("Version Tration : ") + __DATE__ + " " + __TIME__;
 }
 

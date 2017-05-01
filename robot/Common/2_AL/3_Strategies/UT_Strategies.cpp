@@ -10,134 +10,126 @@
 
 using namespace ard;
 
-void ard::Strategy_LedTest(void* robotOpaque)
+void ard::Strategy_LedTest(Robot2017& robot)
 {
-    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
-
     auto WAIT = 200;
     LOG_INFO("STRAT : Strategy_LedTest.");
 
     while (1)
     {
-        robot.setRGBled(RED, ON);
-        robot.setLed(LED4, eLedState::OFF);
-        robot.setLed(LED1, eLedState::ON);
+        robot.hmi.setRGBled(RED, ON);
+        robot.hmi.setLed(LED4, eLedState::OFF);
+        robot.hmi.setLed(LED1, eLedState::ON);
         ArdOs::sleepMs (WAIT);
-        robot.setRGBled(GREEN, ON);
-        robot.setLed(LED1, eLedState::OFF);
-        robot.setLed(LED2, eLedState::ON);
+        robot.hmi.setRGBled(GREEN, ON);
+        robot.hmi.setLed(LED1, eLedState::OFF);
+        robot.hmi.setLed(LED2, eLedState::ON);
         ArdOs::sleepMs (WAIT);
-        robot.setRGBled(BLUE, ON);
-        robot.setLed(LED2, eLedState::OFF);
-        robot.setLed(LED3, eLedState::ON);
+        robot.hmi.setRGBled(BLUE, ON);
+        robot.hmi.setLed(LED2, eLedState::OFF);
+        robot.hmi.setLed(LED3, eLedState::ON);
         ArdOs::sleepMs (WAIT);
-        robot.setRGBled(WHITE, ON);
-        robot.setLed(LED3, eLedState::OFF);
-        robot.setLed(LED4, eLedState::ON);
+        robot.hmi.setRGBled(WHITE, ON);
+        robot.hmi.setLed(LED3, eLedState::OFF);
+        robot.hmi.setLed(LED4, eLedState::ON);
         ArdOs::sleepMs (WAIT);
     }
 }
 
-void ard::Strategy_ButtonTest(void* robotOpaque)
+void ard::Strategy_ButtonTest(Robot2017& robot)
 {
-    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
-
     LOG_INFO("STRAT : Strategy_ButtonTest.");
     while (1)
     {
-        if (robot.isColorSwitchOnPrefered())
+        if (robot.hmi.isColorSwitchOnPrefered())
         {
-            robot.setLed(LED1, eLedState::ON);
+            robot.hmi.setLed(LED1, eLedState::ON);
         }
         else
         {
-            robot.setLed(LED1, eLedState::OFF);
+            robot.hmi.setLed(LED1, eLedState::OFF);
         }
 
-        if (robot.getStrategyId() & 0x02)
+        if (robot.hmi.getStrategyId() & 0x02)
         {
-            robot.setLed(LED2, eLedState::ON);
+            robot.hmi.setLed(LED2, eLedState::ON);
         }
         else
         {
-            robot.setLed(LED2, eLedState::OFF);
+            robot.hmi.setLed(LED2, eLedState::OFF);
         }
 
-        if (robot.getStrategyId() & 0x02)
+        if (robot.hmi.getStrategyId() & 0x02)
         {
-            robot.setLed(LED3, eLedState::ON);
+            robot.hmi.setLed(LED3, eLedState::ON);
         }
         else
         {
-            robot.setLed(LED3, eLedState::OFF);
+            robot.hmi.setLed(LED3, eLedState::OFF);
         }
 
-        if (robot.isStartPlugged())
+        if (robot.hmi.isStartPlugged())
         {
-            robot.setLed(LED4, eLedState::ON);
+            robot.hmi.setLed(LED4, eLedState::ON);
         }
         else
         {
-            robot.setLed(LED4, eLedState::OFF);
+            robot.hmi.setLed(LED4, eLedState::OFF);
         }
 
         ArdOs::sleepMs (50);
     }
 }
 
-void ard::Strategy_OmronTest(void* robotOpaque)
+void ard::Strategy_OmronTest(Robot2017& robot)
 {
-    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
-
     LOG_INFO("STRAT : Strategy_OmronTest.");
 
     apb_NavState nav;
 
     while (1)
     {
-        nav = robot.nav.getState();
+        nav = robot.nav.serealize();
 
         if (nav.omronFL)
-        robot.setLed(LED1, eLedState::ON);
+        robot.hmi.setLed(LED1, eLedState::ON);
         else
-        robot.setLed(LED1, eLedState::OFF);
+        robot.hmi.setLed(LED1, eLedState::OFF);
 
         if (nav.omronFR)
-        robot.setLed(LED2, eLedState::ON);
+        robot.hmi.setLed(LED2, eLedState::ON);
         else
-        robot.setLed(LED2, eLedState::OFF);
+        robot.hmi.setLed(LED2, eLedState::OFF);
 
         if (nav.omronRL)
-        robot.setLed(LED3, eLedState::ON);
+        robot.hmi.setLed(LED3, eLedState::ON);
         else
-        robot.setLed(LED3, eLedState::OFF);
+        robot.hmi.setLed(LED3, eLedState::OFF);
 
         if (nav.omronRR)
-        robot.setLed(LED4, eLedState::ON);
+        robot.hmi.setLed(LED4, eLedState::ON);
         else
-        robot.setLed(LED4, eLedState::OFF);
+        robot.hmi.setLed(LED4, eLedState::OFF);
 
         ArdOs::sleepMs (50);
     }
 }
 
-void ard::Strategy_CalibRot(void* robotOpaque)
+void ard::Strategy_CalibRot(Robot2017& robot)
 {
     LOG_ERROR("Strategy_CalibRot is not implemented.");
 }
 
-void ard::Strategy_CalibLin(void* robotOpaque)
+void ard::Strategy_CalibLin(Robot2017& robot)
 {
-    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
-
     LOG_INFO("STRAT : Strategy_CalibRot.");
 
-    while( !robot.isStartPlugged() )
+    while( !robot.hmi.isStartPlugged() )
     {
         ArdOs::sleepMs (50);
     }
 
-    while( robot.isStartPlugged() )
+    while( robot.hmi.isStartPlugged() )
     {
         ArdOs::sleepMs (50);
     }
@@ -151,12 +143,12 @@ void ard::Strategy_CalibLin(void* robotOpaque)
         robot.nav.goTo(0, 300, eDir_FORWARD);
         robot.nav.wait();
 
-        while( !robot.isStartPlugged() )
+        while( !robot.hmi.isStartPlugged() )
         {
             ArdOs::sleepMs (50);
         }
 
-        while( robot.isStartPlugged() )
+        while( robot.hmi.isStartPlugged() )
         {
             ArdOs::sleepMs (50);
         }
@@ -168,10 +160,8 @@ void ard::Strategy_CalibLin(void* robotOpaque)
     robot.dieMotherFucker();
 }
 
-void ard::Strategy_MotionTest(void* robotOpaque)
+void ard::Strategy_MotionTest(Robot2017& robot)
 {
-    Robot& robot = *reinterpret_cast<Robot*>(robotOpaque);
-
     LOG_INFO("STRAT : Strategy_Alpha.");
 
     //robot.nav.setPosition(610,820,-90);

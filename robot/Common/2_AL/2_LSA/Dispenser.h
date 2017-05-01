@@ -33,6 +33,15 @@ namespace ard
 
         //Implements FSM_LSA_Dispenser::DefaultSCI_OCB
         void goToEntryPoint() override;
+
+        //FSM API : Use this hide in the FSM which dispenser is used
+        void informStratWithdraw() override;
+
+        //FSM API : Use this hide in the FSM which dispenser is used
+        sc_integer dispenserCount() override;
+
+    protected:
+        eLSA_DispType type;
     };
 
 } /* namespace ard */

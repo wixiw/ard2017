@@ -5,7 +5,7 @@
  *      Author: wix
  */
 
-#include "ActuatorThread.h"
+#include "../1_Robot/ActuatorThread.h"
 
 using namespace ard;
 
@@ -30,7 +30,7 @@ ActuatorThread::ActuatorThread():
         fsmTimeWheel(),
         lifter(*this, fsmTimeWheel),
         arms(*this, fsmTimeWheel),
-        faceUp()
+        faceUp(*this)
 {
     state = apb_ActuatorsState_init_default;
 
@@ -42,6 +42,12 @@ ActuatorThread::ActuatorThread():
     servoLifter.setVmax(150);
     servoLeftArm.setVmax(150);
     servoRightArm.setVmax(150);
+
+}
+
+void ActuatorThread::setColor(eColor color)
+{
+    faceUp.setColor(color);
 
 }
 
@@ -79,7 +85,7 @@ eFaceUpStatus ard::ActuatorThread::getFaceUpStatus()
     return faceUp.getFaceUpStatus();
 }
 
-apb_ActuatorsState const& ActuatorThread::getState()
+apb_ActuatorsState const& ActuatorThread::serealize()
 {
     state = apb_ActuatorsState_init_default;
 

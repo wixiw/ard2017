@@ -86,7 +86,9 @@ DueTimer& DueTimer::detachInterrupt(void){
 
 DueTimer& DueTimer::start(long microseconds){
     if( started )
+    {
         return *this;
+    }        
 
 	/*
 		Start the timer
@@ -110,8 +112,10 @@ DueTimer& DueTimer::start(long microseconds){
 
 DueTimer& DueTimer::stop(void){
     if( !started )
+    {
         return *this;
-
+    }
+        
 	/*
 		Stop the timer
 	*/

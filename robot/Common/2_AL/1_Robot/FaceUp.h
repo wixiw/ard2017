@@ -5,11 +5,15 @@
  *      Author: wix
  */
 
-#ifndef ROBOT_COMMON_2_AL_1_ROBOT2017_FACEUP_H_
-#define ROBOT_COMMON_2_AL_1_ROBOT2017_FACEUP_H_
+#ifndef ROBOT_COMMON_2_AL_1_ROBOT_FACEUP_H_
+#define ROBOT_COMMON_2_AL_1_ROBOT_FACEUP_H_
+
+#include "RSP.h"
 
 namespace ard
 {
+    class ActuatorThread;
+
     //CAUTION : keep in sync with state machines API
     typedef enum
     {
@@ -21,15 +25,24 @@ namespace ard
     class FaceUp
     {
     public:
-        FaceUp();
+        FaceUp(ActuatorThread& parent);
+
+        //Selects the match color
+        void setColor(eColor color);
 
         //Turn the cylinder
         void faceUpCylinder();
 
         //Return the state of faceUpCylinderCmd()
         eFaceUpStatus getFaceUpStatus();
+
+    private:
+        eColor        matchColor;
+
+        //Actuators list
+        ActuatorThread& acts;
     };
 
 } /* namespace ard */
 
-#endif /* ROBOT_COMMON_2_AL_1_ROBOT2017_FACEUP_H_ */
+#endif /* ROBOT_COMMON_2_AL_1_ROBOT_FACEUP_H_ */

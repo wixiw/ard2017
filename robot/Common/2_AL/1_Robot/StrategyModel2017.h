@@ -23,6 +23,11 @@ namespace ard
         //Selects the match color
         void setColor(eColor color);
 
+        //cache to hold telemetry data
+        apb_StratInfo2017 data;
+
+        //Get the number of cylinders
+
         //Inform strategy that a cylinder has been withdrawn from our mono-color dispenser (A), 0 means all available
         void informWithdraw_A(uint8_t nb = 0);
 
@@ -30,7 +35,7 @@ namespace ard
         void informWithdraw_G(uint8_t nb = 0);
 
         //Inform strategy that a cylinder has been withdrawn from opponent bi-color dispenser (Opp_G), 0 means all available
-        void informWithdraw_Opp_G(uint8_t nb = 0);
+        void informWithdraw_OppG(uint8_t nb = 0);
 
         //Inform strategy that a cylinder has been pooed in the middle center container(zone 3), and decrease stock count, 0 means all available
         void informPooed_3(uint8_t nb = 0);
@@ -45,7 +50,7 @@ namespace ard
         void informPooed_5(uint8_t nb = 0);
 
         //Inform strategy that a cylinder has been pooed in the border container on opponent side (zone Opp_5), and decrease stock count, 0 means all available
-        void informPooed_Opp_5(uint8_t nb = 0);
+        void informPooed_1(uint8_t nb = 0);
 
         //Inform strategy that a cylinder has been pooed in our start area (zone 6), and decrease stock count, 0 means all available
         void informPooed_6(uint8_t nb = 0);
@@ -106,13 +111,11 @@ namespace ard
 
     private:
         //helper function for updating stratInfo
-        void withdraw(uint8_t nb, uint32_t& dispenserCount, String const& caller);
-        void poo(uint8_t nb, uint8_t max, uint32_t& containerCount, String const& caller);
-        void take(bool& objectPresent, String const& caller);
+        void withdraw(uint8_t nb, uint32_t& dispenserCount, eCylinderType cylType, String const& caller);
+        void poo(uint8_t nb, uint8_t max, uint32_t& containerCount, uint8_t points, String const& caller);
+        void take(bool& objectPresent, eCylinderType cylType, String const& caller);
         void push(bool& objectPresent, const String& caller);
 
-        //cache to hold telemetry data
-        apb_StratInfo2017 stratInfo;
     };
 
 } /* namespace ard */

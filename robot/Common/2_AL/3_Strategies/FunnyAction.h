@@ -8,7 +8,7 @@
 #ifndef ROBOT_COMMON_2_AL_3_STRATEGIES_FUNNYACTION_H_
 #define ROBOT_COMMON_2_AL_3_STRATEGIES_FUNNYACTION_H_
 
-#include "Robot2017.h"
+#include "../Robot.h"
 
 namespace ard
 {

@@ -55,8 +55,20 @@ namespace ard
         //Play a series a notes
         void playMelody(Melody melody, uint16_t nbTones);
 
+        //Play sharp is quite similar to playTone but will introduce a little silence between notes
+        void playSharp(uint16_t frequency, uint16_t lengthMs);
+
+        //DAT truck rear move warning
+        void naderBell();
+
+        //Just for fun
+        void imperialMarch();
+
         //wait until all sounds has been processed
         void wait();
+
+        //test if sounds has been processed
+        bool soundPlayed();
 
         void interrupt();
         
@@ -66,6 +78,7 @@ namespace ard
         Queue queue;
         Signal empty;
         uint32_t currentToneCpt;
+        bool m_soundPlayed;
     };
 
 } /* namespace ard */

@@ -18,11 +18,20 @@ namespace ard
     public:
         Tration();
         
+        //Overrides Robot20017
+        void init(Robot2017Listener* client) override;
+
+        //Implements Robot2017
+        String const& getExeVersion() override;
+
         HomolTration stratHomol;
         InstallTration stratInstall;
         Selftest stratSelftest;
         WipTration stratWIP;
         FunnyAction stratFunnyAction;
+
+    protected:
+        String exeBuildDate;
     };
 
 } /* namespace ard */

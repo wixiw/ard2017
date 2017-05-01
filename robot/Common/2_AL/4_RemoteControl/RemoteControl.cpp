@@ -6,11 +6,14 @@
  */
 
 #include "RemoteControl.h"
-
-#ifdef BUILD_REMOTE_CONTROL
-#include "Robot2017class.h"
-
 using namespace ard;
+
+void UART_Handler(void)
+{
+    //DEBUG_SET_HIGH(); //uncomment to check period and delay with oscilloscope
+    RemoteControl::instance->serialDriver.IrqHandler();
+    //DEBUG_SET_LOW(); //uncomment to check period and delay with oscilloscope : default empty duration (2 io write + 1 function call) is 750ns
+}
 
 #define HANDLE_MSG(msg)                 \
 case apb_RemoteControlRequest_##msg##_tag:     \
@@ -19,13 +22,25 @@ case apb_RemoteControlRequest_##msg##_tag:     \
     break;                              \
 }
 
-RemoteControl::RemoteControl(Robot2017* newRobot, ISerialDriver& serialDriver):
+RemoteControl* RemoteControl::instance = NULL;
+
+RemoteControl::RemoteControl(Robot2017& robot):
+    Robot2017Listener(),
+    serialDriver(UART, ID_UART, SERIAL_BUF_SIZE /*RX bvuf size*/, SERIAL_BUF_SIZE /*TX bvuf size*/),
     com("RemCtl", serialDriver, LOG_QUEUE_SIZE),
-    robot(newRobot)
+    robot(robot)
 {
+    ASSERT_TEXT(instance == NULL, "Only one instance of RemoteControl is allowed.");
+    instance = this;
     INIT_TABLE_TO_ZERO(msg_send_buffer);
+    serialDriver.setInterruptPriority            (PRIORITY_IRQ_UART0);
     com.setListener(this);
-    ASSERT_TEXT(newRobot,"You should not attach a NULL robot");
+    robot.log.addLogger(*this);
+}
+
+void RemoteControl::start()
+{
+    serialDriver.start(SERIAL_BAUDRATE, SerialMode_8E1 | UART_MR_CHMODE_NORMAL);
 }
 
 bool RemoteControl::isReady() const
@@ -36,7 +51,6 @@ bool RemoteControl::isReady() const
 void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLength)
 {
     UNUSED(origin);
-    ASSERT_TEXT(robot, "RemoteControl shall not be started without having a robot attached.");
 
     apb_RemoteControlRequest request = apb_RemoteControlRequest_init_default;
 
@@ -146,25 +160,25 @@ void RemoteControl::getComStatsLogs(apb_RemoteControlRequest const & request)
     LOG_INFO("------------------------------------------------");
     LOG_INFO("|           Serial 0 Stats                     |");
     LOG_INFO("------------------------------------------------");
-    LOG_INFO(String(" ########  ##     ##       Total bytes : ") + robot->bsp.serial0.nbTxBytes);
+    LOG_INFO(String(" ########  ##     ##       Total bytes : ") + serialDriver.nbTxBytes);
     LOG_INFO(String(" ##     ##  ##   ##          Total msg : ") + com.getNbRxMsg());
-    LOG_INFO(String(" ##     ##   ## ##          Bytes lost : ") + robot->bsp.serial0.nbRxBytesLost);
+    LOG_INFO(String(" ##     ##   ## ##          Bytes lost : ") + serialDriver.nbRxBytesLost);
     LOG_INFO(String(" ########     ###      Max buffer load : ") + com.getMaxRxBufferLoad());
     LOG_INFO(String(" ##   ##     ## ##    Max msg in queue : ") + com.getMaxRxRawMsg());
     LOG_INFO(String(" ##    ##   ##   ##     Max HDLC payld : ") + com.getMaxRxHdlcPayload());
     LOG_INFO(String(" ##     ## ##     ##           Dropped : ") + com.getHdlcDropMsgCount());
     LOG_INFO("");
-    LOG_INFO(String("  ######## ##     ##       Total bytes : ") + robot->bsp.serial0.nbRxBytes);
+    LOG_INFO(String("  ######## ##     ##       Total bytes : ") + serialDriver.nbRxBytes);
     LOG_INFO(String("     ##     ##   ##          Total msg : ") + com.getNbTxMsg());
-    LOG_INFO(String("     ##      ## ##          Bytes lost : ") + robot->bsp.serial0.nbTxBytesLost);
+    LOG_INFO(String("     ##      ## ##          Bytes lost : ") + serialDriver.nbTxBytesLost);
     LOG_INFO(String("     ##       ###      Max buffer load : ") + com.getMaxTxMsgCount());
     LOG_INFO(String("     ##      ## ##     Max raw  length : ") + com.getMaxTxMsgLength());
     LOG_INFO(String("     ##     ##   ##     Max HDLC payld : ") + com.getMaxTxHdlcPayload());
     LOG_INFO(String("     ##    ##     ##                     "));
     LOG_INFO("");
-    LOG_INFO(String("  FrameError        : ") + robot->bsp.serial0.nbFrameError);
-    LOG_INFO(String("  ParityError       : ") + robot->bsp.serial0.nbParityError);
-    LOG_INFO(String("  MissedIrq         : ") + robot->bsp.serial0.nbMissedIrq);
+    LOG_INFO(String("  FrameError        : ") + serialDriver.nbFrameError);
+    LOG_INFO(String("  ParityError       : ") + serialDriver.nbParityError);
+    LOG_INFO(String("  MissedIrq         : ") + serialDriver.nbMissedIrq);
     LOG_INFO(String("  HDLC Frame length : ") + HDLC_FRAME_LENGTH);
     LOG_INFO(String("  HDLC buffer size  : ") + SERIAL_BUF_SIZE);
     LOG_INFO(String("  LOG_QUEUE_SIZE    : ") + LOG_QUEUE_SIZE);
@@ -181,11 +195,11 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
     apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
     response.which_type                     = apb_RemoteControlResponse_telemetry_tag;
     response.type.telemetry.date            = millis();
-    response.type.telemetry.nav             = robot->nav.getState();
-    response.type.telemetry.actuators       = robot->actuators.getState();
-    response.type.telemetry.stratInfo       = robot->stratInfo.serialize();
-    response.type.telemetry.hmi            = robot->getHmiState();
-    response.type.telemetry.chrono         = robot->chrono.serialize();
+    response.type.telemetry.nav             = robot.nav.serealize();
+    response.type.telemetry.actuators       = robot.actuators.serealize();
+    response.type.telemetry.stratInfo       = robot.stratInfo.serialize();
+    response.type.telemetry.hmi            = robot.hmi.serealize();
+    response.type.telemetry.chrono         = robot.chrono.serialize();
 
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode telemetry message.");
@@ -203,7 +217,7 @@ void RemoteControl::requestPlaySound(apb_RemoteControlRequest const & request)
     for(unsigned int i = 0 ; i < request.type.requestPlaySound.tones_count ; i++)
     {
         apb_Tone tone = request.type.requestPlaySound.tones[i];
-        robot->buzzer().playTone(tone.frequency, tone.duration);
+        robot.hmi.buzzer.playTone(tone.frequency, tone.duration);
     }
 }
 
@@ -216,7 +230,7 @@ void RemoteControl::getConfig(apb_RemoteControlRequest const & request)
     /* populates message */
     apb_RemoteControlResponse response  = apb_RemoteControlResponse_init_default;
     response.which_type                 = apb_RemoteControlResponse_config_tag;
-    response.type.config                = robot->getConfig();
+    response.type.config                = robot.getConfig();
 
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode config message.");
@@ -225,13 +239,13 @@ void RemoteControl::getConfig(apb_RemoteControlRequest const & request)
 
 void RemoteControl::setConfig(apb_RemoteControlRequest const & request)
 {
-    robot->setConfig(request.type.setConfig);
+    robot.setConfig(request.type.setConfig);
     getConfig(request);
 }
 
 void RemoteControl::getSerial(apb_RemoteControlRequest const & request)
 {
-    robot->sendSerialNumber();
+    bootUp();
 }
 
 
@@ -240,38 +254,38 @@ void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
     uint8_t strategy = request.type.configureMatch.strategy;
     eColor color = (eColor)(request.type.configureMatch.matchColor);
 
-    robot->lifecycle.networkConfigRequest(strategy, color);
+    robot.lifecycle.networkConfigRequest(strategy, color);
 }
 
 void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
 {
-    robot->lifecycle.startMatch();
+    robot.lifecycle.startMatch();
 }
 
 void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)
 {
     if( request.type.requestActuators.has_lifter )
-        robot->actuators.servoLifter.goTo(request.type.requestActuators.lifter);
+        robot.actuators.servoLifter.goTo(request.type.requestActuators.lifter);
     if( request.type.requestActuators.has_leftArm )
-        robot->actuators.servoLeftArm.goTo(request.type.requestActuators.leftArm);
+        robot.actuators.servoLeftArm.goTo(request.type.requestActuators.leftArm);
     if( request.type.requestActuators.has_rightArm )
-        robot->actuators.servoRightArm.goTo(request.type.requestActuators.rightArm);
+        robot.actuators.servoRightArm.goTo(request.type.requestActuators.rightArm);
     if( request.type.requestActuators.has_leftWheel )
-        robot->actuators.servoLeftWheel.goTo(request.type.requestActuators.leftWheel);
+        robot.actuators.servoLeftWheel.goTo(request.type.requestActuators.leftWheel);
     if( request.type.requestActuators.has_rightWheel )
-        robot->actuators.servoRightWheel.goTo(request.type.requestActuators.rightWheel);
+        robot.actuators.servoRightWheel.goTo(request.type.requestActuators.rightWheel);
     if( request.type.requestActuators.has_funnyAction )
-        robot->actuators.servoFunnyAction.goTo(request.type.requestActuators.funnyAction);
+        robot.actuators.servoFunnyAction.goTo(request.type.requestActuators.funnyAction);
 }
 
 void RemoteControl::setPosition(apb_RemoteControlRequest const & request)
 {
-    robot->nav.setPosition(PointCap::fromProto(request.type.setPosition));
+    robot.nav.setPosition(PointCap::fromProto(request.type.setPosition));
 }
 
 void RemoteControl::setSpeedAcc(apb_RemoteControlRequest const & request)
 {
-    robot->nav.setSpeedAcc(
+    robot.nav.setSpeedAcc(
             request.type.setSpeedAcc.vMax,
             request.type.setSpeedAcc.vMaxTurn,
             request.type.setSpeedAcc.accMax,
@@ -280,7 +294,7 @@ void RemoteControl::setSpeedAcc(apb_RemoteControlRequest const & request)
 
 void RemoteControl::requestGoto(apb_RemoteControlRequest const & request)
 {
-    robot->nav.goTo(
+    robot.nav.goTo(
             request.type.requestGoto.target.x,
             request.type.requestGoto.target.y,
             request.type.requestGoto.direction);
@@ -288,7 +302,7 @@ void RemoteControl::requestGoto(apb_RemoteControlRequest const & request)
 
 void RemoteControl::requestGotoCap(apb_RemoteControlRequest const & request)
 {
-    robot->nav.goToCap(
+    robot.nav.goToCap(
             request.type.requestGotoCap.target.x,
             request.type.requestGotoCap.target.y,
             request.type.requestGotoCap.target.h,
@@ -297,33 +311,33 @@ void RemoteControl::requestGotoCap(apb_RemoteControlRequest const & request)
 
 void RemoteControl::requestGoForward(apb_RemoteControlRequest const & request)
 {
-    robot->nav.goForward(request.type.requestGoForward);
+    robot.nav.goForward(request.type.requestGoForward);
 }
 
 void RemoteControl::requestTurnDelta(apb_RemoteControlRequest const & request)
 {
-    robot->nav.turnDelta(request.type.requestTurnDelta);
+    robot.nav.turnDelta(request.type.requestTurnDelta);
 }
 
 void RemoteControl::requestTurnTo(apb_RemoteControlRequest const & request)
 {
-    robot->nav.turnTo(request.type.requestTurnTo);
+    robot.nav.turnTo(request.type.requestTurnTo);
 }
 
 void RemoteControl::requestFaceTo(apb_RemoteControlRequest const & request)
 {
-    robot->nav.faceTo(Point(request.type.requestFaceTo.x,
+    robot.nav.faceTo(Point(request.type.requestFaceTo.x,
                       request.type.requestFaceTo.y));
 }
 
 void RemoteControl::recalFaceOnBorder(apb_RemoteControlRequest const & request)
 {
-    robot->nav.recalFace(request.type.recalFaceOnBorder);
+    robot.nav.recalFace(request.type.recalFaceOnBorder);
 }
 
 void RemoteControl::recalRearOnBorder(apb_RemoteControlRequest const & request)
 {
-    robot->nav.recalRear(request.type.recalRearOnBorder);
+    robot.nav.recalRear(request.type.recalRearOnBorder);
 }
 
 void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)
@@ -332,7 +346,7 @@ void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)
         LOG_INFO("Robot block request.");
     else
         LOG_INFO("Robot unblock request.");
-    robot->nav.fakeRobot = request.type.requestBlockRobot;
+    robot.nav.fakeRobot = request.type.requestBlockRobot;
 }
 
 void RemoteControl::requestMaxLengthMsg(apb_RemoteControlRequest const & request)
@@ -390,7 +404,7 @@ void RemoteControl::log(LogMsg const & log)
     mutex.unlock();
 }
 
-void RemoteControl::sendSerialNumber()
+void RemoteControl::bootUp()
 {
     mutex.lock();
 
@@ -401,7 +415,7 @@ void RemoteControl::sendSerialNumber()
     /* populates message */
     apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
     response.which_type         = apb_RemoteControlResponse_serialNumber_tag;
-    strcpy(response.type.serialNumber.value, robot->getSerialNumber());
+    strcpy(response.type.serialNumber.value, robot.getSerialNumber());
 
     /* Now we are ready to encode the message! */
     ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode serial number.");
@@ -410,4 +424,3 @@ void RemoteControl::sendSerialNumber()
     mutex.unlock();
 }
 
-#endif
