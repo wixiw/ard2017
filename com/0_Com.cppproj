@@ -356,7 +356,8 @@
     </ToolchainSettings>
     <OutputFileName>libARDcom</OutputFileName>
     <OutputFileExtension>.a</OutputFileExtension>
-    <PreBuildEvent>REM $(SolutionDir)..\com\generateCom.bat $(SolutionDir)..\ on</PreBuildEvent>
+    <PreBuildEvent>REM $(SolutionDir)..\com\generateCom.bat $(SolutionDir)..\ on
+</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="buffer_tools.c">

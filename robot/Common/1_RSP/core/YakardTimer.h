@@ -10,8 +10,8 @@
 
 #include "BSP.hpp"
 
-#include "generated/TimerInterface.h"
-#include "generated/TimedStatemachineInterface.h"
+#include "TimerInterface.h"
+#include "TimedStatemachineInterface.h"
 
 #define NB_YAKARD_TIMERS 10
 

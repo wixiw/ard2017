@@ -8,7 +8,7 @@
 #ifndef ROBOT_COMMON_2_AL_0_STRATFWK_ISTRATEGY_H_
 #define ROBOT_COMMON_2_AL_0_STRATFWK_ISTRATEGY_H_
 
-#include "ArdOs.h"
+#include "RSP.h"
 
 namespace ard
 {
@@ -19,6 +19,45 @@ namespace ard
         IStrategy(String const& name):PolledObject(name){};
 
         virtual void start() = 0;
+    };
+
+    typedef enum
+    {
+        NoLsa,
+        Success,
+        Failed,
+        InProgress,
+    } LSAResult;
+
+    /**
+     * This interface is used to be able to get a pointer on the LSA
+     * without having to get the template meta data issues
+     */
+    class LSA
+    {
+    public:
+        virtual ~LSA() = default;
+
+        //Get the expected position of the robot when the LSA begins
+        virtual PointCap const& getEntryPoint() const = 0;
+
+        //Set the entry point
+        virtual void setEntryPoint(PointCap const& point) = 0;
+
+        //Get information about machine status
+        virtual LSAResult isFinished() = 0;
+
+        //design issue : users of LSA would like to poll it,
+        //it's not possible to share the PolledObject interface
+        //as it's also used in other class used in concrete LSA.
+        //so to prevent loosing time as competition is approaching
+        //this method replace the one of PolledObject and the child
+        //class has to do the wrapping. Any idea welcome.
+        virtual void updateLSA(DelayMs sinceLastCall) = 0;
+        //Same remarks here
+        virtual void startLSA() = 0;
+        //Same remarks here
+        virtual void stopLSA() = 0;
     };
 }
 #endif /* ROBOT_COMMON_2_AL_0_STRATFWK_ISTRATEGY_H_ */

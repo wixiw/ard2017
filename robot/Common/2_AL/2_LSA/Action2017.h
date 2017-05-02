@@ -8,8 +8,7 @@
 #ifndef ROBOT_COMMON_2_AL_0_STRATFWK_ACTION2017_H_
 #define ROBOT_COMMON_2_AL_0_STRATFWK_ACTION2017_H_
 
-#include "../Robot.h"
-#include "../Robot.h"
+#include "Robot.h"
 #include "RSP.h"
 
 namespace ard
@@ -38,6 +37,11 @@ namespace ard
         {
             fsm.init();
             fsm.enter();
+        }
+
+        virtual void stop()
+        {
+            fsm.exit();
         }
 
         //Implements LSA

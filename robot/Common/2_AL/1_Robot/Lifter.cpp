@@ -5,9 +5,8 @@
  *      Author: wix
  */
 
-#include "../1_Robot/Lifter.h"
-
-#include "../1_Robot/ActuatorThread.h"
+#include "Lifter.h"
+#include "ActuatorThread.h"
 
 using namespace ard;
 

@@ -5,7 +5,7 @@
  *      Author: wix
  */
 
-#include "../1_Robot/StrategyModel2017.h"
+#include "StrategyModel2017.h"
 
 
 using namespace ard;

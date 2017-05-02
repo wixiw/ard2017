@@ -15,4 +15,6 @@
 #include "2_LSA/GetCylinder.h"
 #include "2_LSA/Poo.h"
 
+#include "2_LSA/LSAList.h"
+
 #endif /* ROBOT_COMMON_2_AL_LSA_H_ */

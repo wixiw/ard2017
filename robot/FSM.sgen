@@ -5,7 +5,7 @@ GeneratorModel for yakindu::cpp {
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
@@ -14,7 +14,7 @@ GeneratorModel for yakindu::cpp {
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
@@ -23,25 +23,27 @@ GeneratorModel for yakindu::cpp {
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
+    /**
+      * LSA ---------------------
+      */
+      
     statechart FSM_LSA_Dispenser {
-
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
     statechart FSM_LSA_GetCylinder_B {
-
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
@@ -50,120 +52,117 @@ GeneratorModel for yakindu::cpp {
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
         
     statechart FSM_LSA_PooBorderOwn {
-
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
     statechart FSM_LSA_PooBorderOpp {
-
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
     statechart FSM_LSA_PooMiddle {
-
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
     statechart FSM_LSA_PooStartArea {
-
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
     statechart FSM_LSA_PooMiddle {
-
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
     
-    
-    
-    
-       
-    statechart FSM_InstallPen {
-
-        feature Outlet {
-            targetProject = "ard2017_master"
-            targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
-        }
-    }
-    
-    statechart FSM_InstallTration {
-
-        feature Outlet {
-            targetProject = "ard2017_master"
-            targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
-        }
-    }
-    
-    statechart FSM_HomolPen {
-
-        feature Outlet {
-            targetProject = "ard2017_master"
-            targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
-        }
-    }
-    
-    statechart FSM_HomolTration {
-
-        feature Outlet {
-            targetProject = "ard2017_master"
-            targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
-        }
-    }
+     /**
+      * Common strategies ---------------------
+      */
     
     statechart FSM_Selftest {
-
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
+        }
+    }
+    
+            
+     /**
+      * Pen ---------------------
+      */
+    statechart FSM_InstallPen {
+            feature Outlet {
+                targetProject = "ard2017_master"
+                targetFolder = "robot/Pen/generated"
+                libraryTargetFolder = "robot/Common/1_RSP/core"
+            }
+        }
+    
+    statechart FSM_HomolPen {
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Pen/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
     statechart FSM_WipPen {
-
         feature Outlet {
             targetProject = "ard2017_master"
-            targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            targetFolder = "robot/Pen/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
         
-    statechart FSM_WipTration {
-
+     /**
+      * Tration ---------------------
+      */
+      
+    statechart FSM_InstallTration {
         feature Outlet {
             targetProject = "ard2017_master"
-            targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/2_AL/generated"
+            targetFolder = "robot/Tration/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
+    
+    statechart FSM_HomolTration {
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Tration/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
+        }
+    }
+    
+    statechart FSM_WipTration {
+        feature Outlet {
+            targetProject = "ard2017_master"
+            targetFolder = "robot/Tration/generated"
+            libraryTargetFolder = "robot/Common/1_RSP/core"
+        }
+    }
+    
 }

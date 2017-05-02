@@ -1148,6 +1148,21 @@
     <Compile Include="1_RSP\core\ArdMaths.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\core\sc_types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\TimedStatemachineInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\TimerInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\YakardTimer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\core\YakardTimer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\Hmi.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1235,12 +1250,6 @@
     <Compile Include="2_AL\1_Robot\StrategyModel2017.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\1_Robot\YakardTimer.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\1_Robot\YakardTimer.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\2_LSA\Action2017.h">
       <SubType>compile</SubType>
     </Compile>
@@ -1259,19 +1268,16 @@
     <Compile Include="2_AL\2_LSA\LSA2017.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\2_LSA\LSAList.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\2_LSA\LSAList.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\2_LSA\Poo.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\2_LSA\Poo.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\0_Strategy2017.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\FsmStrategies.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\3_Strategies\FsmStrategies.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\FunnyAction.cpp">
@@ -1281,6 +1287,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\LinearStrategies.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Strategy2017.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\StrategyTanguy.cpp">
@@ -1302,30 +1311,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Arms.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_HomolPen.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_HomolPen.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_HomolTration.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_HomolTration.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_InstallPen.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_InstallPen.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_InstallTration.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_InstallTration.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_Lifecycle.cpp">
@@ -1388,28 +1373,7 @@
     <Compile Include="2_AL\generated\FSM_Selftest.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\generated\FSM_WipPen.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_WipPen.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_WipTration.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_WipTration.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\sc_types.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="2_AL\generated\StatemachineInterface.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\TimedStatemachineInterface.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\TimerInterface.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\LSA.h">

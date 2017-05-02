@@ -5,7 +5,7 @@
  *      Author: wix
  */
 
-#include "../1_Robot/FaceUp.h"
+#include "FaceUp.h"
 
 using namespace ard;
 

@@ -5,7 +5,7 @@
  *      Author: wix
  */
 
-#include "../1_Robot/ActuatorThread.h"
+#include "ActuatorThread.h"
 
 using namespace ard;
 

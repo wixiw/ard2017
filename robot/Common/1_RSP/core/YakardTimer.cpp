@@ -5,7 +5,7 @@
  *      Author: wix
  */
 
-#include "../1_Robot/YakardTimer.h"
+#include "YakardTimer.h"
 
 using namespace ard;
 

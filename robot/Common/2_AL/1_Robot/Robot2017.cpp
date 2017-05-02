@@ -68,7 +68,6 @@ void Robot2017::init(Robot2017Listener* client)
 void Robot2017::boot()
 {
     ASSERT(instance);
-    LOG_INFO(String("----------------- ") + getSerialNumber() + " -------------------");
 
     //init all OS objects (including threads),
     //which should call all init() function
@@ -120,6 +119,8 @@ void Robot2017::dieMotherFucker()
 
 void Robot2017::bootUp()
 {
+    LOG_INFO(String("----------------- ") + getSerialNumber() + " -------------------");
+
     #ifdef ARD_DEBUG
     LOG_INFO(" --- DEBUG --- (see ARD_DEBUG in K_constants.h) ");
     #else

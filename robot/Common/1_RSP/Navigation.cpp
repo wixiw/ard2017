@@ -371,14 +371,13 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
 
 void Navigation::goTo(Point target, eDir sens)
 {
-    LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(sens) + ".");
-
     m_mutex.lock();
     ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
     m_order = eNavOrder_GOTO;
     m_target = target.toAmbiPose(m_color);
     m_sensTarget = sens;
+    LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
 
     m_mutex.unlock();
@@ -386,14 +385,13 @@ void Navigation::goTo(Point target, eDir sens)
 
 void Navigation::goToCap(PointCap target, eDir sens)
 {
-    LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(sens) + ".");
-
     m_mutex.lock();
     ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
     m_order = eNavOrder_GOTO_CAP;
     m_target = target.toAmbiPose(m_color);
     m_sensTarget = sens;
+    LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
 
     m_mutex.unlock();

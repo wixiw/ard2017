@@ -219,9 +219,9 @@ void Lifecycle::publishOutputs()
 
 void Lifecycle::bootUp()
 {
-    LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
     if( listener )
         listener->bootUp();
+    LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
 }
 
 void Lifecycle::displayStrategies()

@@ -20,7 +20,7 @@ namespace ard
     typedef enum
     {
         DO_NOT_RECAL,
-        RECAL_BOTH
+        RECAL
     } eLSA_GetCylinder_Recal;
 
     class LSA_GetCylinder_B: public LSA2017<FSM_LSA_GetCylinder_B, FSM_LSA_GetCylinder_B::FSM_LSA_GetCylinder_BStates>

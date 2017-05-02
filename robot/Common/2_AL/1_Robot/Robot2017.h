@@ -11,7 +11,6 @@
 #include "ActuatorThread.h"
 #include "Lifecycle.h"
 #include "StrategyModel2017.h"
-#include "YakardTimer.h"
 
 //Timer 0 reserved for ARD cpu stats, instanciated for IRQ priority config
 #define TIMER_CPU           Timer0
@@ -65,6 +64,9 @@ namespace ard
         //For some reason Atmel is shitting with build dependencies, here is a way to have the exe build date
         //It's supposed to be close to Library date
         virtual String const& getExeVersion() = 0;
+
+        //Get a reference to an LSA
+        virtual LSA& getLSA(uint8_t id) const = 0;
 
         //Get the FSM event timer
         YakardTimer& getFsmTimer();

@@ -203,6 +203,24 @@
     <PreBuildEvent>DEL $(OutputDirectory)\Pen* /Q</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="generated\FSM_HomolPen.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\FSM_HomolPen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\FSM_InstallPen.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\FSM_InstallPen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\FSM_WipPen.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\FSM_WipPen.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main_pen.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -212,6 +230,9 @@
     <Compile Include="Pen.h">
       <SubType>compile</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="generated\" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

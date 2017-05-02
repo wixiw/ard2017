@@ -10,10 +10,11 @@
 using namespace ard;
 Tration::Tration():
     Robot2017(),
-    stratHomol(*this),
-    stratInstall(*this),
-    stratSelftest(*this),
-    stratWIP(*this),
+    lsaList(*this),
+    stratHomol      (*this, lsaList),
+    stratInstall    (*this, lsaList),
+    stratSelftest   (*this, lsaList),
+    stratWIP        (*this, lsaList),
     stratFunnyAction(*this)
 {
     exeBuildDate = String(__DATE__) + " " + __TIME__;
@@ -57,3 +58,8 @@ String const& Tration::getExeVersion()
     return exeBuildDate;
 }
 
+
+LSA& Tration::getLSA(uint8_t id) const
+{
+    return lsaList.getLSA(id);
+}

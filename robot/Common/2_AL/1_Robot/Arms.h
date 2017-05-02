@@ -8,9 +8,8 @@
 #ifndef ROBOT_COMMON_2_AL_ACTUATORSCTRL_ARMS_H_
 #define ROBOT_COMMON_2_AL_ACTUATORSCTRL_ARMS_H_
 
-#include "../1_Robot/Lifter.h"
+#include "Lifter.h"
 #include "RSP.h"
-
 #include "generated/FSM_Arms.h"
 
 namespace ard

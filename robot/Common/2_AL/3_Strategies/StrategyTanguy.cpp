@@ -1,19 +1,21 @@
-#include "../Robot.h"
+#include "Robot.h"
 #include "Strategies.h"
+#include "LSA.h"
 
 using namespace ard;
     
 void ard::Strategy_Tanguy (Robot2017& robot)
 {
-    LSA_Dispenser lsaTopDisp(robot, Monocolor);
-    LSA_Dispenser lsaBotDisp(robot, Bicolor);
+    LSA& lsaTopDisp = robot.getLSA(eDisp_A);
+    LSA& lsaBotDisp =  robot.getLSA(eDisp_G);
 
     LOG_INFO("Strategy_Tanguy.");
 
-    robot.nav.setPosition(640,730,0);
+    robot.nav.setPosition(640, 730, 0);
 
     LOG_INFO("Go to Own Dispenser_Monocolor Rush entry point");
-    robot.nav.goToCap(350, 730, 90, eDir_FORWARD);
+    robot.nav.goToCap(350, 730, 90, eDir_BACKWARD);
+    robot.nav.wait();
     lsaTopDisp.startLSA();
     while( Success != lsaTopDisp.isFinished() )
     {

@@ -8,8 +8,7 @@
 #ifndef ROBOTS_LIFECYCLE_H_
 #define ROBOTS_LIFECYCLE_H_
 
-#include "../1_Robot/IStrategy.h"
-#include "../1_Robot/YakardTimer.h"
+#include "IStrategy.h"
 #include "RSP.h"
 
 #define private public //workaround to gain instropection

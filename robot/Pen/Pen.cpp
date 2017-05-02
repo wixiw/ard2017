@@ -11,10 +11,11 @@ using namespace ard;
 
 Pen::Pen():
     Robot2017(),
-    stratHomol(*this),
-    stratInstall(*this),
-    stratSelftest(*this),
-    stratWIP(*this)
+    lsaList(*this),
+    stratHomol      (*this, lsaList),
+    stratInstall    (*this, lsaList),
+    stratSelftest   (*this, lsaList),
+    stratWIP        (*this, lsaList)
 {
     exeBuildDate = String(__DATE__) + " " + __TIME__;
 }
@@ -26,7 +27,7 @@ void Pen::init(Robot2017Listener* client)
 
     //register strategies
     lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    NULL);
-    lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    NULL);
+    lifecycle.registerMatchType("Homol",          NULL,      &stratHomol,    NULL);
     lifecycle.registerMatchType("Selftest",       NULL,               &stratSelftest, NULL);
     lifecycle.registerMatchType("WIP",            NULL,               &stratWIP,      NULL);
     lifecycle.registerLinearStrat("Old Tanguy",   Strategy_Tanguy);
@@ -56,4 +57,9 @@ void Pen::init(Robot2017Listener* client)
 String const& Pen::getExeVersion()
 {
     return exeBuildDate;
+}
+
+LSA& Pen::getLSA(uint8_t id) const
+{
+    return lsaList.getLSA(id);
 }
