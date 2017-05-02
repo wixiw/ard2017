@@ -9,7 +9,8 @@
 using namespace ard;
 
 LSA_PooMiddle::LSA_PooMiddle(Robot2017& robot, eLSA_PooMidArea type):
-        LSA2017(robot, "LSAPooMiddle")
+        LSA2017(robot, "LSAPooMiddle"),
+        type(type)
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);
@@ -38,6 +39,23 @@ LSAResult LSA_PooMiddle::isFinished()
         return Success;
 
     return InProgress;
+}
+
+void LSA_PooMiddle::informPoo_generic()
+{
+    switch (type) {
+        case Opp:
+            informPooed_2(1);
+            break;
+        case Center:
+            informPooed_3(1);
+            break;
+        case Own:
+            informPooed_4(1);
+            break;
+        default:
+            break;
+    }
 }
 
 void LSA_PooMiddle::goToEntryPoint()

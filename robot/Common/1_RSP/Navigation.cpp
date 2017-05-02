@@ -242,7 +242,7 @@ void Navigation::run()
                 }
                 applyCmdToGoStraight(m_sensTarget * m_pose.distanceTo(m_target), userMaxSpeed, userMaxAcc);
                 m_state = eNavState_ESCAPING_WALL;
-                LOG_INFO("       Wall touched, recal ok.");
+                LOG_INFO(String("   wall touched, recal ok, exiting at : ") + m_target.toString());
                 klaxon.bip(1);
             }
             break;
@@ -460,7 +460,7 @@ void Navigation::recalFace(eTableBorder border)
     ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
     m_order = eNavOrder_RECAL_FACE;
     m_sensTarget = eDir_FORWARD;
-    m_target = getRecalPointFace(border);
+    m_target = getRecalPointFace(border).toAmbiPose(m_color);
     double angleDelta = moduloPiPi(m_target.h - m_pose.h);
 
     //In case the switch are not mapped, they will always be set to 1, so we deactivate the switch reading
@@ -485,7 +485,7 @@ void Navigation::recalRear(eTableBorder border)
     ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
     m_order = eNavOrder_RECAL_REAR;
     m_sensTarget = eDir_BACKWARD;
-    m_target = getRecalPointRear(border);
+    m_target = getRecalPointRear(border).toAmbiPose(m_color);;
     double angleDelta = moduloPiPi(m_target.h - m_pose.h);
 
     //In case the switch are not mapped, they will always be set to 1, so we deactivate the switch reading

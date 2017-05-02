@@ -29,7 +29,7 @@ void Tration::init(Robot2017Listener* client)
     lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Selftest",       &stratInstall,      &stratSelftest, NULL);
-    lifecycle.registerMatchType("WIP",            &stratInstall,      &stratWIP,      &stratFunnyAction);
+    lifecycle.registerMatchType("WIP",            &stratInstall,      &stratWIP,      NULL);
     lifecycle.registerLinearStrat("Old Tanguy",   Strategy_Tanguy);
     lifecycle.registerLinearStrat("UT LEDs",      Strategy_LedTest);
     lifecycle.registerLinearStrat("UT Button",    Strategy_ButtonTest);

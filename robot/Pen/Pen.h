@@ -56,6 +56,7 @@ namespace ard
         InstallPen stratInstall;
         Selftest stratSelftest;
         WipPen stratWIP;
+        FunnyAction stratFunnyAction;
 
     protected:
         String exeBuildDate;

@@ -46,7 +46,7 @@ void LSA_Dispenser::goToEntryPoint()
     robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
 }
 
-void LSA_Dispenser::informStratWithdraw()
+void LSA_Dispenser::informWithdraw_generic()
 {
     switch (type) {
         case Monocolor:

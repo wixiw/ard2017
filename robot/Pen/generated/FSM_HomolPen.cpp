@@ -97,12 +97,10 @@ sc_boolean FSM_HomolPen::isActive()
 	return stateConfVector[0] != FSM_HomolPen_last_state;
 }
 
-/* 
- * Always returns 'false' since this state machine can never become final.
- */
 sc_boolean FSM_HomolPen::isFinal()
 {
-   return false;}
+	return (stateConfVector[0] == main_region__final_);
+}
 
 void FSM_HomolPen::runCycle()
 {
@@ -141,6 +139,41 @@ void FSM_HomolPen::runCycle()
 			react_main_region_Wait_Tration_to_move();
 			break;
 		}
+		case main_region_Return_to_Start_Areaa_to_recal :
+		{
+			react_main_region_Return_to_Start_Areaa_to_recal();
+			break;
+		}
+		case main_region_Recal_X_against_Start_Area_flip_flop :
+		{
+			react_main_region_Recal_X_against_Start_Area_flip_flop();
+			break;
+		}
+		case main_region_Recal_Y_against_Start_Area_border :
+		{
+			react_main_region_Recal_Y_against_Start_Area_border();
+			break;
+		}
+		case main_region_Get_C_Cylinder :
+		{
+			react_main_region_Get_C_Cylinder();
+			break;
+		}
+		case main_region_Wait_for_Tration_to_finish_his_move :
+		{
+			react_main_region_Wait_for_Tration_to_finish_his_move();
+			break;
+		}
+		case main_region_Go_To_Cylinder_C :
+		{
+			react_main_region_Go_To_Cylinder_C();
+			break;
+		}
+		case main_region__final_ :
+		{
+			react_main_region__final_();
+			break;
+		}
 		default:
 			break;
 		}
@@ -152,6 +185,7 @@ void FSM_HomolPen::runCycle()
 void FSM_HomolPen::clearInEvents()
 {
 	timeEvents[0] = false; 
+	timeEvents[1] = false; 
 }
 
 void FSM_HomolPen::clearOutEvents()
@@ -195,6 +229,27 @@ sc_boolean FSM_HomolPen::isStateActive(FSM_HomolPenStates state)
 			);
 		case main_region_Wait_Tration_to_move : 
 			return (sc_boolean) (stateConfVector[0] == main_region_Wait_Tration_to_move
+			);
+		case main_region_Return_to_Start_Areaa_to_recal : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Return_to_Start_Areaa_to_recal
+			);
+		case main_region_Recal_X_against_Start_Area_flip_flop : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Recal_X_against_Start_Area_flip_flop
+			);
+		case main_region_Recal_Y_against_Start_Area_border : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Recal_Y_against_Start_Area_border
+			);
+		case main_region_Get_C_Cylinder : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Get_C_Cylinder
+			);
+		case main_region_Wait_for_Tration_to_finish_his_move : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Wait_for_Tration_to_finish_his_move
+			);
+		case main_region_Go_To_Cylinder_C : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Go_To_Cylinder_C
+			);
+		case main_region__final_ : 
+			return (sc_boolean) (stateConfVector[0] == main_region__final_
 			);
 		default: return false;
 	}
@@ -464,9 +519,44 @@ sc_boolean FSM_HomolPen::check_main_region_Get_4_monocolor_cylinders_from_Dispen
 	return ifaceInternalSCI.SUCCESS == iface_OCB->getLSAStatus() || ifaceInternalSCI.FAILURE == iface_OCB->getLSAStatus();
 }
 
+sc_boolean FSM_HomolPen::check_main_region_Poo_4_monocolor_cylinders_in_4_tr0_tr0()
+{
+	return ifaceInternalSCI.SUCCESS == iface_OCB->getLSAStatus() || ifaceInternalSCI.FAILURE == iface_OCB->getLSAStatus();
+}
+
 sc_boolean FSM_HomolPen::check_main_region_Wait_Tration_to_move_tr0_tr0()
 {
 	return timeEvents[0];
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Return_to_Start_Areaa_to_recal_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Recal_X_against_Start_Area_flip_flop_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Recal_Y_against_Start_Area_border_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Get_C_Cylinder_tr0_tr0()
+{
+	return ifaceInternalSCI.SUCCESS == iface_OCB->getLSAStatus() || ifaceInternalSCI.FAILURE == iface_OCB->getLSAStatus();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Wait_for_Tration_to_finish_his_move_tr0_tr0()
+{
+	return timeEvents[1];
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Go_To_Cylinder_C_tr0_tr0()
+{
+	return iface_OCB->targetReached();
 }
 
 void FSM_HomolPen::effect_main_region_Go_To_Dispenser_A_tr0()
@@ -484,13 +574,55 @@ void FSM_HomolPen::effect_main_region_Go_To_Container_4_tr0()
 void FSM_HomolPen::effect_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_tr0()
 {
 	exseq_main_region_Get_4_monocolor_cylinders_from_Dispenser_A();
-	enseq_main_region_Go_To_Container_4_default();
+	enseq_main_region_Return_to_Start_Areaa_to_recal_default();
+}
+
+void FSM_HomolPen::effect_main_region_Poo_4_monocolor_cylinders_in_4_tr0()
+{
+	exseq_main_region_Poo_4_monocolor_cylinders_in_4();
+	enseq_main_region_Go_To_Cylinder_C_default();
 }
 
 void FSM_HomolPen::effect_main_region_Wait_Tration_to_move_tr0()
 {
 	exseq_main_region_Wait_Tration_to_move();
 	enseq_main_region_Go_To_Dispenser_A_default();
+}
+
+void FSM_HomolPen::effect_main_region_Return_to_Start_Areaa_to_recal_tr0()
+{
+	exseq_main_region_Return_to_Start_Areaa_to_recal();
+	enseq_main_region_Recal_X_against_Start_Area_flip_flop_default();
+}
+
+void FSM_HomolPen::effect_main_region_Recal_X_against_Start_Area_flip_flop_tr0()
+{
+	exseq_main_region_Recal_X_against_Start_Area_flip_flop();
+	enseq_main_region_Recal_Y_against_Start_Area_border_default();
+}
+
+void FSM_HomolPen::effect_main_region_Recal_Y_against_Start_Area_border_tr0()
+{
+	exseq_main_region_Recal_Y_against_Start_Area_border();
+	enseq_main_region_Go_To_Container_4_default();
+}
+
+void FSM_HomolPen::effect_main_region_Get_C_Cylinder_tr0()
+{
+	exseq_main_region_Get_C_Cylinder();
+	enseq_main_region_Wait_for_Tration_to_finish_his_move_default();
+}
+
+void FSM_HomolPen::effect_main_region_Wait_for_Tration_to_finish_his_move_tr0()
+{
+	exseq_main_region_Wait_for_Tration_to_finish_his_move();
+	enseq_main_region__final__default();
+}
+
+void FSM_HomolPen::effect_main_region_Go_To_Cylinder_C_tr0()
+{
+	exseq_main_region_Go_To_Cylinder_C();
+	enseq_main_region_Get_C_Cylinder_default();
 }
 
 /* Entry action for state 'Go To Dispenser A'. */
@@ -516,6 +648,14 @@ void FSM_HomolPen::enact_main_region_Get_4_monocolor_cylinders_from_Dispenser_A(
 	iface_OCB->startLSA(ifaceInternalSCI.LSA_A);
 }
 
+/* Entry action for state 'Poo 4 monocolor cylinders in 4'. */
+void FSM_HomolPen::enact_main_region_Poo_4_monocolor_cylinders_in_4()
+{
+	/* Entry action for state 'Poo 4 monocolor cylinders in 4'. */
+	iface_OCB->logInfo("Pooing 4 cylinders in 4 area.");
+	iface_OCB->startLSA(ifaceInternalSCI.LSA_4);
+}
+
 /* Entry action for state 'Wait Tration to move'. */
 void FSM_HomolPen::enact_main_region_Wait_Tration_to_move()
 {
@@ -525,10 +665,59 @@ void FSM_HomolPen::enact_main_region_Wait_Tration_to_move()
 	iface_OCB->logInfo("Waiting for Tration to move away...");
 }
 
+/* Entry action for state 'Return to Start Areaa to recal'. */
+void FSM_HomolPen::enact_main_region_Return_to_Start_Areaa_to_recal()
+{
+	/* Entry action for state 'Return to Start Areaa to recal'. */
+	iface_OCB->goTo_ID(600, 780, ifaceInternalSCI.BWD);
+}
+
+/* Entry action for state 'Recal X against Start Area flip-flop'. */
+void FSM_HomolPen::enact_main_region_Recal_X_against_Start_Area_flip_flop()
+{
+	/* Entry action for state 'Recal X against Start Area flip-flop'. */
+	iface_OCB->recalRear(ifaceInternalSCI.START_AREA_X);
+}
+
+/* Entry action for state 'Recal Y against Start Area border'. */
+void FSM_HomolPen::enact_main_region_Recal_Y_against_Start_Area_border()
+{
+	/* Entry action for state 'Recal Y against Start Area border'. */
+	iface_OCB->recalFace(ifaceInternalSCI.TOP_Y);
+}
+
+/* Entry action for state 'Get C Cylinder'. */
+void FSM_HomolPen::enact_main_region_Get_C_Cylinder()
+{
+	/* Entry action for state 'Get C Cylinder'. */
+	iface_OCB->startLSA(ifaceInternalSCI.LSA_C);
+}
+
+/* Entry action for state 'Wait for Tration to finish his move'. */
+void FSM_HomolPen::enact_main_region_Wait_for_Tration_to_finish_his_move()
+{
+	/* Entry action for state 'Wait for Tration to finish his move'. */
+	timer->setTimer(this, (sc_eventid)(&timeEvents[1]), 1 * 1000, false);
+}
+
+/* Entry action for state 'Go To Cylinder C'. */
+void FSM_HomolPen::enact_main_region_Go_To_Cylinder_C()
+{
+	/* Entry action for state 'Go To Cylinder C'. */
+	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_C, ifaceInternalSCI.FWD);
+}
+
 /* Exit action for state 'Get 4 monocolor cylinders from Dispenser A'. */
 void FSM_HomolPen::exact_main_region_Get_4_monocolor_cylinders_from_Dispenser_A()
 {
 	/* Exit action for state 'Get 4 monocolor cylinders from Dispenser A'. */
+	iface_OCB->stopLSA();
+}
+
+/* Exit action for state 'Poo 4 monocolor cylinders in 4'. */
+void FSM_HomolPen::exact_main_region_Poo_4_monocolor_cylinders_in_4()
+{
+	/* Exit action for state 'Poo 4 monocolor cylinders in 4'. */
 	iface_OCB->stopLSA();
 }
 
@@ -538,6 +727,20 @@ void FSM_HomolPen::exact_main_region_Wait_Tration_to_move()
 	/* Exit action for state 'Wait Tration to move'. */
 	timer->unsetTimer(this, (sc_eventid)(&timeEvents[0]));
 	iface_OCB->logInfo("Go go go !");
+}
+
+/* Exit action for state 'Get C Cylinder'. */
+void FSM_HomolPen::exact_main_region_Get_C_Cylinder()
+{
+	/* Exit action for state 'Get C Cylinder'. */
+	iface_OCB->stopLSA();
+}
+
+/* Exit action for state 'Wait for Tration to finish his move'. */
+void FSM_HomolPen::exact_main_region_Wait_for_Tration_to_finish_his_move()
+{
+	/* Exit action for state 'Wait for Tration to finish his move'. */
+	timer->unsetTimer(this, (sc_eventid)(&timeEvents[1]));
 }
 
 /* 'default' enter sequence for state Go To Dispenser A */
@@ -571,6 +774,7 @@ void FSM_HomolPen::enseq_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_
 void FSM_HomolPen::enseq_main_region_Poo_4_monocolor_cylinders_in_4_default()
 {
 	/* 'default' enter sequence for state Poo 4 monocolor cylinders in 4 */
+	enact_main_region_Poo_4_monocolor_cylinders_in_4();
 	stateConfVector[0] = main_region_Poo_4_monocolor_cylinders_in_4;
 	stateConfVectorPosition = 0;
 }
@@ -581,6 +785,68 @@ void FSM_HomolPen::enseq_main_region_Wait_Tration_to_move_default()
 	/* 'default' enter sequence for state Wait Tration to move */
 	enact_main_region_Wait_Tration_to_move();
 	stateConfVector[0] = main_region_Wait_Tration_to_move;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Return to Start Areaa to recal */
+void FSM_HomolPen::enseq_main_region_Return_to_Start_Areaa_to_recal_default()
+{
+	/* 'default' enter sequence for state Return to Start Areaa to recal */
+	enact_main_region_Return_to_Start_Areaa_to_recal();
+	stateConfVector[0] = main_region_Return_to_Start_Areaa_to_recal;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Recal X against Start Area flip-flop */
+void FSM_HomolPen::enseq_main_region_Recal_X_against_Start_Area_flip_flop_default()
+{
+	/* 'default' enter sequence for state Recal X against Start Area flip-flop */
+	enact_main_region_Recal_X_against_Start_Area_flip_flop();
+	stateConfVector[0] = main_region_Recal_X_against_Start_Area_flip_flop;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Recal Y against Start Area border */
+void FSM_HomolPen::enseq_main_region_Recal_Y_against_Start_Area_border_default()
+{
+	/* 'default' enter sequence for state Recal Y against Start Area border */
+	enact_main_region_Recal_Y_against_Start_Area_border();
+	stateConfVector[0] = main_region_Recal_Y_against_Start_Area_border;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Get C Cylinder */
+void FSM_HomolPen::enseq_main_region_Get_C_Cylinder_default()
+{
+	/* 'default' enter sequence for state Get C Cylinder */
+	enact_main_region_Get_C_Cylinder();
+	stateConfVector[0] = main_region_Get_C_Cylinder;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Wait for Tration to finish his move */
+void FSM_HomolPen::enseq_main_region_Wait_for_Tration_to_finish_his_move_default()
+{
+	/* 'default' enter sequence for state Wait for Tration to finish his move */
+	enact_main_region_Wait_for_Tration_to_finish_his_move();
+	stateConfVector[0] = main_region_Wait_for_Tration_to_finish_his_move;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Go To Cylinder C */
+void FSM_HomolPen::enseq_main_region_Go_To_Cylinder_C_default()
+{
+	/* 'default' enter sequence for state Go To Cylinder C */
+	enact_main_region_Go_To_Cylinder_C();
+	stateConfVector[0] = main_region_Go_To_Cylinder_C;
+	stateConfVectorPosition = 0;
+}
+
+/* Default enter sequence for state null */
+void FSM_HomolPen::enseq_main_region__final__default()
+{
+	/* Default enter sequence for state null */
+	stateConfVector[0] = main_region__final_;
 	stateConfVectorPosition = 0;
 }
 
@@ -622,6 +888,7 @@ void FSM_HomolPen::exseq_main_region_Poo_4_monocolor_cylinders_in_4()
 	/* Default exit sequence for state Poo 4 monocolor cylinders in 4 */
 	stateConfVector[0] = FSM_HomolPen_last_state;
 	stateConfVectorPosition = 0;
+	exact_main_region_Poo_4_monocolor_cylinders_in_4();
 }
 
 /* Default exit sequence for state Wait Tration to move */
@@ -631,6 +898,64 @@ void FSM_HomolPen::exseq_main_region_Wait_Tration_to_move()
 	stateConfVector[0] = FSM_HomolPen_last_state;
 	stateConfVectorPosition = 0;
 	exact_main_region_Wait_Tration_to_move();
+}
+
+/* Default exit sequence for state Return to Start Areaa to recal */
+void FSM_HomolPen::exseq_main_region_Return_to_Start_Areaa_to_recal()
+{
+	/* Default exit sequence for state Return to Start Areaa to recal */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Recal X against Start Area flip-flop */
+void FSM_HomolPen::exseq_main_region_Recal_X_against_Start_Area_flip_flop()
+{
+	/* Default exit sequence for state Recal X against Start Area flip-flop */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Recal Y against Start Area border */
+void FSM_HomolPen::exseq_main_region_Recal_Y_against_Start_Area_border()
+{
+	/* Default exit sequence for state Recal Y against Start Area border */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Get C Cylinder */
+void FSM_HomolPen::exseq_main_region_Get_C_Cylinder()
+{
+	/* Default exit sequence for state Get C Cylinder */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+	exact_main_region_Get_C_Cylinder();
+}
+
+/* Default exit sequence for state Wait for Tration to finish his move */
+void FSM_HomolPen::exseq_main_region_Wait_for_Tration_to_finish_his_move()
+{
+	/* Default exit sequence for state Wait for Tration to finish his move */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+	exact_main_region_Wait_for_Tration_to_finish_his_move();
+}
+
+/* Default exit sequence for state Go To Cylinder C */
+void FSM_HomolPen::exseq_main_region_Go_To_Cylinder_C()
+{
+	/* Default exit sequence for state Go To Cylinder C */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for final state. */
+void FSM_HomolPen::exseq_main_region__final_()
+{
+	/* Default exit sequence for final state. */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
 }
 
 /* Default exit sequence for region main region */
@@ -663,6 +988,41 @@ void FSM_HomolPen::exseq_main_region()
 		case main_region_Wait_Tration_to_move :
 		{
 			exseq_main_region_Wait_Tration_to_move();
+			break;
+		}
+		case main_region_Return_to_Start_Areaa_to_recal :
+		{
+			exseq_main_region_Return_to_Start_Areaa_to_recal();
+			break;
+		}
+		case main_region_Recal_X_against_Start_Area_flip_flop :
+		{
+			exseq_main_region_Recal_X_against_Start_Area_flip_flop();
+			break;
+		}
+		case main_region_Recal_Y_against_Start_Area_border :
+		{
+			exseq_main_region_Recal_Y_against_Start_Area_border();
+			break;
+		}
+		case main_region_Get_C_Cylinder :
+		{
+			exseq_main_region_Get_C_Cylinder();
+			break;
+		}
+		case main_region_Wait_for_Tration_to_finish_his_move :
+		{
+			exseq_main_region_Wait_for_Tration_to_finish_his_move();
+			break;
+		}
+		case main_region_Go_To_Cylinder_C :
+		{
+			exseq_main_region_Go_To_Cylinder_C();
+			break;
+		}
+		case main_region__final_ :
+		{
+			exseq_main_region__final_();
 			break;
 		}
 		default: break;
@@ -703,6 +1063,10 @@ void FSM_HomolPen::react_main_region_Get_4_monocolor_cylinders_from_Dispenser_A(
 void FSM_HomolPen::react_main_region_Poo_4_monocolor_cylinders_in_4()
 {
 	/* The reactions of state Poo 4 monocolor cylinders in 4. */
+	if (check_main_region_Poo_4_monocolor_cylinders_in_4_tr0_tr0())
+	{ 
+		effect_main_region_Poo_4_monocolor_cylinders_in_4_tr0();
+	} 
 }
 
 /* The reactions of state Wait Tration to move. */
@@ -713,6 +1077,72 @@ void FSM_HomolPen::react_main_region_Wait_Tration_to_move()
 	{ 
 		effect_main_region_Wait_Tration_to_move_tr0();
 	} 
+}
+
+/* The reactions of state Return to Start Areaa to recal. */
+void FSM_HomolPen::react_main_region_Return_to_Start_Areaa_to_recal()
+{
+	/* The reactions of state Return to Start Areaa to recal. */
+	if (check_main_region_Return_to_Start_Areaa_to_recal_tr0_tr0())
+	{ 
+		effect_main_region_Return_to_Start_Areaa_to_recal_tr0();
+	} 
+}
+
+/* The reactions of state Recal X against Start Area flip-flop. */
+void FSM_HomolPen::react_main_region_Recal_X_against_Start_Area_flip_flop()
+{
+	/* The reactions of state Recal X against Start Area flip-flop. */
+	if (check_main_region_Recal_X_against_Start_Area_flip_flop_tr0_tr0())
+	{ 
+		effect_main_region_Recal_X_against_Start_Area_flip_flop_tr0();
+	} 
+}
+
+/* The reactions of state Recal Y against Start Area border. */
+void FSM_HomolPen::react_main_region_Recal_Y_against_Start_Area_border()
+{
+	/* The reactions of state Recal Y against Start Area border. */
+	if (check_main_region_Recal_Y_against_Start_Area_border_tr0_tr0())
+	{ 
+		effect_main_region_Recal_Y_against_Start_Area_border_tr0();
+	} 
+}
+
+/* The reactions of state Get C Cylinder. */
+void FSM_HomolPen::react_main_region_Get_C_Cylinder()
+{
+	/* The reactions of state Get C Cylinder. */
+	if (check_main_region_Get_C_Cylinder_tr0_tr0())
+	{ 
+		effect_main_region_Get_C_Cylinder_tr0();
+	} 
+}
+
+/* The reactions of state Wait for Tration to finish his move. */
+void FSM_HomolPen::react_main_region_Wait_for_Tration_to_finish_his_move()
+{
+	/* The reactions of state Wait for Tration to finish his move. */
+	if (check_main_region_Wait_for_Tration_to_finish_his_move_tr0_tr0())
+	{ 
+		effect_main_region_Wait_for_Tration_to_finish_his_move_tr0();
+	} 
+}
+
+/* The reactions of state Go To Cylinder C. */
+void FSM_HomolPen::react_main_region_Go_To_Cylinder_C()
+{
+	/* The reactions of state Go To Cylinder C. */
+	if (check_main_region_Go_To_Cylinder_C_tr0_tr0())
+	{ 
+		effect_main_region_Go_To_Cylinder_C_tr0();
+	} 
+}
+
+/* The reactions of state null. */
+void FSM_HomolPen::react_main_region__final_()
+{
+	/* The reactions of state null. */
 }
 
 /* Default react sequence for initial entry  */

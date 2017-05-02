@@ -55,6 +55,7 @@ class TableOverview(QWidget):
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setSizePolicy(sizePolicy)
         
+        
     def paintEvent(self, event):
         self.p.begin(self)
         
@@ -68,10 +69,15 @@ class TableOverview(QWidget):
         
         self.table.draw(self.parent().robotState.stratInfo)
         self.p.translate(T_WIDTH/2, T_HEIGHT/2)
+        if self.robot != None and self.parent().robotConfig != None:
+            x, y = self.robot.filterPosition(self.parent().robotConfig, self.robotPose.x, self.robotPose.y, math.degrees(self.robotPose.h))
+        else:
+            x = self.robotPose.x
+            y= self.robotPose.y
         drawingPose = Pose2D()
-        drawingPose.x = self.robotPose.x
-        drawingPose.y = -self.robotPose.y
-        drawingPose.h = normalizeAngle(math.pi + self.robotPose.h)
+        drawingPose.x = x
+        drawingPose.y = -y
+        drawingPose.h = math.degrees(-self.robotPose.h)
         if self.robot != None and self.parent().robotConfig != None:
             self.robot.draw(drawingPose, self.parent().robotConfig, self.parent().robotState.stratInfo)
         self.p.end()
@@ -79,24 +85,29 @@ class TableOverview(QWidget):
     def mousePressEvent(self, event):
         p = event.pos()
         #trans, ok = self.p.transform().inverted()
-        trans = self.p.deviceTransform()
-        p2 = trans.map(p)
-        qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p2.x()) + " " + str(p2.y()))) 
+        #p2 = self.p.deviceTransform().map(p)
+        #p3 = self.p.worldTransform().map(p)
+        T_WIDTH/2, T_HEIGHT/2
+        qDebug(str())
+        p4 = QPoint(p.x()*T_WIDTH/self.size().width() - T_WIDTH/2., T_HEIGHT/2 - T_HEIGHT*p.y()/self.size().height())
+        qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p4.x()) + " " + str(p4.y()))) 
         return QWidget.mousePressEvent(self, event)
 
 class RobotWidget():
     def __init__(self, painter):
         self.p = painter
+        self.actuatorsOut = False
+        self.displayMire = False
                 
     def draw(self, pose, cfg, stratInfo):
         self.p.save()
         self.p.setRenderHint(QPainter.Antialiasing)
-        x, y = self.filterPosition(cfg, pose.x, pose.y,pose.h)
-        self.p.translate(x, y)
-        self.p.rotate(180 - math.degrees(pose.h))
+        self.p.translate(pose.x, pose.y)
+        self.p.rotate(pose.h)
+        if self.displayMire:
+            self.drawMarks(cfg)
         self.drawCarriage(cfg)
         self.drawWheels(cfg)
-        self.drawMarks(cfg)
         self.drawObjects(stratInfo)
         self.p.restore()
 
@@ -107,14 +118,25 @@ class RobotWidget():
         self.p.drawRoundedRect(QRectF(-cfg.rightWheelDiameter/2, -cfg.voie/2. - 5, cfg.rightWheelDiameter, 10), 3, 3)
         
     def drawMarks(self, cfg):
-        pen = QPen(ardGray)
+        pen = QPen(Qt.black)
         pen.setWidth(1)
         pen.setCosmetic(True)
         pen.setDashPattern([2, 3])
         self.p.setPen(pen)
         
-        self.p.drawLine(-cfg.xar*1.5, 0, cfg.xav*1.5, 0)
-        self.p.drawLine(0, cfg.yside*1.5, 0, -cfg.yside*1.5)
+        mireSize = 350
+        self.p.drawLine(-mireSize, 0, mireSize, 0)
+        self.p.drawLine(0, mireSize, 0, -mireSize)
+        
+        #draw carriage safety zone
+        pen = QPen(Qt.black)
+        pen.setWidth(1)
+        pen.setCosmetic(True)
+        pen.setDashPattern([2, 3])
+        self.p.setPen(pen)
+        self.p.setBrush(transparent)
+        drawCircle(self.p, 0,  0, 220)
+        drawCircle(self.p, 0,  0, cfg.xouter)
     
     def drawObjects(self, stratInfo):
         if stratInfo.robotCylinderStockNb:
@@ -142,55 +164,62 @@ class RobotWidget():
         carriage.closeSubpath()
         self.p.drawPath(carriage)
         
+        self.p.save()
+        self.p.rotate(-90)
+        if self.color == trafficWhite:
+            self.p.setPen(Qt.black)
+        else:
+            self.p.setPen(trafficWhite)
+        self.p.setFont(QFont("Lucida Sans", 30, QFont.Bold))
+        self.p.drawText(QRectF(-cfg.yside, -cfg.xar, 2*cfg.yside, 2*cfg.xar), cfg.serialNumber, QTextOption(Qt.AlignCenter))
+        self.p.restore()
+        
         #draw front lines
-        pen = QPen(ardGray)
-        pen.setWidth(1)
-        pen.setCosmetic(True)
-        pen.setDashPattern([2, 3])
-        self.p.setPen(pen)
-        carriage = QPainterPath()
-        carriage.moveTo(cfg.xav, cfg.yside)
-        carriage.lineTo(cfg.xav, -cfg.yside)
-        carriage.moveTo(cfg.xavExtended, cfg.yside)
-        carriage.lineTo(cfg.xavExtended, -cfg.yside)
-        self.p.drawPath(carriage)
+#        pen = QPen(ardGray)
+#         pen.setWidth(1)
+#         pen.setCosmetic(True)
+#         pen.setDashPattern([2, 3])
+#         self.p.setPen(pen)
+#         carriage = QPainterPath()
+#         carriage.moveTo(cfg.xav, cfg.yside)
+#         carriage.lineTo(cfg.xav, -cfg.yside)
+#         carriage.moveTo(cfg.xavExtended, cfg.yside)
+#         carriage.lineTo(cfg.xavExtended, -cfg.yside)
+#         self.p.drawPath(carriage)
         
-        #draw carriage safety zone
-        self.p.setBrush(transparent)
-        drawCircle(self.p, 0,  0, 220)
-        drawCircle(self.p, 0,  0, 170)
-        
-        #draw actuators
-        self.p.setPen(markPen)
-        self.p.setBrush(jetBlack)
-        drawCircle(self.p, 185,  60, 22)
-        drawCircle(self.p, 185, -60, 22)
-        self.p.setBrush(Qt.gray)
-        drawCircle(self.p, 185,  60, 15)
-        drawCircle(self.p, 185, -60, 15)
-        arm = QPainterPath()
-        arm.moveTo(cfg.xav + 40, 50)
-        arm.lineTo(cfg.xav - 30, 50)
-        arm.lineTo(cfg.xav - 30, 70)
-        arm.lineTo(cfg.xav + 40, 70)
-        arm.closeSubpath()
-        self.p.drawPath(arm)
-        arm = QPainterPath()
-        arm.moveTo(cfg.xav + 40, -50)
-        arm.lineTo(cfg.xav - 30, -50)
-        arm.lineTo(cfg.xav - 30, -70)
-        arm.lineTo(cfg.xav + 40, -70)
-        arm.closeSubpath()
-        self.p.drawPath(arm)
+        if self.actuatorsOut:
+            #draw actuators
+            self.p.setPen(markPen)
+            self.p.setBrush(jetBlack)
+            drawCircle(self.p, 185,  60, 22)
+            drawCircle(self.p, 185, -60, 22)
+            self.p.setBrush(Qt.gray)
+            drawCircle(self.p, 185,  60, 15)
+            drawCircle(self.p, 185, -60, 15)
+            arm = QPainterPath()
+            arm.moveTo(cfg.xav + 40, 50)
+            arm.lineTo(cfg.xav - 30, 50)
+            arm.lineTo(cfg.xav - 30, 70)
+            arm.lineTo(cfg.xav + 40, 70)
+            arm.closeSubpath()
+            self.p.drawPath(arm)
+            arm = QPainterPath()
+            arm.moveTo(cfg.xav + 40, -50)
+            arm.lineTo(cfg.xav - 30, -50)
+            arm.lineTo(cfg.xav - 30, -70)
+            arm.lineTo(cfg.xav + 40, -70)
+            arm.closeSubpath()
+            self.p.drawPath(arm)
         
     def filterPosition(self, cfg, x, y, h):
         xf = x
         yf = y
+        
         #
         # Reacal AV
         #-------------------
         #Robot is facing up
-        if fabs(h - 1.57) < 0.05:
+        if fabs(h - 90) < 2:
             #Robot is recal'ing against top table border 
             if fabs(x) < 790 and 1000 < y + cfg.xav :
                 yf = 1000 - cfg.xav
@@ -198,12 +227,12 @@ class RobotWidget():
             if 790 < fabs(x) and 618 < y + cfg.xav :
                 yf = 618 - cfg.xav
         #Robot is facing down
-        if fabs(h + 1.57) < 0.05:
+        if fabs(h + 90) < 2:
             #Robot is recal'ing against bot table border 
             if y - cfg.xav < -1000 :
                 yf = -1000 + cfg.xav
         #Robot is facing left
-        if 3.09 < fabs(h):
+        if 178 < fabs(h):
             #Robot is recal'ing against left table border 
             if y < 618 and x - cfg.xav < -1500 :
                 xf = -1500 + cfg.xav
@@ -211,7 +240,7 @@ class RobotWidget():
             if 618 < y  and x - cfg.xav < -790 :
                 xf = -790 + cfg.xav
         #Robot is facing right
-        if fabs(h) < 0.05 :
+        if fabs(h) < 2 :
             #Robot is recal'ing against right table border 
             if y < 618 and 1500 < x + cfg.xav :
                 xf = 1500 - cfg.xav
@@ -223,12 +252,12 @@ class RobotWidget():
         # Reacal AR
         #-----------------
         #Robot is facing up
-        if fabs(h - 1.57) < 0.05:
+        if fabs(h - 90) < 2:
             #Robot is recal'ing against bot table border 
             if y - cfg.xar < -1000 :
                 yf = -1000 + cfg.xar
         #Robot is facing down
-        if fabs(h + 1.57) < 0.05:
+        if fabs(h + 90) < 2:
             #Robot is recal'ing against top table border 
             if fabs(x) < 790 and 1000 < y + cfg.xar :
                 yf = 1000 - cfg.xar
@@ -236,7 +265,7 @@ class RobotWidget():
             if 790 < fabs(x) and 618 < y + cfg.xar :
                 yf = 618 - cfg.xar
         #Robot is facing left
-        if 3.09 < fabs(h):
+        if 178 < fabs(h):
             #Robot is recal'ing against right table border 
             if y < 618 and 1500 < x + cfg.xar :
                 xf = 1500 - cfg.xar
@@ -244,7 +273,7 @@ class RobotWidget():
             if 618 < y  and 790 < x + cfg.xar :
                 xf = 790 - cfg.xar  
         #Robot is facing right
-        if fabs(h) < 0.05 :
+        if fabs(h) < 2 :
             #Robot is recal'ing against left table border 
             if y < 618 and x - cfg.xar < -1500 :
                 xf = -1500 + cfg.xar

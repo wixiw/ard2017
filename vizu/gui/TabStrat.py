@@ -9,6 +9,7 @@ from ArdWidgets import *
 from core import *
 from TableDrawing import *
 import math
+import _tkinter
 
 
 # This class is a pre-built widget which is designed to display 
@@ -27,18 +28,23 @@ class TabStrat(QWidget):
         self.uiColor = Types_pb2.UNKNOWN
         self.uiStrategy = 0 
         self.stratCount = 0
+        self.actuatorsOut = False
+        self.mire = False
         
         #build info tab
         self.label = dict()
+        self.cbox = dict()
         self.buildGeneralInfo()
         self.buildPosInfo()
         self.buildMotionInfo()
         self.buildStratInfo()
+        self.buildViewConfigInfo()
         self.layoutInfo = QVBoxLayout()
         self.layoutInfo.addWidget(self.box_general)
         self.layoutInfo.addWidget(self.box_pos)
         self.layoutInfo.addWidget(self.box_motion)
         self.layoutInfo.addWidget(self.box_stratInfo)
+        self.layoutInfo.addWidget(self.box_viewConf)
         self.layoutInfo.addSpacerItem(QSpacerItem(175,0,QSizePolicy.Minimum,QSizePolicy.Expanding))
         
         self.layout = QHBoxLayout(self)
@@ -151,6 +157,17 @@ class TabStrat(QWidget):
         box_layout.addRow("stock : ", self.label["stock"])
         self.box_stratInfo.setLayout(box_layout)
        
+    def buildViewConfigInfo(self):
+        self.box_viewConf = QGroupBox("View config")
+        self.cbox["actuators out"] = QCheckBox()
+        self.cbox["mire"] = QCheckBox()
+        box_layout = QFormLayout()
+        box_layout.addRow("actuators out : ", self.cbox["actuators out"])
+        box_layout.addRow("mire : ", self.cbox["mire"])
+        self.box_viewConf.setLayout(box_layout)
+        self.cbox["actuators out"].stateChanged.connect(self._actuatorsChecked)
+        self.cbox["mire"].stateChanged.connect(self._mireChecked) #nearly milk-shake ^^ oOooO
+       
     #@return Pose2D : the last received telemetry position
     def getRobotPosition(self):
         return Pose2D.fromPoseMsg(self.robotState.nav.pos)
@@ -205,6 +222,20 @@ class TabStrat(QWidget):
     def _updateConfig(self, msg):
         #print("New config received from robot, updating tab")
         self.robotConfig = msg
+
+    @pyqtSlot(int)
+    def _actuatorsChecked(self, state):
+        if state == Qt.Checked:
+            self.overview.robot.actuatorsOut = True;
+        else:
+            self.overview.robot.actuatorsOut = False;
+            
+    @pyqtSlot(int)
+    def _mireChecked(self, state):
+        if state == Qt.Checked:
+            self.overview.robot.displayMire = True;
+        else:
+            self.overview.robot.displayMire = False;
 
     @pyqtSlot(int)
     def selectStrat(self, comboId):

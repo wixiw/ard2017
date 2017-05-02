@@ -26,6 +26,13 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 			main_region_Get_4_monocolor_cylinders_from_Dispenser_A,
 			main_region_Poo_4_monocolor_cylinders_in_4,
 			main_region_Wait_Tration_to_move,
+			main_region_Return_to_Start_Areaa_to_recal,
+			main_region_Recal_X_against_Start_Area_flip_flop,
+			main_region_Recal_Y_against_Start_Area_border,
+			main_region_Get_C_Cylinder,
+			main_region_Wait_for_Tration_to_finish_his_move,
+			main_region_Go_To_Cylinder_C,
+			main_region__final_,
 			FSM_HomolPen_last_state
 		} FSM_HomolPenStates;
 		
@@ -478,7 +485,7 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 		static const sc_integer maxOrthogonalStates = 1;
 		
 		//! number of time events used by the state machine.
-		static const sc_integer timeEventsCount = 1;
+		static const sc_integer timeEventsCount = 2;
 		TimerInterface* timer;
 		sc_boolean timeEvents[timeEventsCount];
 		
@@ -495,34 +502,79 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 		sc_boolean check_main_region_Go_To_Dispenser_A_tr0_tr0();
 		sc_boolean check_main_region_Go_To_Container_4_tr0_tr0();
 		sc_boolean check_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_tr0_tr0();
+		sc_boolean check_main_region_Poo_4_monocolor_cylinders_in_4_tr0_tr0();
 		sc_boolean check_main_region_Wait_Tration_to_move_tr0_tr0();
+		sc_boolean check_main_region_Return_to_Start_Areaa_to_recal_tr0_tr0();
+		sc_boolean check_main_region_Recal_X_against_Start_Area_flip_flop_tr0_tr0();
+		sc_boolean check_main_region_Recal_Y_against_Start_Area_border_tr0_tr0();
+		sc_boolean check_main_region_Get_C_Cylinder_tr0_tr0();
+		sc_boolean check_main_region_Wait_for_Tration_to_finish_his_move_tr0_tr0();
+		sc_boolean check_main_region_Go_To_Cylinder_C_tr0_tr0();
 		void effect_main_region_Go_To_Dispenser_A_tr0();
 		void effect_main_region_Go_To_Container_4_tr0();
 		void effect_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_tr0();
+		void effect_main_region_Poo_4_monocolor_cylinders_in_4_tr0();
 		void effect_main_region_Wait_Tration_to_move_tr0();
+		void effect_main_region_Return_to_Start_Areaa_to_recal_tr0();
+		void effect_main_region_Recal_X_against_Start_Area_flip_flop_tr0();
+		void effect_main_region_Recal_Y_against_Start_Area_border_tr0();
+		void effect_main_region_Get_C_Cylinder_tr0();
+		void effect_main_region_Wait_for_Tration_to_finish_his_move_tr0();
+		void effect_main_region_Go_To_Cylinder_C_tr0();
 		void enact_main_region_Go_To_Dispenser_A();
 		void enact_main_region_Go_To_Container_4();
 		void enact_main_region_Get_4_monocolor_cylinders_from_Dispenser_A();
+		void enact_main_region_Poo_4_monocolor_cylinders_in_4();
 		void enact_main_region_Wait_Tration_to_move();
+		void enact_main_region_Return_to_Start_Areaa_to_recal();
+		void enact_main_region_Recal_X_against_Start_Area_flip_flop();
+		void enact_main_region_Recal_Y_against_Start_Area_border();
+		void enact_main_region_Get_C_Cylinder();
+		void enact_main_region_Wait_for_Tration_to_finish_his_move();
+		void enact_main_region_Go_To_Cylinder_C();
 		void exact_main_region_Get_4_monocolor_cylinders_from_Dispenser_A();
+		void exact_main_region_Poo_4_monocolor_cylinders_in_4();
 		void exact_main_region_Wait_Tration_to_move();
+		void exact_main_region_Get_C_Cylinder();
+		void exact_main_region_Wait_for_Tration_to_finish_his_move();
 		void enseq_main_region_Go_To_Dispenser_A_default();
 		void enseq_main_region_Go_To_Container_4_default();
 		void enseq_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_default();
 		void enseq_main_region_Poo_4_monocolor_cylinders_in_4_default();
 		void enseq_main_region_Wait_Tration_to_move_default();
+		void enseq_main_region_Return_to_Start_Areaa_to_recal_default();
+		void enseq_main_region_Recal_X_against_Start_Area_flip_flop_default();
+		void enseq_main_region_Recal_Y_against_Start_Area_border_default();
+		void enseq_main_region_Get_C_Cylinder_default();
+		void enseq_main_region_Wait_for_Tration_to_finish_his_move_default();
+		void enseq_main_region_Go_To_Cylinder_C_default();
+		void enseq_main_region__final__default();
 		void enseq_main_region_default();
 		void exseq_main_region_Go_To_Dispenser_A();
 		void exseq_main_region_Go_To_Container_4();
 		void exseq_main_region_Get_4_monocolor_cylinders_from_Dispenser_A();
 		void exseq_main_region_Poo_4_monocolor_cylinders_in_4();
 		void exseq_main_region_Wait_Tration_to_move();
+		void exseq_main_region_Return_to_Start_Areaa_to_recal();
+		void exseq_main_region_Recal_X_against_Start_Area_flip_flop();
+		void exseq_main_region_Recal_Y_against_Start_Area_border();
+		void exseq_main_region_Get_C_Cylinder();
+		void exseq_main_region_Wait_for_Tration_to_finish_his_move();
+		void exseq_main_region_Go_To_Cylinder_C();
+		void exseq_main_region__final_();
 		void exseq_main_region();
 		void react_main_region_Go_To_Dispenser_A();
 		void react_main_region_Go_To_Container_4();
 		void react_main_region_Get_4_monocolor_cylinders_from_Dispenser_A();
 		void react_main_region_Poo_4_monocolor_cylinders_in_4();
 		void react_main_region_Wait_Tration_to_move();
+		void react_main_region_Return_to_Start_Areaa_to_recal();
+		void react_main_region_Recal_X_against_Start_Area_flip_flop();
+		void react_main_region_Recal_Y_against_Start_Area_border();
+		void react_main_region_Get_C_Cylinder();
+		void react_main_region_Wait_for_Tration_to_finish_his_move();
+		void react_main_region_Go_To_Cylinder_C();
+		void react_main_region__final_();
 		void react_main_region__entry_Default();
 		void clearInEvents();
 		void clearOutEvents();

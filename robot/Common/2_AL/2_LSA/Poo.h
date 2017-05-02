@@ -34,8 +34,14 @@ namespace ard
         //Implements LSA
         LSAResult isFinished() override;
 
+        //FSM API : Use this hide in the FSM which dispenser is used
+        void informPoo_generic() override;
+
         //Implements FSM_LSA_PooMiddle::DefaultSCI_OCB
         void goToEntryPoint() override;
+
+    private:
+        eLSA_PooMidArea type;
     };
 
     class LSA_PooBorderOwn: public LSA2017<FSM_LSA_PooBorderOwn, FSM_LSA_PooBorderOwn::FSM_LSA_PooBorderOwnStates>

@@ -39,7 +39,7 @@ void LSA_GetCylinder_B::goToEntryPoint()
  */
 
 LSA_GetCylinder_C::LSA_GetCylinder_C(Robot2017& robot, eLSA_GetCylinder_Recal type):
-        LSA2017(robot, "LSAPooMiddle", PointCap(0, 0, 0)) //TODO define real point
+        LSA2017(robot, "LSAPooMiddle", PointCap(815, -650, 120))
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);
