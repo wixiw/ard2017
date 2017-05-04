@@ -21,7 +21,15 @@ class FSM_HomolTration : public TimedStatemachineInterface, public StatemachineI
 		/*! Enumeration of all states */ 
 		typedef enum
 		{
-			main_region_StateA,
+			main_region_Move_before_Pen,
+			main_region_Go_To_Dispenser_G,
+			main_region_Goto_D,
+			main_region_Get_D_Cylinder,
+			main_region_Goto_E,
+			main_region_Get_E_Cylinder,
+			main_region_Get_4_bicolor_cylinders_from_Dispenser_G,
+			main_region__final_,
+			main_region_Wait_for_Pen_to_finish_his_move,
 			FSM_HomolTration_last_state
 		} FSM_HomolTrationStates;
 		
@@ -498,15 +506,64 @@ class FSM_HomolTration : public TimedStatemachineInterface, public StatemachineI
 		
 		// prototypes of all internal functions
 		
-		sc_boolean check_main_region_StateA_tr0_tr0();
-		void effect_main_region_StateA_tr0();
-		void enact_main_region_StateA();
-		void exact_main_region_StateA();
-		void enseq_main_region_StateA_default();
+		sc_boolean check_main_region_Move_before_Pen_tr0_tr0();
+		sc_boolean check_main_region_Go_To_Dispenser_G_tr0_tr0();
+		sc_boolean check_main_region_Goto_D_tr0_tr0();
+		sc_boolean check_main_region_Get_D_Cylinder_tr0_tr0();
+		sc_boolean check_main_region_Goto_E_tr0_tr0();
+		sc_boolean check_main_region_Get_E_Cylinder_tr0_tr0();
+		sc_boolean check_main_region_Get_4_bicolor_cylinders_from_Dispenser_G_tr0_tr0();
+		sc_boolean check_main_region_Wait_for_Pen_to_finish_his_move_tr0_tr0();
+		void effect_main_region_Move_before_Pen_tr0();
+		void effect_main_region_Go_To_Dispenser_G_tr0();
+		void effect_main_region_Goto_D_tr0();
+		void effect_main_region_Get_D_Cylinder_tr0();
+		void effect_main_region_Goto_E_tr0();
+		void effect_main_region_Get_E_Cylinder_tr0();
+		void effect_main_region_Get_4_bicolor_cylinders_from_Dispenser_G_tr0();
+		void effect_main_region_Wait_for_Pen_to_finish_his_move_tr0();
+		void enact_main_region_Move_before_Pen();
+		void enact_main_region_Go_To_Dispenser_G();
+		void enact_main_region_Goto_D();
+		void enact_main_region_Get_D_Cylinder();
+		void enact_main_region_Goto_E();
+		void enact_main_region_Get_E_Cylinder();
+		void enact_main_region_Get_4_bicolor_cylinders_from_Dispenser_G();
+		void enact_main_region_Wait_for_Pen_to_finish_his_move();
+		void exact_main_region_Move_before_Pen();
+		void exact_main_region_Get_D_Cylinder();
+		void exact_main_region_Get_E_Cylinder();
+		void exact_main_region_Get_4_bicolor_cylinders_from_Dispenser_G();
+		void exact_main_region_Wait_for_Pen_to_finish_his_move();
+		void enseq_main_region_Move_before_Pen_default();
+		void enseq_main_region_Go_To_Dispenser_G_default();
+		void enseq_main_region_Goto_D_default();
+		void enseq_main_region_Get_D_Cylinder_default();
+		void enseq_main_region_Goto_E_default();
+		void enseq_main_region_Get_E_Cylinder_default();
+		void enseq_main_region_Get_4_bicolor_cylinders_from_Dispenser_G_default();
+		void enseq_main_region__final__default();
+		void enseq_main_region_Wait_for_Pen_to_finish_his_move_default();
 		void enseq_main_region_default();
-		void exseq_main_region_StateA();
+		void exseq_main_region_Move_before_Pen();
+		void exseq_main_region_Go_To_Dispenser_G();
+		void exseq_main_region_Goto_D();
+		void exseq_main_region_Get_D_Cylinder();
+		void exseq_main_region_Goto_E();
+		void exseq_main_region_Get_E_Cylinder();
+		void exseq_main_region_Get_4_bicolor_cylinders_from_Dispenser_G();
+		void exseq_main_region__final_();
+		void exseq_main_region_Wait_for_Pen_to_finish_his_move();
 		void exseq_main_region();
-		void react_main_region_StateA();
+		void react_main_region_Move_before_Pen();
+		void react_main_region_Go_To_Dispenser_G();
+		void react_main_region_Goto_D();
+		void react_main_region_Get_D_Cylinder();
+		void react_main_region_Goto_E();
+		void react_main_region_Get_E_Cylinder();
+		void react_main_region_Get_4_bicolor_cylinders_from_Dispenser_G();
+		void react_main_region__final_();
+		void react_main_region_Wait_for_Pen_to_finish_his_move();
 		void react_main_region__entry_Default();
 		void clearInEvents();
 		void clearOutEvents();
