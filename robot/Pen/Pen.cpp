@@ -1,4 +1,4 @@
-/*
+/**
  * Pen.cpp
  *
  *  Created on: 22 avr. 2017
@@ -27,7 +27,8 @@ void Pen::init(Robot2017Listener* client)
     Robot2017::init(client);
 
     //register strategies
-    lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    &stratFunnyAction);
+    lifecycle.registerSelftest(&stratSelftest);
+    lifecycle.registerMatchType("Match",          &stratInstall,      &stratInstall,    &stratFunnyAction);
     lifecycle.registerMatchType("Homol",          NULL,               &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Selftest",       NULL,               &stratSelftest, NULL);
     lifecycle.registerMatchType("WIP",            NULL,               &stratWIP,      NULL);

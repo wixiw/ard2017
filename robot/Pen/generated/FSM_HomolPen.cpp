@@ -78,6 +78,7 @@ void FSM_HomolPen::init()
 	ifaceInternalSCI.LSA_OppE = 14;
 	ifaceInternalSCI.LSA_OppF = 15;
 	ifaceInternalSCI.LSA_6 = 16;
+	ifaceInternalSCI.LSA_IA = 17;
 }
 
 void FSM_HomolPen::enter()
@@ -501,6 +502,11 @@ sc_integer FSM_HomolPen::InternalSCI::get_lSA_6()
 	return LSA_6;
 }
 
+sc_integer FSM_HomolPen::InternalSCI::get_lSA_IA()
+{
+	return LSA_IA;
+}
+
 
 // implementations of all internal functions
 
@@ -616,6 +622,7 @@ void FSM_HomolPen::effect_main_region_Get_C_Cylinder_tr0()
 void FSM_HomolPen::effect_main_region_Wait_for_Tration_to_finish_his_move_tr0()
 {
 	exseq_main_region_Wait_for_Tration_to_finish_his_move();
+	iface_OCB->setStatus(ifaceInternalSCI.SUCCESS);
 	enseq_main_region__final__default();
 }
 
@@ -661,7 +668,6 @@ void FSM_HomolPen::enact_main_region_Wait_Tration_to_move()
 {
 	/* Entry action for state 'Wait Tration to move'. */
 	timer->setTimer(this, (sc_eventid)(&timeEvents[0]), 1 * 1000, false);
-	iface_OCB->setPosition(640, 730, 0);
 	iface_OCB->logInfo("Waiting for Tration to move away...");
 }
 
@@ -698,6 +704,7 @@ void FSM_HomolPen::enact_main_region_Wait_for_Tration_to_finish_his_move()
 {
 	/* Entry action for state 'Wait for Tration to finish his move'. */
 	timer->setTimer(this, (sc_eventid)(&timeEvents[1]), 1 * 1000, false);
+	iface_OCB->logInfo("Waiting for Tration to move away.");
 }
 
 /* Entry action for state 'Go To Cylinder C'. */

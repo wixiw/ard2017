@@ -30,10 +30,10 @@ LSA_PooMiddle::LSA_PooMiddle(Robot2017& robot, eLSA_PooMidArea type):
     }
 }
 
-LSAResult LSA_PooMiddle::isFinished()
+StrategyResult LSA_PooMiddle::getStatus()
 {
     if(!fsm.isActive())
-        return NoLsa;
+        return None;
 
     if(fsm.isFinal())
         return Success;
@@ -74,10 +74,10 @@ LSA_PooBorderOwn::LSA_PooBorderOwn(Robot2017& robot):
     fsm.setDefaultSCI_OCB(this);
 }
 
-LSAResult LSA_PooBorderOwn::isFinished()
+StrategyResult LSA_PooBorderOwn::getStatus()
 {
     if(!fsm.isActive())
-        return NoLsa;
+        return None;
 
     if(fsm.isFinal())
         return Success;
@@ -100,10 +100,10 @@ LSA_PooBorderOpp::LSA_PooBorderOpp(Robot2017& robot):
     fsm.setDefaultSCI_OCB(this);
 }
 
-LSAResult LSA_PooBorderOpp::isFinished()
+StrategyResult LSA_PooBorderOpp::getStatus()
 {
     if(!fsm.isActive())
-        return NoLsa;
+        return None;
 
     if(fsm.isFinal())
         return Success;
@@ -127,10 +127,10 @@ LSA_PooStartArea::LSA_PooStartArea(Robot2017& robot):
     fsm.setDefaultSCI_OCB(this);
 }
 
-LSAResult LSA_PooStartArea::isFinished()
+StrategyResult LSA_PooStartArea::getStatus()
 {
     if(!fsm.isActive())
-        return NoLsa;
+        return None;
 
     if(fsm.isFinal())
         return Success;

@@ -38,7 +38,7 @@ markPen.setCosmetic(True)
 class TableOverview(QWidget):
     
     #@param robot : the prowy providing telemetry data
-    def __init__(self, parent = None):
+    def __init__(self, parent, robotProxy):
         super().__init__(parent)
         self.layout = QHBoxLayout(self)
         self.resize(600,400)
@@ -47,6 +47,8 @@ class TableOverview(QWidget):
         self.robotPen = RobotPenWidget(self.p)
         self.robotTration = RobotTrationWidget(self.p)
         self.robot = None
+        self.robotProxy = robotProxy
+        self.drawTraj = False
         self.view = QRect( - T_SPARE,
                    - T_SPARE,
                     T_WIDTH     +  2.*T_SPARE,
@@ -79,6 +81,7 @@ class TableOverview(QWidget):
         drawingPose.y = -y
         drawingPose.h = math.degrees(-self.robotPose.h)
         if self.robot != None and self.parent().robotConfig != None:
+            self.drawTrajectory()
             self.robot.draw(drawingPose, self.parent().robotConfig, self.parent().robotState.stratInfo)
         self.p.end()
     
@@ -92,6 +95,28 @@ class TableOverview(QWidget):
         p4 = QPoint(p.x()*T_WIDTH/self.size().width() - T_WIDTH/2., T_HEIGHT/2 - T_HEIGHT*p.y()/self.size().height())
         qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p4.x()) + " " + str(p4.y()))) 
         return QWidget.mousePressEvent(self, event)
+    
+            
+    def drawTrajectory(self):
+        if self.drawTraj:
+            self.p.save()
+            pen = QPen(darkRed)
+            pen.setWidth(1)
+            pen.setCosmetic(True)
+            self.p.setPen(pen)
+            
+            polyline = list()
+            
+            for i in range(len(self.robotProxy.past)):
+                if i %3 == 0:
+                    p = self.robotProxy.past[i].nav.pos
+                    drawingPose = Pose2D(p.x, -p.y,  0)
+                    drawingPose.h = -p.h
+                    self.robot.draw(drawingPose, self.parent().robotConfig, self.robotProxy.past[i].stratInfo)
+                    polyline.append(QPointF(p.x, -p.y))
+            
+            self.p.drawPolyline(QPolygonF(polyline))
+            self.p.restore()
 
 class RobotWidget():
     def __init__(self, painter):

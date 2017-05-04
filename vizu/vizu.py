@@ -14,6 +14,7 @@ sys.path.append(DIR + "/../com/nanopb-0.3.7-windows-x86/generator/proto")
 sys.path.append(DIR + "/com")
 sys.path.append(DIR + "/core")
 sys.path.append(DIR + "/gui")
+sys.path.append(DIR + "/robot")
 
 import signal
 
@@ -23,6 +24,7 @@ from PyQt5.QtWidgets import *
 
 from com import *
 from gui import *
+from robot import *
 
 class ShortcutContext():
     AVAILABLE_OFFLINE = True
@@ -54,7 +56,7 @@ class VizuMainScreen(QWidget):
         self.resize(870, 500)           
         self.readSettings()
         self.setWindowTitle('Vizu [8=>]')  
-        
+        self.robotProxy = Robot()
         self.teleop = RemoteControl()
         self.shortcuts = dict()
         
@@ -64,7 +66,7 @@ class VizuMainScreen(QWidget):
         self.tabContexts = dict()
         self.tabContexts["Com"]     = TabContext(TabCom(self, self.teleop),         "F1", self.tabShortcutMap.map, "Switch to Com tab.", TabContext.AVAILABLE_OFFLINE)
         self.tabContexts["Log"]     = TabContext(TabLog(self),                      "F2", self.tabShortcutMap.map, "Switch to Log tab.", TabContext.AVAILABLE_OFFLINE)
-        self.tabContexts["Strat"]   = TabContext(TabStrat(self, self.teleop),       "F3", self.tabShortcutMap.map, "Switch to Strat tab.")
+        self.tabContexts["Strat"]   = TabContext(TabStrat(self, self.teleop, self.robotProxy),       "F3", self.tabShortcutMap.map, "Switch to Strat tab.")
         self.tabContexts["Robot"]   = TabContext(TabRobot(self),                    "F4", self.tabShortcutMap.map, "Switch to Robot tab.")
         self.tabContexts["Config"]  = TabContext(TabConfig(self),                   "F5", self.tabShortcutMap.map, "Switch to Config tab.")
         self.tabContexts["Help"]    = TabContext(TabHelp(self),                     "F6", self.tabShortcutMap.map,"Switch to LHelpog tab.", TabContext.AVAILABLE_OFFLINE)
@@ -117,6 +119,10 @@ class VizuMainScreen(QWidget):
         self.tabContexts["Config"].tab.getConfig          .connect(self.teleop.getConfig)
         self.tabContexts["Config"].tab.setConfig          .connect(self.teleop.setConfig)
         self.teleop.config.connect(self.tabContexts["Config"].tab.updateConfig)
+        
+        #RobotProxy
+        self.teleop.telemetry.connect(self.robotProxy._telemetryDataCb)
+        self.teleop.serialNumber.connect(self.robotProxy._handleSerialNumber)
         
         #Spread shortcuts data to Help screen
         self.tabContexts["Help"].tab.setShortcuts(self.shortcuts)

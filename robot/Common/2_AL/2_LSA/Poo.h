@@ -32,7 +32,7 @@ namespace ard
         LSA_PooMiddle(Robot2017& robot, eLSA_PooMidArea type);
 
         //Implements LSA
-        LSAResult isFinished() override;
+        StrategyResult getStatus() override;
 
         //FSM API : Use this hide in the FSM which dispenser is used
         void informPoo_generic() override;
@@ -50,7 +50,7 @@ namespace ard
         LSA_PooBorderOwn(Robot2017& robot);
 
         //Implements LSA
-        LSAResult isFinished() override;
+        StrategyResult getStatus() override;
 
         //Implements FSM_LSA_PooBorderOwn::DefaultSCI_OCB
         void goToEntryPoint() override;
@@ -62,7 +62,7 @@ namespace ard
         LSA_PooBorderOpp(Robot2017& robot);
 
         //Implements LSA
-        LSAResult isFinished() override;
+        StrategyResult getStatus() override;
 
         //Implements FSM_LSA_PooBorderOpp::DefaultSCI_OCB
         void goToEntryPoint() override;
@@ -74,7 +74,7 @@ namespace ard
         LSA_PooStartArea(Robot2017& robot);
 
         //Implements LSA
-        LSAResult isFinished() override;
+        StrategyResult getStatus() override;
 
         //Implements FSM_LSA_PooStartArea::DefaultSCI_OCB
         void goToEntryPoint() override;

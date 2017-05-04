@@ -12,22 +12,28 @@
 
 namespace ard
 {
+
+    typedef enum
+    {
+        None,
+        Success,
+        Failed,
+        InProgress,
+    } StrategyResult;
+
     class IStrategy: public PolledObject
     {
     public:
         //Redefined to force the name
-        IStrategy(String const& name):PolledObject(name){};
+        IStrategy(String const& name):PolledObject(name), status(None){};
 
         virtual void start() = 0;
-    };
+        virtual void stop() = 0;
+        virtual StrategyResult getStatus(){return status;};
 
-    typedef enum
-    {
-        NoLsa,
-        Success,
-        Failed,
-        InProgress,
-    } LSAResult;
+    protected:
+        StrategyResult status;
+    };
 
     /**
      * This interface is used to be able to get a pointer on the LSA
@@ -44,9 +50,6 @@ namespace ard
         //Set the entry point
         virtual void setEntryPoint(PointCap const& point) = 0;
 
-        //Get information about machine status
-        virtual LSAResult isFinished() = 0;
-
         //design issue : users of LSA would like to poll it,
         //it's not possible to share the PolledObject interface
         //as it's also used in other class used in concrete LSA.
@@ -58,6 +61,8 @@ namespace ard
         virtual void startLSA() = 0;
         //Same remarks here
         virtual void stopLSA() = 0;
+        //Same remarks here
+        virtual StrategyResult getStatusLSA() = 0;;
     };
 }
 #endif /* ROBOT_COMMON_2_AL_0_STRATFWK_ISTRATEGY_H_ */

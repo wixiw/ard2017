@@ -18,10 +18,10 @@ import _tkinter
 class TabStrat(QWidget):
     
     #@param robot : the prowy providing telemetry data
-    def __init__(self, parent, teleop):
+    def __init__(self, parent, teleop, robotProxy):
         super().__init__(parent)
         self.teleop = teleop
-        self.overview = TableOverview(self)
+        self.overview = TableOverview(self, robotProxy)
         self.robotConfig = None
         self.robotState = RemoteControl_pb2.Telemetry()
         self.uiStarted = False
@@ -161,12 +161,15 @@ class TabStrat(QWidget):
         self.box_viewConf = QGroupBox("View config")
         self.cbox["actuators out"] = QCheckBox()
         self.cbox["mire"] = QCheckBox()
+        self.cbox["traj"] = QCheckBox()
         box_layout = QFormLayout()
         box_layout.addRow("actuators out : ", self.cbox["actuators out"])
         box_layout.addRow("mire : ", self.cbox["mire"])
+        box_layout.addRow("traj : ", self.cbox["traj"])
         self.box_viewConf.setLayout(box_layout)
         self.cbox["actuators out"].stateChanged.connect(self._actuatorsChecked)
         self.cbox["mire"].stateChanged.connect(self._mireChecked) #nearly milk-shake ^^ oOooO
+        self.cbox["traj"].stateChanged.connect(self._trajChecked)
        
     #@return Pose2D : the last received telemetry position
     def getRobotPosition(self):
@@ -236,6 +239,13 @@ class TabStrat(QWidget):
             self.overview.robot.displayMire = True;
         else:
             self.overview.robot.displayMire = False;
+
+    @pyqtSlot(int)
+    def _trajChecked(self, state):
+        if state == Qt.Checked:
+            self.overview.drawTraj = True;
+        else:
+            self.overview.drawTraj = False;
 
     @pyqtSlot(int)
     def selectStrat(self, comboId):

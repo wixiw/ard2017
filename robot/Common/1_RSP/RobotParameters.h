@@ -38,11 +38,11 @@ public:
     apb_Configuration const& getConfig() const {return cfg;};
 
     uint32_t stepByTurn()           const;
-    uint32_t xav()                  const;
-    uint32_t xar()                  const;
-    uint32_t yside()                const;
-    uint32_t xavExtended()          const;
-    uint32_t xouter()               const;
+    int32_t xav()                   const;
+    int32_t xar()                   const;
+    int32_t yside()                 const;
+    int32_t xavExtended()           const;
+    int32_t xouter()                const;
     float leftWheelDiameter()    	const;
     float rightWheelDiameter()  	const;
     float voie()                 	const;
@@ -50,7 +50,7 @@ public:
     uint32_t maxTurnAcc()           const;
     uint32_t recalSpeed()           const;
     uint32_t maxTurnSpeed()         const;
-    uint32_t deccDist()             const;
+    int32_t deccDist()              const;
     uint32_t strategyDuration()     const;
     uint32_t detectionWaitForOppMove()const;
     bool detectionActive()      	const;

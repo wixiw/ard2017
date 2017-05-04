@@ -17,7 +17,7 @@ void ard::Strategy_Tanguy (Robot2017& robot)
     robot.nav.goToCap(350, 730, 90, eDir_BACKWARD);
     robot.nav.wait();
     lsaTopDisp.startLSA();
-    while( Success != lsaTopDisp.isFinished() )
+    while( Success != lsaTopDisp.getStatusLSA() )
     {
         lsaTopDisp.updateLSA(PERIOD_STRATEGY);
         ArdOs::sleepMs(PERIOD_STRATEGY);
@@ -139,7 +139,7 @@ void ard::Strategy_Tanguy (Robot2017& robot)
 
     LOG_INFO("Get 4 Cylinders");
     lsaBotDisp.startLSA();
-    while( Success != lsaBotDisp.isFinished() )
+    while( Success != lsaBotDisp.getStatusLSA() )
     {
         lsaBotDisp.updateLSA(PERIOD_STRATEGY);
         ArdOs::sleepMs(PERIOD_STRATEGY);

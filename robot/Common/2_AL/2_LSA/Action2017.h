@@ -33,15 +33,17 @@ namespace ard
             fsm.init();
         }
 
-        virtual void start()
+        virtual void start() override
         {
             fsm.init();
             fsm.enter();
+            status = InProgress;
         }
 
-        virtual void stop()
+        virtual void stop() override
         {
             fsm.exit();
+            status = None;
         }
 
         //Implements LSA
@@ -53,73 +55,73 @@ namespace ard
         /**
          * HMI
          */
-        void beep(sc_integer nb)
+        void beep(sc_integer nb) override
         {
             robot.hmi.buzzer.bip((uint8_t)(nb));
         }
 
-        void led1(sc_integer blink)
+        void led1(sc_integer blink) override
         {
             ASSERT(blink < eLedState_Max);
             robot.hmi.led1.set((eLedState)(blink));
         }
 
-        void led2(sc_integer blink)
+        void led2(sc_integer blink) override
         {
             ASSERT(blink < eLedState_Max);
             robot.hmi.led2.set((eLedState)(blink));
         }
 
-        void led3(sc_integer blink)
+        void led3(sc_integer blink) override
         {
             ASSERT(blink < eLedState_Max);
             robot.hmi.led3.set((eLedState)(blink));
         }
 
-        void led4(sc_integer blink)
+        void led4(sc_integer blink) override
         {
             ASSERT(blink < eLedState_Max);
             robot.hmi.led4.set((eLedState)(blink));
         }
 
-        void ledRGB(sc_integer color, sc_integer blink)
+        void ledRGB(sc_integer color, sc_integer blink) override
         {
             ASSERT(color < eRgb_Max);
             ASSERT(blink < eLedState_Max);
             robot.hmi.ledRGB.set((eRgb)(color), eLedState(blink));
         }
 
-        bool isStartPlugged()
+        bool isStartPlugged() override
         {
             return robot.hmi.isStartPlugged();
         }
 
-        bool isColorSwitchOnPrefered()
+        bool isColorSwitchOnPrefered() override
         {
             return robot.hmi.isColorSwitchOnPrefered();
         }
 
-        bool isUser1SwitchOn()
+        bool isUser1SwitchOn() override
         {
             return robot.hmi.user1.read();
         }
 
-        bool isUser2SwitchOn()
+        bool isUser2SwitchOn() override
         {
             return robot.hmi.user2.read();
         }
 
-        void logDebug(sc_string msg)
+        void logDebug(sc_string msg) override
         {
             LOG_DEBUG(msg);
         }
 
-        void logInfo(sc_string msg)
+        void logInfo(sc_string msg) override
         {
             LOG_INFO(msg);
         }
 
-        void logError(sc_string msg)
+        void logError(sc_string msg) override
         {
             LOG_ERROR(msg);
         }
@@ -127,139 +129,155 @@ namespace ard
         /**
          * General
          */
-        void dieMotherFucker()
+        void dieMotherFucker() override
         {
             robot.dieMotherFucker();
         }
 
-        sc_integer xav()
+        sc_integer xav() override
         {
             return robot.getConfig().xav;
         }
-        sc_integer xar()
+        sc_integer xar() override
         {
             return robot.getConfig().xar;
         }
-        sc_integer yside()
+        sc_integer yside() override
         {
             return robot.getConfig().yside;
         }
-        sc_integer xavExtended()
+        sc_integer xavExtended() override
         {
             return robot.getConfig().xavExtended;
         }
-        sc_integer xouter()
+        sc_integer xouter() override
         {
             return robot.getConfig().xouter;
         }
-        sc_integer getRemainingTime()
+        sc_integer getRemainingTime() override
         {
             return robot.chrono.getStrategyRemainingTime();
+        }
+        void setStatus(sc_integer _status) override
+        {
+            status = (StrategyResult)_status;
         }
 
         /**
          * Navigation
          */
-        void enableAvoidance(sc_boolean on)
+        void enableAvoidance(sc_boolean on) override
         {
             robot.nav.enableAvoidance(on);
         }
 
-        void setPosition(sc_real x, sc_real y, sc_real h)
+        void setPosition(sc_real x, sc_real y, sc_real h) override
         {
             robot.nav.setPosition(x, y, h);
         }
 
-        void setSpeedAcc(sc_integer vMax, sc_integer vMaxsTurn, sc_integer accMax, sc_integer accMaxTurn)
+        void setSpeedAcc(sc_integer vMax, sc_integer vMaxsTurn, sc_integer accMax, sc_integer accMaxTurn) override
         {
             robot.nav.setSpeedAcc((uint16_t)vMax, (uint16_t)vMaxsTurn, (uint16_t)accMax, (uint16_t)accMaxTurn);
         }
 
-        void goTo_ID(sc_real x, sc_real y, sc_integer sens)
+        void goTo_ID(sc_real x, sc_real y, sc_integer sens) override
         {
             ASSERT(sens == -1 || sens == 1);
             robot.nav.goTo(x, y, (eDir)(sens));
         }
 
-        void goToCap(sc_real x, sc_real y, sc_real h, sc_integer sens)
+        void goToNoSym(sc_real x, sc_real y, sc_integer sens) override
+        {
+            ASSERT(sens == -1 || sens == 1);
+            robot.nav.goTo(x, y, (eDir)(sens), false /*NO_SYM*/);
+        }
+
+        void goToCap(sc_real x, sc_real y, sc_real h, sc_integer sens) override
         {
             ASSERT(sens == -1 || sens == 1);
             robot.nav.goToCap(x, y, h, (eDir)(sens));
         }
 
-        void goForward(sc_real distanceMm)
+        void goToCapNoSym(sc_real x, sc_real y, sc_real h, sc_integer sens) override
+        {
+            ASSERT(sens == -1 || sens == 1);
+            robot.nav.goToCap(x, y, h, (eDir)(sens), false  /*NO_SYM*/);
+        }
+
+        void goForward(sc_real distanceMm) override
         {
             robot.nav.goForward(distanceMm);
         }
 
-        void turnDelta(sc_real angle)
+        void turnDelta(sc_real angle) override
         {
             robot.nav.turnDelta(angle);
         }
 
-        void turnTo(sc_real angle)
+        void turnTo(sc_real angle) override
         {
             robot.nav.turnTo(angle);
         }
 
-        void faceTo(sc_real x, sc_real y)
+        void faceTo(sc_real x, sc_real y) override
         {
             robot.nav.faceTo(x, y);
         }
 
-        void recalFace(sc_integer border)
+        void recalFace(sc_integer border) override
         {
             ASSERT(border < eTableBorder_MAX);
             robot.nav.recalFace((eTableBorder)(border));
         }
 
-        void recalRear(sc_integer border)
+        void recalRear(sc_integer border) override
         {
             ASSERT(border < eTableBorder_MAX);
             robot.nav.recalRear((eTableBorder)(border));
         }
 
-        void stopMoving()
+        void stopMoving() override
         {
             robot.nav.stopMoving();
         }
 
-        sc_boolean targetReached()
+        sc_boolean targetReached() override
         {
             return robot.nav.targetReached();
         }
 
-        sc_boolean omronFrontLeft()
+        sc_boolean omronFrontLeft() override
         {
             return robot.nav.omronFrontLeft.read();
         }
 
-        sc_boolean omronFrontRight()
+        sc_boolean omronFrontRight() override
         {
             return robot.nav.omronFrontRight.read();
         }
 
-        sc_boolean omronRearLeft()
+        sc_boolean omronRearLeft() override
         {
             return robot.nav.omronRearLeft.read();
         }
 
-        sc_boolean omronRearRight()
+        sc_boolean omronRearRight() override
         {
             return robot.nav.omronRearRight.read();
         }
 
-        sc_boolean switchRecalFL()
+        sc_boolean switchRecalFL() override
         {
             return robot.nav.switchRecalFL.read();
         }
 
-        sc_boolean switchRecalFR()
+        sc_boolean switchRecalFR() override
         {
             return robot.nav.switchRecalFR.read();
         }
 
-        sc_boolean switchRecalRC()
+        sc_boolean switchRecalRC() override
         {
             return robot.nav.switchRecalRC.read();
         }
@@ -267,27 +285,27 @@ namespace ard
         /**
          * Actionneurs
          */
-        void swallow(sc_boolean on)
+        void swallow(sc_boolean on) override
         {
             robot.actuators.swallow(on);
         }
 
-        void turnWheels(sc_integer on)
+        void turnWheels(sc_integer on) override
         {
             robot.actuators.turnWheels((uint8_t)on);
         }
 
-        void lifter(sc_boolean up)
+        void lifter(sc_boolean up) override
         {
             robot.actuators.lifterCmd(up);
         }
 
-        sc_boolean lifterAtTarget()
+        sc_boolean lifterAtTarget() override
         {
             return robot.actuators.servoLifter.isTargetReached();
         }
 
-        void arms(sc_integer left, sc_integer right)
+        void arms(sc_integer left, sc_integer right) override
         {
             ASSERT(left <= 1000);
             ASSERT(right <= 1000);
@@ -295,68 +313,68 @@ namespace ard
             robot.actuators.servoRightArm.goTo((uint16_t)right);
         }
 
-        sc_boolean armsAtTarget()
+        sc_boolean armsAtTarget() override
         {
             return robot.actuators.servoLeftArm.isTargetReached()
                     &&robot.actuators.servoRightArm.isTargetReached();
         }
 
-        void turnCylinder(sc_boolean on)
+        void turnCylinder(sc_boolean on) override
         {
             return robot.actuators.turnCylinder(on);
         }
 
-        void faceUpCylinder()
+        void faceUpCylinder() override
         {
             robot.actuators.faceUpCylinder();
         }
 
-        sc_integer getFaceUpStatus()
+        sc_integer getFaceUpStatus() override
         {
             return robot.actuators.getFaceUpStatus();
         }
 
-        sc_boolean switchArmLout()
+        sc_boolean switchArmLout() override
         {
             return robot.actuators.switchArmLout.read();
         }
 
-        sc_boolean switchArmLin()
+        sc_boolean switchArmLin() override
         {
             return robot.actuators.switchArmLin.read();
         }
 
-        sc_boolean switchArmRout()
+        sc_boolean switchArmRout() override
         {
             return robot.actuators.switchArmRout.read();
         }
 
-        sc_boolean switchArmRin()
+        sc_boolean switchArmRin() override
         {
             return robot.actuators.switchArmRin.read();
         }
 
-        sc_boolean omronCylinder()
+        sc_boolean omronCylinder() override
         {
             return robot.actuators.omronCylinder.read();
         }
 
-        sc_boolean switchCylinder()
+        sc_boolean switchCylinder() override
         {
             return robot.actuators.switchCylinder.read();
         }
 
-        sc_boolean switchLifterUp()
+        sc_boolean switchLifterUp() override
         {
             return robot.actuators.switchLifterUp.read();
         }
 
-        sc_boolean switchLifterDown()
+        sc_boolean switchLifterDown() override
         {
             return robot.actuators.switchLifterDown.read();
         }
 
-        sc_integer stockColor()
+        sc_integer stockColor() override
         {
             return robot.actuators.stockColor.getColor();
         }
@@ -364,24 +382,24 @@ namespace ard
         /**
          * Strategy Info
          */
-        sc_integer score()
+        sc_integer score() override
         {
             return robot.stratInfo.data.score;
         }
 
-        sc_integer robotStockCount()
+        sc_integer robotStockCount() override
         {
             return robot.stratInfo.data.robotCylinderStockNb;
         }
 
-        sc_integer nextCylinderColor()
+        sc_integer nextCylinderColor() override
         {
             NOT_IMPLEMENTED();
             return 0;
             //TODO WIX return robot.stratInfo.data.stock[robot.stratInfo.data.robotCylinderStockNb];
         }
 
-        sc_integer containerCount(sc_integer containerId)
+        sc_integer containerCount(sc_integer containerId) override
         {
             switch (containerId) {
                 case 1:
@@ -409,147 +427,147 @@ namespace ard
             }
         }
 
-        sc_integer dispenserA_Count()
+        sc_integer dispenserA_Count() override
         {
             return robot.stratInfo.data.dispenserMonocolorNb;
         }
 
-        sc_integer dispenserG_Count()
+        sc_integer dispenserG_Count() override
         {
             return robot.stratInfo.data.dispenserBicolorNb;
         }
 
-        sc_integer dispenserOppG_Count()
+        sc_integer dispenserOppG_Count() override
         {
             return robot.stratInfo.data.dispenserOppNb;
         }
 
-        void informWithdraw_A(sc_integer nb)
+        void informWithdraw_A(sc_integer nb) override
         {
             robot.stratInfo.informWithdraw_A((uint8_t)nb);
         }
 
-        void informWithdraw_G(sc_integer nb)
+        void informWithdraw_G(sc_integer nb) override
         {
             robot.stratInfo.informWithdraw_G((uint8_t)nb);
         }
 
-        void informWithdraw_OppG(sc_integer nb)
+        void informWithdraw_OppG(sc_integer nb) override
         {
             robot.stratInfo.informWithdraw_OppG((uint8_t)nb);
         }
 
-        void informPooed_3(sc_integer nb)
+        void informPooed_3(sc_integer nb) override
         {
             robot.stratInfo.informPooed_3((uint8_t)nb);
         }
 
-        void informPooed_4(sc_integer nb)
+        void informPooed_4(sc_integer nb) override
         {
             robot.stratInfo.informPooed_4((uint8_t)nb);
         }
 
-        void informPooed_2(sc_integer nb)
+        void informPooed_2(sc_integer nb) override
         {
             robot.stratInfo.informPooed_2((uint8_t)nb);
         }
 
-        void informPooed_5(sc_integer nb)
+        void informPooed_5(sc_integer nb) override
         {
             robot.stratInfo.informPooed_5((uint8_t)nb);
         }
 
-        void informPooed_1(sc_integer nb)
+        void informPooed_1(sc_integer nb) override
         {
             robot.stratInfo.informPooed_1((uint8_t)nb);
         }
 
-        void informPooed_6(sc_integer nb)
+        void informPooed_6(sc_integer nb) override
         {
             robot.stratInfo.informPooed_6((uint8_t)nb);
         }
 
-        void informPooed_OnTable(sc_integer nb)
+        void informPooed_OnTable(sc_integer nb) override
         {
             robot.stratInfo.informPooed_OnTable((uint8_t)nb);
         }
 
-        void informTaken_D()
+        void informTaken_D() override
         {
             robot.stratInfo.informTaken_D();
         }
 
-        void informTaken_F()
+        void informTaken_F() override
         {
             robot.stratInfo.informTaken_F();
         }
 
-        void informTaken_E()
+        void informTaken_E() override
         {
             robot.stratInfo.informTaken_E();
         }
 
-        void informTaken_B()
+        void informTaken_B() override
         {
             robot.stratInfo.informTaken_B();
         }
 
-        void informTaken_C()
+        void informTaken_C() override
         {
             robot.stratInfo.informTaken_C();
         }
 
-        void informTaken_Opp_D()
+        void informTaken_Opp_D() override
         {
             robot.stratInfo.informTaken_Opp_D();
         }
 
-        void informTaken_Opp_F()
+        void informTaken_Opp_F() override
         {
             robot.stratInfo.informTaken_Opp_F();
         }
 
-        void informTaken_Opp_E()
+        void informTaken_Opp_E() override
         {
             robot.stratInfo.informTaken_Opp_E();
         }
 
-        void informPushedAway_D()
+        void informPushedAway_D() override
         {
             robot.stratInfo.informPushedAway_D();
         }
 
-        void informPushedAway_F()
+        void informPushedAway_F() override
         {
             robot.stratInfo.informPushedAway_F();
         }
 
-        void informPushedAway_E()
+        void informPushedAway_E() override
         {
             robot.stratInfo.informPushedAway_E();
         }
 
-        void informPushedAway_B()
+        void informPushedAway_B() override
         {
             robot.stratInfo.informPushedAway_B();
         }
 
-        void informPushedAway_C()
+        void informPushedAway_C() override
         {
             robot.stratInfo.informPushedAway_C();
         }
 
-        void informPushedAway_Opp_D()
+        void informPushedAway_Opp_D() override
         {
             robot.stratInfo.informPushedAway_Opp_D();
         }
 
-        void informPushedAway_Opp_F()
+        void informPushedAway_Opp_F() override
         {
             robot.stratInfo.informPushedAway_Opp_F();
         }
 
-        void informPushedAway_Opp_E()
+        void informPushedAway_Opp_E() override
         {
             robot.stratInfo.informPushedAway_Opp_E();
         }

@@ -78,6 +78,7 @@ void FSM_InstallPen::init()
 	ifaceInternalSCI.LSA_OppE = 14;
 	ifaceInternalSCI.LSA_OppF = 15;
 	ifaceInternalSCI.LSA_6 = 16;
+	ifaceInternalSCI.LSA_IA = 17;
 }
 
 void FSM_InstallPen::enter()
@@ -97,12 +98,10 @@ sc_boolean FSM_InstallPen::isActive()
 	return stateConfVector[0] != FSM_InstallPen_last_state;
 }
 
-/* 
- * Always returns 'false' since this state machine can never become final.
- */
 sc_boolean FSM_InstallPen::isFinal()
 {
-   return false;}
+	return (stateConfVector[0] == main_region__final_);
+}
 
 void FSM_InstallPen::runCycle()
 {
@@ -116,9 +115,29 @@ void FSM_InstallPen::runCycle()
 			
 		switch (stateConfVector[stateConfVectorPosition])
 		{
-		case main_region_StateA :
+		case main_region_Recal_on_flip_flop :
 		{
-			react_main_region_StateA();
+			react_main_region_Recal_on_flip_flop();
+			break;
+		}
+		case main_region_Recal_on_start_border :
+		{
+			react_main_region_Recal_on_start_border();
+			break;
+		}
+		case main_region_Position_robot_for_Y_coordinate :
+		{
+			react_main_region_Position_robot_for_Y_coordinate();
+			break;
+		}
+		case main_region_Go_in_start_configuration :
+		{
+			react_main_region_Go_in_start_configuration();
+			break;
+		}
+		case main_region__final_ :
+		{
+			react_main_region__final_();
 			break;
 		}
 		default:
@@ -161,8 +180,20 @@ sc_boolean FSM_InstallPen::isStateActive(FSM_InstallPenStates state)
 {
 	switch (state)
 	{
-		case main_region_StateA : 
-			return (sc_boolean) (stateConfVector[0] == main_region_StateA
+		case main_region_Recal_on_flip_flop : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Recal_on_flip_flop
+			);
+		case main_region_Recal_on_start_border : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Recal_on_start_border
+			);
+		case main_region_Position_robot_for_Y_coordinate : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Position_robot_for_Y_coordinate
+			);
+		case main_region_Go_in_start_configuration : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Go_in_start_configuration
+			);
+		case main_region__final_ : 
+			return (sc_boolean) (stateConfVector[0] == main_region__final_
 			);
 		default: return false;
 	}
@@ -414,40 +445,147 @@ sc_integer FSM_InstallPen::InternalSCI::get_lSA_6()
 	return LSA_6;
 }
 
+sc_integer FSM_InstallPen::InternalSCI::get_lSA_IA()
+{
+	return LSA_IA;
+}
+
 
 // implementations of all internal functions
 
-sc_boolean FSM_InstallPen::check_main_region_StateA_tr0_tr0()
+sc_boolean FSM_InstallPen::check_main_region_Recal_on_flip_flop_tr0_tr0()
 {
 	return (timeEvents[0]) && (false);
 }
 
-void FSM_InstallPen::effect_main_region_StateA_tr0()
+sc_boolean FSM_InstallPen::check_main_region_Recal_on_flip_flop_tr1_tr1()
 {
-	exseq_main_region_StateA();
-	enseq_main_region_StateA_default();
+	return iface_OCB->targetReached();
 }
 
-/* Entry action for state 'StateA'. */
-void FSM_InstallPen::enact_main_region_StateA()
+sc_boolean FSM_InstallPen::check_main_region_Recal_on_start_border_tr0_tr0()
 {
-	/* Entry action for state 'StateA'. */
+	return iface_OCB->targetReached();
+}
+
+sc_boolean FSM_InstallPen::check_main_region_Position_robot_for_Y_coordinate_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
+sc_boolean FSM_InstallPen::check_main_region_Go_in_start_configuration_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
+void FSM_InstallPen::effect_main_region_Recal_on_flip_flop_tr0()
+{
+	exseq_main_region_Recal_on_flip_flop();
+	enseq_main_region_Recal_on_flip_flop_default();
+}
+
+void FSM_InstallPen::effect_main_region_Recal_on_flip_flop_tr1()
+{
+	exseq_main_region_Recal_on_flip_flop();
+	enseq_main_region_Recal_on_start_border_default();
+}
+
+void FSM_InstallPen::effect_main_region_Recal_on_start_border_tr0()
+{
+	exseq_main_region_Recal_on_start_border();
+	enseq_main_region_Position_robot_for_Y_coordinate_default();
+}
+
+void FSM_InstallPen::effect_main_region_Position_robot_for_Y_coordinate_tr0()
+{
+	exseq_main_region_Position_robot_for_Y_coordinate();
+	enseq_main_region_Go_in_start_configuration_default();
+}
+
+void FSM_InstallPen::effect_main_region_Go_in_start_configuration_tr0()
+{
+	exseq_main_region_Go_in_start_configuration();
+	enseq_main_region__final__default();
+}
+
+/* Entry action for state 'Recal on flip-flop'. */
+void FSM_InstallPen::enact_main_region_Recal_on_flip_flop()
+{
+	/* Entry action for state 'Recal on flip-flop'. */
 	timer->setTimer(this, (sc_eventid)(&timeEvents[0]), 1 * 1000, false);
+	iface_OCB->setPosition(555, 730, 180);
+	iface_OCB->recalRear(ifaceInternalSCI.START_AREA_X);
 }
 
-/* Exit action for state 'StateA'. */
-void FSM_InstallPen::exact_main_region_StateA()
+/* Entry action for state 'Recal on start border'. */
+void FSM_InstallPen::enact_main_region_Recal_on_start_border()
 {
-	/* Exit action for state 'StateA'. */
+	/* Entry action for state 'Recal on start border'. */
+	iface_OCB->recalFace(ifaceInternalSCI.TOP_Y);
+}
+
+/* Entry action for state 'Position robot for Y coordinate'. */
+void FSM_InstallPen::enact_main_region_Position_robot_for_Y_coordinate()
+{
+	/* Entry action for state 'Position robot for Y coordinate'. */
+	iface_OCB->goTo_ID(590, 730, ifaceInternalSCI.BWD);
+}
+
+/* Entry action for state 'Go in start configuration'. */
+void FSM_InstallPen::enact_main_region_Go_in_start_configuration()
+{
+	/* Entry action for state 'Go in start configuration'. */
+	iface_OCB->goTo_ID(640, 730, ifaceInternalSCI.FWD);
+}
+
+/* Exit action for state 'Recal on flip-flop'. */
+void FSM_InstallPen::exact_main_region_Recal_on_flip_flop()
+{
+	/* Exit action for state 'Recal on flip-flop'. */
 	timer->unsetTimer(this, (sc_eventid)(&timeEvents[0]));
 }
 
-/* 'default' enter sequence for state StateA */
-void FSM_InstallPen::enseq_main_region_StateA_default()
+/* 'default' enter sequence for state Recal on flip-flop */
+void FSM_InstallPen::enseq_main_region_Recal_on_flip_flop_default()
 {
-	/* 'default' enter sequence for state StateA */
-	enact_main_region_StateA();
-	stateConfVector[0] = main_region_StateA;
+	/* 'default' enter sequence for state Recal on flip-flop */
+	enact_main_region_Recal_on_flip_flop();
+	stateConfVector[0] = main_region_Recal_on_flip_flop;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Recal on start border */
+void FSM_InstallPen::enseq_main_region_Recal_on_start_border_default()
+{
+	/* 'default' enter sequence for state Recal on start border */
+	enact_main_region_Recal_on_start_border();
+	stateConfVector[0] = main_region_Recal_on_start_border;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Position robot for Y coordinate */
+void FSM_InstallPen::enseq_main_region_Position_robot_for_Y_coordinate_default()
+{
+	/* 'default' enter sequence for state Position robot for Y coordinate */
+	enact_main_region_Position_robot_for_Y_coordinate();
+	stateConfVector[0] = main_region_Position_robot_for_Y_coordinate;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Go in start configuration */
+void FSM_InstallPen::enseq_main_region_Go_in_start_configuration_default()
+{
+	/* 'default' enter sequence for state Go in start configuration */
+	enact_main_region_Go_in_start_configuration();
+	stateConfVector[0] = main_region_Go_in_start_configuration;
+	stateConfVectorPosition = 0;
+}
+
+/* Default enter sequence for state null */
+void FSM_InstallPen::enseq_main_region__final__default()
+{
+	/* Default enter sequence for state null */
+	stateConfVector[0] = main_region__final_;
 	stateConfVectorPosition = 0;
 }
 
@@ -458,13 +596,45 @@ void FSM_InstallPen::enseq_main_region_default()
 	react_main_region__entry_Default();
 }
 
-/* Default exit sequence for state StateA */
-void FSM_InstallPen::exseq_main_region_StateA()
+/* Default exit sequence for state Recal on flip-flop */
+void FSM_InstallPen::exseq_main_region_Recal_on_flip_flop()
 {
-	/* Default exit sequence for state StateA */
+	/* Default exit sequence for state Recal on flip-flop */
 	stateConfVector[0] = FSM_InstallPen_last_state;
 	stateConfVectorPosition = 0;
-	exact_main_region_StateA();
+	exact_main_region_Recal_on_flip_flop();
+}
+
+/* Default exit sequence for state Recal on start border */
+void FSM_InstallPen::exseq_main_region_Recal_on_start_border()
+{
+	/* Default exit sequence for state Recal on start border */
+	stateConfVector[0] = FSM_InstallPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Position robot for Y coordinate */
+void FSM_InstallPen::exseq_main_region_Position_robot_for_Y_coordinate()
+{
+	/* Default exit sequence for state Position robot for Y coordinate */
+	stateConfVector[0] = FSM_InstallPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Go in start configuration */
+void FSM_InstallPen::exseq_main_region_Go_in_start_configuration()
+{
+	/* Default exit sequence for state Go in start configuration */
+	stateConfVector[0] = FSM_InstallPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for final state. */
+void FSM_InstallPen::exseq_main_region__final_()
+{
+	/* Default exit sequence for final state. */
+	stateConfVector[0] = FSM_InstallPen_last_state;
+	stateConfVectorPosition = 0;
 }
 
 /* Default exit sequence for region main region */
@@ -474,30 +644,92 @@ void FSM_InstallPen::exseq_main_region()
 	/* Handle exit of all possible states (of FSM_InstallPen.main_region) at position 0... */
 	switch(stateConfVector[ 0 ])
 	{
-		case main_region_StateA :
+		case main_region_Recal_on_flip_flop :
 		{
-			exseq_main_region_StateA();
+			exseq_main_region_Recal_on_flip_flop();
+			break;
+		}
+		case main_region_Recal_on_start_border :
+		{
+			exseq_main_region_Recal_on_start_border();
+			break;
+		}
+		case main_region_Position_robot_for_Y_coordinate :
+		{
+			exseq_main_region_Position_robot_for_Y_coordinate();
+			break;
+		}
+		case main_region_Go_in_start_configuration :
+		{
+			exseq_main_region_Go_in_start_configuration();
+			break;
+		}
+		case main_region__final_ :
+		{
+			exseq_main_region__final_();
 			break;
 		}
 		default: break;
 	}
 }
 
-/* The reactions of state StateA. */
-void FSM_InstallPen::react_main_region_StateA()
+/* The reactions of state Recal on flip-flop. */
+void FSM_InstallPen::react_main_region_Recal_on_flip_flop()
 {
-	/* The reactions of state StateA. */
-	if (check_main_region_StateA_tr0_tr0())
+	/* The reactions of state Recal on flip-flop. */
+	if (check_main_region_Recal_on_flip_flop_tr0_tr0())
 	{ 
-		effect_main_region_StateA_tr0();
+		effect_main_region_Recal_on_flip_flop_tr0();
+	}  else
+	{
+		if (check_main_region_Recal_on_flip_flop_tr1_tr1())
+		{ 
+			effect_main_region_Recal_on_flip_flop_tr1();
+		} 
+	}
+}
+
+/* The reactions of state Recal on start border. */
+void FSM_InstallPen::react_main_region_Recal_on_start_border()
+{
+	/* The reactions of state Recal on start border. */
+	if (check_main_region_Recal_on_start_border_tr0_tr0())
+	{ 
+		effect_main_region_Recal_on_start_border_tr0();
 	} 
+}
+
+/* The reactions of state Position robot for Y coordinate. */
+void FSM_InstallPen::react_main_region_Position_robot_for_Y_coordinate()
+{
+	/* The reactions of state Position robot for Y coordinate. */
+	if (check_main_region_Position_robot_for_Y_coordinate_tr0_tr0())
+	{ 
+		effect_main_region_Position_robot_for_Y_coordinate_tr0();
+	} 
+}
+
+/* The reactions of state Go in start configuration. */
+void FSM_InstallPen::react_main_region_Go_in_start_configuration()
+{
+	/* The reactions of state Go in start configuration. */
+	if (check_main_region_Go_in_start_configuration_tr0_tr0())
+	{ 
+		effect_main_region_Go_in_start_configuration_tr0();
+	} 
+}
+
+/* The reactions of state null. */
+void FSM_InstallPen::react_main_region__final_()
+{
+	/* The reactions of state null. */
 }
 
 /* Default react sequence for initial entry  */
 void FSM_InstallPen::react_main_region__entry_Default()
 {
 	/* Default react sequence for initial entry  */
-	enseq_main_region_StateA_default();
+	enseq_main_region_Recal_on_flip_flop_default();
 }
 
 

@@ -78,6 +78,7 @@ void FSM_WipTration::init()
 	ifaceInternalSCI.LSA_OppE = 14;
 	ifaceInternalSCI.LSA_OppF = 15;
 	ifaceInternalSCI.LSA_6 = 16;
+	ifaceInternalSCI.LSA_IA = 17;
 }
 
 void FSM_WipTration::enter()
@@ -412,6 +413,11 @@ sc_integer FSM_WipTration::InternalSCI::get_lSA_OppF()
 sc_integer FSM_WipTration::InternalSCI::get_lSA_6()
 {
 	return LSA_6;
+}
+
+sc_integer FSM_WipTration::InternalSCI::get_lSA_IA()
+{
+	return LSA_IA;
 }
 
 

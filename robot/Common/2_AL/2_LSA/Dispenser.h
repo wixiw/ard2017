@@ -29,7 +29,7 @@ namespace ard
         LSA_Dispenser(Robot2017& robot, eLSA_DispType type);
 
         //Implements LSA
-        LSAResult isFinished() override;
+        StrategyResult getStatus() override;
 
         //Implements FSM_LSA_Dispenser::DefaultSCI_OCB
         void goToEntryPoint() override;

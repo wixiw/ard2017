@@ -29,7 +29,7 @@ namespace ard
         LSA_GetCylinder_B(Robot2017& robot, eLSA_GetCylinder_Recal type);
 
         //Implements LSA
-        LSAResult isFinished() override;
+        StrategyResult getStatus() override;
 
         //Implements FSM_LSA_GetCylinder_B::DefaultSCI_OCB
         void goToEntryPoint() override;
@@ -41,7 +41,7 @@ namespace ard
         LSA_GetCylinder_C(Robot2017& robot, eLSA_GetCylinder_Recal type);
 
         //Implements LSA
-        LSAResult isFinished() override;
+        StrategyResult getStatus() override;
 
         //Implements FSM_LSA_GetCylinder_C::DefaultSCI_OCB
         void goToEntryPoint() override;

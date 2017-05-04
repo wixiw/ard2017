@@ -26,8 +26,9 @@ void Tration::init(Robot2017Listener* client)
     Robot2017::init(client);
 
     //register strategies
+    lifecycle.registerSelftest(&stratSelftest);
     lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    &stratFunnyAction);
-    lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
+    lifecycle.registerMatchType("Homol",          NULL,      &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Selftest",       &stratInstall,      &stratSelftest, NULL);
     lifecycle.registerMatchType("WIP",            &stratInstall,      &stratWIP,      NULL);
     lifecycle.registerLinearStrat("Old Tanguy",   Strategy_Tanguy);

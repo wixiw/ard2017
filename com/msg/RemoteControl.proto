@@ -57,11 +57,11 @@ message Configuration
 
     //Mechanics/Electronics related constants
     required uint32 stepByTurn             = 1; //nb steps when the motor has made a complete revolution
-    required uint32 xav                    = 16; //mm distance from the wheel center to the front of the robot
-    required uint32 xar                    = 2; //mm distance from the wheel center to the rear of the robot
-    required uint32 yside                  = 3; //mm distance from the robot center to a side
-    required uint32 xavExtended            = 27; //mm distance from the wheel center to the from of the robot with arms out.
-    required uint32 xouter                 = 28;  //mm longest distance from wheels center
+    required int32 xav                     = 16; //mm distance from the wheel center to the front of the robot
+    required int32 xar                     = 2; //mm distance from the wheel center to the rear of the robot
+    required int32 yside                   = 3; //mm distance from the robot center to a side
+    required int32 xavExtended             = 27; //mm distance from the wheel center to the from of the robot with arms out.
+    required int32 xouter                  = 28;  //mm longest distance from wheels center
     //    calibration params
     required float leftWheelDiameter       = 4; //mm
     required float rightWheelDiameter      = 5; //mm

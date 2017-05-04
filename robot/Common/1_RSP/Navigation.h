@@ -82,10 +82,10 @@ namespace ard
          x,y in mm
 
          */
-        void goTo(Point target, eDir sens = eDir_FORWARD);
-        void goTo(float x /*mm*/, float y/*mm*/, eDir sens = eDir_FORWARD)
+        void goTo(Point target, eDir sens = eDir_FORWARD, bool sym = true);
+        void goTo(float x /*mm*/, float y/*mm*/, eDir sens = eDir_FORWARD, bool sym = true)
         {
-            goTo(Point(x, y), sens);
+            goTo(Point(x, y), sens, sym);
         }
         ;
 
@@ -104,10 +104,10 @@ namespace ard
          heading in degrees
 
          */
-        void goToCap(PointCap target, eDir sens = eDir_FORWARD);
-        void goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD)
+        void goToCap(PointCap target, eDir sens = eDir_FORWARD, bool sym = true);
+        void goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD, bool sym = true)
         {
-            goToCap(PointCap(x, y, h), sens);
+            goToCap(PointCap(x, y, h), sens, sym);
         }
         ;
 

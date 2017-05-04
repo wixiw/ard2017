@@ -21,7 +21,11 @@ class FSM_InstallPen : public TimedStatemachineInterface, public StatemachineInt
 		/*! Enumeration of all states */ 
 		typedef enum
 		{
-			main_region_StateA,
+			main_region_Recal_on_flip_flop,
+			main_region_Recal_on_start_border,
+			main_region_Position_robot_for_Y_coordinate,
+			main_region_Go_in_start_configuration,
+			main_region__final_,
 			FSM_InstallPen_last_state
 		} FSM_InstallPenStates;
 		
@@ -89,6 +93,8 @@ class FSM_InstallPen : public TimedStatemachineInterface, public StatemachineInt
 						
 						virtual sc_integer getRemainingTime() = 0;
 						
+						virtual void setStatus(sc_integer status) = 0;
+						
 						virtual void enableAvoidance(sc_boolean on) = 0;
 						
 						virtual void setPosition(sc_real x, sc_real y, sc_real h) = 0;
@@ -97,7 +103,11 @@ class FSM_InstallPen : public TimedStatemachineInterface, public StatemachineInt
 						
 						virtual void goTo_ID(sc_real x, sc_real y, sc_integer dir) = 0;
 						
+						virtual void goToNoSym(sc_real x, sc_real y, sc_integer dir) = 0;
+						
 						virtual void goToCap(sc_real x, sc_real y, sc_real h, sc_integer dir) = 0;
+						
+						virtual void goToCapNoSym(sc_real x, sc_real y, sc_real h, sc_integer dir) = 0;
 						
 						virtual void goForward(sc_real d) = 0;
 						
@@ -418,6 +428,9 @@ class FSM_InstallPen : public TimedStatemachineInterface, public StatemachineInt
 				/*! Gets the value of the variable 'LSA_6' that is defined in the internal scope. */
 				sc_integer get_lSA_6();
 				
+				/*! Gets the value of the variable 'LSA_IA' that is defined in the internal scope. */
+				sc_integer get_lSA_IA();
+				
 				
 			private:
 				friend class FSM_InstallPen;
@@ -468,6 +481,7 @@ class FSM_InstallPen : public TimedStatemachineInterface, public StatemachineInt
 				sc_integer LSA_OppE;
 				sc_integer LSA_OppF;
 				sc_integer LSA_6;
+				sc_integer LSA_IA;
 		};
 	
 		//! the maximum number of orthogonal states defines the dimension of the state configuration vector.
@@ -488,15 +502,38 @@ class FSM_InstallPen : public TimedStatemachineInterface, public StatemachineInt
 		
 		// prototypes of all internal functions
 		
-		sc_boolean check_main_region_StateA_tr0_tr0();
-		void effect_main_region_StateA_tr0();
-		void enact_main_region_StateA();
-		void exact_main_region_StateA();
-		void enseq_main_region_StateA_default();
+		sc_boolean check_main_region_Recal_on_flip_flop_tr0_tr0();
+		sc_boolean check_main_region_Recal_on_flip_flop_tr1_tr1();
+		sc_boolean check_main_region_Recal_on_start_border_tr0_tr0();
+		sc_boolean check_main_region_Position_robot_for_Y_coordinate_tr0_tr0();
+		sc_boolean check_main_region_Go_in_start_configuration_tr0_tr0();
+		void effect_main_region_Recal_on_flip_flop_tr0();
+		void effect_main_region_Recal_on_flip_flop_tr1();
+		void effect_main_region_Recal_on_start_border_tr0();
+		void effect_main_region_Position_robot_for_Y_coordinate_tr0();
+		void effect_main_region_Go_in_start_configuration_tr0();
+		void enact_main_region_Recal_on_flip_flop();
+		void enact_main_region_Recal_on_start_border();
+		void enact_main_region_Position_robot_for_Y_coordinate();
+		void enact_main_region_Go_in_start_configuration();
+		void exact_main_region_Recal_on_flip_flop();
+		void enseq_main_region_Recal_on_flip_flop_default();
+		void enseq_main_region_Recal_on_start_border_default();
+		void enseq_main_region_Position_robot_for_Y_coordinate_default();
+		void enseq_main_region_Go_in_start_configuration_default();
+		void enseq_main_region__final__default();
 		void enseq_main_region_default();
-		void exseq_main_region_StateA();
+		void exseq_main_region_Recal_on_flip_flop();
+		void exseq_main_region_Recal_on_start_border();
+		void exseq_main_region_Position_robot_for_Y_coordinate();
+		void exseq_main_region_Go_in_start_configuration();
+		void exseq_main_region__final_();
 		void exseq_main_region();
-		void react_main_region_StateA();
+		void react_main_region_Recal_on_flip_flop();
+		void react_main_region_Recal_on_start_border();
+		void react_main_region_Position_robot_for_Y_coordinate();
+		void react_main_region_Go_in_start_configuration();
+		void react_main_region__final_();
 		void react_main_region__entry_Default();
 		void clearInEvents();
 		void clearOutEvents();

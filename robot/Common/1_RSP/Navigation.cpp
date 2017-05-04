@@ -223,26 +223,29 @@ void Navigation::run()
                   || (!noSwitchMode && m_order == eNavOrder_RECAL_FACE && switchRecalFL.read() && switchRecalFR.read())
                   || (!noSwitchMode && m_order == eNavOrder_RECAL_REAR && switchRecalRC.read()))
             {
+                LOG_INFO(String("   wall touched"));
+
                 enterCriticalSection();
                 stepperL.move(0); //move(0) is equivalent to stay on current position
                 stepperR.move(0);
-                setPosition(m_target);
+                setPosition(m_target.toAmbiPose(m_color));
                 exitCriticalSection();
 
                 //Escape from wall
+                double distance = 0;
                 if(m_order == eNavOrder_RECAL_FACE)
                 {
-                    m_target.translatePolar(m_pose.hDegree(), conf->xouter() - conf->xav() + RECAL_ESCAPE_MARGIN);
+                    distance = conf->xouter() - conf->xav() + RECAL_ESCAPE_MARGIN;
                     m_sensTarget = eDir_BACKWARD;
                 }
                 if(m_order == eNavOrder_RECAL_REAR)
                 {
-                    m_target.translatePolar(m_pose.hDegree(), conf->xouter() - conf->xar() + RECAL_ESCAPE_MARGIN);
+                    distance = conf->xouter() - conf->xar() + RECAL_ESCAPE_MARGIN;
                     m_sensTarget = eDir_FORWARD;
                 }
-                applyCmdToGoStraight(m_sensTarget * m_pose.distanceTo(m_target), userMaxSpeed, userMaxAcc);
+                applyCmdToGoStraight(m_sensTarget * distance, userMaxSpeed, userMaxAcc);
                 m_state = eNavState_ESCAPING_WALL;
-                LOG_INFO(String("   wall touched, recal ok, exiting at : ") + m_target.toString());
+                LOG_INFO(String("   escaping of distance=") + distance);
                 klaxon.bip(1);
             }
             break;
@@ -265,7 +268,7 @@ void Navigation::run()
             }
             else if(subOrderFinished())
             {
-                LOG_INFO("   order finished.");
+                LOG_INFO(String("   recal finished, exit position : ")+ m_pose.toString());
                 m_order = eNavOrder_NOTHING;
                 m_state = eNavState_IDLE;
             }
@@ -369,7 +372,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
             "°/s), acc set to (" + userMaxAcc + "mm/s², " + userMaxTurnAcc + "°/s²)");
 }
 
-void Navigation::goTo(Point target, eDir sens)
+void Navigation::goTo(Point target, eDir sens, bool sym)
 {
     m_mutex.lock();
     ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
@@ -383,7 +386,7 @@ void Navigation::goTo(Point target, eDir sens)
     m_mutex.unlock();
 }
 
-void Navigation::goToCap(PointCap target, eDir sens)
+void Navigation::goToCap(PointCap target, eDir sens, bool sym)
 {
     m_mutex.lock();
     ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
@@ -409,11 +412,11 @@ void Navigation::goForward(float distanceMm)
 
     if(0 <= distanceMm)
     {
-        goTo(target);
+        goTo(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/);
     }
     else
     {
-        goTo(target, eDir_BACKWARD);
+        goTo(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/, eDir_BACKWARD);
     }
 }
 
@@ -426,7 +429,7 @@ void Navigation::turnDelta(float angle)
     m_mutex.unlock();
     target.hDegree(target.hDegree() + angle);
 
-    goToCap(target);
+    goToCap(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/);
 }
 
 void Navigation::turnTo(float angle)
@@ -438,7 +441,7 @@ void Navigation::turnTo(float angle)
     m_mutex.unlock();
     target.hDegree(angle);
 
-    goToCap(target);
+    goToCap(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/);
 }
 
 void Navigation::faceTo(Point p)
@@ -449,7 +452,7 @@ void Navigation::faceTo(Point p)
     m_mutex.unlock();
     target.h = m_pose.angleTo(p);
 
-    goToCap(target);
+    goToCap(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/);
 }
 
 void Navigation::recalFace(eTableBorder border)

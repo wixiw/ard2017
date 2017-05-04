@@ -124,31 +124,31 @@ uint32_t RobotParameters::stepByTurn() const
     return cfg.stepByTurn;
 }
 
-uint32_t RobotParameters::xav() const
+int32_t RobotParameters::xav() const
 {
     ASSERT(m_configuredOnce);
     return cfg.xav;
 }
 
-uint32_t RobotParameters::xar() const
+int32_t RobotParameters::xar() const
 {
     ASSERT(m_configuredOnce);
     return cfg.xar;
 }
 
-uint32_t RobotParameters::yside() const
+int32_t RobotParameters::yside() const
 {
     ASSERT(m_configuredOnce);
     return cfg.yside;
 }
 
-uint32_t RobotParameters::xavExtended() const
+int32_t RobotParameters::xavExtended() const
 {
     ASSERT(m_configuredOnce);
     return cfg.xavExtended;
 }
 
-uint32_t RobotParameters::xouter() const
+int32_t RobotParameters::xouter() const
 {
     ASSERT(m_configuredOnce);
     return cfg.xouter;
@@ -196,7 +196,7 @@ uint32_t RobotParameters::maxTurnSpeed() const
     return cfg.maxTurnSpeed;
 }
 
-uint32_t RobotParameters::deccDist() const
+int32_t RobotParameters::deccDist() const
 {
     ASSERT(m_configuredOnce);
     return cfg.deccDist;

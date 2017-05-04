@@ -100,6 +100,8 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 						
 						virtual sc_integer getRemainingTime() = 0;
 						
+						virtual void setStatus(sc_integer status) = 0;
+						
 						virtual void enableAvoidance(sc_boolean on) = 0;
 						
 						virtual void setPosition(sc_real x, sc_real y, sc_real h) = 0;
@@ -108,7 +110,11 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 						
 						virtual void goTo_ID(sc_real x, sc_real y, sc_integer dir) = 0;
 						
+						virtual void goToNoSym(sc_real x, sc_real y, sc_integer dir) = 0;
+						
 						virtual void goToCap(sc_real x, sc_real y, sc_real h, sc_integer dir) = 0;
+						
+						virtual void goToCapNoSym(sc_real x, sc_real y, sc_real h, sc_integer dir) = 0;
 						
 						virtual void goForward(sc_real d) = 0;
 						
@@ -429,6 +435,9 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 				/*! Gets the value of the variable 'LSA_6' that is defined in the internal scope. */
 				sc_integer get_lSA_6();
 				
+				/*! Gets the value of the variable 'LSA_IA' that is defined in the internal scope. */
+				sc_integer get_lSA_IA();
+				
 				
 			private:
 				friend class FSM_HomolPen;
@@ -479,6 +488,7 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 				sc_integer LSA_OppE;
 				sc_integer LSA_OppF;
 				sc_integer LSA_6;
+				sc_integer LSA_IA;
 		};
 	
 		//! the maximum number of orthogonal states defines the dimension of the state configuration vector.

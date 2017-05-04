@@ -10,10 +10,7 @@
 
 #include "IStrategy.h"
 #include "RSP.h"
-
-#define private public //workaround to gain instropection
 #include "generated/FSM_Lifecycle.h"
-#undef private
 
 #define NB_MAX_STRATEGIES 15
 
@@ -34,22 +31,15 @@ namespace ard
         StrategyFunctor linear;
     };
 
-    /**
-     * This class is used to create the instrospection that Yakindu refuses to do
-     */
-    class FSM_Lifecycle_Better: public FSM_Lifecycle
+    //Due to Yakindu generator issues (const tag missing on getters), we have to duplicate the enum
+    typedef enum
     {
-    public:
-        FSM_Lifecycle_Better();
-        void run();
-        FSM_LifecycleStates getState() const
-        {
-            return stateConfVector[0];
-        };
-        String state2Str(FSM_LifecycleStates state) const;
-    protected:
-        FSM_LifecycleStates lastState;
-    };
+        MODE_NONE = 0,
+        MODE_SELFTEST,
+        MODE_INSTALL,
+        MODE_CORE_MATCH,
+        MODE_FUNNY_ACTION
+    } eMode;
 
     /**
      * To be implemented by the assembly that builds the robot
@@ -100,35 +90,66 @@ namespace ard
         //For backward compatibility with previous design
         void registerLinearStrat(String const& name, StrategyFunctor functor);
 
+        //Register the selftest strategy
+        void registerSelftest(IStrategy* selftest);
+
         //display preamble information to the user
         //it's just a mean to reduce the volume of code in the run function
-        //TODO WIX : mettre a jour dans la machine et update commentaire
         void displayStrategies();
 
         /**
          * -----------------------------
          * FSM interface
          */
+        //Manual color and strategy configuration
+        void configureColor();
 
         //automatic robot configuration (network command from vizu)
         void networkConfigRequest(uint8_t strategyId_, eColor matchColor);
 
         //automatic match start (network command from vizu)
-        void startMatch();
+        void networkStartRequest();
 
-        //robot strategy may request to end the match sooner than expected
-        void endStrategy();
+        //activates robot avoidance system
+        void enableAvoidance();
 
-        //robot strategy may request to end the funny action sooner than expected
-        void endFunnyAction();
+        //FSM callback
+        void beep(sc_integer nb) override;
 
         //FSM callback : infor listener that robot has finished it's boot
         //(the strategy strat == lifecycle is the less priority thread so when it runs
         //for the first time, it means that anything else has finished booting.
         void bootUp() override;
 
-        //FSM callback
-        void beep(sc_integer nb) override;
+        void logDebug(sc_string msg)
+        {
+            LOG_DEBUG(msg);
+        }
+
+        void logInfo(sc_string msg)
+        {
+            LOG_INFO(msg);
+        }
+
+        void logError(sc_string msg)
+        {
+            LOG_ERROR(msg);
+        }
+
+        /**
+         * Get the current mode
+         */
+        sc_integer getModeStatus() override;
+
+        /**
+         * Start a new mode
+         */
+        void startMode(sc_integer mode) override;
+
+        /**
+         * Stop the current mode.
+         */
+        void stopMode() override;
 
         //FSM event timer
         YakardTimer fsmTimer;
@@ -151,13 +172,17 @@ namespace ard
         uint8_t nbRegisteredStrats;
 
         //State machine behavior
-        FSM_Lifecycle_Better fsm;
+        FSM_Lifecycle fsm;
 
         //References to dependencies
         LifecycleListener* listener;
+        IStrategy* selftest;
         Navigation& nav;
         Chrono& chrono;
         HmiThread& hmi;
+
+        uint8_t currentMode;
+        uint8_t currentModeStatus;
 
     };
 

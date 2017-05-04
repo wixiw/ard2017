@@ -27,9 +27,10 @@ void FunnyAction::update(TimeMs sinceLastCall)
         robot.actuators.servoFunnyAction.goTo(1000);
     }
 
-    if( 4500 < duration )
+    if( 2500 < duration )
     {
         robot.actuators.servoFunnyAction.disable();
+        status = Success;
     }
 
     duration += sinceLastCall;

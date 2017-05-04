@@ -259,7 +259,7 @@ void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
 
 void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
 {
-    robot.lifecycle.startMatch();
+    robot.lifecycle.networkStartRequest();
 }
 
 void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)

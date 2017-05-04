@@ -42,6 +42,7 @@ namespace ard
         void updateLSA(DelayMs sinceLastCall){Action2017<FSM, States_t>::update(sinceLastCall);}
         void startLSA(){Action2017<FSM, States_t>::start();}
         void stopLSA(){Action2017<FSM, States_t>::stop();}
+        StrategyResult getStatusLSA(){return Action2017<FSM, States_t>::getStatus();}
 
     protected:
         PointCap entryPoint;

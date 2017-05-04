@@ -10,75 +10,22 @@
 
 using namespace ard;
 
-FSM_Lifecycle_Better::FSM_Lifecycle_Better():
-        lastState(FSM_Lifecycle_last_state)
-{
-
-}
-
-void FSM_Lifecycle_Better::run()
-{
-    runCycle();
-    FSM_LifecycleStates newState = getState();
-    if( lastState != newState)
-    {
-        LOG_INFO(String("[Lifecycle] state changed :  ") + state2Str(lastState) + " => state " + state2Str(newState));
-        lastState = newState;
-    }
-}
-
-String FSM_Lifecycle_Better::state2Str(FSM_LifecycleStates state) const
-{
-    switch(state)
-    {
-        case main_region_Waiting_table_installation:
-            return "Waiting_table_installation";
-            break;
-        case main_region_Table_installation:
-            return "Table_installation";
-            break;
-        case main_region_Waiting_match:
-            return "Waiting_match";
-            break;
-        case main_region_Match:
-            return "Match";
-            break;
-        case main_region_Waiting_match_end:
-            return "Waiting_match_end";
-            break;
-        case main_region_Funny_action:
-            return "Funny_action";
-            break;
-        case main_region_Finished:
-            return "Finished";
-            break;
-        case main_region_Waiting_start:
-            return "Waiting_start";
-            break;
-        case main_region_Booting:
-            return "Booting";
-            break;
-        case FSM_Lifecycle_last_state:
-            return "init state";
-            break;
-        default:
-            return String("unknown state (") + state + ")";
-            break;
-    }
-}
-
 Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi):
         Thread("Strategy", PRIO_STRATEGY, STACK_STRATEGY, PERIOD_STRATEGY),
         strategyId(0),
         nbRegisteredStrats(0),
         listener(NULL),
+        selftest(NULL),
         nav(nav),
         chrono(chrono),
-        hmi(hmi)
+        hmi(hmi),
+        currentMode(MODE_NONE),
+        currentModeStatus(0)
 {
     fsm.setDefaultSCI_OCB(this);
     fsm.setTimer(&fsmTimer);
     INIT_TABLE_TO_ZERO(matchs);
+    currentModeStatus = fsm.get_nONE();
 }
 
 //Dependency injection
@@ -94,13 +41,19 @@ void Lifecycle::init()
     Thread::init();
     fsm.init();
     fsm.enter();
+    
+    ASSERT(MODE_NONE        == fsm.get_mODE_NONE());
+    ASSERT(MODE_SELFTEST    == fsm.get_mODE_SELFTEST());
+    ASSERT(MODE_INSTALL     == fsm.get_mODE_INSTALL());
+    ASSERT(MODE_CORE_MATCH  == fsm.get_mODE_CORE_MATCH());
+    ASSERT(MODE_FUNNY_ACTION == fsm.get_mODE_FUNNY_ACTION());
 }
 
 void Lifecycle::run()
 {
     fsmTimer.run(PERIOD_STRATEGY);
     readInputs();
-    fsm.run();
+    fsm.runCycle();
     publishOutputs();
 }
 
@@ -120,6 +73,7 @@ void Lifecycle::registerLinearStrat(String const& name, StrategyFunctor functor)
 {
     ASSERT_TEXT(name != "", "Strat name shall not be empty");
     ASSERT_TEXT(nbRegisteredStrats < NB_MAX_STRATEGIES, "Too many matchs registered.");
+    ASSERT_TEXT(functor, "You registered a NULL functor");
     matchs[nbRegisteredStrats].name     = name;
     matchs[nbRegisteredStrats].install  = NULL;
     matchs[nbRegisteredStrats].match    = NULL;
@@ -128,25 +82,52 @@ void Lifecycle::registerLinearStrat(String const& name, StrategyFunctor functor)
     nbRegisteredStrats++;
 }
 
+void Lifecycle::registerSelftest(IStrategy* _selftest)
+{
+    ASSERT_TEXT(selftest==NULL, "You already registered a selftest");
+    ASSERT_TEXT(_selftest, "You registered a NULL selftest");
+    selftest = _selftest;
+}
+
 void Lifecycle::networkConfigRequest(uint8_t strategyId_, eColor matchColor)
 {
     configureMatch(strategyId_, matchColor);
     fsm.raise_networkConfigRequest();
 }
 
-void Lifecycle::startMatch()
+void ard::Lifecycle::configureColor()
 {
-    fsm.raise_startMatch();
+    //Read color input
+    eColor selectedColor = eColor_UNKNOWN;
+    if ( hmi.isColorSwitchOnPrefered() )
+        selectedColor = eColor_PREF;
+    else
+        selectedColor = eColor_SYM;
+
+    //Read strat config
+    configureMatch(hmi.getStrategyId(), selectedColor);
 }
 
-void Lifecycle::endStrategy()
+void Lifecycle::networkStartRequest()
 {
-    fsm.raise_strategyFinished();
+    fsm.raise_networkStartRequest();
 }
 
-void Lifecycle::endFunnyAction()
+void ard::Lifecycle::enableAvoidance()
 {
-    fsm.raise_funnyActionFinished();
+    nav.enableAvoidance(true);
+}
+
+void Lifecycle::beep(sc_integer nb)
+{
+    hmi.buzzer.bip(nb);
+}
+
+void Lifecycle::bootUp()
+{
+    if( listener )
+        listener->bootUp();
+    LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
 }
 
 void Lifecycle::readInputs()
@@ -158,70 +139,44 @@ void Lifecycle::readInputs()
 
 void Lifecycle::publishOutputs()
 {
-    if( fsm.isRaised_installStarted() )
+    switch (currentMode)
     {
-        //Read color input
-        eColor selectedColor = eColor_UNKNOWN;
-        if ( hmi.isColorSwitchOnPrefered() )
-            selectedColor = eColor_PREF;
-        else
-            selectedColor = eColor_SYM;
+        case MODE_CORE_MATCH:
+        {
+            if(matchs[strategyId].match)
+                matchs[strategyId].match->update(PERIOD_STRATEGY);
 
-        //Read strat config
-        configureMatch(hmi.getStrategyId(), selectedColor);
-
-        matchs[strategyId].install->start();
+            if(matchs[strategyId].linear)
+                matchs[strategyId].linear(*reinterpret_cast<Robot2017*>(listener) /* #porky */);
+            break;
+        }
+        case MODE_FUNNY_ACTION:
+        {
+            if(matchs[strategyId].funny)
+                matchs[strategyId].funny->update(PERIOD_STRATEGY);
+            break;
+        }
+        case MODE_INSTALL:
+        {
+            if(matchs[strategyId].install)
+                matchs[strategyId].install->update(PERIOD_STRATEGY);
+            break;
+        }
+        case MODE_SELFTEST:
+        {
+            if(selftest)
+                selftest->update(PERIOD_STRATEGY);
+            break;
+        }
+        case MODE_NONE:
+        {
+            break;
+        }
+        
+        default:
+            ASSERT(false);
+            break;
     }
-
-    if( fsm.isRaised_matchStarted() )
-    {
-        //avoidance system is only activated with start
-        if( !fsm.get_networkStart() )
-            nav.enableAvoidance(true);
-
-        //start coutning match time
-        chrono.startMatch();
-
-        //starts the machine
-        if( matchs[strategyId].match != NULL)
-            matchs[strategyId].match->start();
-    }
-
-    if( fsm.isRaised_funnyStarted() )
-    {
-        matchs[strategyId].funny->start();
-    }
-
-    if( fsm.isRaised_matchEnded() )
-    {
-        if(listener)
-            listener->matchEnded();
-    }
-
-    //Robot installation strategy
-    if( fsm.isStateActive(FSM_Lifecycle::main_region_Table_installation) && matchs[strategyId].install != NULL)
-        matchs[strategyId].install->update(PERIOD_STRATEGY);
-
-    //Match running
-    if( fsm.isStateActive(FSM_Lifecycle::main_region_Match))
-    {
-        if( matchs[strategyId].linear != NULL)
-            matchs[strategyId].linear(*reinterpret_cast<Robot2017*>(listener) /* #porky */);
-
-        if( matchs[strategyId].match != NULL)
-            matchs[strategyId].match->update(PERIOD_STRATEGY);
-    }
-
-    //Funny action
-    if( fsm.isStateActive(FSM_Lifecycle::main_region_Funny_action) && matchs[strategyId].funny != NULL )
-        matchs[strategyId].funny->update(PERIOD_STRATEGY);
-}
-
-void Lifecycle::bootUp()
-{
-    if( listener )
-        listener->bootUp();
-    LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
 }
 
 void Lifecycle::displayStrategies()
@@ -237,9 +192,92 @@ void Lifecycle::displayStrategies()
     }
 }
 
-void Lifecycle::beep(sc_integer nb)
+sc_integer ard::Lifecycle::getModeStatus()
 {
-    hmi.buzzer.bip(nb);
+    switch (currentMode) {
+        case MODE_CORE_MATCH:
+            if(matchs[strategyId].match)
+                return matchs[strategyId].match->getStatus();
+            else
+                return fsm.get_sUCCESS();
+            break;
+        case MODE_FUNNY_ACTION:
+            if(matchs[strategyId].funny)
+                return matchs[strategyId].funny->getStatus();
+            else
+                return fsm.get_sUCCESS();
+            break;
+        case MODE_INSTALL:
+            if(matchs[strategyId].install)
+                return matchs[strategyId].install->getStatus();
+            else
+                return fsm.get_sUCCESS();
+            break;
+        case MODE_SELFTEST:
+            if(selftest)
+                return selftest->getStatus();
+            else
+                return fsm.get_sUCCESS();
+            break;
+        case MODE_NONE:
+        default:
+            ASSERT(false);
+            return fsm.get_nONE();
+            break;
+    }
+
+}
+
+void ard::Lifecycle::startMode(sc_integer mode)
+{
+    ASSERT(currentMode == fsm.get_mODE_NONE());
+    ASSERT(    mode == fsm.get_mODE_CORE_MATCH()
+            || mode == fsm.get_mODE_FUNNY_ACTION()
+            || mode == fsm.get_mODE_INSTALL()
+            || mode == fsm.get_mODE_SELFTEST());
+    currentMode = mode;
+
+    LOG_DEBUG(String("[Lifecycle] mode started : ")+mode);
+
+    switch (mode) {
+        case MODE_CORE_MATCH:
+            //start coutning match time
+            chrono.startMatch();
+
+            //starts the machine
+            if( matchs[strategyId].match != NULL)
+                matchs[strategyId].match->start();
+            break;
+        case MODE_FUNNY_ACTION:
+            if(matchs[strategyId].funny)
+                matchs[strategyId].funny->start();
+            break;
+        case MODE_INSTALL:
+            if(matchs[strategyId].install)
+                matchs[strategyId].install->start();
+            break;
+        case MODE_SELFTEST:
+            if(selftest)
+                selftest->start();
+            break;
+        case MODE_NONE:
+        default:
+            ASSERT(false);
+            break;
+    }
+}
+
+void ard::Lifecycle::stopMode()
+{
+    ASSERT(currentMode != fsm.get_mODE_NONE());
+
+    LOG_DEBUG(String("[Lifecycle] mode stopped : ")+currentMode);
+
+    //dispatch match end
+    if(currentMode == fsm.get_mODE_FUNNY_ACTION() && listener)
+        listener->matchEnded();
+
+    currentMode = fsm.get_mODE_NONE();
 }
 
 void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)

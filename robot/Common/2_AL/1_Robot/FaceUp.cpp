@@ -17,7 +17,7 @@ FaceUp::FaceUp(ActuatorThread& parent):
 
 void FaceUp::setColor(eColor color)
 {
-    ASSERT_TEXT(matchColor == eColor_UNKNOWN, "You shouldn't configure color twice.");
+    ASSERT_TEXT(color != eColor_UNKNOWN, "You shouldn't configure color with unknown.");
     matchColor = color;
 }
 

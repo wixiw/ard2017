@@ -30,10 +30,10 @@ LSA_Dispenser::LSA_Dispenser(Robot2017& robot, eLSA_DispType type):
     }
 }
 
-LSAResult LSA_Dispenser::isFinished()
+StrategyResult LSA_Dispenser::getStatus()
 {
     if(!fsm.isActive())
-        return NoLsa;
+        return None;
 
     if(fsm.isFinal())
         return Success;

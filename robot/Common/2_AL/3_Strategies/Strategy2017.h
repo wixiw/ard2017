@@ -46,7 +46,7 @@ namespace ard
         Strategy2017(Robot2017& _robot, String const& name, LSAList const& lsaList):
                 Action2017<FSM, States_t>(_robot, name),
                 lsaId(eNone),
-                lsaStatus(NoLsa),
+                lsaStatus(None),
                 actions(lsaList)
         {
         }
@@ -61,7 +61,7 @@ namespace ard
             if( lsaStatus == InProgress)
             {
                 actions.getLSA(lsaId).updateLSA(sinceLastCall);
-                lsaStatus = getLSA(lsaId).isFinished();
+                lsaStatus = getLSA(lsaId).getStatusLSA();
             }
         }
 
@@ -78,10 +78,10 @@ namespace ard
         void stopLSA()
         {
             ASSERT_TEXT(lsaId != eNone, "No LSA active");
-            ASSERT_TEXT(lsaStatus != NoLsa, "No LSA active");
+            ASSERT_TEXT(lsaStatus != None, "No LSA active");
             getLSA(lsaId).stopLSA();
             lsaId = eNone;
-            lsaStatus = NoLsa;
+            lsaStatus = None;
         }
 
         //FSM API : LSA
@@ -98,7 +98,7 @@ namespace ard
 
     protected:
         uint8_t lsaId;
-        LSAResult lsaStatus;
+        StrategyResult lsaStatus;
         LSAList const& actions;
 
         LSA& getLSA(uint8_t lsaId) const

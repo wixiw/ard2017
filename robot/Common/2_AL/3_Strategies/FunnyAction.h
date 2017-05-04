@@ -19,6 +19,9 @@ namespace ard
 
         //Implements IStrategy
         void start();
+        
+        //Implements IStrategy
+        void stop(){};
 
         //Implements IStrategy
         void update(TimeMs sinceLastCall) override;

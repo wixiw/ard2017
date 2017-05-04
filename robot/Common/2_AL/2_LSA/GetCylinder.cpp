@@ -17,10 +17,10 @@ LSA_GetCylinder_B::LSA_GetCylinder_B(Robot2017& robot, eLSA_GetCylinder_Recal ty
     fsm.set_recalRequested(type);
 }
 
-LSAResult LSA_GetCylinder_B::isFinished()
+StrategyResult LSA_GetCylinder_B::getStatus()
 {
     if(!fsm.isActive())
-        return NoLsa;
+        return None;
 
     if(fsm.isFinal())
         return Success;
@@ -39,16 +39,16 @@ void LSA_GetCylinder_B::goToEntryPoint()
  */
 
 LSA_GetCylinder_C::LSA_GetCylinder_C(Robot2017& robot, eLSA_GetCylinder_Recal type):
-        LSA2017(robot, "LSAPooMiddle", PointCap(815, -650, 120))
+        LSA2017(robot, "LSAPooMiddle", PointCap(815, -650, -120))
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);
 }
 
-LSAResult LSA_GetCylinder_C::isFinished()
+StrategyResult LSA_GetCylinder_C::getStatus()
 {
     if(!fsm.isActive())
-        return NoLsa;
+        return None;
 
     if(fsm.isFinal())
         return Success;
