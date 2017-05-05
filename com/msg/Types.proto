@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 
 // there is no package on purpose as we wish to use the generated types for
 // the robot code in order to avoid having to synchronize internal types

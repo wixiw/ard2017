@@ -20,7 +20,8 @@ Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi):
         chrono(chrono),
         hmi(hmi),
         currentMode(MODE_NONE),
-        currentModeStatus(0)
+        currentModeStatus(0),
+        simulated(false)
 {
     fsm.setDefaultSCI_OCB(this);
     fsm.setTimer(&fsmTimer);
@@ -89,13 +90,14 @@ void Lifecycle::registerSelftest(IStrategy* _selftest)
     selftest = _selftest;
 }
 
-void Lifecycle::networkConfigRequest(uint8_t strategyId_, eColor matchColor)
+void Lifecycle::networkConfigRequest(uint8_t strategyId_, eColor matchColor, bool _simulated)
 {
+    simulated = _simulated;
     configureMatch(strategyId_, matchColor);
     fsm.raise_networkConfigRequest();
 }
 
-void ard::Lifecycle::configureColor()
+void Lifecycle::configureColor()
 {
     //Read color input
     eColor selectedColor = eColor_UNKNOWN;
@@ -113,7 +115,7 @@ void Lifecycle::networkStartRequest()
     fsm.raise_networkStartRequest();
 }
 
-void ard::Lifecycle::enableAvoidance()
+void Lifecycle::enableAvoidance()
 {
     nav.enableAvoidance(true);
 }
@@ -192,7 +194,12 @@ void Lifecycle::displayStrategies()
     }
 }
 
-sc_integer ard::Lifecycle::getModeStatus()
+bool Lifecycle::isSimulated()
+{
+    return simulated;
+}
+
+sc_integer Lifecycle::getModeStatus()
 {
     switch (currentMode) {
         case MODE_CORE_MATCH:
@@ -228,7 +235,7 @@ sc_integer ard::Lifecycle::getModeStatus()
 
 }
 
-void ard::Lifecycle::startMode(sc_integer mode)
+void Lifecycle::startMode(sc_integer mode)
 {
     ASSERT(currentMode == fsm.get_mODE_NONE());
     ASSERT(    mode == fsm.get_mODE_CORE_MATCH()
@@ -267,7 +274,7 @@ void ard::Lifecycle::startMode(sc_integer mode)
     }
 }
 
-void ard::Lifecycle::stopMode()
+void Lifecycle::stopMode()
 {
     ASSERT(currentMode != fsm.get_mODE_NONE());
 
@@ -296,4 +303,8 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)
     //Configure color
     if(listener)
         listener->colorChoosed(matchColor);
+
+    //Simualtion
+    if(simulated)
+        LOG_INFO("<<< CAUTION : robot is SIMULATED >>>");
 }

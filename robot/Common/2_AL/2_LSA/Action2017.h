@@ -113,17 +113,17 @@ namespace ard
 
         void logDebug(sc_string msg) override
         {
-            LOG_DEBUG(msg);
+            LOG_DEBUG(String(msg));
         }
 
         void logInfo(sc_string msg) override
         {
-            LOG_INFO(msg);
+            LOG_INFO(String(msg));
         }
 
         void logError(sc_string msg) override
         {
-            LOG_ERROR(msg);
+            LOG_ERROR(String(msg));
         }
 
         /**
@@ -389,14 +389,12 @@ namespace ard
 
         sc_integer robotStockCount() override
         {
-            return robot.stratInfo.data.robotCylinderStockNb;
+            return robot.stratInfo.data.stock_count;
         }
 
         sc_integer nextCylinderColor() override
         {
-            NOT_IMPLEMENTED();
-            return 0;
-            //TODO WIX return robot.stratInfo.data.stock[robot.stratInfo.data.robotCylinderStockNb];
+            return robot.stratInfo.data.stock[robot.stratInfo.data.stock_count];
         }
 
         sc_integer containerCount(sc_integer containerId) override

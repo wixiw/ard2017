@@ -9,7 +9,7 @@
         <outgoingTransitions xmi:id="_Tsj-8CoTEee0mqFmHUZWcA" specification="[targetReached()] / cylinderToTake = dispenserCount()" target="_SJjUECoTEee0mqFmHUZWcA"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_SJjUECoTEee0mqFmHUZWcA" specification="exit/&#xD;&#xA;informWithdraw_generic();&#xD;&#xA;cylinderToTake -= 1" name="Get 1 cylinder" incomingTransitions="_Tsj-8CoTEee0mqFmHUZWcA _wp1KECoUEee0mqFmHUZWcA">
-        <outgoingTransitions xmi:id="_jwxCYCoTEee0mqFmHUZWcA" specification="after 500ms //5s " target="_smWtkCoUEee0mqFmHUZWcA"/>
+        <outgoingTransitions xmi:id="_jwxCYCoTEee0mqFmHUZWcA" specification="after 5000ms //5s " target="_smWtkCoUEee0mqFmHUZWcA"/>
       </vertices>
       <vertices xsi:type="sgraph:Choice" xmi:id="_smWtkCoUEee0mqFmHUZWcA" incomingTransitions="_jwxCYCoTEee0mqFmHUZWcA">
         <outgoingTransitions xmi:id="_wp1KECoUEee0mqFmHUZWcA" specification="[0 &lt; cylinderToTake]" target="_SJjUECoTEee0mqFmHUZWcA"/>

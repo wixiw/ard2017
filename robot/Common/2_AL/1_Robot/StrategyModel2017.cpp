@@ -25,11 +25,10 @@ StrategyModel2017::StrategyModel2017()
     data.cylinderOppStart          = true;
     data.cylinderOppContainer      = true;
     data.cylinderOppCenter         = true;
-    data.robotCylinderStockNb      = 0;
     data.score                     = 0;
-//TODO WIX : a remettre dans le proto
-//    for(int i = 0 ; i < 6 ; i++)
-//        data.stock[i] = eCylinderType_NO_CYLINDER;
+    data.stock_count               = 0;
+    for(uint32_t i = 0 ; i < 6 ; i++)
+        data.stock[i] = eCylinderType_NO_CYLINDER;
 }
 
 void StrategyModel2017::setColor(eColor color)
@@ -56,26 +55,25 @@ void StrategyModel2017::withdraw(uint8_t nb, uint32_t& dispenserCount, eCylinder
         res = false;
     }
 
-    data.robotCylinderStockNb += nbTransfered;
+    data.stock_count += nbTransfered;
 
     //Too many item in robot
-    if( 6 < data.robotCylinderStockNb )
+    if( 6 < data.stock_count )
     {
-        data.robotCylinderStockNb = 6;
+        data.stock_count = 6;
         res = false;
     }
-//TODO WIX
-//    else
-//    {
-//        for(uint32_t i = 0; i < nbTransfered ; i++)
-//        {
-//            data.stock[data.robotCylinderStockNb-i] = cylType;
-//        }
-//    }
+    else
+    {
+        for(uint32_t i = 0; i < nbTransfered ; i++)
+        {
+            data.stock[data.stock_count-i - 1] = cylType;
+        }
+    }
 
     String log = caller + "(" + nb + "): taken=" + nbTransfered + ", remaining : "
             + dispenserCount + "/4, robot stock : "
-            + data.robotCylinderStockNb + "/6.";
+            + data.stock_count + "/6.";
 
     if(res)
     {
@@ -93,9 +91,9 @@ void StrategyModel2017::poo(uint8_t nb, uint8_t max, uint32_t& containerCount, u
     bool res = true;
 
     //Not enougth items in robot
-    if( data.robotCylinderStockNb < nb )
+    if( data.stock_count < nb )
     {
-        nbTransfered = data.robotCylinderStockNb;
+        nbTransfered = data.stock_count;
         res = false;
     }
 
@@ -108,15 +106,15 @@ void StrategyModel2017::poo(uint8_t nb, uint8_t max, uint32_t& containerCount, u
 
     for(uint32_t i = 0; i < nbTransfered ; i++)
     {
-        //TODO WIX data.stock[data.robotCylinderStockNb - i] = eCylinderType_NO_CYLINDER;
+        data.stock[data.stock_count - i - 1] = eCylinderType_NO_CYLINDER;
         data.score += points;
     }
 
     containerCount += nbTransfered;
-    data.robotCylinderStockNb -= nbTransfered;
+    data.stock_count -= nbTransfered;
 
     String log =caller + "(" + nb + "): pooed=" + nbTransfered + ", contained : " + containerCount + "/" + max
-            + ", robot stock : " + data.robotCylinderStockNb + "/6.";
+            + ", robot stock : " + data.stock_count + "/6.";
 
     if( res )
     {
@@ -140,25 +138,24 @@ void StrategyModel2017::take(bool& objectPresent, eCylinderType cylType, const S
     }
 
     objectPresent = false;
-    data.robotCylinderStockNb += nbTransfered;
+    data.stock_count += nbTransfered;
 
     //Too many item in robot
-    if( 6 < data.robotCylinderStockNb )
+    if( 6 < data.stock_count )
     {
-        data.robotCylinderStockNb = 6;
+        data.stock_count = 6;
         res = false;
     }
-    //TODO WIX
-//    else
-//    {
-//        for(uint32_t i = 0; i < nbTransfered ; i++)
-//        {
-//            data.stock[data.robotCylinderStockNb-i] = cylType;
-//        }
-//    }
+    else
+    {
+        for(uint32_t i = 0; i < nbTransfered ; i++)
+        {
+            data.stock[data.stock_count-i - 1] = cylType;
+        }
+    }
 
     String log = caller + ": taken=" + nbTransfered + ", robot stock : "
-            + data.robotCylinderStockNb + "/6.";
+            + data.stock_count + "/6.";
 
     if(res)
     {
@@ -200,14 +197,14 @@ void StrategyModel2017::informWithdraw_OppG(uint8_t nb)
     {
         nb = data.dispenserOppNb;
     }
-    withdraw(nb, data.dispenserOppNb, eCylinderType_MONOCOLOR, "informWithdraw_OppDispenser");
+    withdraw(nb, data.dispenserOppNb, eCylinderType_BICOLOR, "informWithdraw_OppDispenser");
 }
 
 void StrategyModel2017::informPooed_3(uint8_t nb)
 {
     if(nb == 0)
     {
-        nb = min(6 - data.containerMidleCenterNb, data.robotCylinderStockNb);
+        nb = min(6 - data.containerMidleCenterNb, data.stock_count);
     }
     poo(nb, 6, data.containerMidleCenterNb, 10, "informPooed_MiddleCenter");
 }
@@ -216,7 +213,7 @@ void StrategyModel2017::informPooed_4(uint8_t nb)
 {
     if(nb == 0)
     {
-        nb = min(6 - data.containerMidleOwnNb, data.robotCylinderStockNb);
+        nb = min(6 - data.containerMidleOwnNb, data.stock_count);
     }
     poo(nb, 6, data.containerMidleOwnNb, 10, "informPooed_MiddleOwn");
 }
@@ -225,7 +222,7 @@ void StrategyModel2017::informPooed_2(uint8_t nb)
 {
     if(nb == 0)
     {
-        nb = min(6 - data.containerMidleOppNb, data.robotCylinderStockNb);
+        nb = min(6 - data.containerMidleOppNb, data.stock_count);
     }
     poo(nb, 6, data.containerMidleOppNb, 10, "informPooed_MiddleOpp");
 }
@@ -234,7 +231,7 @@ void StrategyModel2017::informPooed_5(uint8_t nb)
 {
     if(nb == 0)
     {
-        nb = min(4 - data.containerBorderNb, data.robotCylinderStockNb);
+        nb = min(4 - data.containerBorderNb, data.stock_count);
     }
     poo(nb, 4, data.containerBorderNb, 10, "informPooed_Border");
 }
@@ -243,7 +240,7 @@ void StrategyModel2017::informPooed_1(uint8_t nb)
 {
     if(nb == 0)
     {
-        nb = min(4 - data.containerBorderOppNb, data.robotCylinderStockNb);
+        nb = min(4 - data.containerBorderOppNb, data.stock_count);
     }
     poo(nb, 4, data.containerBorderOppNb, 10, "informPooed_BorderOpp");
 }
@@ -252,7 +249,7 @@ void StrategyModel2017::informPooed_6(uint8_t nb)
 {
     if(nb == 0)
     {
-        nb = min(8 - data.containerStartNb, data.robotCylinderStockNb);
+        nb = min(8 - data.containerStartNb, data.stock_count);
     }
     poo(nb, 8, data.containerStartNb, 2, "informPooed_Start");
 }
@@ -261,7 +258,7 @@ void StrategyModel2017::informPooed_OnTable(uint8_t nb)
 {
     if(nb == 0)
     {
-        nb = data.robotCylinderStockNb;
+        nb = data.stock_count;
     }
     uint32_t fakeCount = 0;
     poo(nb, 100, fakeCount, 0, "informPooed_OnTable");
@@ -269,17 +266,17 @@ void StrategyModel2017::informPooed_OnTable(uint8_t nb)
 
 void StrategyModel2017::informTaken_D()
 {
-    take( data.cylinderStart, eCylinderType_MONOCOLOR, "informTaken_Start");
+    take( data.cylinderStart, eCylinderType_BICOLOR, "informTaken_Start");
 }
 
 void StrategyModel2017::informTaken_F()
 {
-    take( data.cylinderContainer, eCylinderType_MONOCOLOR, "informTaken_Container");
+    take( data.cylinderContainer, eCylinderType_BICOLOR, "informTaken_Container");
 }
 
 void StrategyModel2017::informTaken_E()
 {
-    take( data.cylinderCenter, eCylinderType_MONOCOLOR, "informTaken_Center");
+    take( data.cylinderCenter, eCylinderType_BICOLOR, "informTaken_Center");
 }
 
 void StrategyModel2017::informTaken_B()
@@ -294,17 +291,17 @@ void StrategyModel2017::informTaken_C()
 
 void StrategyModel2017::informTaken_Opp_D()
 {
-    take( data.cylinderOppStart, eCylinderType_MONOCOLOR, "informTaken_OppStart");
+    take( data.cylinderOppStart, eCylinderType_BICOLOR, "informTaken_OppStart");
 }
 
 void StrategyModel2017::informTaken_Opp_F()
 {
-    take( data.cylinderOppContainer, eCylinderType_MONOCOLOR, "informTaken_OppContainer");
+    take( data.cylinderOppContainer, eCylinderType_BICOLOR, "informTaken_OppContainer");
 }
 
 void StrategyModel2017::informTaken_Opp_E()
 {
-    take( data.cylinderOppCenter, eCylinderType_MONOCOLOR, "informTaken_OppCenter");
+    take( data.cylinderOppCenter, eCylinderType_BICOLOR, "informTaken_OppCenter");
 }
 
 void StrategyModel2017::informPushedAway_D()

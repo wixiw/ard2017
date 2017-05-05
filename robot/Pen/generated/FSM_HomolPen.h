@@ -26,7 +26,7 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 			main_region_Get_4_monocolor_cylinders_from_Dispenser_A,
 			main_region_Poo_4_monocolor_cylinders_in_4,
 			main_region_Wait_Tration_to_move,
-			main_region_Return_to_Start_Areaa_to_recal,
+			main_region_Return_to_Start_Area_to_recal,
 			main_region_Recal_X_against_Start_Area_flip_flop,
 			main_region_Recal_Y_against_Start_Area_border,
 			main_region_Get_C_Cylinder,
@@ -514,7 +514,7 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 		sc_boolean check_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_tr0_tr0();
 		sc_boolean check_main_region_Poo_4_monocolor_cylinders_in_4_tr0_tr0();
 		sc_boolean check_main_region_Wait_Tration_to_move_tr0_tr0();
-		sc_boolean check_main_region_Return_to_Start_Areaa_to_recal_tr0_tr0();
+		sc_boolean check_main_region_Return_to_Start_Area_to_recal_tr0_tr0();
 		sc_boolean check_main_region_Recal_X_against_Start_Area_flip_flop_tr0_tr0();
 		sc_boolean check_main_region_Recal_Y_against_Start_Area_border_tr0_tr0();
 		sc_boolean check_main_region_Get_C_Cylinder_tr0_tr0();
@@ -525,7 +525,7 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 		void effect_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_tr0();
 		void effect_main_region_Poo_4_monocolor_cylinders_in_4_tr0();
 		void effect_main_region_Wait_Tration_to_move_tr0();
-		void effect_main_region_Return_to_Start_Areaa_to_recal_tr0();
+		void effect_main_region_Return_to_Start_Area_to_recal_tr0();
 		void effect_main_region_Recal_X_against_Start_Area_flip_flop_tr0();
 		void effect_main_region_Recal_Y_against_Start_Area_border_tr0();
 		void effect_main_region_Get_C_Cylinder_tr0();
@@ -536,7 +536,7 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 		void enact_main_region_Get_4_monocolor_cylinders_from_Dispenser_A();
 		void enact_main_region_Poo_4_monocolor_cylinders_in_4();
 		void enact_main_region_Wait_Tration_to_move();
-		void enact_main_region_Return_to_Start_Areaa_to_recal();
+		void enact_main_region_Return_to_Start_Area_to_recal();
 		void enact_main_region_Recal_X_against_Start_Area_flip_flop();
 		void enact_main_region_Recal_Y_against_Start_Area_border();
 		void enact_main_region_Get_C_Cylinder();
@@ -552,7 +552,7 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 		void enseq_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_default();
 		void enseq_main_region_Poo_4_monocolor_cylinders_in_4_default();
 		void enseq_main_region_Wait_Tration_to_move_default();
-		void enseq_main_region_Return_to_Start_Areaa_to_recal_default();
+		void enseq_main_region_Return_to_Start_Area_to_recal_default();
 		void enseq_main_region_Recal_X_against_Start_Area_flip_flop_default();
 		void enseq_main_region_Recal_Y_against_Start_Area_border_default();
 		void enseq_main_region_Get_C_Cylinder_default();
@@ -565,7 +565,7 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 		void exseq_main_region_Get_4_monocolor_cylinders_from_Dispenser_A();
 		void exseq_main_region_Poo_4_monocolor_cylinders_in_4();
 		void exseq_main_region_Wait_Tration_to_move();
-		void exseq_main_region_Return_to_Start_Areaa_to_recal();
+		void exseq_main_region_Return_to_Start_Area_to_recal();
 		void exseq_main_region_Recal_X_against_Start_Area_flip_flop();
 		void exseq_main_region_Recal_Y_against_Start_Area_border();
 		void exseq_main_region_Get_C_Cylinder();
@@ -578,7 +578,7 @@ class FSM_HomolPen : public TimedStatemachineInterface, public StatemachineInter
 		void react_main_region_Get_4_monocolor_cylinders_from_Dispenser_A();
 		void react_main_region_Poo_4_monocolor_cylinders_in_4();
 		void react_main_region_Wait_Tration_to_move();
-		void react_main_region_Return_to_Start_Areaa_to_recal();
+		void react_main_region_Return_to_Start_Area_to_recal();
 		void react_main_region_Recal_X_against_Start_Area_flip_flop();
 		void react_main_region_Recal_Y_against_Start_Area_border();
 		void react_main_region_Get_C_Cylinder();

@@ -150,11 +150,14 @@ class TabStrat(QWidget):
         self.box_stratInfo = QGroupBox("Strat Info")
         self.label["score"] = QLabel("?")
         self.label["stock"] = QLabel("?")
+        self.label["content"] = QLabel("?")
         self.label["score"].setAlignment(Qt.AlignRight)
         self.label["stock"].setAlignment(Qt.AlignRight)
+        self.label["content"].setAlignment(Qt.AlignRight)
         box_layout = QFormLayout()
         box_layout.addRow("score : ", self.label["score"])
         box_layout.addRow("stock : ", self.label["stock"])
+        box_layout.addRow("content : ", self.label["content"])
         self.box_stratInfo.setLayout(box_layout)
        
     def buildViewConfigInfo(self):
@@ -212,7 +215,17 @@ class TabStrat(QWidget):
             self.label["state"].setText(self.getMotionStateStr())
             self.label["order"].setText(self.getMotionOrderStr())
             self.label["score"].setText(str(msg.stratInfo.score))
-            self.label["stock"].setText(str(msg.stratInfo.robotCylinderStockNb))
+            self.label["stock"].setText(str(len(msg.stratInfo.stock)))
+            stock = "h|"
+            for c in msg.stratInfo.stock:
+                if c == Types_pb2.BICOLOR:
+                    stock = stock + "b" + "|"
+                elif c == Types_pb2.MONOCOLOR:
+                    stock = stock + "m" + "|"
+                else:
+                    stock = stock + "-" + "|"
+            stock = stock + "l"
+            self.label["content"].setText(stock)
             
             if chrono > 90.0:
                 self.label["chronoMatch"].setStyleSheet("QLabel { color: red }")

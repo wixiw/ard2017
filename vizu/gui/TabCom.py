@@ -4,6 +4,7 @@
 from PyQt5.Qt import *
 from PyQt5.QtWidgets import *
 from ArdWidgets import *
+from email.policy import default
 
 
 class TabCom(QWidget):
@@ -16,6 +17,7 @@ class TabCom(QWidget):
         settings.beginGroup("Com")
         defaultPort = settings.value("port", "COM1")
         defaultBaudrate = settings.value("baudrate", "125000")
+        defaultSimu = settings.value("simulated", "false")
         ports, baudrates = self.com.getSerialPortInfo()
           
         #Serial port configuration
@@ -32,7 +34,13 @@ class TabCom(QWidget):
         i = self.combo_Baudrate.findData(defaultBaudrate)
         if i != -1 :
             self.combo_Baudrate.setCurrentIndex(i)
-            
+            #Simulation check
+        self.simulation_label = QLabel("Simul :")
+        self.simulation_check = QCheckBox()
+        if defaultSimu == "true":
+            self.simulation_check.setChecked(True)
+            self.com.setSimulated(True)
+        self.simulation_check.stateChanged.connect(self._simuChanged)
             #connection button
         self.btn_connect = QPushButton('Connect', self)
         self.btn_connect.setCheckable(True)
@@ -66,7 +74,9 @@ class TabCom(QWidget):
         
         layoutH1.addWidget(self.combo_COM)
         layoutH1.addWidget(self.combo_Baudrate)
-        layoutH1.addWidget(self.btn_connect) 
+        layoutH1.addWidget(self.simulation_label)
+        layoutH1.addWidget(self.simulation_check)
+        layoutH1.addWidget(self.btn_connect)  
         layoutH1.addWidget(self.connectedLed)
         layoutH1.addStretch()
         
@@ -118,7 +128,8 @@ class TabCom(QWidget):
             self.combo_Baudrate.setEnabled(True)
             self.combo_COM.removeItem(self.combo_COM.findText(port))
             self._updateComInfo()
-            self.connectedLed.light(False)
+            self.connecte
+            dLed.light(False)
             
     def _disconnect(self):
         self.com.disconnect()
@@ -171,6 +182,17 @@ class TabCom(QWidget):
     def _tooLittleReq(self): 
        print("Receive a too little msg")
        self.com.requestTooLittleMsg()
+       
+    @pyqtSlot(int)
+    def _simuChanged(self, state):
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("Com")
+        if state == Qt.Checked:
+            self.com.setSimulated(True)
+            settings.setValue("simulated", True)
+        else:
+            self.com.setSimulated(False)
+            settings.setValue("simulated", False)
             
 if __name__ == '__main__':
     import sys

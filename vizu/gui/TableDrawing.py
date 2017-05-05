@@ -164,12 +164,18 @@ class RobotWidget():
         drawCircle(self.p, 0,  0, cfg.xouter)
     
     def drawObjects(self, stratInfo):
-        if stratInfo.robotCylinderStockNb:
+        if len(stratInfo.stock):
             self.p.setPen(markPen)
-            drawHorizontalCylinder(self.p, stratInfo.matchColor, 85, 0, 0)
-                        
-        if stratInfo.robotCylinderStockNb == 6:
-            drawVerticalCylinder(self.p, stratInfo.matchColor, 180, 0)
+            if stratInfo.stock[0] == Types_pb2.MONOCOLOR:
+                drawHorizontalCylinder(self.p, stratInfo.matchColor, 85, 0, 0)
+            else:
+                drawHorizontalCylinder(self.p, Types_pb2.UNKNOWN, 85, 0, 0)
+                
+        if len(stratInfo.stock) == 6:
+            if stratInfo.stock[5] == Types_pb2.MONOCOLOR:
+                drawVerticalCylinder(self.p, stratInfo.matchColor, 180, 45)
+            else:
+                drawVBicolorCylinder(self.p, 180, 0, 0)
         
     def drawCarriage(self, cfg):
         self.p.setPen(markPen)
@@ -487,15 +493,15 @@ class TableWidget():
             #Yellow side
             if stratInfo.matchColor == Types_pb2.PREF:
                 if i < 4 :
-                    drawHorizontalCylinder(self.p, stratInfo.matchColor, 2000 + i*75, 100, 90)
+                    drawHorizontalCylinder(self.p, Types_pb2.UNKNOWN, 2000 + i*75, 100, 90)
                 else:
-                    drawHorizontalCylinder(self.p, stratInfo.matchColor, 2000 + (i-4)*75, 250, 90)
+                    drawHorizontalCylinder(self.p, Types_pb2.UNKNOWN, 2000 + (i-4)*75, 250, 90)
             #Blue side
             else:
                 if i < 4 :
-                    drawHorizontalCylinder(self.p, stratInfo.matchColor, 1000 - i*75, 100, 90)
+                    drawHorizontalCylinder(self.p, Types_pb2.UNKNOWN, 1000 - i*75, 100, 90)
                 else:
-                    drawHorizontalCylinder(self.p, stratInfo.matchColor, 1000 - (i-4)*75, 250, 90) 
+                    drawHorizontalCylinder(self.p, Types_pb2.UNKNOWN, 1000 - (i-4)*75, 250, 90) 
 
     def _drawOneCrater(self, x, y):
         self.p.setPen(markPen)
@@ -714,9 +720,11 @@ def drawHorizontalCylinder(painter, color, x, y, angle):
     painter.setPen(markPen)
     if color == Types_pb2.PREF:
         painter.setBrush(trafficYellow)
-    else:
+    elif color == Types_pb2.SYM:
         painter.setBrush(skyBlue)
-    
+    else:
+        painter.setBrush(trafficWhite)
+        
     cylinder = QPainterPath()
     cylinder.moveTo(-50, 0)
     cylinder.lineTo(-50, -63/2.)

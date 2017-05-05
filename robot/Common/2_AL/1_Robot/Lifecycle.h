@@ -96,22 +96,25 @@ namespace ard
         //display preamble information to the user
         //it's just a mean to reduce the volume of code in the run function
         void displayStrategies();
+        
+        //automatic robot configuration (network command from vizu)
+        void networkConfigRequest(uint8_t strategyId_, eColor matchColor, bool simulated);
 
+        //automatic match start (network command from vizu)
+        void networkStartRequest();
+        
         /**
          * -----------------------------
          * FSM interface
          */
+        //True if robot has been launched in simulation
+        bool isSimulated() override;
+
         //Manual color and strategy configuration
-        void configureColor();
-
-        //automatic robot configuration (network command from vizu)
-        void networkConfigRequest(uint8_t strategyId_, eColor matchColor);
-
-        //automatic match start (network command from vizu)
-        void networkStartRequest();
+        void configureColor() override;
 
         //activates robot avoidance system
-        void enableAvoidance();
+        void enableAvoidance() override;
 
         //FSM callback
         void beep(sc_integer nb) override;
@@ -121,19 +124,19 @@ namespace ard
         //for the first time, it means that anything else has finished booting.
         void bootUp() override;
 
-        void logDebug(sc_string msg)
+        void logDebug(sc_string msg) override
         {
-            LOG_DEBUG(msg);
+            LOG_DEBUG(String(msg));
         }
 
-        void logInfo(sc_string msg)
+        void logInfo(sc_string msg) override
         {
-            LOG_INFO(msg);
+            LOG_INFO(String(msg));
         }
 
-        void logError(sc_string msg)
+        void logError(sc_string msg) override
         {
-            LOG_ERROR(msg);
+            LOG_ERROR(String(msg));
         }
 
         /**
@@ -183,6 +186,8 @@ namespace ard
 
         uint8_t currentMode;
         uint8_t currentModeStatus;
+
+        bool simulated;
 
     };
 

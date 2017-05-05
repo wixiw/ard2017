@@ -20,7 +20,7 @@
       <vertices xsi:type="sgraph:State" xmi:id="_--8H4C7JEeeB-rUkkc3UJw" specification="entry/ &#xD;&#xA;setPosition(640,730,0);&#xD;&#xA;logInfo(&quot;Waiting for Tration to move away...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Go go go !&quot;)" name="Wait Tration to move" incomingTransitions="_JbmxcC-CEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_cOlrMC7FEeeB-rUkkc3UJw" specification="after 1s" target="_KdTdYSYeEeeh1o2kvtdb7w"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_bYjJ4C9bEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;goTo(600, 780, BWD)" name="Return to Start Areaa to recal" incomingTransitions="_D_FXEC7BEeeB-rUkkc3UJw">
+      <vertices xsi:type="sgraph:State" xmi:id="_bYjJ4C9bEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;goTo(600, 780, BWD)" name="Return to Start Area to recal" incomingTransitions="_D_FXEC7BEeeB-rUkkc3UJw">
         <outgoingTransitions xmi:id="_K4vTEC9cEeeSSu2RwF8Pmw" specification="[targetReached]" target="_AkbxsC9cEeeSSu2RwF8Pmw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_AkbxsC9cEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;recalRear(START_AREA_X)" name="Recal X against Start Area flip-flop" incomingTransitions="_K4vTEC9cEeeSSu2RwF8Pmw">

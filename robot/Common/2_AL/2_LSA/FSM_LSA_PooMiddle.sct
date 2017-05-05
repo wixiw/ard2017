@@ -6,7 +6,7 @@
         <outgoingTransitions xmi:id="_FFoEZSoLEee0mqFmHUZWcA" target="_FFm2RyoLEee0mqFmHUZWcA"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_FFm2RyoLEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;goForward(50);&#xD;&#xA;logInfo(&quot;[LSA Poo Middle] Engaging storing area&quot;)" name="Engage PooArea" incomingTransitions="_FFoEZSoLEee0mqFmHUZWcA">
-        <outgoingTransitions xmi:id="_Tsj-8CoTEee0mqFmHUZWcA" specification="[targetReached()] / cylinderToPut = 4" target="_SJjUECoTEee0mqFmHUZWcA"/>
+        <outgoingTransitions xmi:id="_Tsj-8CoTEee0mqFmHUZWcA" specification="[targetReached()] / cylinderToPut = robotStockCount()" target="_SJjUECoTEee0mqFmHUZWcA"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_SJjUECoTEee0mqFmHUZWcA" specification="exit/&#xD;&#xA;informPoo_generic();&#xD;&#xA;cylinderToPut -= 1" name="Put 1 cylinder" incomingTransitions="_Tsj-8CoTEee0mqFmHUZWcA _wp1KECoUEee0mqFmHUZWcA">
         <outgoingTransitions xmi:id="_jwxCYCoTEee0mqFmHUZWcA" specification="after 1500ms " target="_smWtkCoUEee0mqFmHUZWcA"/>

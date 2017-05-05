@@ -27,6 +27,14 @@ class FSM_HomolTration : public TimedStatemachineInterface, public StatemachineI
 			main_region_Get_4_bicolor_cylinders_from_Dispenser_G,
 			main_region__final_,
 			main_region_Wait_for_Pen_to_finish_his_move,
+			main_region_Escape_and_avoid_Pen,
+			main_region_Escaping_crater,
+			main_region_Go_to_Start_Poo_entry_point,
+			main_region_Pooing_in_Start_Area,
+			main_region_Going_in_opponent_side,
+			main_region_Going_to_Opp_E,
+			main_region_Going_to_Opp_bicolor_Dispenser,
+			main_region_Copy_1_Pooing_in_Start_Area,
 			FSM_HomolTration_last_state
 		} FSM_HomolTrationStates;
 		
@@ -508,25 +516,62 @@ class FSM_HomolTration : public TimedStatemachineInterface, public StatemachineI
 		sc_boolean check_main_region_Goto_Thru_E_tr0_tr0();
 		sc_boolean check_main_region_Get_4_bicolor_cylinders_from_Dispenser_G_tr0_tr0();
 		sc_boolean check_main_region_Wait_for_Pen_to_finish_his_move_tr0_tr0();
+		sc_boolean check_main_region_Escape_and_avoid_Pen_tr0_tr0();
+		sc_boolean check_main_region_Escaping_crater_tr0_tr0();
+		sc_boolean check_main_region_Go_to_Start_Poo_entry_point_tr0_tr0();
+		sc_boolean check_main_region_Pooing_in_Start_Area_tr0_tr0();
+		sc_boolean check_main_region_Going_in_opponent_side_tr0_tr0();
+		sc_boolean check_main_region_Going_to_Opp_E_tr0_tr0();
+		sc_boolean check_main_region_Going_to_Opp_bicolor_Dispenser_tr0_tr0();
+		sc_boolean check_main_region_Copy_1_Pooing_in_Start_Area_tr0_tr0();
 		void effect_main_region_Escaping_from_Start_area___Goto_Thru_D_tr0();
 		void effect_main_region_Go_To_Dispenser_G_tr0();
 		void effect_main_region_Goto_Thru_E_tr0();
 		void effect_main_region_Get_4_bicolor_cylinders_from_Dispenser_G_tr0();
 		void effect_main_region_Wait_for_Pen_to_finish_his_move_tr0();
+		void effect_main_region_Escape_and_avoid_Pen_tr0();
+		void effect_main_region_Escaping_crater_tr0();
+		void effect_main_region_Go_to_Start_Poo_entry_point_tr0();
+		void effect_main_region_Pooing_in_Start_Area_tr0();
+		void effect_main_region_Going_in_opponent_side_tr0();
+		void effect_main_region_Going_to_Opp_E_tr0();
+		void effect_main_region_Going_to_Opp_bicolor_Dispenser_tr0();
+		void effect_main_region_Copy_1_Pooing_in_Start_Area_tr0();
 		void enact_main_region_Escaping_from_Start_area___Goto_Thru_D();
 		void enact_main_region_Go_To_Dispenser_G();
 		void enact_main_region_Goto_Thru_E();
 		void enact_main_region_Get_4_bicolor_cylinders_from_Dispenser_G();
 		void enact_main_region_Wait_for_Pen_to_finish_his_move();
+		void enact_main_region_Escape_and_avoid_Pen();
+		void enact_main_region_Escaping_crater();
+		void enact_main_region_Go_to_Start_Poo_entry_point();
+		void enact_main_region_Pooing_in_Start_Area();
+		void enact_main_region_Going_in_opponent_side();
+		void enact_main_region_Going_to_Opp_E();
+		void enact_main_region_Going_to_Opp_bicolor_Dispenser();
+		void enact_main_region_Copy_1_Pooing_in_Start_Area();
 		void exact_main_region_Escaping_from_Start_area___Goto_Thru_D();
+		void exact_main_region_Goto_Thru_E();
 		void exact_main_region_Get_4_bicolor_cylinders_from_Dispenser_G();
 		void exact_main_region_Wait_for_Pen_to_finish_his_move();
+		void exact_main_region_Pooing_in_Start_Area();
+		void exact_main_region_Going_in_opponent_side();
+		void exact_main_region_Going_to_Opp_E();
+		void exact_main_region_Copy_1_Pooing_in_Start_Area();
 		void enseq_main_region_Escaping_from_Start_area___Goto_Thru_D_default();
 		void enseq_main_region_Go_To_Dispenser_G_default();
 		void enseq_main_region_Goto_Thru_E_default();
 		void enseq_main_region_Get_4_bicolor_cylinders_from_Dispenser_G_default();
 		void enseq_main_region__final__default();
 		void enseq_main_region_Wait_for_Pen_to_finish_his_move_default();
+		void enseq_main_region_Escape_and_avoid_Pen_default();
+		void enseq_main_region_Escaping_crater_default();
+		void enseq_main_region_Go_to_Start_Poo_entry_point_default();
+		void enseq_main_region_Pooing_in_Start_Area_default();
+		void enseq_main_region_Going_in_opponent_side_default();
+		void enseq_main_region_Going_to_Opp_E_default();
+		void enseq_main_region_Going_to_Opp_bicolor_Dispenser_default();
+		void enseq_main_region_Copy_1_Pooing_in_Start_Area_default();
 		void enseq_main_region_default();
 		void exseq_main_region_Escaping_from_Start_area___Goto_Thru_D();
 		void exseq_main_region_Go_To_Dispenser_G();
@@ -534,6 +579,14 @@ class FSM_HomolTration : public TimedStatemachineInterface, public StatemachineI
 		void exseq_main_region_Get_4_bicolor_cylinders_from_Dispenser_G();
 		void exseq_main_region__final_();
 		void exseq_main_region_Wait_for_Pen_to_finish_his_move();
+		void exseq_main_region_Escape_and_avoid_Pen();
+		void exseq_main_region_Escaping_crater();
+		void exseq_main_region_Go_to_Start_Poo_entry_point();
+		void exseq_main_region_Pooing_in_Start_Area();
+		void exseq_main_region_Going_in_opponent_side();
+		void exseq_main_region_Going_to_Opp_E();
+		void exseq_main_region_Going_to_Opp_bicolor_Dispenser();
+		void exseq_main_region_Copy_1_Pooing_in_Start_Area();
 		void exseq_main_region();
 		void react_main_region_Escaping_from_Start_area___Goto_Thru_D();
 		void react_main_region_Go_To_Dispenser_G();
@@ -541,6 +594,14 @@ class FSM_HomolTration : public TimedStatemachineInterface, public StatemachineI
 		void react_main_region_Get_4_bicolor_cylinders_from_Dispenser_G();
 		void react_main_region__final_();
 		void react_main_region_Wait_for_Pen_to_finish_his_move();
+		void react_main_region_Escape_and_avoid_Pen();
+		void react_main_region_Escaping_crater();
+		void react_main_region_Go_to_Start_Poo_entry_point();
+		void react_main_region_Pooing_in_Start_Area();
+		void react_main_region_Going_in_opponent_side();
+		void react_main_region_Going_to_Opp_E();
+		void react_main_region_Going_to_Opp_bicolor_Dispenser();
+		void react_main_region_Copy_1_Pooing_in_Start_Area();
 		void react_main_region__entry_Default();
 		void clearInEvents();
 		void clearOutEvents();

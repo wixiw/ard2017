@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 package apb;
 
 import "nanopb.proto";
@@ -11,84 +11,84 @@ message EmptyMsg {
 
 message Point
 {
-    required float x = 1; //mm
-    required float y = 2; //mm
+    float x = 1; //mm
+    float y = 2; //mm
 }
 
 message PointCap
 {
-    required float x = 1; //mm
-    required float y = 2; //mm
-    required float h = 3; //°
+    float x = 1; //mm
+    float y = 2; //mm
+    float h = 3; //°
 }
 
 message Chrono {
-    required bool       started         = 1; // is the match started
-    required uint32     chrono_ms       = 2; // time since beginnnog of the match
-    required uint32     timeLeft_ms     = 3; // time left for the match (funny action non included)
+    bool       started         = 1; // is the match started
+    uint32     chrono_ms       = 2; // time since beginnnog of the match
+    uint32     timeLeft_ms     = 3; // time left for the match (funny action non included)
 }
 
 message NavState {
-    required eNavState       state                  = 10; //current motion state
-    required eNavOrder       order                  = 11; //current motion order
-    required PointCap        pos                    = 12; //robot position
-    required bool            omronFL                = 21; //front left omron, true = presence
-    required bool            omronFR                = 22; //front right omron, true = presence
-    required bool            omronRL                = 23; //rear left omron, true = presence
-    required bool            omronRR                = 24; //rear right omron, true = presence
-    required bool            switchRecalFL          = 30; //front left recal on border switch
-    required bool            switchRecalFR          = 31; //front right recal on border switch
-    required bool            switchRecalRC          = 32; //rear center recal on border switch
+    eNavState       state                  = 10; //current motion state
+    eNavOrder       order                  = 11; //current motion order
+    PointCap        pos                    = 12; //robot position
+    bool            omronFL                = 21; //front left omron, true = presence
+    bool            omronFR                = 22; //front right omron, true = presence
+    bool            omronRL                = 23; //rear left omron, true = presence
+    bool            omronRR                = 24; //rear right omron, true = presence
+    bool            switchRecalFL          = 30; //front left recal on border switch
+    bool            switchRecalFR          = 31; //front right recal on border switch
+    bool            switchRecalRC          = 32; //rear center recal on border switch
 }
 
 message ColorSensorState {
-    required uint32            r                    = 1;
-    required uint32            g                    = 2;
-    required uint32            b                    = 3;
-    required uint32            l                    = 4;
-    required eObjectColor      color                = 5;
+    uint32            r                    = 1;
+    uint32            g                    = 2;
+    uint32            b                    = 3;
+    uint32            l                    = 4;
+    eObjectColor      color                = 5;
 }
 
 message ActuatorsState {
-    required ColorSensorState   colorSensor        = 1;
-    required bool               switchArmLout      = 2; //left arm extended (fully outside robot) position end course switch
-    required bool               switchArmLin       = 3; //left arm retracted (fully inside robot) position end course switch
-    required bool               switchArmRout      = 4; //right arm extended (fully outside robot) position end course switch
-    required bool               switchArmRin       = 5; //right arm retracted (fully inside robot) position end course switch
-    required bool               omronCylinder      = 6; //swallow mouth cylinder presence detection (lateral omron)
-    required bool               switchCylinder     = 7; //swallow mouth cylinder ready to lift, switch detection
-    required bool               omronSpare         = 8; //Rear center spare omron, close to the recal switch
-    required bool               switchLifterUp     = 9; //lifter upside end course switch
-    required bool               switchLifterDown   = 10; //lifter upside end course switch
+    ColorSensorState   colorSensor        = 1;
+    bool               switchArmLout      = 2; //left arm extended (fully outside robot) position end course switch
+    bool               switchArmLin       = 3; //left arm retracted (fully inside robot) position end course switch
+    bool               switchArmRout      = 4; //right arm extended (fully outside robot) position end course switch
+    bool               switchArmRin       = 5; //right arm retracted (fully inside robot) position end course switch
+    bool               omronCylinder      = 6; //swallow mouth cylinder presence detection (lateral omron)
+    bool               switchCylinder     = 7; //swallow mouth cylinder ready to lift, switch detection
+    bool               omronSpare         = 8; //Rear center spare omron, close to the recal switch
+    bool               switchLifterUp     = 9; //lifter upside end course switch
+    bool               switchLifterDown   = 10; //lifter upside end course switch
 
-    required int32              servoLifter        = 30;
-    required int32              servoLeftArm       = 31;
-    required int32              servoRightArm      = 32;
-    required int32              servoLeftWheel     = 33;
-    required int32              servoRightWheel    = 34;
-    required int32              servoFunnyAction   = 35;
+    int32              servoLifter        = 30;
+    int32              servoLeftArm       = 31;
+    int32              servoRightArm      = 32;
+    int32              servoLeftWheel     = 33;
+    int32              servoRightWheel    = 34;
+    int32              servoFunnyAction   = 35;
 }
 
 message HmiState {
-    required bool               led1               = 2;
-    required bool               led2               = 3;
-    required bool               led3               = 4;
-    required bool               led4               = 5;
-    required uint32             ledRgb             = 6;
-    required bool               start              = 7;
-    required bool               colorSwitch        = 8;
-    required bool               user1              = 9;
-    required bool               user2              = 10;
-    required bool               ledDue_Rx          = 11;
-    required bool               ledDue_Tx          = 12;
-    required bool               ledDue_L           = 13;
+    bool               led1               = 2;
+    bool               led2               = 3;
+    bool               led3               = 4;
+    bool               led4               = 5;
+    uint32             ledRgb             = 6;
+    bool               start              = 7;
+    bool               colorSwitch        = 8;
+    bool               user1              = 9;
+    bool               user2              = 10;
+    bool               ledDue_Rx          = 11;
+    bool               ledDue_Tx          = 12;
+    bool               ledDue_L           = 13;
 }
 
 
 message Tone
 {
-    required uint32 frequency = 1; //Hz
-    required uint32 duration = 2; //ms
+    uint32 frequency = 1; //Hz
+    uint32 duration = 2; //ms
 }
 
 message Melody
@@ -98,32 +98,28 @@ message Melody
 
 message StratInfo2017
 {
-    required eColor matchColor                     = 100;
-    required uint32 matchPassedTime                = 101; //time since the beginning of the match
-    required uint32 matchRemainingTime             = 102; //remaining time until the end
+    eColor matchColor                     = 100;
 
-    required uint32 dispenserMonocolorNb           = 1; //Nb cylinders remaining in our mono-color dispenser
-    required uint32 dispenserBicolorNb             = 2; //Nb cylinders remaining in our bi-color dispenser
-    required uint32 dispenserOppNb                 = 3; //Nb cylinders remaining in opponent dispenser
+    uint32 dispenserMonocolorNb           = 1; //Nb cylinders remaining in our mono-color dispenser
+    uint32 dispenserBicolorNb             = 2; //Nb cylinders remaining in our bi-color dispenser
+    uint32 dispenserOppNb                 = 3; //Nb cylinders remaining in opponent dispenser
 
-    required uint32 containerMidleCenterNb         = 4; //Nb cylinders present in the middle center container
-    required uint32 containerMidleOwnNb            = 5; //Nb cylinders present in the middle container on our side
-    required uint32 containerMidleOppNb            = 6; //Nb cylinders present in the middle container on opponent side
-    required uint32 containerBorderNb              = 7; //Nb cylinders present in the border container on our side
-    required uint32 containerBorderOppNb           = 8; //Nb cylinders present in the border container on opponent side
-    required uint32 containerStartNb               = 9; //Nb cylinders present in our start area
+    uint32 containerMidleCenterNb         = 4; //Nb cylinders present in the middle center container
+    uint32 containerMidleOwnNb            = 5; //Nb cylinders present in the middle container on our side
+    uint32 containerMidleOppNb            = 6; //Nb cylinders present in the middle container on opponent side
+    uint32 containerBorderNb              = 7; //Nb cylinders present in the border container on our side
+    uint32 containerBorderOppNb           = 8; //Nb cylinders present in the border container on opponent side
+    uint32 containerStartNb               = 9; //Nb cylinders present in our start area
 
-    required bool   cylinderStart                  = 10; //Cylinder close to our start position is present on table
-    required bool   cylinderContainer              = 11; //Cylinder close to our midle center container is present on table
-    required bool   cylinderCenter                 = 12; //Cylinder in the middle of our table side is present on table
-    required bool   cylinderCorner                 = 13; //Cylinder close to our start position table corner is present on table
-    required bool   cylinderCrater                 = 14; //Cylinder close to our bottom craters is present on table
-    required bool   cylinderOppStart               = 15; //Cylinder close to opponent start position is present on table
-    required bool   cylinderOppContainer           = 16; //Cylinder close to opponent midle center container is present on table
-    required bool   cylinderOppCenter              = 17; //Cylinder in the middle of opponent table side is present on table
+    bool   cylinderStart                  = 10; //Cylinder close to our start position is present on table
+    bool   cylinderContainer              = 11; //Cylinder close to our midle center container is present on table
+    bool   cylinderCenter                 = 12; //Cylinder in the middle of our table side is present on table
+    bool   cylinderCorner                 = 13; //Cylinder close to our start position table corner is present on table
+    bool   cylinderCrater                 = 14; //Cylinder close to our bottom craters is present on table
+    bool   cylinderOppStart               = 15; //Cylinder close to opponent start position is present on table
+    bool   cylinderOppContainer           = 16; //Cylinder close to opponent midle center container is present on table
+    bool   cylinderOppCenter              = 17; //Cylinder in the middle of opponent table side is present on table
+    repeated uint32  stock                = 19 [(nanopb).max_count = 6]; //The type of each stocked cylinder (index 0 is highest level, and 5 is stocked in arms)
 
-    required uint32 robotCylinderStockNb           = 18; //Number of cylinders stocked properly inside the robot
-    //repeated eCylinderType stock                   = 19 [(nanopb).max_count = 6]; //The type of each stocked cylinder (index 0 is highest level, and 5 is stocked in arms)
-
-    required uint32 score                          = 20; //Expected match point count
+    uint32 score                          = 20; //Expected match point count
 }

@@ -253,8 +253,9 @@ void RemoteControl::configureMatch(apb_RemoteControlRequest const & request)
 {
     uint8_t strategy = request.type.configureMatch.strategy;
     eColor color = (eColor)(request.type.configureMatch.matchColor);
+    bool simulated = request.type.configureMatch.simulated;
 
-    robot.lifecycle.networkConfigRequest(strategy, color);
+    robot.lifecycle.networkConfigRequest(strategy, color, simulated);
 }
 
 void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
@@ -264,17 +265,17 @@ void RemoteControl::startMatch(apb_RemoteControlRequest const & request)
 
 void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)
 {
-    if( request.type.requestActuators.has_lifter )
+    if( request.type.requestActuators.hasLifter )
         robot.actuators.servoLifter.goTo(request.type.requestActuators.lifter);
-    if( request.type.requestActuators.has_leftArm )
+    if( request.type.requestActuators.hasLeftArm )
         robot.actuators.servoLeftArm.goTo(request.type.requestActuators.leftArm);
-    if( request.type.requestActuators.has_rightArm )
+    if( request.type.requestActuators.hasRightArm )
         robot.actuators.servoRightArm.goTo(request.type.requestActuators.rightArm);
-    if( request.type.requestActuators.has_leftWheel )
+    if( request.type.requestActuators.hasLeftWheel )
         robot.actuators.servoLeftWheel.goTo(request.type.requestActuators.leftWheel);
-    if( request.type.requestActuators.has_rightWheel )
+    if( request.type.requestActuators.hasRightWheel )
         robot.actuators.servoRightWheel.goTo(request.type.requestActuators.rightWheel);
-    if( request.type.requestActuators.has_funnyAction )
+    if( request.type.requestActuators.hasFunnyAction )
         robot.actuators.servoFunnyAction.goTo(request.type.requestActuators.funnyAction);
 }
 

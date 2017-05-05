@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 package apb;
 
 import "nanopb.proto";
@@ -8,93 +8,100 @@ import "CommonMsg.proto";
 //Configure the robot match paramters
 message ConfigureMatch
 {
-    required uint32 strategy = 1;
-    required eColor matchColor = 2;
+    uint32 strategy = 1;
+    eColor matchColor = 2;
+    bool simulated = 3;
 }
 
 //request the robot to modify its speeds. If params are set to 0 => restore config speed
 message SetSpeedAcc {
-    required uint32          vMax                = 1; //mm/s
-    required uint32          vMaxTurn            = 2; //°/s
-    required uint32          accMax              = 3; //mm/s2
-    required uint32          accMaxTurn          = 4; //°/s2
+    uint32          vMax                = 1; //mm/s
+    uint32          vMaxTurn            = 2; //°/s
+    uint32          accMax              = 3; //mm/s2
+    uint32          accMaxTurn          = 4; //°/s2
 }
 
 //request the robot to turn to head to destination, then go ahead
 message RequestGoto {
-    required Point           target              = 1;
-    required eDir            direction           = 2;
+    Point           target              = 1;
+    eDir            direction           = 2;
 }
 
 //relative motion order to go in straight line
 message RequestGotoCap {
-    required PointCap        target              = 1;
-    required eDir            direction           = 2;
+    PointCap        target              = 1;
+    eDir            direction           = 2;
 }
 
 message Log {
-    required uint32            date              = 1;
-    required eLogLevel         level             = 2;
-    required string            component         = 3 [(nanopb).max_size = 16];
-    required string            text              = 4 [(nanopb).max_size = 200];
+    uint32            date              = 1;
+    eLogLevel         level             = 2;
+    string            component         = 3 [(nanopb).max_size = 16];
+    string            text              = 4 [(nanopb).max_size = 200];
 }
 
 //feedback on Robot low level states
 message Telemetry
 {
-    required uint32            date              = 1;
-    required Chrono            chrono            = 2;
-    required NavState          nav               = 3;
-    required ActuatorsState    actuators         = 4;
-    required HmiState          hmi               = 5;
-    required StratInfo2017     stratInfo         = 6;
+    uint32            date              = 1;
+    Chrono            chrono            = 2;
+    NavState          nav               = 3;
+    ActuatorsState    actuators         = 4;
+    HmiState          hmi               = 5;
+    StratInfo2017     stratInfo         = 6;
 }
 
 //WARNING : To keep in sync with RobotParameters.h/cpp
 message Configuration
 {
-    required string serialNumber           = 100 [(nanopb).max_size = 16];
+    string serialNumber           = 100 [(nanopb).max_size = 16];
 
     //Mechanics/Electronics related constants
-    required uint32 stepByTurn             = 1; //nb steps when the motor has made a complete revolution
-    required int32 xav                     = 16; //mm distance from the wheel center to the front of the robot
-    required int32 xar                     = 2; //mm distance from the wheel center to the rear of the robot
-    required int32 yside                   = 3; //mm distance from the robot center to a side
-    required int32 xavExtended             = 27; //mm distance from the wheel center to the from of the robot with arms out.
-    required int32 xouter                  = 28;  //mm longest distance from wheels center
+    uint32 stepByTurn             = 1; //nb steps when the motor has made a complete revolution
+    int32 xav                     = 16; //mm distance from the wheel center to the front of the robot
+    int32 xar                     = 2; //mm distance from the wheel center to the rear of the robot
+    int32 yside                   = 3; //mm distance from the robot center to a side
+    int32 xavExtended             = 27; //mm distance from the wheel center to the from of the robot with arms out.
+    int32 xouter                  = 28;  //mm longest distance from wheels center
     //    calibration params
-    required float leftWheelDiameter       = 4; //mm
-    required float rightWheelDiameter      = 5; //mm
-    required float voie                    = 6; //mm (distance between the 2 wheels contact points)
+    float leftWheelDiameter       = 4; //mm
+    float rightWheelDiameter      = 5; //mm
+    float voie                    = 6; //mm (distance between the 2 wheels contact points)
 
     //Navigation config
-    required uint32 maxAcc                = 11; //in mm /s² maximal accelaration in linear motion
-    required uint32 maxTurnAcc            = 12; //in ° /s² maximal accelaration in rotations
-    required uint32 recalSpeed            = 13; //in mm /s
-    required uint32 maxTurnSpeed          = 14; //in ° /s
-    required uint32 deccDist              = 15; //in mm distance to stop the robot at max speed (vmax is computed from acc/decc and this value)
+    uint32 maxAcc                = 11; //in mm /s² maximal accelaration in linear motion
+    uint32 maxTurnAcc            = 12; //in ° /s² maximal accelaration in rotations
+    uint32 recalSpeed            = 13; //in mm /s
+    uint32 maxTurnSpeed          = 14; //in ° /s
+    uint32 deccDist              = 15; //in mm distance to stop the robot at max speed (vmax is computed from acc/decc and this value)
 
     //Avoidance config
-    required uint32 detectionWaitForOppMove = 21;  //in ms
-    required bool detectionActive         = 22; //activates (or not) the avoidance system.
+    uint32 detectionWaitForOppMove = 21;  //in ms
+    bool detectionActive         = 22; //activates (or not) the avoidance system.
 
     //Strat config
-    required uint32 strategyDuration      = 31; //in ms
+    uint32 strategyDuration      = 31; //in ms
 }
 
 message ActuatorsCmd
 {
-    optional int32 lifter       = 1; //angle in per thousand
-    optional int32 leftArm      = 2; //angle in per thousand
-    optional int32 rightArm     = 3; //angle in per thousand
-    optional int32 leftWheel    = 4; //angle in per thousand
-    optional int32 rightWheel   = 5; //angle in per thousand
-    optional int32 funnyAction  = 6; //angle in per thousand
+    bool hasLifter              = 11;
+    int32 lifter       = 1; //angle in per thousand
+    bool hasLeftArm             = 12;
+    int32 leftArm      = 2; //angle in per thousand
+    bool hasRightArm            = 13;
+    int32 rightArm     = 3; //angle in per thousand
+    bool hasLeftWheel           = 14;
+    int32 leftWheel    = 4; //angle in per thousand
+    bool hasRightWheel          = 15;
+    int32 rightWheel   = 5; //angle in per thousand
+    bool hasFunnyAction         = 16;
+    int32 funnyAction  = 6; //angle in per thousand
 }
 
 message SerialNumber
 {
-    required string value         = 1 [(nanopb).max_size = 16];
+    string value         = 1 [(nanopb).max_size = 16];
 }
 
 //----------------------------------------------------------------------

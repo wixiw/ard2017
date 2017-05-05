@@ -140,9 +140,9 @@ void FSM_HomolPen::runCycle()
 			react_main_region_Wait_Tration_to_move();
 			break;
 		}
-		case main_region_Return_to_Start_Areaa_to_recal :
+		case main_region_Return_to_Start_Area_to_recal :
 		{
-			react_main_region_Return_to_Start_Areaa_to_recal();
+			react_main_region_Return_to_Start_Area_to_recal();
 			break;
 		}
 		case main_region_Recal_X_against_Start_Area_flip_flop :
@@ -231,8 +231,8 @@ sc_boolean FSM_HomolPen::isStateActive(FSM_HomolPenStates state)
 		case main_region_Wait_Tration_to_move : 
 			return (sc_boolean) (stateConfVector[0] == main_region_Wait_Tration_to_move
 			);
-		case main_region_Return_to_Start_Areaa_to_recal : 
-			return (sc_boolean) (stateConfVector[0] == main_region_Return_to_Start_Areaa_to_recal
+		case main_region_Return_to_Start_Area_to_recal : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Return_to_Start_Area_to_recal
 			);
 		case main_region_Recal_X_against_Start_Area_flip_flop : 
 			return (sc_boolean) (stateConfVector[0] == main_region_Recal_X_against_Start_Area_flip_flop
@@ -535,7 +535,7 @@ sc_boolean FSM_HomolPen::check_main_region_Wait_Tration_to_move_tr0_tr0()
 	return timeEvents[0];
 }
 
-sc_boolean FSM_HomolPen::check_main_region_Return_to_Start_Areaa_to_recal_tr0_tr0()
+sc_boolean FSM_HomolPen::check_main_region_Return_to_Start_Area_to_recal_tr0_tr0()
 {
 	return iface_OCB->targetReached();
 }
@@ -580,7 +580,7 @@ void FSM_HomolPen::effect_main_region_Go_To_Container_4_tr0()
 void FSM_HomolPen::effect_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_tr0()
 {
 	exseq_main_region_Get_4_monocolor_cylinders_from_Dispenser_A();
-	enseq_main_region_Return_to_Start_Areaa_to_recal_default();
+	enseq_main_region_Return_to_Start_Area_to_recal_default();
 }
 
 void FSM_HomolPen::effect_main_region_Poo_4_monocolor_cylinders_in_4_tr0()
@@ -595,9 +595,9 @@ void FSM_HomolPen::effect_main_region_Wait_Tration_to_move_tr0()
 	enseq_main_region_Go_To_Dispenser_A_default();
 }
 
-void FSM_HomolPen::effect_main_region_Return_to_Start_Areaa_to_recal_tr0()
+void FSM_HomolPen::effect_main_region_Return_to_Start_Area_to_recal_tr0()
 {
-	exseq_main_region_Return_to_Start_Areaa_to_recal();
+	exseq_main_region_Return_to_Start_Area_to_recal();
 	enseq_main_region_Recal_X_against_Start_Area_flip_flop_default();
 }
 
@@ -672,10 +672,10 @@ void FSM_HomolPen::enact_main_region_Wait_Tration_to_move()
 	iface_OCB->logInfo("Waiting for Tration to move away...");
 }
 
-/* Entry action for state 'Return to Start Areaa to recal'. */
-void FSM_HomolPen::enact_main_region_Return_to_Start_Areaa_to_recal()
+/* Entry action for state 'Return to Start Area to recal'. */
+void FSM_HomolPen::enact_main_region_Return_to_Start_Area_to_recal()
 {
-	/* Entry action for state 'Return to Start Areaa to recal'. */
+	/* Entry action for state 'Return to Start Area to recal'. */
 	iface_OCB->goTo_ID(600, 780, ifaceInternalSCI.BWD);
 }
 
@@ -796,12 +796,12 @@ void FSM_HomolPen::enseq_main_region_Wait_Tration_to_move_default()
 	stateConfVectorPosition = 0;
 }
 
-/* 'default' enter sequence for state Return to Start Areaa to recal */
-void FSM_HomolPen::enseq_main_region_Return_to_Start_Areaa_to_recal_default()
+/* 'default' enter sequence for state Return to Start Area to recal */
+void FSM_HomolPen::enseq_main_region_Return_to_Start_Area_to_recal_default()
 {
-	/* 'default' enter sequence for state Return to Start Areaa to recal */
-	enact_main_region_Return_to_Start_Areaa_to_recal();
-	stateConfVector[0] = main_region_Return_to_Start_Areaa_to_recal;
+	/* 'default' enter sequence for state Return to Start Area to recal */
+	enact_main_region_Return_to_Start_Area_to_recal();
+	stateConfVector[0] = main_region_Return_to_Start_Area_to_recal;
 	stateConfVectorPosition = 0;
 }
 
@@ -908,10 +908,10 @@ void FSM_HomolPen::exseq_main_region_Wait_Tration_to_move()
 	exact_main_region_Wait_Tration_to_move();
 }
 
-/* Default exit sequence for state Return to Start Areaa to recal */
-void FSM_HomolPen::exseq_main_region_Return_to_Start_Areaa_to_recal()
+/* Default exit sequence for state Return to Start Area to recal */
+void FSM_HomolPen::exseq_main_region_Return_to_Start_Area_to_recal()
 {
-	/* Default exit sequence for state Return to Start Areaa to recal */
+	/* Default exit sequence for state Return to Start Area to recal */
 	stateConfVector[0] = FSM_HomolPen_last_state;
 	stateConfVectorPosition = 0;
 }
@@ -998,9 +998,9 @@ void FSM_HomolPen::exseq_main_region()
 			exseq_main_region_Wait_Tration_to_move();
 			break;
 		}
-		case main_region_Return_to_Start_Areaa_to_recal :
+		case main_region_Return_to_Start_Area_to_recal :
 		{
-			exseq_main_region_Return_to_Start_Areaa_to_recal();
+			exseq_main_region_Return_to_Start_Area_to_recal();
 			break;
 		}
 		case main_region_Recal_X_against_Start_Area_flip_flop :
@@ -1087,13 +1087,13 @@ void FSM_HomolPen::react_main_region_Wait_Tration_to_move()
 	} 
 }
 
-/* The reactions of state Return to Start Areaa to recal. */
-void FSM_HomolPen::react_main_region_Return_to_Start_Areaa_to_recal()
+/* The reactions of state Return to Start Area to recal. */
+void FSM_HomolPen::react_main_region_Return_to_Start_Area_to_recal()
 {
-	/* The reactions of state Return to Start Areaa to recal. */
-	if (check_main_region_Return_to_Start_Areaa_to_recal_tr0_tr0())
+	/* The reactions of state Return to Start Area to recal. */
+	if (check_main_region_Return_to_Start_Area_to_recal_tr0_tr0())
 	{ 
-		effect_main_region_Return_to_Start_Areaa_to_recal_tr0();
+		effect_main_region_Return_to_Start_Area_to_recal_tr0();
 	} 
 }
 
