@@ -138,7 +138,7 @@ Servo::Servo(int pin, uint16_t min, uint16_t max):
         maxArduino(0),
         angularMin(min),
         angularMax(max),
-        currentAngleCommand(90)
+        currentAngleCommand(500)
 {
     if (ServoCount < MAX_SERVOS)
     {

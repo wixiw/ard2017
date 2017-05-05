@@ -27,7 +27,7 @@
       <vertices xsi:type="sgraph:State" xmi:id="_tXGG0DGPEee8x-mo8uJzlg" specification="entry/&#xD;&#xA;goTo(500, 300, BWD)" name="Escaping crater" incomingTransitions="_qFWMwDGQEee8x-mo8uJzlg">
         <outgoingTransitions xmi:id="_qyusoDGPEee8x-mo8uJzlg" specification="[targetReached]" target="_6eMf8DGPEee8x-mo8uJzlg"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_6eMf8DGPEee8x-mo8uJzlg" specification="entry /&#xD;&#xA;goToLSAEntry(LSA_6, FWD)" name="Go to Start Poo entry point" incomingTransitions="_qyusoDGPEee8x-mo8uJzlg">
+      <vertices xsi:type="sgraph:State" xmi:id="_6eMf8DGPEee8x-mo8uJzlg" specification="entry /&#xD;&#xA;goToLSAEntry(LSA_6, BWD)" name="Go to Start Poo entry point" incomingTransitions="_qyusoDGPEee8x-mo8uJzlg">
         <outgoingTransitions xmi:id="_I4j3wDGQEee8x-mo8uJzlg" specification="[targetReached]" target="_GY8asDGQEee8x-mo8uJzlg"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_GY8asDGQEee8x-mo8uJzlg" specification="entry/ &#xD;&#xA;logInfo(&quot;Poing elements in start area ...&quot;);&#xD;&#xA;startLSA(LSA_6)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;stopLSA()" name="Pooing in Start Area" incomingTransitions="_I4j3wDGQEee8x-mo8uJzlg">

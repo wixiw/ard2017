@@ -22,6 +22,8 @@ class FSM_WipTration : public TimedStatemachineInterface, public StatemachineInt
 		typedef enum
 		{
 			main_region_StateA,
+			main_region_Go_to_Start_Poo_entry_point,
+			main_region_Pooing_in_Start_Area,
 			FSM_WipTration_last_state
 		} FSM_WipTrationStates;
 		
@@ -499,14 +501,27 @@ class FSM_WipTration : public TimedStatemachineInterface, public StatemachineInt
 		// prototypes of all internal functions
 		
 		sc_boolean check_main_region_StateA_tr0_tr0();
+		sc_boolean check_main_region_StateA_tr1_tr1();
+		sc_boolean check_main_region_Go_to_Start_Poo_entry_point_tr0_tr0();
 		void effect_main_region_StateA_tr0();
+		void effect_main_region_StateA_tr1();
+		void effect_main_region_Go_to_Start_Poo_entry_point_tr0();
 		void enact_main_region_StateA();
+		void enact_main_region_Go_to_Start_Poo_entry_point();
+		void enact_main_region_Pooing_in_Start_Area();
 		void exact_main_region_StateA();
+		void exact_main_region_Pooing_in_Start_Area();
 		void enseq_main_region_StateA_default();
+		void enseq_main_region_Go_to_Start_Poo_entry_point_default();
+		void enseq_main_region_Pooing_in_Start_Area_default();
 		void enseq_main_region_default();
 		void exseq_main_region_StateA();
+		void exseq_main_region_Go_to_Start_Poo_entry_point();
+		void exseq_main_region_Pooing_in_Start_Area();
 		void exseq_main_region();
 		void react_main_region_StateA();
+		void react_main_region_Go_to_Start_Poo_entry_point();
+		void react_main_region_Pooing_in_Start_Area();
 		void react_main_region__entry_Default();
 		void clearInEvents();
 		void clearOutEvents();

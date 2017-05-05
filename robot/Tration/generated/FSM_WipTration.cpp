@@ -122,6 +122,16 @@ void FSM_WipTration::runCycle()
 			react_main_region_StateA();
 			break;
 		}
+		case main_region_Go_to_Start_Poo_entry_point :
+		{
+			react_main_region_Go_to_Start_Poo_entry_point();
+			break;
+		}
+		case main_region_Pooing_in_Start_Area :
+		{
+			react_main_region_Pooing_in_Start_Area();
+			break;
+		}
 		default:
 			break;
 		}
@@ -164,6 +174,12 @@ sc_boolean FSM_WipTration::isStateActive(FSM_WipTrationStates state)
 	{
 		case main_region_StateA : 
 			return (sc_boolean) (stateConfVector[0] == main_region_StateA
+			);
+		case main_region_Go_to_Start_Poo_entry_point : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Go_to_Start_Poo_entry_point
+			);
+		case main_region_Pooing_in_Start_Area : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Pooing_in_Start_Area
 			);
 		default: return false;
 	}
@@ -428,10 +444,32 @@ sc_boolean FSM_WipTration::check_main_region_StateA_tr0_tr0()
 	return (timeEvents[0]) && (false);
 }
 
+sc_boolean FSM_WipTration::check_main_region_StateA_tr1_tr1()
+{
+	return true;
+}
+
+sc_boolean FSM_WipTration::check_main_region_Go_to_Start_Poo_entry_point_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
 void FSM_WipTration::effect_main_region_StateA_tr0()
 {
 	exseq_main_region_StateA();
 	enseq_main_region_StateA_default();
+}
+
+void FSM_WipTration::effect_main_region_StateA_tr1()
+{
+	exseq_main_region_StateA();
+	enseq_main_region_Go_to_Start_Poo_entry_point_default();
+}
+
+void FSM_WipTration::effect_main_region_Go_to_Start_Poo_entry_point_tr0()
+{
+	exseq_main_region_Go_to_Start_Poo_entry_point();
+	enseq_main_region_Pooing_in_Start_Area_default();
 }
 
 /* Entry action for state 'StateA'. */
@@ -439,6 +477,24 @@ void FSM_WipTration::enact_main_region_StateA()
 {
 	/* Entry action for state 'StateA'. */
 	timer->setTimer(this, (sc_eventid)(&timeEvents[0]), 1 * 1000, false);
+	iface_OCB->setPosition(500, 300, 155);
+	iface_OCB->informWithdraw_G(4);
+	iface_OCB->informWithdraw_OppG(2);
+}
+
+/* Entry action for state 'Go to Start Poo entry point'. */
+void FSM_WipTration::enact_main_region_Go_to_Start_Poo_entry_point()
+{
+	/* Entry action for state 'Go to Start Poo entry point'. */
+	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_6, ifaceInternalSCI.BWD);
+}
+
+/* Entry action for state 'Pooing in Start Area'. */
+void FSM_WipTration::enact_main_region_Pooing_in_Start_Area()
+{
+	/* Entry action for state 'Pooing in Start Area'. */
+	iface_OCB->logInfo("Poing elements in start area ...");
+	iface_OCB->startLSA(ifaceInternalSCI.LSA_6);
 }
 
 /* Exit action for state 'StateA'. */
@@ -448,12 +504,37 @@ void FSM_WipTration::exact_main_region_StateA()
 	timer->unsetTimer(this, (sc_eventid)(&timeEvents[0]));
 }
 
+/* Exit action for state 'Pooing in Start Area'. */
+void FSM_WipTration::exact_main_region_Pooing_in_Start_Area()
+{
+	/* Exit action for state 'Pooing in Start Area'. */
+	iface_OCB->stopLSA();
+}
+
 /* 'default' enter sequence for state StateA */
 void FSM_WipTration::enseq_main_region_StateA_default()
 {
 	/* 'default' enter sequence for state StateA */
 	enact_main_region_StateA();
 	stateConfVector[0] = main_region_StateA;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Go to Start Poo entry point */
+void FSM_WipTration::enseq_main_region_Go_to_Start_Poo_entry_point_default()
+{
+	/* 'default' enter sequence for state Go to Start Poo entry point */
+	enact_main_region_Go_to_Start_Poo_entry_point();
+	stateConfVector[0] = main_region_Go_to_Start_Poo_entry_point;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Pooing in Start Area */
+void FSM_WipTration::enseq_main_region_Pooing_in_Start_Area_default()
+{
+	/* 'default' enter sequence for state Pooing in Start Area */
+	enact_main_region_Pooing_in_Start_Area();
+	stateConfVector[0] = main_region_Pooing_in_Start_Area;
 	stateConfVectorPosition = 0;
 }
 
@@ -473,6 +554,23 @@ void FSM_WipTration::exseq_main_region_StateA()
 	exact_main_region_StateA();
 }
 
+/* Default exit sequence for state Go to Start Poo entry point */
+void FSM_WipTration::exseq_main_region_Go_to_Start_Poo_entry_point()
+{
+	/* Default exit sequence for state Go to Start Poo entry point */
+	stateConfVector[0] = FSM_WipTration_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Pooing in Start Area */
+void FSM_WipTration::exseq_main_region_Pooing_in_Start_Area()
+{
+	/* Default exit sequence for state Pooing in Start Area */
+	stateConfVector[0] = FSM_WipTration_last_state;
+	stateConfVectorPosition = 0;
+	exact_main_region_Pooing_in_Start_Area();
+}
+
 /* Default exit sequence for region main region */
 void FSM_WipTration::exseq_main_region()
 {
@@ -483,6 +581,16 @@ void FSM_WipTration::exseq_main_region()
 		case main_region_StateA :
 		{
 			exseq_main_region_StateA();
+			break;
+		}
+		case main_region_Go_to_Start_Poo_entry_point :
+		{
+			exseq_main_region_Go_to_Start_Poo_entry_point();
+			break;
+		}
+		case main_region_Pooing_in_Start_Area :
+		{
+			exseq_main_region_Pooing_in_Start_Area();
 			break;
 		}
 		default: break;
@@ -496,7 +604,26 @@ void FSM_WipTration::react_main_region_StateA()
 	if (check_main_region_StateA_tr0_tr0())
 	{ 
 		effect_main_region_StateA_tr0();
+	}  else
+	{
+		effect_main_region_StateA_tr1();
+	}
+}
+
+/* The reactions of state Go to Start Poo entry point. */
+void FSM_WipTration::react_main_region_Go_to_Start_Poo_entry_point()
+{
+	/* The reactions of state Go to Start Poo entry point. */
+	if (check_main_region_Go_to_Start_Poo_entry_point_tr0_tr0())
+	{ 
+		effect_main_region_Go_to_Start_Poo_entry_point_tr0();
 	} 
+}
+
+/* The reactions of state Pooing in Start Area. */
+void FSM_WipTration::react_main_region_Pooing_in_Start_Area()
+{
+	/* The reactions of state Pooing in Start Area. */
 }
 
 /* Default react sequence for initial entry  */

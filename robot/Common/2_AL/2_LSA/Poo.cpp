@@ -121,7 +121,7 @@ void LSA_PooBorderOpp::goToEntryPoint()
  */
 
 LSA_PooStartArea::LSA_PooStartArea(Robot2017& robot):
-        LSA2017(robot, "LSAPooMiddle", PointCap(600, 780, 180))
+        LSA2017(robot, "LSAPooMiddle", PointCap(570, 760, 180))
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);

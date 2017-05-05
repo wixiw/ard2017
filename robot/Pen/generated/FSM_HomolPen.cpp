@@ -175,6 +175,41 @@ void FSM_HomolPen::runCycle()
 			react_main_region__final_();
 			break;
 		}
+		case main_region_Go_to_B :
+		{
+			react_main_region_Go_to_B();
+			break;
+		}
+		case main_region_Get_B_Cylinder :
+		{
+			react_main_region_Get_B_Cylinder();
+			break;
+		}
+		case main_region_Go_to_poo_in_3 :
+		{
+			react_main_region_Go_to_poo_in_3();
+			break;
+		}
+		case main_region_Poo_in_3 :
+		{
+			react_main_region_Poo_in_3();
+			break;
+		}
+		case main_region_Avoid_crater_2 :
+		{
+			react_main_region_Avoid_crater_2();
+			break;
+		}
+		case main_region_Avoid_crater_ :
+		{
+			react_main_region_Avoid_crater_();
+			break;
+		}
+		case main_region_Backward_a_bit :
+		{
+			react_main_region_Backward_a_bit();
+			break;
+		}
 		default:
 			break;
 		}
@@ -251,6 +286,27 @@ sc_boolean FSM_HomolPen::isStateActive(FSM_HomolPenStates state)
 			);
 		case main_region__final_ : 
 			return (sc_boolean) (stateConfVector[0] == main_region__final_
+			);
+		case main_region_Go_to_B : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Go_to_B
+			);
+		case main_region_Get_B_Cylinder : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Get_B_Cylinder
+			);
+		case main_region_Go_to_poo_in_3 : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Go_to_poo_in_3
+			);
+		case main_region_Poo_in_3 : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Poo_in_3
+			);
+		case main_region_Avoid_crater_2 : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Avoid_crater_2
+			);
+		case main_region_Avoid_crater_ : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Avoid_crater_
+			);
+		case main_region_Backward_a_bit : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Backward_a_bit
 			);
 		default: return false;
 	}
@@ -565,10 +621,45 @@ sc_boolean FSM_HomolPen::check_main_region_Go_To_Cylinder_C_tr0_tr0()
 	return iface_OCB->targetReached();
 }
 
+sc_boolean FSM_HomolPen::check_main_region_Go_to_B_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Get_B_Cylinder_tr0_tr0()
+{
+	return ifaceInternalSCI.SUCCESS == iface_OCB->getLSAStatus() || ifaceInternalSCI.FAILURE == iface_OCB->getLSAStatus();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Go_to_poo_in_3_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Poo_in_3_tr0_tr0()
+{
+	return ifaceInternalSCI.SUCCESS == iface_OCB->getLSAStatus() || ifaceInternalSCI.FAILURE == iface_OCB->getLSAStatus();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Avoid_crater_2_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Avoid_crater__tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
+sc_boolean FSM_HomolPen::check_main_region_Backward_a_bit_tr0_tr0()
+{
+	return iface_OCB->targetReached();
+}
+
 void FSM_HomolPen::effect_main_region_Go_To_Dispenser_A_tr0()
 {
 	exseq_main_region_Go_To_Dispenser_A();
-	enseq_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_default();
+	enseq_main_region_Backward_a_bit_default();
 }
 
 void FSM_HomolPen::effect_main_region_Go_To_Container_4_tr0()
@@ -610,7 +701,7 @@ void FSM_HomolPen::effect_main_region_Recal_X_against_Start_Area_flip_flop_tr0()
 void FSM_HomolPen::effect_main_region_Recal_Y_against_Start_Area_border_tr0()
 {
 	exseq_main_region_Recal_Y_against_Start_Area_border();
-	enseq_main_region_Go_To_Container_4_default();
+	enseq_main_region_Avoid_crater__default();
 }
 
 void FSM_HomolPen::effect_main_region_Get_C_Cylinder_tr0()
@@ -622,14 +713,56 @@ void FSM_HomolPen::effect_main_region_Get_C_Cylinder_tr0()
 void FSM_HomolPen::effect_main_region_Wait_for_Tration_to_finish_his_move_tr0()
 {
 	exseq_main_region_Wait_for_Tration_to_finish_his_move();
-	iface_OCB->setStatus(ifaceInternalSCI.SUCCESS);
-	enseq_main_region__final__default();
+	enseq_main_region_Go_to_B_default();
 }
 
 void FSM_HomolPen::effect_main_region_Go_To_Cylinder_C_tr0()
 {
 	exseq_main_region_Go_To_Cylinder_C();
 	enseq_main_region_Get_C_Cylinder_default();
+}
+
+void FSM_HomolPen::effect_main_region_Go_to_B_tr0()
+{
+	exseq_main_region_Go_to_B();
+	enseq_main_region_Get_B_Cylinder_default();
+}
+
+void FSM_HomolPen::effect_main_region_Get_B_Cylinder_tr0()
+{
+	exseq_main_region_Get_B_Cylinder();
+	enseq_main_region_Avoid_crater_2_default();
+}
+
+void FSM_HomolPen::effect_main_region_Go_to_poo_in_3_tr0()
+{
+	exseq_main_region_Go_to_poo_in_3();
+	enseq_main_region_Poo_in_3_default();
+}
+
+void FSM_HomolPen::effect_main_region_Poo_in_3_tr0()
+{
+	exseq_main_region_Poo_in_3();
+	iface_OCB->setStatus(ifaceInternalSCI.SUCCESS);
+	enseq_main_region__final__default();
+}
+
+void FSM_HomolPen::effect_main_region_Avoid_crater_2_tr0()
+{
+	exseq_main_region_Avoid_crater_2();
+	enseq_main_region_Go_to_poo_in_3_default();
+}
+
+void FSM_HomolPen::effect_main_region_Avoid_crater__tr0()
+{
+	exseq_main_region_Avoid_crater_();
+	enseq_main_region_Go_To_Container_4_default();
+}
+
+void FSM_HomolPen::effect_main_region_Backward_a_bit_tr0()
+{
+	exseq_main_region_Backward_a_bit();
+	enseq_main_region_Get_4_monocolor_cylinders_from_Dispenser_A_default();
 }
 
 /* Entry action for state 'Go To Dispenser A'. */
@@ -660,6 +793,7 @@ void FSM_HomolPen::enact_main_region_Poo_4_monocolor_cylinders_in_4()
 {
 	/* Entry action for state 'Poo 4 monocolor cylinders in 4'. */
 	iface_OCB->logInfo("Pooing 4 cylinders in 4 area.");
+	iface_OCB->informPushedAway_F();
 	iface_OCB->startLSA(ifaceInternalSCI.LSA_4);
 }
 
@@ -667,7 +801,7 @@ void FSM_HomolPen::enact_main_region_Poo_4_monocolor_cylinders_in_4()
 void FSM_HomolPen::enact_main_region_Wait_Tration_to_move()
 {
 	/* Entry action for state 'Wait Tration to move'. */
-	timer->setTimer(this, (sc_eventid)(&timeEvents[0]), 1 * 1000, false);
+	timer->setTimer(this, (sc_eventid)(&timeEvents[0]), 1500, false);
 	iface_OCB->setPosition(640, 730, 0);
 	iface_OCB->logInfo("Waiting for Tration to move away...");
 }
@@ -715,6 +849,55 @@ void FSM_HomolPen::enact_main_region_Go_To_Cylinder_C()
 	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_C, ifaceInternalSCI.FWD);
 }
 
+/* Entry action for state 'Go to B'. */
+void FSM_HomolPen::enact_main_region_Go_to_B()
+{
+	/* Entry action for state 'Go to B'. */
+	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_B, ifaceInternalSCI.BWD);
+}
+
+/* Entry action for state 'Get B Cylinder'. */
+void FSM_HomolPen::enact_main_region_Get_B_Cylinder()
+{
+	/* Entry action for state 'Get B Cylinder'. */
+	iface_OCB->startLSA(ifaceInternalSCI.LSA_B);
+}
+
+/* Entry action for state 'Go to poo in 3'. */
+void FSM_HomolPen::enact_main_region_Go_to_poo_in_3()
+{
+	/* Entry action for state 'Go to poo in 3'. */
+	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_3, ifaceInternalSCI.FWD);
+}
+
+/* Entry action for state 'Poo in 3'. */
+void FSM_HomolPen::enact_main_region_Poo_in_3()
+{
+	/* Entry action for state 'Poo in 3'. */
+	iface_OCB->startLSA(ifaceInternalSCI.LSA_3);
+}
+
+/* Entry action for state 'Avoid crater 2'. */
+void FSM_HomolPen::enact_main_region_Avoid_crater_2()
+{
+	/* Entry action for state 'Avoid crater 2'. */
+	iface_OCB->goTo_ID(1000, 150, ifaceInternalSCI.FWD);
+}
+
+/* Entry action for state 'Avoid crater '. */
+void FSM_HomolPen::enact_main_region_Avoid_crater_()
+{
+	/* Entry action for state 'Avoid crater '. */
+	iface_OCB->goTo_ID(590, 350, ifaceInternalSCI.BWD);
+}
+
+/* Entry action for state 'Backward a bit'. */
+void FSM_HomolPen::enact_main_region_Backward_a_bit()
+{
+	/* Entry action for state 'Backward a bit'. */
+	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_A, ifaceInternalSCI.BWD);
+}
+
 /* Exit action for state 'Get 4 monocolor cylinders from Dispenser A'. */
 void FSM_HomolPen::exact_main_region_Get_4_monocolor_cylinders_from_Dispenser_A()
 {
@@ -749,6 +932,20 @@ void FSM_HomolPen::exact_main_region_Wait_for_Tration_to_finish_his_move()
 {
 	/* Exit action for state 'Wait for Tration to finish his move'. */
 	timer->unsetTimer(this, (sc_eventid)(&timeEvents[1]));
+}
+
+/* Exit action for state 'Get B Cylinder'. */
+void FSM_HomolPen::exact_main_region_Get_B_Cylinder()
+{
+	/* Exit action for state 'Get B Cylinder'. */
+	iface_OCB->stopLSA();
+}
+
+/* Exit action for state 'Poo in 3'. */
+void FSM_HomolPen::exact_main_region_Poo_in_3()
+{
+	/* Exit action for state 'Poo in 3'. */
+	iface_OCB->stopLSA();
 }
 
 /* 'default' enter sequence for state Go To Dispenser A */
@@ -855,6 +1052,69 @@ void FSM_HomolPen::enseq_main_region__final__default()
 {
 	/* Default enter sequence for state null */
 	stateConfVector[0] = main_region__final_;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Go to B */
+void FSM_HomolPen::enseq_main_region_Go_to_B_default()
+{
+	/* 'default' enter sequence for state Go to B */
+	enact_main_region_Go_to_B();
+	stateConfVector[0] = main_region_Go_to_B;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Get B Cylinder */
+void FSM_HomolPen::enseq_main_region_Get_B_Cylinder_default()
+{
+	/* 'default' enter sequence for state Get B Cylinder */
+	enact_main_region_Get_B_Cylinder();
+	stateConfVector[0] = main_region_Get_B_Cylinder;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Go to poo in 3 */
+void FSM_HomolPen::enseq_main_region_Go_to_poo_in_3_default()
+{
+	/* 'default' enter sequence for state Go to poo in 3 */
+	enact_main_region_Go_to_poo_in_3();
+	stateConfVector[0] = main_region_Go_to_poo_in_3;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Poo in 3 */
+void FSM_HomolPen::enseq_main_region_Poo_in_3_default()
+{
+	/* 'default' enter sequence for state Poo in 3 */
+	enact_main_region_Poo_in_3();
+	stateConfVector[0] = main_region_Poo_in_3;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Avoid crater 2 */
+void FSM_HomolPen::enseq_main_region_Avoid_crater_2_default()
+{
+	/* 'default' enter sequence for state Avoid crater 2 */
+	enact_main_region_Avoid_crater_2();
+	stateConfVector[0] = main_region_Avoid_crater_2;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Avoid crater  */
+void FSM_HomolPen::enseq_main_region_Avoid_crater__default()
+{
+	/* 'default' enter sequence for state Avoid crater  */
+	enact_main_region_Avoid_crater_();
+	stateConfVector[0] = main_region_Avoid_crater_;
+	stateConfVectorPosition = 0;
+}
+
+/* 'default' enter sequence for state Backward a bit */
+void FSM_HomolPen::enseq_main_region_Backward_a_bit_default()
+{
+	/* 'default' enter sequence for state Backward a bit */
+	enact_main_region_Backward_a_bit();
+	stateConfVector[0] = main_region_Backward_a_bit;
 	stateConfVectorPosition = 0;
 }
 
@@ -966,6 +1226,64 @@ void FSM_HomolPen::exseq_main_region__final_()
 	stateConfVectorPosition = 0;
 }
 
+/* Default exit sequence for state Go to B */
+void FSM_HomolPen::exseq_main_region_Go_to_B()
+{
+	/* Default exit sequence for state Go to B */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Get B Cylinder */
+void FSM_HomolPen::exseq_main_region_Get_B_Cylinder()
+{
+	/* Default exit sequence for state Get B Cylinder */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+	exact_main_region_Get_B_Cylinder();
+}
+
+/* Default exit sequence for state Go to poo in 3 */
+void FSM_HomolPen::exseq_main_region_Go_to_poo_in_3()
+{
+	/* Default exit sequence for state Go to poo in 3 */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Poo in 3 */
+void FSM_HomolPen::exseq_main_region_Poo_in_3()
+{
+	/* Default exit sequence for state Poo in 3 */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+	exact_main_region_Poo_in_3();
+}
+
+/* Default exit sequence for state Avoid crater 2 */
+void FSM_HomolPen::exseq_main_region_Avoid_crater_2()
+{
+	/* Default exit sequence for state Avoid crater 2 */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Avoid crater  */
+void FSM_HomolPen::exseq_main_region_Avoid_crater_()
+{
+	/* Default exit sequence for state Avoid crater  */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
+/* Default exit sequence for state Backward a bit */
+void FSM_HomolPen::exseq_main_region_Backward_a_bit()
+{
+	/* Default exit sequence for state Backward a bit */
+	stateConfVector[0] = FSM_HomolPen_last_state;
+	stateConfVectorPosition = 0;
+}
+
 /* Default exit sequence for region main region */
 void FSM_HomolPen::exseq_main_region()
 {
@@ -1031,6 +1349,41 @@ void FSM_HomolPen::exseq_main_region()
 		case main_region__final_ :
 		{
 			exseq_main_region__final_();
+			break;
+		}
+		case main_region_Go_to_B :
+		{
+			exseq_main_region_Go_to_B();
+			break;
+		}
+		case main_region_Get_B_Cylinder :
+		{
+			exseq_main_region_Get_B_Cylinder();
+			break;
+		}
+		case main_region_Go_to_poo_in_3 :
+		{
+			exseq_main_region_Go_to_poo_in_3();
+			break;
+		}
+		case main_region_Poo_in_3 :
+		{
+			exseq_main_region_Poo_in_3();
+			break;
+		}
+		case main_region_Avoid_crater_2 :
+		{
+			exseq_main_region_Avoid_crater_2();
+			break;
+		}
+		case main_region_Avoid_crater_ :
+		{
+			exseq_main_region_Avoid_crater_();
+			break;
+		}
+		case main_region_Backward_a_bit :
+		{
+			exseq_main_region_Backward_a_bit();
 			break;
 		}
 		default: break;
@@ -1151,6 +1504,76 @@ void FSM_HomolPen::react_main_region_Go_To_Cylinder_C()
 void FSM_HomolPen::react_main_region__final_()
 {
 	/* The reactions of state null. */
+}
+
+/* The reactions of state Go to B. */
+void FSM_HomolPen::react_main_region_Go_to_B()
+{
+	/* The reactions of state Go to B. */
+	if (check_main_region_Go_to_B_tr0_tr0())
+	{ 
+		effect_main_region_Go_to_B_tr0();
+	} 
+}
+
+/* The reactions of state Get B Cylinder. */
+void FSM_HomolPen::react_main_region_Get_B_Cylinder()
+{
+	/* The reactions of state Get B Cylinder. */
+	if (check_main_region_Get_B_Cylinder_tr0_tr0())
+	{ 
+		effect_main_region_Get_B_Cylinder_tr0();
+	} 
+}
+
+/* The reactions of state Go to poo in 3. */
+void FSM_HomolPen::react_main_region_Go_to_poo_in_3()
+{
+	/* The reactions of state Go to poo in 3. */
+	if (check_main_region_Go_to_poo_in_3_tr0_tr0())
+	{ 
+		effect_main_region_Go_to_poo_in_3_tr0();
+	} 
+}
+
+/* The reactions of state Poo in 3. */
+void FSM_HomolPen::react_main_region_Poo_in_3()
+{
+	/* The reactions of state Poo in 3. */
+	if (check_main_region_Poo_in_3_tr0_tr0())
+	{ 
+		effect_main_region_Poo_in_3_tr0();
+	} 
+}
+
+/* The reactions of state Avoid crater 2. */
+void FSM_HomolPen::react_main_region_Avoid_crater_2()
+{
+	/* The reactions of state Avoid crater 2. */
+	if (check_main_region_Avoid_crater_2_tr0_tr0())
+	{ 
+		effect_main_region_Avoid_crater_2_tr0();
+	} 
+}
+
+/* The reactions of state Avoid crater . */
+void FSM_HomolPen::react_main_region_Avoid_crater_()
+{
+	/* The reactions of state Avoid crater . */
+	if (check_main_region_Avoid_crater__tr0_tr0())
+	{ 
+		effect_main_region_Avoid_crater__tr0();
+	} 
+}
+
+/* The reactions of state Backward a bit. */
+void FSM_HomolPen::react_main_region_Backward_a_bit()
+{
+	/* The reactions of state Backward a bit. */
+	if (check_main_region_Backward_a_bit_tr0_tr0())
+	{ 
+		effect_main_region_Backward_a_bit_tr0();
+	} 
 }
 
 /* Default react sequence for initial entry  */

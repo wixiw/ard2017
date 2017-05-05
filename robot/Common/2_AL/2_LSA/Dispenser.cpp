@@ -17,13 +17,13 @@ LSA_Dispenser::LSA_Dispenser(Robot2017& robot, eLSA_DispType type):
 
     switch (type) {
         case Monocolor:
-            setEntryPoint(PointCap(  350,  650, 90));
+            setEntryPoint(PointCap(  350,  655, 90));
             break;
         case Bicolor:
-            setEntryPoint(PointCap( 1150, -350, 0));
+            setEntryPoint(PointCap( 1155, -350, 0));
             break;
         case OppBicolor:
-            setEntryPoint(PointCap(-1150, -350, 180));
+            setEntryPoint(PointCap(-1155, -350, 180));
             break;
         default:
             break;

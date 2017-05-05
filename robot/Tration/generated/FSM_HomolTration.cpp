@@ -727,7 +727,7 @@ void FSM_HomolTration::enact_main_region_Escaping_crater()
 void FSM_HomolTration::enact_main_region_Go_to_Start_Poo_entry_point()
 {
 	/* Entry action for state 'Go to Start Poo entry point'. */
-	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_6, ifaceInternalSCI.FWD);
+	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_6, ifaceInternalSCI.BWD);
 }
 
 /* Entry action for state 'Pooing in Start Area'. */
