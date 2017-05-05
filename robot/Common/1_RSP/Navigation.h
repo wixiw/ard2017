@@ -47,11 +47,11 @@ namespace ard
 
         /**
          * Force a new robot position
-         * the position is automatically symetrized depending
-         * on the value configured with setColor()
+         * the position may be automatically symetrized depending
+         * on the value configured with setColor() and sym parameter
          */
-        void setPosition(PointCap newPose);
-        void setPosition(float x/*mm*/, float y/*mm*/, float h/*deg*/)
+        void setPosition(PointCap newPose, bool sym = true);
+        void setPosition(float x/*mm*/, float y/*mm*/, float h/*deg*/, bool sym = true)
         {
             setPosition(PointCap(x, y, h));
         }
@@ -76,8 +76,8 @@ namespace ard
          and use a straight line to go to it.
          If an order is already present the call is blocking as if a wait() where done.
 
-         Note that the target is automatically symetrized depending
-         on the color configured with setColor()
+         Note that the target may be automatically symetrized depending
+         on the color configured with setColor() and the sym param
 
          x,y in mm
 
@@ -95,8 +95,8 @@ namespace ard
          target heading/
          If an order is already present the call is blocking as if a wait() where done.
 
-         Note that the target is automatically symetrized depending
-         on the color configured with setColor()
+         Note that the target may be automatically symetrized depending
+         on the color configured with setColor() and the sym param
 
          In order to wait until the order is complete, use the wait()/targetReached() functions
 
@@ -120,23 +120,32 @@ namespace ard
         /**
          * The robot will turn relatively of the angle in parameter
          * note : the angle may be negative to go clockwise
+         *
+         * Note that the target may be automatically symetrized depending
+         * on the color configured with setColor() and the sym param
          */
-        void turnDelta(float angle/*deg*/);
+        void turnDelta(float angle/*deg*/, bool sym = true);
 
         /**
          * The robot will turn to face the parametered heading (absolute)
+         *
+         * Note that the target may be automatically symetrized depending
+         * on the color configured with setColor() and the sym param
          */
-        void turnTo(float angle/*deg*/);
+        void turnTo(float angle/*deg*/, bool sym = true);
 
         /**
          * The robot will turn to face the point in parameter
          * Note that the target is automatically symetrized depending
          * on the color configured with setColor()
+         *
+         * Note that the target may be automatically symetrized depending
+         * on the color configured with setColor() and the sym param
          */
-        void faceTo(Point p);
-        void faceTo(float x/*mm*/, float y/*mm*/)
+        void faceTo(Point p, bool sym = true);
+        void faceTo(float x/*mm*/, float y/*mm*/, bool sym = true)
         {
-            faceTo(Point(x,y));
+            faceTo(Point(x,y), sym);
         }
 
         /**

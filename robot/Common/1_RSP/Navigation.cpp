@@ -228,7 +228,7 @@ void Navigation::run()
                 enterCriticalSection();
                 stepperL.move(0); //move(0) is equivalent to stay on current position
                 stepperR.move(0);
-                setPosition(m_target.toAmbiPose(m_color));
+                setPosition(m_target, false);//position has already been symetrized
                 exitCriticalSection();
 
                 //Escape from wall
@@ -315,14 +315,17 @@ void Navigation::updateFromInterrupt()
  * User (= strategy) interface
  ---------------------------------*/
 
-void Navigation::setPosition(PointCap newPose)
+void Navigation::setPosition(PointCap newPose, bool sym)
 {
     //prevent any interrupt from occurring so that position fields are not corrupted
     enterCriticalSection();
-    m_pose = newPose.toAmbiPose(m_color);
+    if(sym)
+        m_pose = newPose.toAmbiPose(m_color);
+    else
+        m_pose = newPose;
     exitCriticalSection();
 
-    LOG_INFO("position set to :" + newPose.toString());
+    LOG_INFO("   position set to :" + newPose.toString());
 }
 
 
@@ -368,7 +371,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
 
     m_mutex.unlock();
 
-    LOG_INFO(String("speed set to : (") + userMaxSpeed + "mm/s, " + userMaxTurnSpeed +
+    LOG_INFO(String("    speed set to : (") + userMaxSpeed + "mm/s, " + userMaxTurnSpeed +
             "°/s), acc set to (" + userMaxAcc + "mm/s², " + userMaxTurnAcc + "°/s²)");
 }
 
@@ -378,7 +381,10 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
     ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
     m_order = eNavOrder_GOTO;
-    m_target = target.toAmbiPose(m_color);
+    if(sym)
+        m_target = target.toAmbiPoint(m_color);
+    else
+        m_target = target;
     m_sensTarget = sens;
     LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
@@ -392,7 +398,10 @@ void Navigation::goToCap(PointCap target, eDir sens, bool sym)
     ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
     m_order = eNavOrder_GOTO_CAP;
-    m_target = target.toAmbiPose(m_color);
+    if(sym)
+        m_target = target.toAmbiPose(m_color);
+    else
+        m_target = target;
     m_sensTarget = sens;
     LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
@@ -412,47 +421,57 @@ void Navigation::goForward(float distanceMm)
 
     if(0 <= distanceMm)
     {
-        goTo(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/);
+        goTo(target, eDir_FORWARD, false);
     }
     else
     {
-        goTo(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/, eDir_BACKWARD);
+        goTo(target, eDir_BACKWARD, false);
     }
 }
 
-void Navigation::turnDelta(float angle)
+void Navigation::turnDelta(float angle, bool sym)
 {
     LOG_INFO(String("   new request : turnDelta(") + angle + "°).");
 
     m_mutex.lock();
     PointCap target = m_pose;
     m_mutex.unlock();
-    target.hDegree(target.hDegree() + angle);
+    if(sym && m_color == eColor_SYM)
+        target.hDegree(target.hDegree() - angle);
+    else
+        target.hDegree(target.hDegree() + angle);
 
-    goToCap(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/);
+    goToCap(target, eDir_FORWARD, false);
 }
 
-void Navigation::turnTo(float angle)
+void Navigation::turnTo(float angle, bool sym)
 {
     LOG_INFO(String("   new request : turnTo(") + angle + "°).");
 
     m_mutex.lock();
     PointCap target = m_pose;
     m_mutex.unlock();
-    target.hDegree(angle);
+    if(sym && m_color == eColor_SYM)
+        target.hDegree(-angle);
+    else
+        target.hDegree(angle);
 
-    goToCap(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/);
+    goToCap(target, eDir_FORWARD, false);
 }
 
-void Navigation::faceTo(Point p)
+void Navigation::faceTo(Point p, bool sym)
 {
     LOG_INFO(String("   new request : faceTo") + p.toString() + ".");
+
     m_mutex.lock();
     PointCap target = m_pose;
     m_mutex.unlock();
-    target.h = m_pose.angleTo(p);
+    if( sym )
+        target.h = m_pose.angleTo(p.toAmbiPoint(m_color));
+    else
+        target.h = m_pose.angleTo(p);
 
-    goToCap(target.toAmbiPose(m_color) /*Because goto is re-symetrizing inside*/);
+    goToCap(target, eDir_FORWARD, true);
 }
 
 void Navigation::recalFace(eTableBorder border)
@@ -473,7 +492,7 @@ void Navigation::recalFace(eTableBorder border)
         noSwitchMode = false;
 
     //Request turn
-    LOG_INFO("        Facing wall ...");
+    LOG_INFO(String("    Facing wall to recal at ") + m_target.toString() + "...");
     applyCmdToTurn(angleDelta, userMaxSpeed, userMaxAcc); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
 
@@ -498,7 +517,7 @@ void Navigation::recalRear(eTableBorder border)
         noSwitchMode = false;
 
     //Request turn
-    LOG_INFO("Facing table...");
+    LOG_INFO(String("    Facing table to recal at ") + m_target.toString() + "...");
     applyCmdToTurn(angleDelta, userMaxSpeed, userMaxAcc); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
 
@@ -787,27 +806,27 @@ PointCap Navigation::getRecalPointFace(eTableBorder border)
 {
     switch (border) {
         case eTableBorder_TOP_Y:
-            return PointCap(m_pose.x, TABLE_TOP_Y - conf->xav(), 90);
+            return PointCap(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xav(), 90);
             break;
 
         case eTableBorder_START_AREA_Y:
-            return PointCap(m_pose.x, 618 - conf->xav(), 90);
+            return PointCap(m_pose.toAmbiPose(m_color).x, 618 - conf->xav(), 90);
             break;
 
         case eTableBorder_BOT_Y:
-            return PointCap(m_pose.x, -TABLE_TOP_Y + conf->xav(), -90);
+            return PointCap(m_pose.toAmbiPose(m_color).x, -TABLE_TOP_Y + conf->xav(), -90);
             break;
 
         case eTableBorder_OPP_SIDE_X:
-            return PointCap(-TABLE_BORDER_X + conf->xav(), m_pose.y, 180);
+            return PointCap(-TABLE_BORDER_X + conf->xav(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
         case eTableBorder_OWN_SIDE_X:
-            return PointCap(TABLE_BORDER_X - conf->xav(), m_pose.y, 0);
+            return PointCap(TABLE_BORDER_X - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
         case eTableBorder_START_AREA_X:
-            return PointCap(790 - conf->xav(), m_pose.y, 0);
+            return PointCap(790 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
         default:
@@ -821,27 +840,27 @@ PointCap Navigation::getRecalPointRear(eTableBorder border)
 {
     switch (border) {
         case eTableBorder_TOP_Y:
-            return PointCap(m_pose.x, TABLE_TOP_Y - conf->xar(), -90);
+            return PointCap(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xar(), -90);
             break;
 
         case eTableBorder_START_AREA_Y:
-            return PointCap(m_pose.x, 618 - conf->xar(), -90);
+            return PointCap(m_pose.toAmbiPose(m_color).x, 618 - conf->xar(), -90);
             break;
 
         case eTableBorder_BOT_Y:
-            return PointCap(m_pose.x, -TABLE_TOP_Y + conf->xar(), 90);
+            return PointCap(m_pose.toAmbiPose(m_color).x, -TABLE_TOP_Y + conf->xar(), 90);
             break;
 
         case eTableBorder_OPP_SIDE_X:
-            return PointCap(-TABLE_BORDER_X + conf->xar(), m_pose.y, 0);
+            return PointCap(-TABLE_BORDER_X + conf->xar(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
         case eTableBorder_OWN_SIDE_X:
-            return PointCap(TABLE_BORDER_X - conf->xar(), m_pose.y, 180);
+            return PointCap(TABLE_BORDER_X - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
         case eTableBorder_START_AREA_X:
-            return PointCap(790 - conf->xar(), m_pose.y, 180);
+            return PointCap(790 - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
         default:

@@ -72,6 +72,11 @@ namespace ard
 	};
 
 	/**
+	 * Return a textual description of the color
+	 */
+	String color2String(eColor color);
+
+	/**
 	 * The Base abstract class from whom every body shall inherit
 	 * It manages the initialization process, knowing that you cannot
 	 * do everything you'd like in constructors because for instance:

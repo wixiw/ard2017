@@ -141,20 +141,21 @@ void Robot2017::bootUp()
 
 void Robot2017::colorChoosed(eColor color)
 {
+    LOG_INFO("User has selected " + color2String(color) + " color.");
+
     if ( color == eColor_PREF )
     {
         hmi.setRGBled(YELLOW, ON);
         nav.setColor (eColor_PREF);
         stratInfo.setColor(eColor_PREF);
         actuators.setColor(eColor_PREF);
-        LOG_INFO("User has selected PREF (Yellow) color.");
+
     }
     else if ( color == eColor_SYM )
     {
         hmi.setRGBled(BLUE, ON);
         nav.setColor (eColor_SYM);
         stratInfo.setColor(eColor_SYM);
-        LOG_INFO("User has selected SYM (Blue) color.");
     }
     else
     {

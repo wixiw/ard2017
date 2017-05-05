@@ -32,7 +32,7 @@ Point::Point(double _x, double _y)
 }
 ;
 
-Point Point::toAmbiPose(eColor c) const
+Point Point::toAmbiPoint(eColor c) const
 {
     Point res;
     ASSERT_TEXT(c != eColor_UNKNOWN, "Color should not be undefined");
@@ -102,14 +102,14 @@ PointCap::PointCap(Point p)
 ;
 
 PointCap::PointCap(double x, double y, double h)
-        : Point(x, y), h(h*DEG_TO_RAD)
+        : Point(x, y), h(moduloPiPi(h*DEG_TO_RAD))
 {
 }
 ;
 
 PointCap PointCap::toAmbiPose(eColor c) const
 {
-    PointCap res = Point::toAmbiPose(c);
+    PointCap res = Point::toAmbiPoint(c);
     if (c == eColor_SYM)
         res.h = moduloPiPi(M_PI - h);
     else

@@ -28,8 +28,8 @@ void Pen::init(Robot2017Listener* client)
 
     //register strategies
     lifecycle.registerSelftest(&stratSelftest);
-    lifecycle.registerMatchType("Match",          &stratInstall,      &stratInstall,    &stratFunnyAction);
-    lifecycle.registerMatchType("Homol",          NULL,               &stratHomol,    &stratFunnyAction);
+    lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    &stratFunnyAction);
+    lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Selftest",       NULL,               &stratSelftest, NULL);
     lifecycle.registerMatchType("WIP",            NULL,               &stratWIP,      NULL);
     lifecycle.registerLinearStrat("Old Tanguy",   Strategy_Tanguy);

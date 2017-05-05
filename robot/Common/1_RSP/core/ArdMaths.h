@@ -34,7 +34,7 @@ namespace ard
         Point(double x /*mm*/, double y/*mm*/);
 
         //return the symetric from the x axis
-        Point toAmbiPose(eColor c) const;
+        Point toAmbiPoint(eColor c) const;
 
         //return the angle from the x-axis to the target point in rad
         double angleTo(Point p) const;
@@ -78,7 +78,7 @@ namespace ard
 
         //accessor
         double hDegree() const {return degrees(h);};
-        void hDegree(double newH){h = radians(newH);};
+        void hDegree(double newH){h = moduloPiPi(radians(newH));};
 
         double h;/*rad*/
     };
