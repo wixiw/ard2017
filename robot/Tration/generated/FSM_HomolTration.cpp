@@ -115,9 +115,9 @@ void FSM_HomolTration::runCycle()
 			
 		switch (stateConfVector[stateConfVectorPosition])
 		{
-		case main_region_Move_before_Pen :
+		case main_region_Escaping_from_Start_area___Goto_Thru_D :
 		{
-			react_main_region_Move_before_Pen();
+			react_main_region_Escaping_from_Start_area___Goto_Thru_D();
 			break;
 		}
 		case main_region_Go_To_Dispenser_G :
@@ -125,24 +125,9 @@ void FSM_HomolTration::runCycle()
 			react_main_region_Go_To_Dispenser_G();
 			break;
 		}
-		case main_region_Goto_D :
+		case main_region_Goto_Thru_E :
 		{
-			react_main_region_Goto_D();
-			break;
-		}
-		case main_region_Get_D_Cylinder :
-		{
-			react_main_region_Get_D_Cylinder();
-			break;
-		}
-		case main_region_Goto_E :
-		{
-			react_main_region_Goto_E();
-			break;
-		}
-		case main_region_Get_E_Cylinder :
-		{
-			react_main_region_Get_E_Cylinder();
+			react_main_region_Goto_Thru_E();
 			break;
 		}
 		case main_region_Get_4_bicolor_cylinders_from_Dispenser_G :
@@ -200,23 +185,14 @@ sc_boolean FSM_HomolTration::isStateActive(FSM_HomolTrationStates state)
 {
 	switch (state)
 	{
-		case main_region_Move_before_Pen : 
-			return (sc_boolean) (stateConfVector[0] == main_region_Move_before_Pen
+		case main_region_Escaping_from_Start_area___Goto_Thru_D : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Escaping_from_Start_area___Goto_Thru_D
 			);
 		case main_region_Go_To_Dispenser_G : 
 			return (sc_boolean) (stateConfVector[0] == main_region_Go_To_Dispenser_G
 			);
-		case main_region_Goto_D : 
-			return (sc_boolean) (stateConfVector[0] == main_region_Goto_D
-			);
-		case main_region_Get_D_Cylinder : 
-			return (sc_boolean) (stateConfVector[0] == main_region_Get_D_Cylinder
-			);
-		case main_region_Goto_E : 
-			return (sc_boolean) (stateConfVector[0] == main_region_Goto_E
-			);
-		case main_region_Get_E_Cylinder : 
-			return (sc_boolean) (stateConfVector[0] == main_region_Get_E_Cylinder
+		case main_region_Goto_Thru_E : 
+			return (sc_boolean) (stateConfVector[0] == main_region_Goto_Thru_E
 			);
 		case main_region_Get_4_bicolor_cylinders_from_Dispenser_G : 
 			return (sc_boolean) (stateConfVector[0] == main_region_Get_4_bicolor_cylinders_from_Dispenser_G
@@ -485,7 +461,7 @@ sc_integer FSM_HomolTration::InternalSCI::get_lSA_IA()
 
 // implementations of all internal functions
 
-sc_boolean FSM_HomolTration::check_main_region_Move_before_Pen_tr0_tr0()
+sc_boolean FSM_HomolTration::check_main_region_Escaping_from_Start_area___Goto_Thru_D_tr0_tr0()
 {
 	return iface_OCB->targetReached();
 }
@@ -495,24 +471,9 @@ sc_boolean FSM_HomolTration::check_main_region_Go_To_Dispenser_G_tr0_tr0()
 	return iface_OCB->targetReached();
 }
 
-sc_boolean FSM_HomolTration::check_main_region_Goto_D_tr0_tr0()
+sc_boolean FSM_HomolTration::check_main_region_Goto_Thru_E_tr0_tr0()
 {
 	return iface_OCB->targetReached();
-}
-
-sc_boolean FSM_HomolTration::check_main_region_Get_D_Cylinder_tr0_tr0()
-{
-	return ifaceInternalSCI.SUCCESS == iface_OCB->getLSAStatus() || ifaceInternalSCI.FAILURE == iface_OCB->getLSAStatus();
-}
-
-sc_boolean FSM_HomolTration::check_main_region_Goto_E_tr0_tr0()
-{
-	return iface_OCB->targetReached();
-}
-
-sc_boolean FSM_HomolTration::check_main_region_Get_E_Cylinder_tr0_tr0()
-{
-	return ifaceInternalSCI.SUCCESS == iface_OCB->getLSAStatus() || ifaceInternalSCI.FAILURE == iface_OCB->getLSAStatus();
 }
 
 sc_boolean FSM_HomolTration::check_main_region_Get_4_bicolor_cylinders_from_Dispenser_G_tr0_tr0()
@@ -525,10 +486,10 @@ sc_boolean FSM_HomolTration::check_main_region_Wait_for_Pen_to_finish_his_move_t
 	return timeEvents[0];
 }
 
-void FSM_HomolTration::effect_main_region_Move_before_Pen_tr0()
+void FSM_HomolTration::effect_main_region_Escaping_from_Start_area___Goto_Thru_D_tr0()
 {
-	exseq_main_region_Move_before_Pen();
-	enseq_main_region_Goto_D_default();
+	exseq_main_region_Escaping_from_Start_area___Goto_Thru_D();
+	enseq_main_region_Goto_Thru_E_default();
 }
 
 void FSM_HomolTration::effect_main_region_Go_To_Dispenser_G_tr0()
@@ -537,27 +498,9 @@ void FSM_HomolTration::effect_main_region_Go_To_Dispenser_G_tr0()
 	enseq_main_region_Get_4_bicolor_cylinders_from_Dispenser_G_default();
 }
 
-void FSM_HomolTration::effect_main_region_Goto_D_tr0()
+void FSM_HomolTration::effect_main_region_Goto_Thru_E_tr0()
 {
-	exseq_main_region_Goto_D();
-	enseq_main_region_Get_D_Cylinder_default();
-}
-
-void FSM_HomolTration::effect_main_region_Get_D_Cylinder_tr0()
-{
-	exseq_main_region_Get_D_Cylinder();
-	enseq_main_region_Goto_E_default();
-}
-
-void FSM_HomolTration::effect_main_region_Goto_E_tr0()
-{
-	exseq_main_region_Goto_E();
-	enseq_main_region_Get_E_Cylinder_default();
-}
-
-void FSM_HomolTration::effect_main_region_Get_E_Cylinder_tr0()
-{
-	exseq_main_region_Get_E_Cylinder();
+	exseq_main_region_Goto_Thru_E();
 	enseq_main_region_Go_To_Dispenser_G_default();
 }
 
@@ -573,12 +516,13 @@ void FSM_HomolTration::effect_main_region_Wait_for_Pen_to_finish_his_move_tr0()
 	enseq_main_region__final__default();
 }
 
-/* Entry action for state 'Move before Pen'. */
-void FSM_HomolTration::enact_main_region_Move_before_Pen()
+/* Entry action for state 'Escaping from Start area : Goto Thru D'. */
+void FSM_HomolTration::enact_main_region_Escaping_from_Start_area___Goto_Thru_D()
 {
-	/* Entry action for state 'Move before Pen'. */
-	iface_OCB->setPosition(640, 730, 0);
-	iface_OCB->logInfo("Move so Pen can move away...");
+	/* Entry action for state 'Escaping from Start area : Goto Thru D'. */
+	iface_OCB->setPosition(518, 785, -90);
+	iface_OCB->goTo_ID(518, 382, ifaceInternalSCI.FWD);
+	iface_OCB->logInfo("Moving away from start area so that Pen begin its match...");
 }
 
 /* Entry action for state 'Go To Dispenser G'. */
@@ -586,35 +530,14 @@ void FSM_HomolTration::enact_main_region_Go_To_Dispenser_G()
 {
 	/* Entry action for state 'Go To Dispenser G'. */
 	iface_OCB->logInfo("Going to dispenser G...");
-	iface_OCB->goToCap(350, 730, 90, ifaceInternalSCI.FWD);
+	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_G, ifaceInternalSCI.FWD);
 }
 
-/* Entry action for state 'Goto D'. */
-void FSM_HomolTration::enact_main_region_Goto_D()
+/* Entry action for state 'Goto Thru E'. */
+void FSM_HomolTration::enact_main_region_Goto_Thru_E()
 {
-	/* Entry action for state 'Goto D'. */
-	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_D, ifaceInternalSCI.FWD);
-}
-
-/* Entry action for state 'Get D Cylinder'. */
-void FSM_HomolTration::enact_main_region_Get_D_Cylinder()
-{
-	/* Entry action for state 'Get D Cylinder'. */
-	iface_OCB->startLSA(ifaceInternalSCI.LSA_D);
-}
-
-/* Entry action for state 'Goto E'. */
-void FSM_HomolTration::enact_main_region_Goto_E()
-{
-	/* Entry action for state 'Goto E'. */
-	iface_OCB->goToLSAEntry(ifaceInternalSCI.LSA_E, ifaceInternalSCI.FWD);
-}
-
-/* Entry action for state 'Get E Cylinder'. */
-void FSM_HomolTration::enact_main_region_Get_E_Cylinder()
-{
-	/* Entry action for state 'Get E Cylinder'. */
-	iface_OCB->startLSA(ifaceInternalSCI.LSA_D);
+	/* Entry action for state 'Goto Thru E'. */
+	iface_OCB->goTo_ID(940, -40, ifaceInternalSCI.FWD);
 }
 
 /* Entry action for state 'Get 4 bicolor cylinders from Dispenser G'. */
@@ -632,25 +555,11 @@ void FSM_HomolTration::enact_main_region_Wait_for_Pen_to_finish_his_move()
 	timer->setTimer(this, (sc_eventid)(&timeEvents[0]), 1 * 1000, false);
 }
 
-/* Exit action for state 'Move before Pen'. */
-void FSM_HomolTration::exact_main_region_Move_before_Pen()
+/* Exit action for state 'Escaping from Start area : Goto Thru D'. */
+void FSM_HomolTration::exact_main_region_Escaping_from_Start_area___Goto_Thru_D()
 {
-	/* Exit action for state 'Move before Pen'. */
-	iface_OCB->logInfo("Go, PEN!");
-}
-
-/* Exit action for state 'Get D Cylinder'. */
-void FSM_HomolTration::exact_main_region_Get_D_Cylinder()
-{
-	/* Exit action for state 'Get D Cylinder'. */
-	iface_OCB->stopLSA();
-}
-
-/* Exit action for state 'Get E Cylinder'. */
-void FSM_HomolTration::exact_main_region_Get_E_Cylinder()
-{
-	/* Exit action for state 'Get E Cylinder'. */
-	iface_OCB->stopLSA();
+	/* Exit action for state 'Escaping from Start area : Goto Thru D'. */
+	iface_OCB->logInfo("Start area is freed for PEN.");
 }
 
 /* Exit action for state 'Get 4 bicolor cylinders from Dispenser G'. */
@@ -667,12 +576,12 @@ void FSM_HomolTration::exact_main_region_Wait_for_Pen_to_finish_his_move()
 	timer->unsetTimer(this, (sc_eventid)(&timeEvents[0]));
 }
 
-/* 'default' enter sequence for state Move before Pen */
-void FSM_HomolTration::enseq_main_region_Move_before_Pen_default()
+/* 'default' enter sequence for state Escaping from Start area : Goto Thru D */
+void FSM_HomolTration::enseq_main_region_Escaping_from_Start_area___Goto_Thru_D_default()
 {
-	/* 'default' enter sequence for state Move before Pen */
-	enact_main_region_Move_before_Pen();
-	stateConfVector[0] = main_region_Move_before_Pen;
+	/* 'default' enter sequence for state Escaping from Start area : Goto Thru D */
+	enact_main_region_Escaping_from_Start_area___Goto_Thru_D();
+	stateConfVector[0] = main_region_Escaping_from_Start_area___Goto_Thru_D;
 	stateConfVectorPosition = 0;
 }
 
@@ -685,39 +594,12 @@ void FSM_HomolTration::enseq_main_region_Go_To_Dispenser_G_default()
 	stateConfVectorPosition = 0;
 }
 
-/* 'default' enter sequence for state Goto D */
-void FSM_HomolTration::enseq_main_region_Goto_D_default()
+/* 'default' enter sequence for state Goto Thru E */
+void FSM_HomolTration::enseq_main_region_Goto_Thru_E_default()
 {
-	/* 'default' enter sequence for state Goto D */
-	enact_main_region_Goto_D();
-	stateConfVector[0] = main_region_Goto_D;
-	stateConfVectorPosition = 0;
-}
-
-/* 'default' enter sequence for state Get D Cylinder */
-void FSM_HomolTration::enseq_main_region_Get_D_Cylinder_default()
-{
-	/* 'default' enter sequence for state Get D Cylinder */
-	enact_main_region_Get_D_Cylinder();
-	stateConfVector[0] = main_region_Get_D_Cylinder;
-	stateConfVectorPosition = 0;
-}
-
-/* 'default' enter sequence for state Goto E */
-void FSM_HomolTration::enseq_main_region_Goto_E_default()
-{
-	/* 'default' enter sequence for state Goto E */
-	enact_main_region_Goto_E();
-	stateConfVector[0] = main_region_Goto_E;
-	stateConfVectorPosition = 0;
-}
-
-/* 'default' enter sequence for state Get E Cylinder */
-void FSM_HomolTration::enseq_main_region_Get_E_Cylinder_default()
-{
-	/* 'default' enter sequence for state Get E Cylinder */
-	enact_main_region_Get_E_Cylinder();
-	stateConfVector[0] = main_region_Get_E_Cylinder;
+	/* 'default' enter sequence for state Goto Thru E */
+	enact_main_region_Goto_Thru_E();
+	stateConfVector[0] = main_region_Goto_Thru_E;
 	stateConfVectorPosition = 0;
 }
 
@@ -754,13 +636,13 @@ void FSM_HomolTration::enseq_main_region_default()
 	react_main_region__entry_Default();
 }
 
-/* Default exit sequence for state Move before Pen */
-void FSM_HomolTration::exseq_main_region_Move_before_Pen()
+/* Default exit sequence for state Escaping from Start area : Goto Thru D */
+void FSM_HomolTration::exseq_main_region_Escaping_from_Start_area___Goto_Thru_D()
 {
-	/* Default exit sequence for state Move before Pen */
+	/* Default exit sequence for state Escaping from Start area : Goto Thru D */
 	stateConfVector[0] = FSM_HomolTration_last_state;
 	stateConfVectorPosition = 0;
-	exact_main_region_Move_before_Pen();
+	exact_main_region_Escaping_from_Start_area___Goto_Thru_D();
 }
 
 /* Default exit sequence for state Go To Dispenser G */
@@ -771,38 +653,12 @@ void FSM_HomolTration::exseq_main_region_Go_To_Dispenser_G()
 	stateConfVectorPosition = 0;
 }
 
-/* Default exit sequence for state Goto D */
-void FSM_HomolTration::exseq_main_region_Goto_D()
+/* Default exit sequence for state Goto Thru E */
+void FSM_HomolTration::exseq_main_region_Goto_Thru_E()
 {
-	/* Default exit sequence for state Goto D */
+	/* Default exit sequence for state Goto Thru E */
 	stateConfVector[0] = FSM_HomolTration_last_state;
 	stateConfVectorPosition = 0;
-}
-
-/* Default exit sequence for state Get D Cylinder */
-void FSM_HomolTration::exseq_main_region_Get_D_Cylinder()
-{
-	/* Default exit sequence for state Get D Cylinder */
-	stateConfVector[0] = FSM_HomolTration_last_state;
-	stateConfVectorPosition = 0;
-	exact_main_region_Get_D_Cylinder();
-}
-
-/* Default exit sequence for state Goto E */
-void FSM_HomolTration::exseq_main_region_Goto_E()
-{
-	/* Default exit sequence for state Goto E */
-	stateConfVector[0] = FSM_HomolTration_last_state;
-	stateConfVectorPosition = 0;
-}
-
-/* Default exit sequence for state Get E Cylinder */
-void FSM_HomolTration::exseq_main_region_Get_E_Cylinder()
-{
-	/* Default exit sequence for state Get E Cylinder */
-	stateConfVector[0] = FSM_HomolTration_last_state;
-	stateConfVectorPosition = 0;
-	exact_main_region_Get_E_Cylinder();
 }
 
 /* Default exit sequence for state Get 4 bicolor cylinders from Dispenser G */
@@ -838,9 +694,9 @@ void FSM_HomolTration::exseq_main_region()
 	/* Handle exit of all possible states (of FSM_HomolTration.main_region) at position 0... */
 	switch(stateConfVector[ 0 ])
 	{
-		case main_region_Move_before_Pen :
+		case main_region_Escaping_from_Start_area___Goto_Thru_D :
 		{
-			exseq_main_region_Move_before_Pen();
+			exseq_main_region_Escaping_from_Start_area___Goto_Thru_D();
 			break;
 		}
 		case main_region_Go_To_Dispenser_G :
@@ -848,24 +704,9 @@ void FSM_HomolTration::exseq_main_region()
 			exseq_main_region_Go_To_Dispenser_G();
 			break;
 		}
-		case main_region_Goto_D :
+		case main_region_Goto_Thru_E :
 		{
-			exseq_main_region_Goto_D();
-			break;
-		}
-		case main_region_Get_D_Cylinder :
-		{
-			exseq_main_region_Get_D_Cylinder();
-			break;
-		}
-		case main_region_Goto_E :
-		{
-			exseq_main_region_Goto_E();
-			break;
-		}
-		case main_region_Get_E_Cylinder :
-		{
-			exseq_main_region_Get_E_Cylinder();
+			exseq_main_region_Goto_Thru_E();
 			break;
 		}
 		case main_region_Get_4_bicolor_cylinders_from_Dispenser_G :
@@ -887,13 +728,13 @@ void FSM_HomolTration::exseq_main_region()
 	}
 }
 
-/* The reactions of state Move before Pen. */
-void FSM_HomolTration::react_main_region_Move_before_Pen()
+/* The reactions of state Escaping from Start area : Goto Thru D. */
+void FSM_HomolTration::react_main_region_Escaping_from_Start_area___Goto_Thru_D()
 {
-	/* The reactions of state Move before Pen. */
-	if (check_main_region_Move_before_Pen_tr0_tr0())
+	/* The reactions of state Escaping from Start area : Goto Thru D. */
+	if (check_main_region_Escaping_from_Start_area___Goto_Thru_D_tr0_tr0())
 	{ 
-		effect_main_region_Move_before_Pen_tr0();
+		effect_main_region_Escaping_from_Start_area___Goto_Thru_D_tr0();
 	} 
 }
 
@@ -907,43 +748,13 @@ void FSM_HomolTration::react_main_region_Go_To_Dispenser_G()
 	} 
 }
 
-/* The reactions of state Goto D. */
-void FSM_HomolTration::react_main_region_Goto_D()
+/* The reactions of state Goto Thru E. */
+void FSM_HomolTration::react_main_region_Goto_Thru_E()
 {
-	/* The reactions of state Goto D. */
-	if (check_main_region_Goto_D_tr0_tr0())
+	/* The reactions of state Goto Thru E. */
+	if (check_main_region_Goto_Thru_E_tr0_tr0())
 	{ 
-		effect_main_region_Goto_D_tr0();
-	} 
-}
-
-/* The reactions of state Get D Cylinder. */
-void FSM_HomolTration::react_main_region_Get_D_Cylinder()
-{
-	/* The reactions of state Get D Cylinder. */
-	if (check_main_region_Get_D_Cylinder_tr0_tr0())
-	{ 
-		effect_main_region_Get_D_Cylinder_tr0();
-	} 
-}
-
-/* The reactions of state Goto E. */
-void FSM_HomolTration::react_main_region_Goto_E()
-{
-	/* The reactions of state Goto E. */
-	if (check_main_region_Goto_E_tr0_tr0())
-	{ 
-		effect_main_region_Goto_E_tr0();
-	} 
-}
-
-/* The reactions of state Get E Cylinder. */
-void FSM_HomolTration::react_main_region_Get_E_Cylinder()
-{
-	/* The reactions of state Get E Cylinder. */
-	if (check_main_region_Get_E_Cylinder_tr0_tr0())
-	{ 
-		effect_main_region_Get_E_Cylinder_tr0();
+		effect_main_region_Goto_Thru_E_tr0();
 	} 
 }
 
@@ -977,7 +788,7 @@ void FSM_HomolTration::react_main_region_Wait_for_Pen_to_finish_his_move()
 void FSM_HomolTration::react_main_region__entry_Default()
 {
 	/* Default react sequence for initial entry  */
-	enseq_main_region_Move_before_Pen_default();
+	enseq_main_region_Escaping_from_Start_area___Goto_Thru_D_default();
 }
 
 

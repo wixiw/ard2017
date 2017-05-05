@@ -177,3 +177,10 @@ char const * const Robot2017::getSerialNumber() const
 {
     return m_params.serialNumber();
 }
+
+void Robot2017::SWAssert()
+{
+    lifecycle.stopThread();
+    actuators.stopThread();
+    nav.stopThread();
+}

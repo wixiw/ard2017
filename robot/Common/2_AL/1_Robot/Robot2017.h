@@ -71,6 +71,9 @@ namespace ard
         //Get the FSM event timer
         YakardTimer& getFsmTimer();
 
+        //Stop all functionnal threads and keep debugging thread working.
+        void SWAssert();
+
         //-------------------------------------------------------------------
         // Lifecycle listener
         //-------------------------------------------------------------------

@@ -47,10 +47,11 @@ void LSAList::checkId(uint8_t id) const
 {
     ASSERT(id < eNB_MAX_LSA);
     //Check for unimplemented LSA
-    ASSERT(id != eTake_D);
-    ASSERT(id != eTake_E);
-    ASSERT(id != eTake_F);
-    ASSERT(id != eTake_OppD);
-    ASSERT(id != eTake_OppE);
-    ASSERT(id != eTake_OppF);
+    ASSERT_TEXT(id != eTake_D, "LSA_D is not implemented");
+    ASSERT_TEXT(id != eTake_E, "LSA_E is not implemented");
+    ASSERT_TEXT(id != eTake_F, "LSA_F is not implemented");
+    ASSERT_TEXT(id != eTake_OppD, "LSA_OppD is not implemented");
+    ASSERT_TEXT(id != eTake_OppE, "LSA_OppE is not implemented");
+    ASSERT_TEXT(id != eTake_OppF, "LSA_OppF is not implemented");
+    ASSERT_TEXT(id != eIA, "LSA_IA is not implemented");
 }

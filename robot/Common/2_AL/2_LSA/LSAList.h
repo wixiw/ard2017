@@ -36,7 +36,7 @@ namespace ard
         eTake_OppE,
         eTake_OppF,
         ePoo_6,
-        ePoo_IA,
+        eIA,
         eNB_MAX_LSA,
         eNone,
     } eLsaId;

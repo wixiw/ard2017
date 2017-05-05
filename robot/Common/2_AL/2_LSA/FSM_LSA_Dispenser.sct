@@ -5,7 +5,7 @@
       <vertices xsi:type="sgraph:Entry" xmi:id="_FFmPMyoLEee0mqFmHUZWcA">
         <outgoingTransitions xmi:id="_FFoEZSoLEee0mqFmHUZWcA" target="_FFm2RyoLEee0mqFmHUZWcA"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_FFm2RyoLEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;goToCap(350,770,90, FWD); &#xD;&#xA;logInfo(&quot;[LSA Dispenser] Engaging dispenser&quot;)" name="Engage dispenser" incomingTransitions="_FFoEZSoLEee0mqFmHUZWcA">
+      <vertices xsi:type="sgraph:State" xmi:id="_FFm2RyoLEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;goForward(120); &#xD;&#xA;logInfo(&quot;[LSA Dispenser] Engaging dispenser&quot;)" name="Engage dispenser" incomingTransitions="_FFoEZSoLEee0mqFmHUZWcA">
         <outgoingTransitions xmi:id="_Tsj-8CoTEee0mqFmHUZWcA" specification="[targetReached()] / cylinderToTake = dispenserCount()" target="_SJjUECoTEee0mqFmHUZWcA"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_SJjUECoTEee0mqFmHUZWcA" specification="exit/&#xD;&#xA;informWithdraw_generic();&#xD;&#xA;cylinderToTake -= 1" name="Get 1 cylinder" incomingTransitions="_Tsj-8CoTEee0mqFmHUZWcA _wp1KECoUEee0mqFmHUZWcA">

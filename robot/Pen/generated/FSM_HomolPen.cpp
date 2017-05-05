@@ -668,6 +668,7 @@ void FSM_HomolPen::enact_main_region_Wait_Tration_to_move()
 {
 	/* Entry action for state 'Wait Tration to move'. */
 	timer->setTimer(this, (sc_eventid)(&timeEvents[0]), 1 * 1000, false);
+	iface_OCB->setPosition(640, 730, 0);
 	iface_OCB->logInfo("Waiting for Tration to move away...");
 }
 

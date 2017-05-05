@@ -18,18 +18,24 @@ extern "C"
 //check for C++ demangling problems
 void ardAssertImpl(bool condition, char const* file, unsigned int line, char const* text)
 {
+    static bool assertHappened = false;
+    
     if(!condition)
-    {
-        if( ArdOs::getState() == ArdOs::RUNNING && !Thread::interruptContext() )
+    {     
+        if( !assertHappened )
         {
-            LOG_ASSERT(String(file) +":" + line + String(text));
-            if(Robot2017::instance)
-                Robot2017::instance->dieMotherFucker();
-        }
-        else
-        {
-            errorBlink(3);
-        }
+            assertHappened = true;
+            if( ArdOs::getState() == ArdOs::RUNNING && !Thread::interruptContext() )
+            {
+                LOG_ASSERT(String("[") + file +":" + line + "] " + String(text));
+                if(Robot2017::instance)
+                    Robot2017::instance->SWAssert();
+            }
+            else
+            {
+                errorBlink(3);
+            }
+        }            
     }
 }
 

@@ -17,7 +17,7 @@
       <vertices xsi:type="sgraph:State" xmi:id="_gfZV4C7BEeeB-rUkkc3UJw" specification="entry/&#xD;&#xA;logInfo(&quot;Pooing 4 cylinders in 4 area.&quot;);&#xD;&#xA;startLSA(LSA_4)&#xD;&#xA;&#xD;&#xA;exit/&#xD;&#xA;stopLSA()" name="Poo 4 monocolor cylinders in 4" incomingTransitions="_oh5zwC7BEeeB-rUkkc3UJw">
         <outgoingTransitions xmi:id="_pMNlsC9pEeeSSu2RwF8Pmw" specification="[SUCCESS == getLSAStatus() || FAILURE == getLSAStatus()]" target="_47or8C9pEeeSSu2RwF8Pmw"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_--8H4C7JEeeB-rUkkc3UJw" specification="entry/ &#xD;&#xA;logInfo(&quot;Waiting for Tration to move away...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Go go go !&quot;)" name="Wait Tration to move" incomingTransitions="_JbmxcC-CEeeSSu2RwF8Pmw">
+      <vertices xsi:type="sgraph:State" xmi:id="_--8H4C7JEeeB-rUkkc3UJw" specification="entry/ &#xD;&#xA;setPosition(640,730,0);&#xD;&#xA;logInfo(&quot;Waiting for Tration to move away...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Go go go !&quot;)" name="Wait Tration to move" incomingTransitions="_JbmxcC-CEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_cOlrMC7FEeeB-rUkkc3UJw" specification="after 1s" target="_KdTdYSYeEeeh1o2kvtdb7w"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_bYjJ4C9bEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;goTo(600, 780, BWD)" name="Return to Start Areaa to recal" incomingTransitions="_D_FXEC7BEeeB-rUkkc3UJw">

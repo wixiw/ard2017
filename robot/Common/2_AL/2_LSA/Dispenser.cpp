@@ -20,10 +20,10 @@ LSA_Dispenser::LSA_Dispenser(Robot2017& robot, eLSA_DispType type):
             setEntryPoint(PointCap(  350,  650, 90));
             break;
         case Bicolor:
-            setEntryPoint(PointCap( 1150, -350, 90));
+            setEntryPoint(PointCap( 1150, -350, 0));
             break;
         case OppBicolor:
-            setEntryPoint(PointCap(-1150, -350, 90));
+            setEntryPoint(PointCap(-1150, -350, 180));
             break;
         default:
             break;
