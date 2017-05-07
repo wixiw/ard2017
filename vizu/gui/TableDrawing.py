@@ -6,8 +6,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from core import *
+from GhostController import *
 import math
-
+import copy
+        
 #spare area around the table
 T_SPARE  =  100.
 
@@ -44,9 +46,12 @@ class TableOverview(QWidget):
         self.resize(600,400)
         self.p = QPainter()
         self.table = TableWidget(self.p)
+        self.ghost = GhostWidget(self.p)
+        self.ghostController = GhostController()
         self.robotPen = RobotPenWidget(self.p)
         self.robotTration = RobotTrationWidget(self.p)
         self.robot = None
+        self.mouseTransform = None
         self.robotProxy = robotProxy
         self.drawTraj = False
         self.view = QRect( - T_SPARE,
@@ -57,7 +62,14 @@ class TableOverview(QWidget):
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setSizePolicy(sizePolicy)
         
-        
+    def setMire(self, on):
+        self.robot.displayMire = on
+        self.ghost.displayMire = on
+       
+    def setActuators(self, on):
+        self.robot.actuatorsOut = on
+        self.ghost.actuatorsOut = on
+         
     def paintEvent(self, event):
         self.p.begin(self)
         
@@ -71,6 +83,8 @@ class TableOverview(QWidget):
         
         self.table.draw(self.parent().robotState.stratInfo)
         self.p.translate(T_WIDTH/2, T_HEIGHT/2)
+        self.mouseTransform, invertible = self.p.combinedTransform().inverted()
+        assert invertible
         if self.robot != None and self.parent().robotConfig != None:
             x, y = self.robot.filterPosition(self.parent().robotConfig, self.robotPose.x, self.robotPose.y, math.degrees(self.robotPose.h))
         else:
@@ -83,19 +97,55 @@ class TableOverview(QWidget):
         if self.robot != None and self.parent().robotConfig != None:
             self.drawTrajectory()
             self.robot.draw(drawingPose, self.parent().robotConfig, self.parent().robotState.stratInfo)
+            self.ghost.draw(self.ghost.pose, self.parent().robotConfig, self.parent().robotState.stratInfo)
         self.p.end()
     
     def mousePressEvent(self, event):
-        p = event.pos()
-        #trans, ok = self.p.transform().inverted()
-        #p2 = self.p.deviceTransform().map(p)
-        #p3 = self.p.worldTransform().map(p)
-        T_WIDTH/2, T_HEIGHT/2
-        qDebug(str())
-        p4 = QPoint(p.x()*T_WIDTH/self.size().width() - T_WIDTH/2., T_HEIGHT/2 - T_HEIGHT*p.y()/self.size().height())
-        qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p4.x()) + " " + str(p4.y()))) 
+        if self.mouseTransform == None:
+            return
+        
+        #Convert into user coordinates
+        p = self.mouseTransform.map(event.pos())
+        #qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p.x()) + " " + str(p.y()))) 
+        
+        #Update Ghost controller state
+        hitPoint = Point(p.x(), -p.y())
+        isInCarriage = self.ghost.isMouseInCarriage(hitPoint)
+        self.ghostController.mouseLeftClicCb(True, hitPoint, self.ghost.pose, isInCarriage)
+        
         return QWidget.mousePressEvent(self, event)
     
+    def mouseReleaseEvent(self, event):
+        if self.mouseTransform == None:
+            return
+        
+        #Convert into user coordinates
+        p = self.mouseTransform.map(event.pos())
+        #qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p.x()) + " " + str(p.y()))) 
+        
+        #Update Ghost controller state
+        hitPoint = Point(p.x(), -p.y())
+        isInCarriage = self.ghost.isMouseInCarriage(hitPoint)
+        self.ghostController.mouseLeftClicCb(False, hitPoint, self.ghost.pose, isInCarriage)
+        
+        return QWidget.mouseReleaseEvent(self, event)
+    
+    def mouseMoveEvent(self, event):
+        if self.mouseTransform == None:
+            return
+        print("MOVE")
+        #Convert into user coordinates
+        p = self.mouseTransform.map(event.pos())
+        #qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p.x()) + " " + str(p.y()))) 
+        
+        #Update ghost position
+        hitPoint = Point(p.x(), -p.y())
+        self.ghost.pose = self.ghostController.mouseSlideCb(hitPoint, self.ghost.pose)
+        self.parent().label["xg"].setText(str(self.ghost.pose.x))
+        self.parent().label["yg"].setText(str(self.ghost.pose.y))
+        self.parent().label["hg"].setText("%0.0f" % math.degrees(self.ghost.pose.h))
+            
+        return QWidget.mouseMoveEvent(self, event)
             
     def drawTrajectory(self):
         if self.drawTraj:
@@ -324,6 +374,38 @@ class RobotTrationWidget(RobotWidget):
     def __init__(self, painter):
         super().__init__(painter)
         self.color = darkRed 
+
+class GhostWidget(RobotWidget):
+    def __init__(self, painter):
+        super().__init__(painter)
+        self.color = ardGray 
+        self.pose = Pose2D()#Pose2D(1300,-800,0)
+        self.displayMire = True
+        self.actuatorsOut = True
+        self.cfg = None
+        
+    def draw(self, pose, cfg2, stratInfo2):
+        self.cfg = copy.copy(cfg2)
+        self.cfg.serialNumber = "Ghost"
+        stratInfo = CommonMsg_pb2.StratInfo2017()
+        self.p.save()
+        self.p.setRenderHint(QPainter.Antialiasing)
+        self.p.translate(pose.x, -pose.y)
+        self.p.rotate(-math.degrees(pose.h))
+        if self.displayMire:
+            self.drawMarks(self.cfg)
+        self.drawCarriage(self.cfg)
+        self.drawWheels(self.cfg)
+        self.p.restore()
+        
+    def isMouseInCarriage(self, point):
+        if self.cfg == None:
+            return False
+        
+        if self.pose.dist(point) <= self.cfg.xouter:
+            return True
+        else:
+            return False
 
 class TableWidget():
     

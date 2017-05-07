@@ -51,7 +51,7 @@ class TabContext(ShortcutContext):
 
 class VizuMainScreen(QWidget):
     
-    def __init__(self):
+    def __init__(self, clipboard):
         super().__init__()  
         self.resize(870, 500)           
         self.readSettings()
@@ -66,7 +66,7 @@ class VizuMainScreen(QWidget):
         self.tabContexts = dict()
         self.tabContexts["Com"]     = TabContext(TabCom(self, self.teleop),         "F1", self.tabShortcutMap.map, "Switch to Com tab.", TabContext.AVAILABLE_OFFLINE)
         self.tabContexts["Log"]     = TabContext(TabLog(self),                      "F2", self.tabShortcutMap.map, "Switch to Log tab.", TabContext.AVAILABLE_OFFLINE)
-        self.tabContexts["Strat"]   = TabContext(TabStrat(self, self.teleop, self.robotProxy),       "F3", self.tabShortcutMap.map, "Switch to Strat tab.")
+        self.tabContexts["Strat"]   = TabContext(TabStrat(self, self.teleop, self.robotProxy, clipboard),       "F3", self.tabShortcutMap.map, "Switch to Strat tab.")
         self.tabContexts["Robot"]   = TabContext(TabRobot(self),                    "F4", self.tabShortcutMap.map, "Switch to Robot tab.")
         self.tabContexts["Config"]  = TabContext(TabConfig(self),                   "F5", self.tabShortcutMap.map, "Switch to Config tab.")
         self.tabContexts["Help"]    = TabContext(TabHelp(self),                     "F6", self.tabShortcutMap.map,"Switch to LHelpog tab.", TabContext.AVAILABLE_OFFLINE)
@@ -207,7 +207,9 @@ class VizuMainScreen(QWidget):
             # reset with r
         self.shortcuts["r"] = ShortcutContext("r", self.tabContexts["Strat"].tab.resetCpu, "Reset the CPU.") 
             # block/unblock robot with x
-        self.shortcuts["x"] = ShortcutContext("x", self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"]._blockFromShortcut, "Create/destroy a virtual opponent on the robot path") 
+        self.shortcuts["x"] = ShortcutContext("x", self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"]._blockFromShortcut, "Create/destroy a virtual opponent on the robot path.") 
+            # CGTC
+        self.shortcuts["g"] = ShortcutContext("g", self.tabContexts["Strat"].tab.copyGhostToClipboard, "*THE* famous copy ghost to clipboard feature.")
         
         #register shortcuts into main widget
         for name, shortcutContext in self.shortcuts.items():
@@ -228,7 +230,7 @@ class VizuApplication(QApplication):
         self.aboutToQuit.connect(self._quitHandler)
         
         #Build main view
-        self.mainWindow = VizuMainScreen()
+        self.mainWindow = VizuMainScreen(self.clipboard())
         
         signal.signal(signal.SIGINT, self._ctrlC_handler)
         

@@ -18,7 +18,7 @@ import _tkinter
 class TabStrat(QWidget):
     
     #@param robot : the prowy providing telemetry data
-    def __init__(self, parent, teleop, robotProxy):
+    def __init__(self, parent, teleop, robotProxy, clipboard):
         super().__init__(parent)
         self.teleop = teleop
         self.overview = TableOverview(self, robotProxy)
@@ -30,6 +30,7 @@ class TabStrat(QWidget):
         self.stratCount = 0
         self.actuatorsOut = False
         self.mire = False
+        self.clipboard = clipboard
         
         #build info tab
         self.label = dict()
@@ -39,12 +40,14 @@ class TabStrat(QWidget):
         self.buildMotionInfo()
         self.buildStratInfo()
         self.buildViewConfigInfo()
+        self.buildGhostInfo()
         self.layoutInfo = QVBoxLayout()
         self.layoutInfo.addWidget(self.box_general)
         self.layoutInfo.addWidget(self.box_pos)
         self.layoutInfo.addWidget(self.box_motion)
         self.layoutInfo.addWidget(self.box_stratInfo)
         self.layoutInfo.addWidget(self.box_viewConf)
+        self.layoutInfo.addWidget(self.box_ghost)
         self.layoutInfo.addSpacerItem(QSpacerItem(175,0,QSizePolicy.Minimum,QSizePolicy.Expanding))
         
         self.layout = QHBoxLayout(self)
@@ -174,6 +177,20 @@ class TabStrat(QWidget):
         self.cbox["mire"].stateChanged.connect(self._mireChecked) #nearly milk-shake ^^ oOooO
         self.cbox["traj"].stateChanged.connect(self._trajChecked)
        
+    def buildGhostInfo(self):
+        self.box_ghost = QGroupBox("Ghost")
+        self.label["xg"] = QLabel("0")
+        self.label["yg"] = QLabel("0")
+        self.label["hg"] = QLabel("0")
+        self.label["xg"].setAlignment(Qt.AlignRight)
+        self.label["yg"].setAlignment(Qt.AlignRight)
+        self.label["hg"].setAlignment(Qt.AlignRight)
+        box_layout = QFormLayout()
+        box_layout.addRow("x (mm) : ", self.label["xg"])
+        box_layout.addRow("y (mm) : ", self.label["yg"])
+        box_layout.addRow("h (°)  : ", self.label["hg"])
+        self.box_ghost.setLayout(box_layout)
+       
     #@return Pose2D : the last received telemetry position
     def getRobotPosition(self):
         return Pose2D.fromPoseMsg(self.robotState.nav.pos)
@@ -209,9 +226,9 @@ class TabStrat(QWidget):
             self.label["bootTime"].setText("%0.1f" % (self.robotState.date/1000.))
             self.label["chronoMatch"].setText("%0.1f" % (chrono))
             self.label["timeLeft"].setText("%0.1f" % (self.robotState.chrono.timeLeft_ms/1000.))
-            self.label["x"].setText("%0.0f" %pose.x)
-            self.label["y"].setText("%0.0f" %pose.y)
-            self.label["h"].setText("%0.0f" % math.degrees(pose.h))
+            self.label["x"].setText("%d" %pose.x)
+            self.label["y"].setText("%d" %pose.y)
+            self.label["h"].setText("%d" % math.degrees(pose.h))
             self.label["state"].setText(self.getMotionStateStr())
             self.label["order"].setText(self.getMotionOrderStr())
             self.label["score"].setText(str(msg.stratInfo.score))
@@ -242,16 +259,17 @@ class TabStrat(QWidget):
     @pyqtSlot(int)
     def _actuatorsChecked(self, state):
         if state == Qt.Checked:
-            self.overview.robot.actuatorsOut = True;
+            self.overview.setActuators(True)
+            
         else:
-            self.overview.robot.actuatorsOut = False;
+            self.overview.setActuators(False)
             
     @pyqtSlot(int)
     def _mireChecked(self, state):
         if state == Qt.Checked:
-            self.overview.robot.displayMire = True;
+            self.overview.setMire(True)
         else:
-            self.overview.robot.displayMire = False;
+            self.overview.setMire(False)
 
     @pyqtSlot(int)
     def _trajChecked(self, state):
@@ -315,6 +333,13 @@ class TabStrat(QWidget):
         elif self.uiStarted:
             self.resetCpu()
         
+    @pyqtSlot()
+    def copyGhostToClipboard(self):
+        print("CGTC : " + str(self.overview.ghost.pose))
+        self.clipboard.setText("%d, %d, %d" 
+                               %(self.overview.ghost.pose.x, 
+                                 self.overview.ghost.pose.y, 
+                                 math.degrees(self.overview.ghost.pose.h)))
         
     def _setColorButtonState(self, color):
         if color == Types_pb2.UNKNOWN:

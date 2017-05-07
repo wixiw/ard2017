@@ -128,5 +128,5 @@ class Pose2D(Point):
         else:
             l_h = self.h
         
-        return '[%0.3f , %0.3f , %0.2f]' % (l_x, l_y, l_h) 
+        return '[%dmm, %dmm, %d°]' % (l_x, l_y, degrees(l_h)) 
  

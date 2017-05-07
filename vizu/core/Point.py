@@ -57,5 +57,5 @@ class Point(object):
         also the str() function. It should produce a string that, when
         evaluated, returns a point with the 
         same data."""
-        return '[%d , %d]' % (self.x, self.y)     
+        return '[%dmm, %dmm]' % (self.x, self.y)     
     
