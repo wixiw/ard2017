@@ -56,6 +56,7 @@ public:
     bool detectionActive()      	const;
     uint32_t maxSpeed()             const;
     char const* const serialNumber() const;
+    bool logDebug()                 const;
 
     static const uint32_t MINBOUND_MAXSPEED         = 50;   //mm/s
     static const uint32_t MAXBOUND_MAXSPEED         = 2000; //mm/s

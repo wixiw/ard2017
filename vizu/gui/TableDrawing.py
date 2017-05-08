@@ -133,7 +133,6 @@ class TableOverview(QWidget):
     def mouseMoveEvent(self, event):
         if self.mouseTransform == None:
             return
-        print("MOVE")
         #Convert into user coordinates
         p = self.mouseTransform.map(event.pos())
         #qDebug(str(p.x()) + " " + str(p.y()) + " => " + (str(p.x()) + " " + str(p.y()))) 
@@ -379,7 +378,7 @@ class GhostWidget(RobotWidget):
     def __init__(self, painter):
         super().__init__(painter)
         self.color = ardGray 
-        self.pose = Pose2D()#Pose2D(1300,-800,0)
+        self.pose = Pose2D() #Pose2D(-1400,-800,0)
         self.displayMire = True
         self.actuatorsOut = True
         self.cfg = None

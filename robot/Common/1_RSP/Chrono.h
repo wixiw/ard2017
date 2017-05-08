@@ -26,6 +26,9 @@ namespace ard
         // to be called ONCE when the match begins
         void startMatch();
 
+        //stop the chrono when match is finished (including funny action)
+        void stop();
+
         // Return the chrono since the beginning of the match
         TimeMs getTime() const;
 

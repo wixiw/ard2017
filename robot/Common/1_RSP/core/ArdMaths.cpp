@@ -107,6 +107,11 @@ PointCap::PointCap(double x, double y, double h)
 }
 ;
 
+double PointCap::angleHeadingTo(Point p) const
+{
+    return moduloPiPi(angleTo(p) - h);
+}
+
 PointCap PointCap::toAmbiPose(eColor c) const
 {
     PointCap res = Point::toAmbiPoint(c);

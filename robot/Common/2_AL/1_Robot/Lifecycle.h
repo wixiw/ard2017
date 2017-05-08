@@ -55,8 +55,11 @@ namespace ard
         //Indicates to the listener that the user has chossed a color
         virtual void colorChoosed(eColor color) = 0;
 
-        //The match is finished, listener is supposed to stop any actuator that is not involved in funny action
-        virtual void matchEnded() = 0;
+        //The core match is finished, listener is supposed to stop any actuator that is not involved in funny action
+        virtual void coreMatchEnded() = 0;
+
+        //The funny action is finished, robot shall stop doing anything
+        virtual void funnyActionEnded() = 0;
     };
 
     /**

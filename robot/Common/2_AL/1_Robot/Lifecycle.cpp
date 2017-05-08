@@ -281,8 +281,11 @@ void Lifecycle::stopMode()
     LOG_DEBUG(String("[Lifecycle] mode stopped : ")+currentMode);
 
     //dispatch match end
+    if(currentMode == fsm.get_mODE_CORE_MATCH() && listener)
+        listener->coreMatchEnded();
+
     if(currentMode == fsm.get_mODE_FUNNY_ACTION() && listener)
-        listener->matchEnded();
+        listener->funnyActionEnded();
 
     currentMode = fsm.get_mODE_NONE();
 }

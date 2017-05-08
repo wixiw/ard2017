@@ -13,6 +13,10 @@ using namespace ard;
 #define KLAXON_FREQ 1000     //Hz
 #define RECAL_FORCING 400     //mm
 #define RECAL_ESCAPE_MARGIN 30 //mm
+#define RECAL_TIMEOUT 5000 //ms
+#define OPP_IMPATIENCE_TIMEOUT 5000 //ms
+#define ACCEL_RAMPS_DURATION 1000 //ms
+#define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT((m_state == eNavState_IDLE || m_state == eNavState_BLOCKED) && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
 Navigation::Navigation(Buzzer& klaxon)
         :
@@ -78,6 +82,16 @@ void Navigation::run()
     //Take a mutex to prevent localisation and target to be changed during a cycle
     m_mutex.lock();
 
+    //General transition
+    if(orderTimeout.isFired())
+    {
+        orderTimeout.cancel();
+        LOG_ERROR("Order timeout, interrupt order=" + orderToString(m_order) + " in state=" + stateToString(m_state) + " and go to error.");
+        m_mutex.unlock();
+        stopMoving(eNavState_STOPPING_IN_BLOCKED);
+        m_mutex.lock();
+    }
+
     switch (m_state)
     {
         default:
@@ -85,6 +99,12 @@ void Navigation::run()
             break;
 
         case eNavState_IDLE:
+        {
+            orderTimeout.cancel();
+            break;
+        }
+
+        case eNavState_BLOCKED:
         {
             break;
         }
@@ -152,6 +172,18 @@ void Navigation::run()
             break;
         }
 
+        case eNavState_STOPPING_IN_BLOCKED:
+        {
+            if (subOrderFinished())
+            {
+                //Change state to terminate order
+                m_state = eNavState_BLOCKED;
+                m_order = eNavOrder_NOTHING;
+                LOG_INFO("stopped.");
+            }
+            break;
+        }
+
 /** -----------------------------------------------------------------------------------
  * Avoidance
  --------------------------------------------------------------------------------------*/
@@ -160,6 +192,8 @@ void Navigation::run()
         {
             if(oppTimer.isFired() || (!avoidanceActive  && !fakeRobot))
             {
+                oppTimer.cancel();
+
                 //Check if opponent has left
                 if( (m_sensTarget == eDir_FORWARD && !isOpponentAhead())
                 || (m_sensTarget == eDir_BACKWARD && !isOpponentBehind()) )
@@ -226,7 +260,11 @@ void Navigation::run()
                 LOG_INFO(String("   wall touched"));
 
                 enterCriticalSection();
+                stepperL.setCurrentPosition(0);
+                oldStepL = 0;
                 stepperL.move(0); //move(0) is equivalent to stay on current position
+                stepperR.setCurrentPosition(0);
+                oldStepR = 0;
                 stepperR.move(0);
                 setPosition(m_target, false);//position has already been symetrized
                 exitCriticalSection();
@@ -245,6 +283,7 @@ void Navigation::run()
                 }
                 applyCmdToGoStraight(m_sensTarget * distance, userMaxSpeed, userMaxAcc);
                 m_state = eNavState_ESCAPING_WALL;
+                orderTimeout.arm(1000+OPP_IMPATIENCE_TIMEOUT);
                 LOG_INFO(String("   escaping of distance=") + distance);
                 klaxon.bip(1);
             }
@@ -333,6 +372,8 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
 {
     m_mutex.lock();
 
+    CHECK_ONE_ORDER_AT_A_TIME();
+
     //If a config is NULL, then restore default configuration
     if( vMax != 0 )
     {
@@ -378,7 +419,7 @@ void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t acc
 void Navigation::goTo(Point target, eDir sens, bool sym)
 {
     m_mutex.lock();
-    ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
+    CHECK_ONE_ORDER_AT_A_TIME();
 
     m_order = eNavOrder_GOTO;
     if(sym)
@@ -389,13 +430,15 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
     LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
 
+    orderTimeout.arm(motionDuration(m_pose, m_target)+OPP_IMPATIENCE_TIMEOUT);
+
     m_mutex.unlock();
 }
 
 void Navigation::goToCap(PointCap target, eDir sens, bool sym)
 {
     m_mutex.lock();
-    ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
+    CHECK_ONE_ORDER_AT_A_TIME();
 
     m_order = eNavOrder_GOTO_CAP;
     if(sym)
@@ -405,6 +448,8 @@ void Navigation::goToCap(PointCap target, eDir sens, bool sym)
     m_sensTarget = sens;
     LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
+
+    orderTimeout.arm(motionDuration(m_pose, m_target)+OPP_IMPATIENCE_TIMEOUT);
 
     m_mutex.unlock();
 }
@@ -474,12 +519,27 @@ void Navigation::faceTo(Point p, bool sym)
     goToCap(target, eDir_FORWARD, true);
 }
 
+void Navigation::rearTo(Point p, bool sym)
+{
+    LOG_INFO(String("   new request : rearTo") + p.toString() + ".");
+
+    m_mutex.lock();
+    PointCap target = m_pose;
+    m_mutex.unlock();
+    if( sym )
+        target.h = moduloPiPi(M_PI + m_pose.angleTo(p.toAmbiPoint(m_color)));
+    else
+        target.h = moduloPiPi(M_PI + m_pose.angleTo(p));
+
+    goToCap(target, eDir_FORWARD, true);
+}
+
 void Navigation::recalFace(eTableBorder border)
 {
     LOG_INFO(String("   new request : recalFace on border=") + border + ".");
 
     m_mutex.lock();
-    ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
+    CHECK_ONE_ORDER_AT_A_TIME()
     m_order = eNavOrder_RECAL_FACE;
     m_sensTarget = eDir_FORWARD;
     m_target = getRecalPointFace(border).toAmbiPose(m_color);
@@ -496,6 +556,8 @@ void Navigation::recalFace(eTableBorder border)
     applyCmdToTurn(angleDelta, userMaxSpeed, userMaxAcc); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
 
+    orderTimeout.arm(RECAL_TIMEOUT);
+
     m_mutex.unlock();
 }
 
@@ -504,7 +566,7 @@ void Navigation::recalRear(eTableBorder border)
     LOG_INFO(String("   new request : recalRear on border=") + border + ".");
 
     m_mutex.lock();
-    ASSERT_TEXT(m_state == eNavState_IDLE && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
+    CHECK_ONE_ORDER_AT_A_TIME()
     m_order = eNavOrder_RECAL_REAR;
     m_sensTarget = eDir_BACKWARD;
     m_target = getRecalPointRear(border).toAmbiPose(m_color);;
@@ -521,10 +583,12 @@ void Navigation::recalRear(eTableBorder border)
     applyCmdToTurn(angleDelta, userMaxSpeed, userMaxAcc); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
 
+    orderTimeout.arm(RECAL_TIMEOUT);
+
     m_mutex.unlock();
 }
 
-void Navigation::stopMoving()
+void Navigation::stopMoving(eNavState targetState)
 {
     LOG_INFO("stop requested");
     m_mutex.lock();
@@ -536,7 +600,7 @@ void Navigation::stopMoving()
     exitCriticalSection();
 
     //The state is directly changed to interrupting
-    m_state = eNavState_STOPPING;
+    m_state = targetState;
     m_order = eNavOrder_NOTHING;
 
     m_mutex.unlock();
@@ -559,6 +623,14 @@ bool Navigation::targetReached()
     return res;
 }
 
+bool Navigation::blocked()
+{
+    m_mutex.lock();
+    bool res = m_state == eNavState_BLOCKED && m_order == eNavOrder_NOTHING;
+    m_mutex.unlock();
+    return res;
+}
+
 /**---------------------------------
  * Nav configuration
  ---------------------------------*/
@@ -567,6 +639,22 @@ void Navigation::setColor(eColor c)
 {
     ASSERT_TEXT(c != eColor_UNKNOWN, "color should not be set to undefined.");
     m_color = c;
+}
+
+DelayMs Navigation::motionDuration(PointCap start, PointCap end)
+{
+    DelayMs translationDuration = start.distanceTo(end)*1000./conf->maxSpeed();
+    double startAngle = degrees(fabs(start.angleHeadingTo(end)));
+    double endAngle = degrees(fabs(start.angleTo(end) - end.h));
+    DelayMs rotationStartDuration = startAngle*1000. / (double)conf->maxTurnSpeed();
+    DelayMs rotationEndDuration = endAngle*1000. / (double)conf->maxTurnSpeed();
+    DelayMs timeout = translationDuration + rotationStartDuration + rotationEndDuration + ACCEL_RAMPS_DURATION;
+    if( timeout < 3000 )
+        timeout = 3000;
+
+    LOG_DEBUG(String("Order timeout is : ") + timeout + "ms (T="+ translationDuration + " Rs=" + rotationStartDuration + " Re=" + rotationEndDuration+")");
+
+    return timeout;
 }
 
 /**---------------------------------
@@ -632,12 +720,12 @@ void Navigation::action_startOrder()
     }
     else
     {
-        double angleToTarget = atan2((m_target.y - m_pose.y), (m_target.x - m_pose.x));
+        double angleDelta = m_pose.angleHeadingTo(m_target);
         if (m_sensTarget == eDir_BACKWARD)
         {
-            angleToTarget = moduloPiPi(angleToTarget + M_PI);
+            angleDelta = moduloPiPi(angleDelta + M_PI);
         }
-        double angleDelta = moduloPiPi(angleToTarget - m_pose.h);
+
         //Do not turn if already facing right direction
         if (fabs(angleDelta) <= NO_TURN_DELTA)
         {
@@ -920,6 +1008,9 @@ String Navigation::orderToString(eNavOrder order)
     ENUM2STR(eNavOrder_NOTHING)
 ;        ENUM2STR(eNavOrder_GOTO);
         ENUM2STR(eNavOrder_GOTO_CAP);
+        ENUM2STR(eNavOrder_STOP);
+        ENUM2STR(eNavOrder_RECAL_FACE);
+        ENUM2STR(eNavOrder_RECAL_REAR);   
     }
 }
 
@@ -941,6 +1032,8 @@ String Navigation::stateToString(eNavState state)
         ENUM2STR(eNavState_CONTACTING_WALL);
         ENUM2STR(eNavState_ESCAPING_WALL);
         ENUM2STR(eNavState_WAIT_OPP_ESCAPE_RECALL);
+        ENUM2STR(eNavState_BLOCKED);
+        ENUM2STR(eNavState_STOPPING_IN_BLOCKED);
     }
 }
 

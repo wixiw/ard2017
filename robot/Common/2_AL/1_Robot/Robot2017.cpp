@@ -163,13 +163,20 @@ void Robot2017::colorChoosed(eColor color)
     }
 }
 
-void Robot2017::matchEnded()
+void Robot2017::coreMatchEnded()
 {
     dieMotherFucker();
 }
 
+void Robot2017::funnyActionEnded()
+{
+    chrono.stop();
+    actuators.servoFunnyAction.disable();
+}
+
 void Robot2017::setConfig(apb_Configuration const& newConf)
 {
+    log.setDebugLevel(newConf.logDebug);
     m_params.setConfig(newConf);
     nav.updateConf(&m_params);
 }

@@ -103,7 +103,7 @@ class TabLog(QWidget):
     @pyqtSlot(RemoteControl_pb2.Log)
     def log(self, logMsg):
         #do not log under a certain level
-        if logMsg.level < self.combo_level.currentData() and Types_pb2.ASSERT < logMsg.level:
+        if logMsg.level < self.combo_level.currentData() or Types_pb2.ASSERT < logMsg.level:
             return
         
         header = str()

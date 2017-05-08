@@ -43,6 +43,7 @@ RobotParameters::RobotParameters()
     cfg.strategyDuration        = 89500;
     cfg.detectionWaitForOppMove = 1000;
     cfg.detectionActive         = true;
+    cfg.logDebug                = false;
 }
 
 void RobotParameters::setComputedVars()
@@ -230,4 +231,10 @@ char const* const RobotParameters::serialNumber() const
 {
     ASSERT(m_configuredOnce);
     return cfg.serialNumber;
+}
+
+bool RobotParameters::logDebug() const
+{
+    ASSERT(m_configuredOnce);
+    return cfg.logDebug;
 }

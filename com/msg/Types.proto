@@ -27,6 +27,9 @@ enum eNavState {
     CONTACTING_WALL   = 7;
     ESCAPING_WALL     = 8;
     WAIT_OPP_ESCAPE_RECALL = 9;
+    BLOCKED           = 10;
+    STOPPING_IN_BLOCKED = 11;
+    STOPPING_IN_WALL  = 12;
 }
 
 enum eNavOrder {

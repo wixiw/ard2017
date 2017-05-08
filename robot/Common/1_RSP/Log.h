@@ -109,6 +109,9 @@ namespace ard
         //Implements ILogger : publish the log to all existing logChannels
         void log(eLogLevel logLevel, String const& log) override;
 
+        //Activates or not debug logs
+        void setDebugLevel(bool on);
+
         //attach a new com logger
         void addLogger(ILogChannel& channel);
 
@@ -119,6 +122,7 @@ namespace ard
         //Com logger
         #define MAX_LOGGERS 2
         uint8_t nbLoggers;
+        bool debugActive;
         ILogChannel* loggers[MAX_LOGGERS];
 
         //helper to send a log to all connected channels

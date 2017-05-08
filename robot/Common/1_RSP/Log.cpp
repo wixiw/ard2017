@@ -85,7 +85,8 @@ String SdCardLogger::formatLogMsg(LogMsg const& msg)
 }
 
 LogDispatcher::LogDispatcher():
-        nbLoggers(0)
+        nbLoggers(0),
+        debugActive(false)
 {
     INIT_TABLE_TO_ZERO(loggers);
 }
@@ -93,10 +94,8 @@ LogDispatcher::LogDispatcher():
 void LogDispatcher::log(eLogLevel logLevel, String const& log)
 {
     //debug logs are not even piled if DEBUG is not active.
-#ifndef ARD_DEBUG
-    if (logLevel == eLogLevel_DEBUG)
+    if (!debugActive && logLevel == eLogLevel_DEBUG)
         return;
-#endif
 
     //take the date of the log before any action
     auto now = millis();
@@ -114,6 +113,20 @@ void LogDispatcher::log(eLogLevel logLevel, String const& log)
     strcpy(msg.text, log.c_str());
 
     disptachLogToChannels(msg);
+}
+
+void LogDispatcher::setDebugLevel(bool on)
+{
+    if(on != debugActive)
+    {
+        debugActive = on;
+        
+        if(on)
+            LOG_DEBUG("Debug logs activated");
+        else
+            LOG_INFO("Debug logs deactivated");  
+    }
+    
 }
 
 void LogDispatcher::addLogger(ILogChannel& channel)

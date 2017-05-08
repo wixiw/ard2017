@@ -26,6 +26,7 @@ class TabConfig(QWidget):
         self.navConfig = NavigationConfigWidget(self)
         self.avoidanceConfig = AvoidanceConfigWidget(self)
         self.stratConfig = StratConfigWidget(self)
+        self.otherConfig = OtherConfigWidget(self)
         self.btn_up = QPushButton('Request conf from Robot', self)
         self.btn_up.clicked.connect(self._getConfig) 
         self.btn_exe = QPushButton('Send to Robot', self)
@@ -49,6 +50,7 @@ class TabConfig(QWidget):
 
         self.layout["Left"].addWidget(self.calibConfig)
         self.layout["Left"].addWidget(self.stratConfig)
+        self.layout["Left"].addWidget(self.otherConfig)
         self.layout["Right"].addWidget(self.navConfig)
         self.layout["Right"].addWidget(self.avoidanceConfig)
         
@@ -63,6 +65,7 @@ class TabConfig(QWidget):
         req.setConfig.xar = self.calibConfig.xar.getValue()
         req.setConfig.yside = self.calibConfig.yside.getValue()
         req.setConfig.xavExtended = self.calibConfig.xavExtended.getValue()
+        req.setConfig.xouter = self.calibConfig.xouter.getValue()
         req.setConfig.leftWheelDiameter = self.calibConfig.leftWheelDiameter.getValue()
         req.setConfig.rightWheelDiameter = self.calibConfig.rightWheelDiameter.getValue()
         req.setConfig.voie = self.calibConfig.voie.getValue()
@@ -79,6 +82,9 @@ class TabConfig(QWidget):
         
         #Strat
         req.setConfig.strategyDuration = self.stratConfig.strategyDuration.getValue()
+        
+        #Other
+        req.setConfig.logDebug = self.otherConfig.logDebug.isChecked()
         
         self.setConfig.emit(req)
         print("New config send to robot")
@@ -97,6 +103,7 @@ class TabConfig(QWidget):
         self.calibConfig.xar.setValue(msg.xar)
         self.calibConfig.yside.setValue(msg.yside)
         self.calibConfig.xavExtended.setValue(msg.xavExtended)
+        self.calibConfig.xouter.setValue(msg.xouter)
         self.calibConfig.leftWheelDiameter.setValue(msg.leftWheelDiameter)
         self.calibConfig.rightWheelDiameter.setValue(msg.rightWheelDiameter)
         self.calibConfig.voie.setValue(msg.voie)
@@ -114,6 +121,9 @@ class TabConfig(QWidget):
         #Strat
         self.stratConfig.strategyDuration.setValue(msg.strategyDuration)
         
+        #Other
+        self.otherConfig.logDebug.setChecked(msg.logDebug)
+        
     #Override in order to initialize the view each time the widget is shown
     def showEvent (self, QShowEvent):
         self._getConfig()
@@ -129,6 +139,7 @@ class CalibConfigWidget(QWidget):
         self.xar                = IntegerInput(self, 0, 500)
         self.yside              = IntegerInput(self, 0, 500)
         self.xavExtended        = IntegerInput(self, 0, 500)
+        self.xouter             = IntegerInput(self, 0, 500)
         self.leftWheelDiameter  = FloatInput(self, 0, 100, 5)
         self.rightWheelDiameter = FloatInput(self, 0, 100, 5)
         self.voie               = FloatInput(self, 0, 500, 5)
@@ -144,6 +155,7 @@ class CalibConfigWidget(QWidget):
         self.form.addRow("x AR (mm)", self.xar)
         self.form.addRow("y side (mm)", self.yside)
         self.form.addRow("x AV EXT (mm)", self.xavExtended)
+        self.form.addRow("x outer (mm)", self.xouter)
         self.form.addRow("left  wheel diameter (mm)", self.leftWheelDiameter)
         self.form.addRow("right wheel diameter (mm)", self.rightWheelDiameter)
         self.form.addRow("voie (mm)", self.voie)
@@ -208,3 +220,17 @@ class StratConfigWidget(QWidget):
         
         self.form.addRow("match duration (ms)", self.strategyDuration)
         
+class OtherConfigWidget(QWidget): 
+    
+    def __init__(self, parent):
+        super().__init__(parent)
+        
+        self.logDebug  = QCheckBox()
+        
+        self.layoutH = QHBoxLayout(self)
+        self.layoutV = QGroupBox("Other")
+        self.layoutH.addWidget(self.layoutV)
+        self.form = QFormLayout()
+        self.layoutV.setLayout(self.form)
+        
+        self.form.addRow("activate debug logs", self.logDebug)

@@ -23,6 +23,13 @@ Chrono::startMatch()
     matchStarted = true;
 }
 
+void
+Chrono::stop()
+{
+    ASSERT_TEXT(matchStarted, "match is not started !");
+    matchStarted = false;
+}
+
 TimeMs
 Chrono::getTime() const
 {

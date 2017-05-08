@@ -81,6 +81,8 @@ message Configuration
 
     //Strat config
     uint32 strategyDuration      = 31; //in ms
+
+    bool logDebug                = 32; //set to true to activate debug logs
 }
 
 message ActuatorsCmd

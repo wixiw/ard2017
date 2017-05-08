@@ -63,12 +63,12 @@
           <vertices xsi:type="sgraph:State" xmi:id="_BuiVMDCMEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;logInfo(&quot;[Lifecycle] Core match ended, waiting to do funny action.&quot;)" name="Waiting end of core match" incomingTransitions="_lqRQMDDuEeeSSu2RwF8Pmw">
             <outgoingTransitions xmi:id="_iRAOUDDuEeeSSu2RwF8Pmw" specification="[90000 &lt;= matchDuration]" target="_E6QDQDCMEeeSSu2RwF8Pmw"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_E6QDQDCMEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;beep(1); &#xD;&#xA;startMode(MODE_FUNNY_ACTION);&#xD;&#xA;logInfo(&quot;[Lifecycle] starting Funny action.&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;beep(1); &#xD;&#xA;stopMode()" name="Funny action" incomingTransitions="_iRAOUDDuEeeSSu2RwF8Pmw">
+          <vertices xsi:type="sgraph:State" xmi:id="_E6QDQDCMEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;beep(1); &#xD;&#xA;startMode(MODE_FUNNY_ACTION);&#xD;&#xA;logInfo(&quot;[Lifecycle] Starting Funny action.&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;beep(1); &#xD;&#xA;stopMode()" name="Funny action" incomingTransitions="_iRAOUDDuEeeSSu2RwF8Pmw">
             <outgoingTransitions xmi:id="_fHtiIDDuEeeSSu2RwF8Pmw" specification="[95000 &lt;= matchDuration || SUCCESS == getModeStatus() || FAILURE == getModeStatus]" target="_WImgsC__EeeSSu2RwF8Pmw"/>
           </vertices>
         </regions>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_IW3hEC_9EeeSSu2RwF8Pmw" specification="" name="Finished" incomingTransitions="__TpeIDDuEeeSSu2RwF8Pmw"/>
+      <vertices xsi:type="sgraph:State" xmi:id="_IW3hEC_9EeeSSu2RwF8Pmw" specification="entry/ logInfo(&quot;[Lifecycle] Match finished.&quot;)" name="Finished" incomingTransitions="__TpeIDDuEeeSSu2RwF8Pmw"/>
       <vertices xsi:type="sgraph:State" xmi:id="_qOrNgDEEEeeSSu2RwF8Pmw" specification="entry / &#xD;&#xA;beep(1);&#xD;&#xA;logInfo(&quot;[Lifecycle] Color selected from Vizu, waiting start&quot;)&#xD;&#xA;&#xD;&#xA;exit / beep(1)" name="Waiting Vizu" incomingTransitions="_V01j8CU6EeeHgPR3RzRZqA _OqougCbkEeeF6Kxss4qBFA">
         <outgoingTransitions xmi:id="_OqougCbkEeeF6Kxss4qBFA" specification="networkConfigRequest" documentation="Change mind on color" target="_qOrNgDEEEeeSSu2RwF8Pmw"/>
         <outgoingTransitions xmi:id="_emB78DDvEeeSSu2RwF8Pmw" specification="networkStartRequest # > entry_Match" target="_M3wroC_4EeeSSu2RwF8Pmw"/>

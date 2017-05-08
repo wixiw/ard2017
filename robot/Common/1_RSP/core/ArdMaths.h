@@ -73,6 +73,9 @@ namespace ard
         //Get the associated proto struct
         apb_PointCap getProto() const;
 
+        //return the angle from the heading to the target point in rad
+        double angleHeadingTo(Point p) const;
+
         //Build from the associated proto struct
         static PointCap fromProto(apb_PointCap const& p);
 

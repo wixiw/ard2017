@@ -147,6 +147,11 @@ namespace ard
         {
             faceTo(Point(x,y), sym);
         }
+        void rearTo(Point p, bool sym = true);
+        void rearTo(float x/*mm*/, float y/*mm*/, bool sym = true)
+        {
+            rearTo(Point(x,y), sym);
+        }
 
         /**
          * The robot will go to the following border and re localize accordingly
@@ -157,7 +162,7 @@ namespace ard
         /**
          * Stops the robot. It interrupts current order.
          */
-        void stopMoving();
+        void stopMoving(eNavState targetState = eNavState_STOPPING);
 
         /**
          * This is a blocking call until the current order is finished
@@ -165,9 +170,14 @@ namespace ard
         void wait();
 
         /**
-         * This is the non blocking version of wait()
+         * Returns true when the order is finished sucessfully
          */
         bool targetReached();
+
+        /**
+         * Returns true when the order is failed (either due to timeout or opponent presence)
+         */
+        bool blocked();
 
         /**
          * Active/Deactivate avoidance system
@@ -180,6 +190,9 @@ namespace ard
 
         void
         setColor(eColor c);
+
+        //Compute the expected duration of a move
+        DelayMs motionDuration(PointCap start, PointCap end);
 
         /**---------------------------------
          * Publish state
@@ -273,6 +286,7 @@ namespace ard
 
         //opponent management
         SwTimer oppTimer;
+        SwTimer orderTimeout;
         bool avoidanceActive; //is true when avoidance system is active
 
         RobotParameters* conf;

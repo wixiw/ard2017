@@ -84,8 +84,11 @@ namespace ard
         //Configure the robot with the desired color
         void colorChoosed(eColor color) override;
 
+        //Cut any moving actuator/navigation except funny action
+        void coreMatchEnded() override;
+
         //Cut any moving actuator/navigation
-        void matchEnded() override;
+        void funnyActionEnded() override;
 
         //-------------------------------------------------------------------
         // start of Strategy API
