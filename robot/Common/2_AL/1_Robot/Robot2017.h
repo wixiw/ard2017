@@ -11,6 +11,7 @@
 #include "ActuatorThread.h"
 #include "Lifecycle.h"
 #include "StrategyModel2017.h"
+#include "RSP.h"
 
 //Timer 0 reserved for ARD cpu stats, instanciated for IRQ priority config
 #define TIMER_CPU           Timer0
@@ -141,7 +142,10 @@ namespace ard
         //RSP implementation
         HmiThread hmi;
 
-        //Public RSP interface : because i'm too lazy to hide it, please feel free to implement the decorator
+        //keep tracks of opponent presense
+        OppDetection detection;
+
+        //moves the robot
         Navigation nav;
 
         //Chrono keeps track of the time during the match

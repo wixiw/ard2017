@@ -91,25 +91,25 @@ void ard::Strategy_OmronTest(Robot2017& robot)
     {
         nav = robot.nav.serealize();
 
-        if (nav.omronFL)
+        if (nav.omronFront)
         robot.hmi.setLed(LED1, eLedState::ON);
         else
         robot.hmi.setLed(LED1, eLedState::OFF);
 
-        if (nav.omronFR)
+        if (nav.omronRear)
         robot.hmi.setLed(LED2, eLedState::ON);
         else
         robot.hmi.setLed(LED2, eLedState::OFF);
 
-        if (nav.omronRL)
-        robot.hmi.setLed(LED3, eLedState::ON);
-        else
-        robot.hmi.setLed(LED3, eLedState::OFF);
-
-        if (nav.omronRR)
-        robot.hmi.setLed(LED4, eLedState::ON);
-        else
-        robot.hmi.setLed(LED4, eLedState::OFF);
+//        if (nav.omronRL)
+//        robot.hmi.setLed(LED3, eLedState::ON);
+//        else
+//        robot.hmi.setLed(LED3, eLedState::OFF);
+//
+//        if (nav.omronRR)
+//        robot.hmi.setLed(LED4, eLedState::ON);
+//        else
+//        robot.hmi.setLed(LED4, eLedState::OFF);
 
         ArdOs::sleepMs (50);
     }

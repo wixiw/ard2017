@@ -40,7 +40,7 @@ void ard::Strategy_Tanguy (Robot2017& robot)
     robot.stratInfo.informTaken_B();
 
     LOG_INFO("Recal Y");
-    robot.nav.recalFace(eTableBorder_START_AREA_Y);
+    robot.nav.recalFace(eTableBorder_START_WALL_Y);
     robot.nav.wait();
 
 //    LOG_INFO("Going Bwd");

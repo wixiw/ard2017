@@ -22,6 +22,7 @@ namespace ard
 
         //Selects the match color
         void setColor(eColor color);
+        eColor getColor();
 
         //cache to hold telemetry data
         apb_StratInfo2017 data;

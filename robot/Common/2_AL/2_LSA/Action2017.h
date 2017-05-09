@@ -162,13 +162,33 @@ namespace ard
         {
             status = (StrategyResult)_status;
         }
+        sc_boolean matchColor()
+        {
+            return robot.stratInfo.getColor() == eColor_PREF;
+        }
+        sc_boolean robotType()
+        {
+            return robot.isPen();
+        }
+        sc_boolean isSimu()
+        {
+            return robot.lifecycle.isSimulated();
+        }
+        sc_integer matchDuration()
+        {
+            return robot.chrono.getTime();
+        }
+        sc_integer matchRemaining()
+        {
+            return robot.chrono.getStrategyRemainingTime();
+        }
 
         /**
          * Navigation
          */
         void enableAvoidance(sc_boolean on) override
         {
-            robot.nav.enableAvoidance(on);
+            robot.detection.enableAvoidance(on);
         }
 
         void setPosition(sc_real x, sc_real y, sc_real h) override
@@ -181,28 +201,16 @@ namespace ard
             robot.nav.setSpeedAcc((uint16_t)vMax, (uint16_t)vMaxsTurn, (uint16_t)accMax, (uint16_t)accMaxTurn);
         }
 
-        void goTo_ID(sc_real x, sc_real y, sc_integer sens) override
+        void goTo_ID(sc_real x, sc_real y, sc_integer sens, bool sym) override
         {
             ASSERT(sens == -1 || sens == 1);
-            robot.nav.goTo(x, y, (eDir)(sens));
+            robot.nav.goTo(x, y, (eDir)(sens), sym);
         }
 
-        void goToNoSym(sc_real x, sc_real y, sc_integer sens) override
+        void goToCap(sc_real x, sc_real y, sc_real h, sc_integer sens, bool sym) override
         {
             ASSERT(sens == -1 || sens == 1);
-            robot.nav.goTo(x, y, (eDir)(sens), false /*NO_SYM*/);
-        }
-
-        void goToCap(sc_real x, sc_real y, sc_real h, sc_integer sens) override
-        {
-            ASSERT(sens == -1 || sens == 1);
-            robot.nav.goToCap(x, y, h, (eDir)(sens));
-        }
-
-        void goToCapNoSym(sc_real x, sc_real y, sc_real h, sc_integer sens) override
-        {
-            ASSERT(sens == -1 || sens == 1);
-            robot.nav.goToCap(x, y, h, (eDir)(sens), false  /*NO_SYM*/);
+            robot.nav.goToCap(x, y, h, (eDir)(sens), sym);
         }
 
         void goForward(sc_real distanceMm) override
@@ -210,19 +218,24 @@ namespace ard
             robot.nav.goForward(distanceMm);
         }
 
-        void turnDelta(sc_real angle) override
+        void turnDelta(sc_real angle, bool sym) override
         {
-            robot.nav.turnDelta(angle);
+            robot.nav.turnDelta(angle, sym);
         }
 
-        void turnTo(sc_real angle) override
+        void turnTo(sc_real angle, bool sym) override
         {
-            robot.nav.turnTo(angle);
+            robot.nav.turnTo(angle, sym);
         }
 
-        void faceTo(sc_real x, sc_real y) override
+        void faceTo(sc_real x, sc_real y, bool sym) override
         {
-            robot.nav.faceTo(x, y);
+            robot.nav.faceTo(x, y, sym);
+        }
+
+        void rearTo(sc_real x, sc_real y, bool sym) override
+        {
+            robot.nav.rearTo(x, y, sym);
         }
 
         void recalFace(sc_integer border) override
@@ -247,24 +260,9 @@ namespace ard
             return robot.nav.targetReached();
         }
 
-        sc_boolean omronFrontLeft() override
+        sc_boolean blocked() override
         {
-            return robot.nav.omronFrontLeft.read();
-        }
-
-        sc_boolean omronFrontRight() override
-        {
-            return robot.nav.omronFrontRight.read();
-        }
-
-        sc_boolean omronRearLeft() override
-        {
-            return robot.nav.omronRearLeft.read();
-        }
-
-        sc_boolean omronRearRight() override
-        {
-            return robot.nav.omronRearRight.read();
+            return robot.nav.blocked();
         }
 
         sc_boolean switchRecalFL() override
@@ -280,6 +278,28 @@ namespace ard
         sc_boolean switchRecalRC() override
         {
             return robot.nav.switchRecalRC.read();
+        }
+
+        /**
+         * Detection
+         */
+        sc_boolean omronFront() override
+        {
+            return robot.detection.omronFront.read();
+        }
+
+        sc_boolean omronRear() override
+        {
+            return robot.detection.omronRear.read();
+        }
+        sc_boolean isOpponentAhead() override
+        {
+            return robot.detection.isOpponentAhead(robot.nav.getPosition());
+        }
+
+        sc_boolean isOpponentBehind() override
+        {
+            return robot.detection.isOpponentBehind(robot.nav.getPosition());
         }
 
         /**

@@ -36,6 +36,11 @@ void StrategyModel2017::setColor(eColor color)
     data.matchColor = color;
 }
 
+eColor StrategyModel2017::getColor()
+{
+    return data.matchColor;
+}
+
 void StrategyModel2017::withdraw(uint8_t nb, uint32_t& dispenserCount, eCylinderType cylType, const String& caller)
 {
     uint32_t nbTransfered = 0;

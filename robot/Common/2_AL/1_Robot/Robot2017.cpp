@@ -6,7 +6,6 @@
  */
 
 #include "Robot2017.h"
-#include "RSP.h"
 
 using namespace ard;
 
@@ -24,11 +23,12 @@ Robot2017::Robot2017():
     buildDate("unknown"),
     m_params(),
     hmi(TIMER_BUZZER),
-    nav(hmi.buzzer),
+    detection(SAFETY_AREA),
+    nav(hmi.buzzer, detection),
     chrono(),
     stratInfo(),
     actuators(),
-    lifecycle(nav, chrono, hmi),
+    lifecycle(nav, chrono, hmi, detection),
     listener(NULL)
 {
     ASSERT(instance == NULL);
@@ -149,6 +149,7 @@ void Robot2017::colorChoosed(eColor color)
         nav.setColor (eColor_PREF);
         stratInfo.setColor(eColor_PREF);
         actuators.setColor(eColor_PREF);
+        detection.setColor(eColor_PREF);
 
     }
     else if ( color == eColor_SYM )
@@ -156,6 +157,8 @@ void Robot2017::colorChoosed(eColor color)
         hmi.setRGBled(BLUE, ON);
         nav.setColor (eColor_SYM);
         stratInfo.setColor(eColor_SYM);
+        actuators.setColor(eColor_SYM);
+        detection.setColor(eColor_SYM);
     }
     else
     {
@@ -178,6 +181,7 @@ void Robot2017::setConfig(apb_Configuration const& newConf)
 {
     log.setDebugLevel(newConf.logDebug);
     m_params.setConfig(newConf);
+    detection.updateConf(&m_params);
     nav.updateConf(&m_params);
 }
 

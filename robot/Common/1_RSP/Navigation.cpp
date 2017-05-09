@@ -4,6 +4,8 @@
 #include "Log.h"
 #include "Navigation.h"
 #include "Actuators/Buzzer.h"
+#include "OppDetection.h"
+#include "RobotParameters.h"
 
 using namespace ard;
 
@@ -18,14 +20,9 @@ using namespace ard;
 #define ACCEL_RAMPS_DURATION 1000 //ms
 #define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT((m_state == eNavState_IDLE || m_state == eNavState_BLOCKED) && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
-Navigation::Navigation(Buzzer& klaxon)
+Navigation::Navigation(Buzzer& klaxon, OppDetection& detection)
         :
                 Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
-                fakeRobot(false),
-                omronFrontLeft(OMRON1, 50, 50),
-                omronFrontRight(OMRON2, 50, 50),
-                omronRearLeft(OMRON3, 50, 50),
-                omronRearRight(OMRON4, 50, 50),
                 switchRecalFL(BORDURE_AVG, 1000, 10),
                 switchRecalFR(BORDURE_AVD, 1000, 10),
                 switchRecalRC(BORDURE_ARC, 1000, 10),
@@ -44,12 +41,11 @@ Navigation::Navigation(Buzzer& klaxon)
                 m_mutex(),
                 oldStepL(0),
                 oldStepR(0),
-                oppTimer(),
-                avoidanceActive(false),//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
                 conf(NULL),
                 noSwitchMode(false),
                 state(),
-                klaxon(klaxon)
+                klaxon(klaxon),
+                detection(detection)
 {
     state = apb_NavState_init_default;
 }
@@ -136,8 +132,7 @@ void Navigation::run()
             else
             {
                 //check for opponent presence (if avoidance system is active)
-                if( (m_sensTarget == eDir_FORWARD && isOpponentAhead())
-                || (m_sensTarget == eDir_BACKWARD && isOpponentBehind()) )
+                if( detection.isOpponentOnPath(m_sensTarget, m_pose) )
                 {
                     action_waitOppMove();
                 }
@@ -190,25 +185,15 @@ void Navigation::run()
 
         case eNavState_WAIT_OPP_MOVE:
         {
-            if(oppTimer.isFired() || (!avoidanceActive  && !fakeRobot))
+            //Check if opponent has left
+            if( !detection.isOpponentOnPath(m_sensTarget, m_pose) )
             {
-                oppTimer.cancel();
-
-                //Check if opponent has left
-                if( (m_sensTarget == eDir_FORWARD && !isOpponentAhead())
-                || (m_sensTarget == eDir_BACKWARD && !isOpponentBehind()) )
-                {
-                    LOG_INFO("Opponent has moved away, continuing order.");
-                    LOG_DEBUG(String(" toGoL=") + stepperL.distanceToGo() + " toGoR=" + stepperR.distanceToGo());
-                    action_goingToTarget();
-                }
-                //If opponent is still present, continue to wait
-                else
-                {
-                    oppTimer.arm(conf->detectionWaitForOppMove());
-                }
+                LOG_INFO("Opponent has moved away, continuing order.");
+                action_goingToTarget();
             }
-
+            //If opponent is still present, continue to wait
+            //else
+            //    LOG_DEBUG("Opponent is still present, continuing to wait.");
             break;
         }
 
@@ -281,10 +266,11 @@ void Navigation::run()
                     distance = conf->xouter() - conf->xar() + RECAL_ESCAPE_MARGIN;
                     m_sensTarget = eDir_FORWARD;
                 }
+                m_target.translatePolar(m_target.hDegree(), m_sensTarget * distance);
                 applyCmdToGoStraight(m_sensTarget * distance, userMaxSpeed, userMaxAcc);
                 m_state = eNavState_ESCAPING_WALL;
                 orderTimeout.arm(1000+OPP_IMPATIENCE_TIMEOUT);
-                LOG_INFO(String("   escaping of distance=") + distance);
+                LOG_INFO(String("   escaping of distance=") + distance + " to reach pose=" + m_target.toString()+".");
                 klaxon.bip(1);
             }
             break;
@@ -293,8 +279,8 @@ void Navigation::run()
         case eNavState_ESCAPING_WALL:
         {
             //check for opponent presence (if avoidance system is active)
-            if( (m_order == eNavOrder_RECAL_REAR && isOpponentAhead())
-            || (m_order == eNavOrder_RECAL_FACE && isOpponentBehind()) )
+            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(m_pose))
+            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(m_pose)) )
             {
                 //Stops as an opponent is detected
                 enterCriticalSection();
@@ -318,8 +304,8 @@ void Navigation::run()
         case eNavState_WAIT_OPP_ESCAPE_RECALL:
         {
             //check for opponent presence (if avoidance system is active)
-            if( (m_order == eNavOrder_RECAL_REAR && isOpponentAhead())
-            || (m_order == eNavOrder_RECAL_FACE && isOpponentBehind()) )
+            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(m_pose))
+            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(m_pose)) )
             {
                 klaxon.playTone(KLAXON_FREQ, PERIOD_NAVIGATION);
             }
@@ -666,10 +652,8 @@ apb_NavState const& Navigation::serealize()
     state.order = m_order;
     state.pos = m_pose.getProto();
 
-    state.omronFL = omronFrontLeft.readRaw();
-    state.omronFR = omronFrontRight.readRaw();
-    state.omronRL = omronRearLeft.readRaw();
-    state.omronRR = omronRearRight.readRaw();
+    state.omronFront = detection.omronFront.readRaw();
+    state.omronRear = detection.omronRear.readRaw();
 
     state.switchRecalFL = switchRecalFL.readRaw();
     state.switchRecalFR = switchRecalFR.readRaw();
@@ -815,11 +799,10 @@ void Navigation::action_waitOppMove()
     stepperR.stop();
     exitCriticalSection();
 
-    oppTimer.arm(conf->detectionWaitForOppMove());
     m_state = eNavState_WAIT_OPP_MOVE;
 
     //Inform user
-    LOG_INFO("Waiting that opponent moves away...");
+    LOG_INFO("Waiting that opponent moves away... (blocked at position = " + m_pose.toString()+")");
     klaxon.playTone(KLAXON_FREQ, conf->detectionWaitForOppMove());
 }
 
@@ -897,7 +880,7 @@ PointCap Navigation::getRecalPointFace(eTableBorder border)
             return PointCap(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xav(), 90);
             break;
 
-        case eTableBorder_START_AREA_Y:
+        case eTableBorder_START_WALL_Y:
             return PointCap(m_pose.toAmbiPose(m_color).x, 618 - conf->xav(), 90);
             break;
 
@@ -913,7 +896,7 @@ PointCap Navigation::getRecalPointFace(eTableBorder border)
             return PointCap(TABLE_BORDER_X - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
-        case eTableBorder_START_AREA_X:
+        case eTableBorder_FLIP_FLOP_X:
             return PointCap(790 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
@@ -931,7 +914,7 @@ PointCap Navigation::getRecalPointRear(eTableBorder border)
             return PointCap(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xar(), -90);
             break;
 
-        case eTableBorder_START_AREA_Y:
+        case eTableBorder_START_WALL_Y:
             return PointCap(m_pose.toAmbiPose(m_color).x, 618 - conf->xar(), -90);
             break;
 
@@ -947,7 +930,7 @@ PointCap Navigation::getRecalPointRear(eTableBorder border)
             return PointCap(TABLE_BORDER_X - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
-        case eTableBorder_START_AREA_X:
+        case eTableBorder_FLIP_FLOP_X:
             return PointCap(790 - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
@@ -956,31 +939,6 @@ PointCap Navigation::getRecalPointRear(eTableBorder border)
             return PointCap();
             break;
     }
-}
-
-bool Navigation::isOpponentAhead()
-{
-    if( fakeRobot ||
-        (avoidanceActive && (omronFrontLeft.read() == GPIO_HIGH || omronFrontRight.read() == GPIO_HIGH)) )
-    {
-        LOG_DEBUG(String("Opponent ahead : L=") + omronFrontLeft.read() + " R=" + omronFrontRight.read()
-                + " Lraw=" + omronFrontLeft.readRaw() + " Rraw=" + omronFrontRight.readRaw());
-        return true;
-    }
-    else
-        return false;
-}
-
-bool Navigation::isOpponentBehind()
-{
-    if( fakeRobot ||
-        (avoidanceActive && (omronRearLeft.read() == GPIO_HIGH || omronRearRight.read() == GPIO_HIGH)) )
-    {
-        LOG_DEBUG(String("Opponent behind : L=") + omronRearLeft.read() + " R=" + omronRearRight.read());
-        return true;
-    }
-    else
-        return false;
 }
 
 String Navigation::sensToString(eDir sens)
@@ -1037,12 +995,4 @@ String Navigation::stateToString(eNavState state)
     }
 }
 
-void ard::Navigation::enableAvoidance(bool on)
-{
-    if( on && !avoidanceActive )
-        LOG_INFO("Avoidance system activated.");
-    if( !on && avoidanceActive )
-        LOG_INFO("Avoidance system deactivated.");
 
-    avoidanceActive = on;
-}

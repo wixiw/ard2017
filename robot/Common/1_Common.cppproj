@@ -1181,6 +1181,12 @@
     <Compile Include="1_RSP\Navigation.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\OppDetection.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\OppDetection.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\RobotParameters.cpp">
       <SubType>compile</SubType>
     </Compile>

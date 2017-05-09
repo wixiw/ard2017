@@ -10,7 +10,7 @@
 
 using namespace ard;
 
-Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi):
+Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi, OppDetection& detection):
         Thread("Strategy", PRIO_STRATEGY, STACK_STRATEGY, PERIOD_STRATEGY),
         strategyId(0),
         nbRegisteredStrats(0),
@@ -19,6 +19,7 @@ Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi):
         nav(nav),
         chrono(chrono),
         hmi(hmi),
+        detection(detection),
         currentMode(MODE_NONE),
         currentModeStatus(0),
         simulated(false)
@@ -93,6 +94,7 @@ void Lifecycle::registerSelftest(IStrategy* _selftest)
 void Lifecycle::networkConfigRequest(uint8_t strategyId_, eColor matchColor, bool _simulated)
 {
     simulated = _simulated;
+    detection.simulated = _simulated;
     configureMatch(strategyId_, matchColor);
     fsm.raise_networkConfigRequest();
 }
@@ -117,7 +119,7 @@ void Lifecycle::networkStartRequest()
 
 void Lifecycle::enableAvoidance()
 {
-    nav.enableAvoidance(true);
+    detection.enableAvoidance(true);
 }
 
 void Lifecycle::beep(sc_integer nb)

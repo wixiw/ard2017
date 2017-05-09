@@ -347,7 +347,7 @@ void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)
         LOG_INFO("Robot block request.");
     else
         LOG_INFO("Robot unblock request.");
-    robot.nav.fakeRobot = request.type.requestBlockRobot;
+    robot.detection.fakeRobot = request.type.requestBlockRobot;
 }
 
 void RemoteControl::requestMaxLengthMsg(apb_RemoteControlRequest const & request)

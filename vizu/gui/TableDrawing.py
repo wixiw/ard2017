@@ -9,6 +9,7 @@ from core import *
 from GhostController import *
 import math
 import copy
+from contextlib import redirect_stderr
         
 #spare area around the table
 T_SPARE  =  100.
@@ -16,6 +17,8 @@ T_SPARE  =  100.
 #playing field size
 T_WIDTH  = 3000.
 T_HEIGHT = 2000.
+
+T_OMRON_WIDTH = 20.
 
 #RAL encoding 
 peebleGrey      = QColor(0xBDBAAB) #RAL7032
@@ -27,6 +30,7 @@ ardGray         = QColor(66,66,66)
 ardBackground   = QColor(0xADAFAF)
 darkRed         = QColor(0x800000)
 transparent     = QColor(0,0,0,0)
+redTranslucid   = QColor(255,0,0,80)
 
 markPen = QPen(ardGray)
 markPen.setWidth(1)
@@ -211,7 +215,15 @@ class RobotWidget():
         self.p.setBrush(transparent)
         drawCircle(self.p, 0,  0, 220)
         drawCircle(self.p, 0,  0, cfg.xouter)
-    
+        
+        #draw avoidance area
+        self.p.setPen(markPen)
+        self.p.setBrush(redTranslucid)
+        self.p.drawRect(cfg.xav, -cfg.yside, cfg.deccDist, T_OMRON_WIDTH)
+        self.p.drawRect(cfg.xav, cfg.yside-T_OMRON_WIDTH, cfg.deccDist, T_OMRON_WIDTH)
+        self.p.drawRect(-cfg.xar - cfg.deccDist, -cfg.yside, cfg.deccDist, T_OMRON_WIDTH)
+        self.p.drawRect(-cfg.xar - cfg.deccDist, cfg.yside-T_OMRON_WIDTH, cfg.deccDist, T_OMRON_WIDTH)
+        
     def drawObjects(self, stratInfo):
         if len(stratInfo.stock):
             self.p.setPen(markPen)
@@ -378,7 +390,7 @@ class GhostWidget(RobotWidget):
     def __init__(self, painter):
         super().__init__(painter)
         self.color = ardGray 
-        self.pose = Pose2D() #Pose2D(-1400,-800,0)
+        self.pose = Pose2D(-1300,-800,0)
         self.displayMire = True
         self.actuatorsOut = True
         self.cfg = None

@@ -6,11 +6,12 @@
 #include "core/ArdMaths.h"
 #include "Actuators/AccelStepper.h"
 #include "CommonMsg.pb.h"
-#include "RobotParameters.h"
 
 namespace ard
 {
     class Buzzer;
+    class OppDetection;
+    class RobotParameters;
 
     /**
      * This class manage the robot position movements, and avoidance
@@ -20,14 +21,11 @@ namespace ard
     class Navigation: public Thread
     {
     public:
-        Navigation(Buzzer& klaxon);
+        Navigation(Buzzer& klaxon, OppDetection& detection);
 
         //Reread the configuration and maps default config. Shall be called at least once
         //before the OS is initialized
         void updateConf(RobotParameters* newConf);
-
-
-        bool fakeRobot; //is true when a fake robot is simulated
 
         /**---------------------------------
          * Thread interface
@@ -179,17 +177,11 @@ namespace ard
          */
         bool blocked();
 
-        /**
-         * Active/Deactivate avoidance system
-         */
-        void enableAvoidance(bool on);
-
         /**---------------------------------
          * Nav configuration
          ---------------------------------*/
 
-        void
-        setColor(eColor c);
+        void setColor(eColor c);
 
         //Compute the expected duration of a move
         DelayMs motionDuration(PointCap start, PointCap end);
@@ -199,12 +191,6 @@ namespace ard
          ---------------------------------*/
 
         apb_NavState const& serealize();
-
-        //Avoidance sensors
-        FilteredInput omronFrontLeft;
-        FilteredInput omronFrontRight;
-        FilteredInput omronRearLeft;
-        FilteredInput omronRearRight;
 
         //Recal sensors
         FilteredInput switchRecalFL;
@@ -251,12 +237,6 @@ namespace ard
         String
         stateToString(eNavState state);
 
-        //Test if opponent is ahead of robot
-        bool isOpponentAhead();
-
-        //Test if opponent is behind robot
-        bool isOpponentBehind();
-
         //status
         PointCap m_pose; //critical section
         eNavState m_state;
@@ -285,9 +265,8 @@ namespace ard
         long oldStepR; //critical section
 
         //opponent management
-        SwTimer oppTimer;
         SwTimer orderTimeout;
-        bool avoidanceActive; //is true when avoidance system is active
+
 
         RobotParameters* conf;
 
@@ -299,6 +278,8 @@ namespace ard
 
         //klaxon to warn for failure and request opponent to move
         Buzzer& klaxon;
+
+        OppDetection& detection;
     };
 }    //end namespace
 

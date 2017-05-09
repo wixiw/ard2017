@@ -32,5 +32,6 @@
 #include "Log.h"
 #include "Hmi.h"
 #include "Navigation.h"
+#include "OppDetection.h"
 
 #endif /* ROBOTS_RSP_H_ */
