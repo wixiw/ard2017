@@ -28,7 +28,8 @@ namespace ard
     public:
         LSA2017(Robot2017& robot, String const& name, PointCap const& entryPoint = PointCap()):
             Action2017<FSM, States_t>(robot, name),
-            entryPoint(entryPoint){};
+            entryPoint(entryPoint)
+            {};
 
         virtual ~LSA2017() = default;
 
@@ -40,8 +41,14 @@ namespace ard
 
         //Implements LSA
         void updateLSA(DelayMs sinceLastCall){Action2017<FSM, States_t>::update(sinceLastCall);}
+
+        //Implements LSA : starts a SW timer to monitor a timeout
         void startLSA(){Action2017<FSM, States_t>::start();}
+
+        //Implements LSA : stops a SW timer
         void stopLSA(){Action2017<FSM, States_t>::stop();}
+
+        //Implements LSA : get the action result or return a timeout
         StrategyResult getStatusLSA(){return Action2017<FSM, States_t>::getStatus();}
 
     protected:

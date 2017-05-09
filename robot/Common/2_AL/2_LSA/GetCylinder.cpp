@@ -28,6 +28,11 @@ StrategyResult LSA_GetCylinder_B::getStatus()
     return InProgress;
 }
 
+DelayMs LSA_GetCylinder_B::getNominalDuration()
+{
+    return 10000;
+}
+
 void LSA_GetCylinder_B::goToEntryPoint()
 {
     robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
@@ -54,6 +59,11 @@ StrategyResult LSA_GetCylinder_C::getStatus()
         return Success;
 
     return InProgress;
+}
+
+DelayMs LSA_GetCylinder_C::getNominalDuration()
+{
+    return 7000;
 }
 
 void LSA_GetCylinder_C::goToEntryPoint()

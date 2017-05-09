@@ -62,7 +62,10 @@ namespace ard
         //Same remarks here
         virtual void stopLSA() = 0;
         //Same remarks here
-        virtual StrategyResult getStatusLSA() = 0;;
+        virtual StrategyResult getStatusLSA() = 0;
+
+        //Get the nominal duration
+        virtual DelayMs getNominalDuration() = 0;
     };
 }
 #endif /* ROBOT_COMMON_2_AL_0_STRATFWK_ISTRATEGY_H_ */

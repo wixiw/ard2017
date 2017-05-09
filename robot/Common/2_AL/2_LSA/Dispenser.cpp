@@ -46,6 +46,11 @@ void LSA_Dispenser::goToEntryPoint()
     robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
 }
 
+DelayMs LSA_Dispenser::getNominalDuration()
+{
+    return 18000;
+}
+
 void LSA_Dispenser::informWithdraw_generic()
 {
     switch (type) {

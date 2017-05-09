@@ -63,6 +63,11 @@ void LSA_PooMiddle::goToEntryPoint()
     robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
 }
 
+DelayMs LSA_PooMiddle::getNominalDuration()
+{
+    return 7000;
+}
+
 /**
  * ------------------------
  */
@@ -88,6 +93,11 @@ StrategyResult LSA_PooBorderOwn::getStatus()
 void LSA_PooBorderOwn::goToEntryPoint()
 {
     robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
+}
+
+DelayMs LSA_PooBorderOwn::getNominalDuration()
+{
+    return 7000;
 }
 
 /**
@@ -116,6 +126,11 @@ void LSA_PooBorderOpp::goToEntryPoint()
     robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
 }
 
+DelayMs LSA_PooBorderOpp::getNominalDuration()
+{
+    return 7000;
+}
+
 /**
  * ------------------------
  */
@@ -141,6 +156,11 @@ StrategyResult LSA_PooStartArea::getStatus()
 void LSA_PooStartArea::goToEntryPoint()
 {
     robot.nav.goToCap(getEntryPoint(), eDir_BACKWARD);
+}
+
+DelayMs LSA_PooStartArea::getNominalDuration()
+{
+    return 21000;
 }
 
 /**

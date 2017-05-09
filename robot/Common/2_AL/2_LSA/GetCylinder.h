@@ -31,6 +31,9 @@ namespace ard
         //Implements LSA
         StrategyResult getStatus() override;
 
+        //Implements LSA
+        DelayMs getNominalDuration() override;
+
         //Implements FSM_LSA_GetCylinder_B::DefaultSCI_OCB
         void goToEntryPoint() override;
     };
@@ -42,6 +45,9 @@ namespace ard
 
         //Implements LSA
         StrategyResult getStatus() override;
+
+        //Implements LSA
+        DelayMs getNominalDuration() override;
 
         //Implements FSM_LSA_GetCylinder_C::DefaultSCI_OCB
         void goToEntryPoint() override;

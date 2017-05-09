@@ -34,6 +34,9 @@ namespace ard
         //Implements LSA
         StrategyResult getStatus() override;
 
+        //Implements LSA
+        DelayMs getNominalDuration() override;
+
         //FSM API : Use this hide in the FSM which dispenser is used
         void informPoo_generic() override;
 
@@ -52,6 +55,9 @@ namespace ard
         //Implements LSA
         StrategyResult getStatus() override;
 
+        //Implements LSA
+        DelayMs getNominalDuration() override;
+
         //Implements FSM_LSA_PooBorderOwn::DefaultSCI_OCB
         void goToEntryPoint() override;
     };
@@ -64,6 +70,9 @@ namespace ard
         //Implements LSA
         StrategyResult getStatus() override;
 
+        //Implements LSA
+        DelayMs getNominalDuration() override;
+
         //Implements FSM_LSA_PooBorderOpp::DefaultSCI_OCB
         void goToEntryPoint() override;
     };
@@ -75,6 +84,9 @@ namespace ard
 
         //Implements LSA
         StrategyResult getStatus() override;
+
+        //Implements LSA
+        DelayMs getNominalDuration() override;
 
         //Implements FSM_LSA_PooStartArea::DefaultSCI_OCB
         void goToEntryPoint() override;

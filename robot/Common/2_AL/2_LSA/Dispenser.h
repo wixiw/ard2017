@@ -31,6 +31,9 @@ namespace ard
         //Implements LSA
         StrategyResult getStatus() override;
 
+        //Implements LSA
+        DelayMs getNominalDuration() override;
+
         //Implements FSM_LSA_Dispenser::DefaultSCI_OCB
         void goToEntryPoint() override;
 

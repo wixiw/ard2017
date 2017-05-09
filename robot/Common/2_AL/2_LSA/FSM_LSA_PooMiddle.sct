@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_FFik0CoLEee0mqFmHUZWcA" specification="interface:&#xA;&#x9;//LSA specific&#xA;&#x9;operation goToEntryPoint()&#xA;&#x9;var cylinderToPut : integer&#xA;&#x9;operation&#x9;informPoo_generic()&#xA;&#xA;&#x9;//HMI interface&#xA;&#x9;operation beep(nb : integer)&#xA;&#x9;operation led1(blink : integer)&#xA;&#x9;operation led2(blink : integer)&#xA;&#x9;operation led3(blink : integer)&#xA;&#x9;operation led4(blink : integer)&#xA;&#x9;operation ledRGB(color : integer, blink : integer)&#xA;&#x9;operation isStartPlugged() : boolean&#xA;&#x9;operation isColorSwitchOnPrefered() : boolean&#xA;&#x9;operation isUser1SwitchOn() : boolean&#xA;&#x9;operation isUser2SwitchOn() : boolean&#xA;&#x9;operation logDebug(msg : string)&#xA;&#x9;operation logInfo(msg : string)&#xA;&#x9;operation logError(msg : string)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;//General&#xA;&#x9;operation dieMotherFucker()&#xA;&#x9;operation xav() : integer&#xA;&#x9;operation xar() : integer&#xA;&#x9;operation yside() : integer&#xA;&#x9;operation xavExtended() : integer&#xA;&#x9;operation xouter() : integer&#xA;&#x9;operation getRemainingTime() : integer&#xA;&#x9;operation setStatus(status : integer)&#xA;&#x9;operation matchColor() : boolean //use MC_PREF and MC_SYM constants to test result&#xA;&#x9;operation robotType() : boolean //use PEN and TRATION constants to test result&#xA;&#x9;operation isSimu() : boolean&#xA;&#x9;operation matchDuration() : integer //Duration from the begining of the match in msec.&#xA;&#x9;operation matchRemaining() : integer //Duration until the end of core match section in msec.&#xA;&#x9;&#xA;&#x9;//Navigation interface&#xA;&#x9;operation enableAvoidance(on : boolean)&#xA;&#x9;operation setPosition(x : real, y : real, h : real)&#xA;&#x9;operation setSpeedAcc(vMax : integer, vMaxTurn : integer, accMax : integer, accMaxTurn : integer)&#xA;&#x9;operation goTo(x : real, y : real, dir : integer, sym : boolean)&#xA;&#x9;operation goToCap(x : real, y : real, h : real, dir : integer, sym : boolean)&#xA;&#x9;operation goForward(d : real)&#xA;&#x9;operation turnDelta(dh : real, sym : boolean)&#xA;&#x9;operation turnTo(h : real, sym : boolean)&#xA;&#x9;operation faceTo(x : real, y : real, sym : boolean)&#xA;&#x9;operation rearTo(x : real, y : real, sym : boolean)&#xA;&#x9;operation recalFace(border : integer)&#xA;&#x9;operation recalRear(border : integer)&#xA;&#x9;operation stopMoving()&#xA;&#x9;operation targetReached() : boolean&#xA;&#x9;operation blocked() : boolean&#xA;&#x9;operation switchRecalFL() : boolean&#xA;&#x9;operation switchRecalFR() : boolean&#xA;&#x9;operation switchRecalRC() : boolean&#xA;&#x9;&#xA;&#x9;//Detection interface&#xA;&#x9;operation omronFront() : boolean&#xA;&#x9;operation omronRear() : boolean&#xA;&#x9;operation isOpponentAhead() : boolean&#xA;&#x9;operation isOpponentBehind() : boolean&#xA;&#x9;&#xA;&#x9;//Actuators interface&#xA;&#x9;operation swallow(on : boolean)&#xA;&#x9;operation turnWheels(on : integer) //1 : swallow, 0 : stops, -1 : expulse&#xA;&#x9;operation lifter(up : boolean)&#xA;&#x9;operation lifterAtTarget() : boolean&#xA;&#x9;operation arms(left: integer, right : integer)&#xA;&#x9;operation armsAtTarget() : boolean&#xA;&#x9;operation turnCylinder(on : boolean)&#xA;&#x9;operation faceUpCylinder()&#xA;&#x9;operation getFaceUpStatus() : integer&#xA;&#x9;operation switchArmLout() : boolean&#xA;&#x9;operation switchArmLin() : boolean&#xA;&#x9;operation switchArmRout() : boolean&#xA;&#x9;operation switchArmRin() : boolean&#xA;&#x9;operation omronCylinder() : boolean&#xA;&#x9;operation switchCylinder() : boolean&#xA;&#x9;operation switchLifterUp() : boolean&#xA;&#x9;operation switchLifterDown() : boolean&#xA;&#x9;operation stockColor(): integer&#xA;&#xA;&#x9;//Strategy model interface&#xA;&#x9;operation score() : integer&#xA;&#x9;operation robotStockCount() : integer&#xA;&#x9;operation nextCylinderColor() : integer&#xA;&#x9;operation containerCount(containerId : integer) : integer&#xA;&#x9;operation dispenserA_Count() : integer&#xA;&#x9;operation dispenserG_Count() : integer&#xA;&#x9;operation dispenserOppG_Count() : integer&#xA;&#x9;operation informWithdraw_A(nb: integer)&#xA;&#x9;operation informWithdraw_G(nb: integer)&#xA;&#x9;operation informWithdraw_OppG(nb: integer)&#xA;&#x9;operation informPooed_3(nb: integer)&#xA;&#x9;operation informPooed_4(nb: integer)&#xA;&#x9;operation informPooed_2(nb: integer)&#xA;&#x9;operation informPooed_5(nb: integer)&#xA;&#x9;operation informPooed_1(nb: integer)&#xA;&#x9;operation informPooed_6(nb: integer)&#xA;&#x9;operation informPooed_OnTable(nb: integer)&#xA;&#x9;operation informTaken_D()&#xA;&#x9;operation informTaken_F()&#xA;&#x9;operation informTaken_E()&#xA;&#x9;operation informTaken_B()&#xA;&#x9;operation informTaken_C()&#xA;&#x9;operation informTaken_Opp_D()&#xA;&#x9;operation informTaken_Opp_F()&#xA;&#x9;operation informTaken_Opp_E()&#xA;&#x9;operation informPushedAway_D()&#xA;&#x9;operation informPushedAway_F()&#xA;&#x9;operation informPushedAway_E()&#xA;&#x9;operation informPushedAway_B()&#xA;&#x9;operation informPushedAway_C()&#xA;&#x9;operation informPushedAway_Opp_D()&#xA;&#x9;operation informPushedAway_Opp_F()&#xA;&#x9;operation informPushedAway_Opp_E()&#xA;&#x9;&#xA;internal:&#xA;&#x9;//general&#xA;&#x9;const MC_PREF : boolean = true&#xA;&#x9;const MC_SYM : boolean = false&#xA;&#x9;const PEN : boolean = true&#xA;&#x9;const TRATION : boolean = true&#xA;&#x9;&#xA;&#x9;//direction enum&#xA;&#x9;const FWD : integer =  1&#xA;&#x9;const BWD : integer = -1&#xA;&#x9;const SYM : boolean = true&#xA;&#x9;const NO_SYM : boolean = false&#xA;&#x9;&#xA;&#x9;//border enum&#xA;&#x9;const TOP_Y : integer = 0&#xA;&#x9;const OWN_SIDE_X : integer = 1&#xA;&#x9;const OPP_SIDE_X : integer = 2&#xA;&#x9;const START_WALL_Y : integer = 3&#xA;&#x9;const BOT_Y : integer = 4&#xA;&#x9;const FLIP_FLOP_X : integer = 5&#xA;&#x9;&#xA;&#x9;//blink enum&#xA;&#x9;const LED_OFF : integer = 0&#xA;&#x9;const LED_ON : integer = 1&#xA;&#x9;const SLOW_BLINK : integer = 2&#xA;&#x9;const FAST_BLINK : integer = 3&#xA;&#x9;//color enum&#xA;&#x9;const ledRED : integer = 0&#xA;&#x9;const ledGREEN: integer = 1 &#x9;&#x9;&#xA;&#x9;const ledBLUE: integer = 2&#xA;&#x9;const ledYELLOW: integer = 3&#xA;&#x9;const ledCYAN: integer = 4&#x9;&#x9;&#xA;&#x9;const ledPURPLE: integer = 5 &#x9;&#x9;&#xA;&#x9;const ledWHITE: integer = 6&#xA;&#x9;&#xA;&#x9;//Cylinder rotation&#xA;&#x9;const cylUNKNOWN: integer = 0&#xA;&#x9;const cylYELLOW: integer = 1&#xA;&#x9;const cylBLUE: integer = 2&#xA;&#x9;const cylWHITE: integer = 3&#xA;&#x9;const NO_CMD: integer = 0&#xA;&#x9;const FAILED: integer = 1&#xA;&#x9;const OK: integer = 2&#xA;&#x9;&#xA;&#x9;//Actuators commands&#xA;&#x9;const LIFT_UP : boolean = true&#xA;&#x9;const LIFT_DOWN : boolean = false&#xA;&#x9;const WHEEL_EJECT : integer = -1&#xA;&#x9;const WHEEL_STOP : integer = 0&#xA;&#x9;const WHEEL_SWALLOW : integer = 1&#xA;&#x9;&#xA;&#x9;//LSA status enum&#xA;&#x9;const NO_LSA : integer = 0&#xA;&#x9;const SUCCESS : integer = 1&#xA;&#x9;const FAILURE : integer = 2&#xA;&#x9;const IN_PROGRESS : integer = 3&#xA;&#x9;&#xA;&#x9;//LSA ID enum (Keep in sync with 0_Strategy2017.h::eLsaId)&#xA;&#x9;const LSA_A : integer = 0&#xA;&#x9;const LSA_G : integer = 1&#xA;&#x9;const LSA_OppG : integer = 2&#xA;&#x9;const LSA_1 : integer = 3&#xA;&#x9;const LSA_2 : integer = 4&#xA;&#x9;const LSA_3 : integer = 5&#xA;&#x9;const LSA_4 : integer = 6&#xA;&#x9;const LSA_5 : integer = 7&#xA;&#x9;const LSA_B : integer = 8&#xA;&#x9;const LSA_C : integer = 9&#xA;&#x9;const LSA_D : integer = 10&#xA;&#x9;const LSA_E : integer = 11&#xA;&#x9;const LSA_F : integer = 12&#xA;&#x9;const LSA_OppD : integer = 13&#xA;&#x9;const LSA_OppE : integer = 14&#xA;&#x9;const LSA_OppF : integer = 15&#xA;&#x9;const LSA_6 : integer = 16&#xA;&#x9;const LSA_IA : integer = 17" name="FSM_LSA_PooMiddle">
+  <sgraph:Statechart xmi:id="_FFik0CoLEee0mqFmHUZWcA" specification="interface:&#xA;&#x9;//LSA specific&#xA;&#x9;operation goToEntryPoint()&#xA;&#x9;var cylinderToPut : integer&#xA;&#x9;operation&#x9;informPoo_generic()&#xA;&#xA;&#x9;//HMI interface&#xA;&#x9;operation beep(nb : integer)&#xA;&#x9;operation led1(blink : integer)&#xA;&#x9;operation led2(blink : integer)&#xA;&#x9;operation led3(blink : integer)&#xA;&#x9;operation led4(blink : integer)&#xA;&#x9;operation ledRGB(color : integer, blink : integer)&#xA;&#x9;operation isStartPlugged() : boolean&#xA;&#x9;operation isColorSwitchOnPrefered() : boolean&#xA;&#x9;operation isUser1SwitchOn() : boolean&#xA;&#x9;operation isUser2SwitchOn() : boolean&#xA;&#x9;operation logDebug(msg : string)&#xA;&#x9;operation logInfo(msg : string)&#xA;&#x9;operation logError(msg : string)&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#xA;&#x9;//General&#xA;&#x9;operation dieMotherFucker()&#xA;&#x9;operation xav() : integer&#xA;&#x9;operation xar() : integer&#xA;&#x9;operation yside() : integer&#xA;&#x9;operation xavExtended() : integer&#xA;&#x9;operation xouter() : integer&#xA;&#x9;operation getRemainingTime() : integer&#xA;&#x9;operation setStatus(status : integer)&#xA;&#x9;operation matchColor() : boolean //use MC_PREF and MC_SYM constants to test result&#xA;&#x9;operation robotType() : boolean //use PEN and TRATION constants to test result&#xA;&#x9;operation isSimu() : boolean&#xA;&#x9;operation matchDuration() : integer //Duration from the begining of the match in msec.&#xA;&#x9;operation matchRemaining() : integer //Duration until the end of core match section in msec.&#xA;&#x9;&#xA;&#x9;//Navigation interface&#xA;&#x9;operation enableAvoidance(on : boolean)&#xA;&#x9;operation setPosition(x : real, y : real, h : real)&#xA;&#x9;operation setSpeedAcc(vMax : integer, vMaxTurn : integer, accMax : integer, accMaxTurn : integer)&#xA;&#x9;operation goTo(x : real, y : real, dir : integer, sym : boolean)&#xA;&#x9;operation goToCap(x : real, y : real, h : real, dir : integer, sym : boolean)&#xA;&#x9;operation goForward(d : real)&#xA;&#x9;operation turnDelta(dh : real, sym : boolean)&#xA;&#x9;operation turnTo(h : real, sym : boolean)&#xA;&#x9;operation faceTo(x : real, y : real, sym : boolean)&#xA;&#x9;operation rearTo(x : real, y : real, sym : boolean)&#xA;&#x9;operation recalFace(border : integer)&#xA;&#x9;operation recalRear(border : integer)&#xA;&#x9;operation stopMoving()&#xA;&#x9;operation targetReached() : boolean&#xA;&#x9;operation blocked() : boolean&#xA;&#x9;operation switchRecalFL() : boolean&#xA;&#x9;operation switchRecalFR() : boolean&#xA;&#x9;operation switchRecalRC() : boolean&#xA;&#x9;&#xA;&#x9;//Detection interface&#xA;&#x9;operation omronFront() : boolean&#xA;&#x9;operation omronRear() : boolean&#xA;&#x9;operation isOpponentAhead() : boolean&#xA;&#x9;operation isOpponentBehind() : boolean&#xA;&#x9;&#xA;&#x9;//Actuators interface&#xA;&#x9;operation swallow(on : boolean)&#xA;&#x9;operation turnWheels(on : integer) //1 : swallow, 0 : stops, -1 : expulse&#xA;&#x9;operation lifter(up : boolean)&#xA;&#x9;operation lifterAtTarget() : boolean&#xA;&#x9;operation arms(left: integer, right : integer)&#xA;&#x9;operation armsAtTarget() : boolean&#xA;&#x9;operation turnCylinder(on : boolean)&#xA;&#x9;operation faceUpCylinder()&#xA;&#x9;operation getFaceUpStatus() : integer&#xA;&#x9;operation switchArmLout() : boolean&#xA;&#x9;operation switchArmLin() : boolean&#xA;&#x9;operation switchArmRout() : boolean&#xA;&#x9;operation switchArmRin() : boolean&#xA;&#x9;operation omronCylinder() : boolean&#xA;&#x9;operation switchCylinder() : boolean&#xA;&#x9;operation switchLifterUp() : boolean&#xA;&#x9;operation switchLifterDown() : boolean&#xA;&#x9;operation stockColor(): integer&#xA;&#xA;&#x9;//Strategy model interface&#xA;&#x9;operation score() : integer&#xA;&#x9;operation robotStockCount() : integer&#xA;&#x9;operation nextCylinderColor() : integer&#xA;&#x9;operation containerCount(containerId : integer) : integer&#xA;&#x9;operation dispenserA_Count() : integer&#xA;&#x9;operation dispenserG_Count() : integer&#xA;&#x9;operation dispenserOppG_Count() : integer&#xA;&#x9;operation informWithdraw_A(nb: integer)&#xA;&#x9;operation informWithdraw_G(nb: integer)&#xA;&#x9;operation informWithdraw_OppG(nb: integer)&#xA;&#x9;operation informPooed_3(nb: integer)&#xA;&#x9;operation informPooed_4(nb: integer)&#xA;&#x9;operation informPooed_2(nb: integer)&#xA;&#x9;operation informPooed_5(nb: integer)&#xA;&#x9;operation informPooed_1(nb: integer)&#xA;&#x9;operation informPooed_6(nb: integer)&#xA;&#x9;operation informPooed_OnTable(nb: integer)&#xA;&#x9;operation informTaken_D()&#xA;&#x9;operation informTaken_F()&#xA;&#x9;operation informTaken_E()&#xA;&#x9;operation informTaken_B()&#xA;&#x9;operation informTaken_C()&#xA;&#x9;operation informTaken_Opp_D()&#xA;&#x9;operation informTaken_Opp_F()&#xA;&#x9;operation informTaken_Opp_E()&#xA;&#x9;operation informPushedAway_D()&#xA;&#x9;operation informPushedAway_F()&#xA;&#x9;operation informPushedAway_E()&#xA;&#x9;operation informPushedAway_B()&#xA;&#x9;operation informPushedAway_C()&#xA;&#x9;operation informPushedAway_Opp_D()&#xA;&#x9;operation informPushedAway_Opp_F()&#xA;&#x9;operation informPushedAway_Opp_E()&#xA;&#x9;&#xA;internal:&#xA;&#x9;//general&#xA;&#x9;const MC_PREF : boolean = true&#xA;&#x9;const MC_SYM : boolean = false&#xA;&#x9;const PEN : boolean = true&#xA;&#x9;const TRATION : boolean = true&#xA;&#x9;&#xA;&#x9;//direction enum&#xA;&#x9;const FWD : integer =  1&#xA;&#x9;const BWD : integer = -1&#xA;&#x9;const SYM : boolean = true&#xA;&#x9;const NO_SYM : boolean = false&#xA;&#x9;&#xA;&#x9;//border enum&#xA;&#x9;const TOP_Y : integer = 0&#xA;&#x9;const OWN_SIDE_X : integer = 1&#xA;&#x9;const OPP_SIDE_X : integer = 2&#xA;&#x9;const START_WALL_Y : integer = 3&#xA;&#x9;const BOT_Y : integer = 4&#xA;&#x9;const FLIP_FLOP_X : integer = 5&#xA;&#x9;&#xA;&#x9;//blink enum&#xA;&#x9;const LED_OFF : integer = 0&#xA;&#x9;const LED_ON : integer = 1&#xA;&#x9;const SLOW_BLINK : integer = 2&#xA;&#x9;const FAST_BLINK : integer = 3&#xA;&#x9;//color enum&#xA;&#x9;const ledRED : integer = 0&#xA;&#x9;const ledGREEN: integer = 1 &#x9;&#x9;&#xA;&#x9;const ledBLUE: integer = 2&#xA;&#x9;const ledYELLOW: integer = 3&#xA;&#x9;const ledCYAN: integer = 4&#x9;&#x9;&#xA;&#x9;const ledPURPLE: integer = 5 &#x9;&#x9;&#xA;&#x9;const ledWHITE: integer = 6&#xA;&#x9;&#xA;&#x9;//Cylinder rotation&#xA;&#x9;const cylUNKNOWN: integer = 0&#xA;&#x9;const cylYELLOW: integer = 1&#xA;&#x9;const cylBLUE: integer = 2&#xA;&#x9;const cylWHITE: integer = 3&#xA;&#x9;const cylNO_CMD: integer = 0&#xA;&#x9;const cylFAILED: integer = 1&#xA;&#x9;const cylOK: integer = 2&#xA;&#x9;&#xA;&#x9;//Actuators commands&#xA;&#x9;const LIFT_UP : boolean = true&#xA;&#x9;const LIFT_DOWN : boolean = false&#xA;&#x9;const WHEEL_EJECT : integer = -1&#xA;&#x9;const WHEEL_STOP : integer = 0&#xA;&#x9;const WHEEL_SWALLOW : integer = 1&#xA;&#x9;&#xA;&#x9;//LSA status enum&#xA;&#x9;const NO_LSA : integer = 0&#xA;&#x9;const SUCCESS : integer = 1&#xA;&#x9;const FAILURE : integer = 2&#xA;&#x9;const IN_PROGRESS : integer = 3&#xA;&#x9;&#xA;&#x9;//LSA ID enum (Keep in sync with 0_Strategy2017.h::eLsaId)&#xA;&#x9;const LSA_A : integer = 0&#xA;&#x9;const LSA_G : integer = 1&#xA;&#x9;const LSA_OppG : integer = 2&#xA;&#x9;const LSA_1 : integer = 3&#xA;&#x9;const LSA_2 : integer = 4&#xA;&#x9;const LSA_3 : integer = 5&#xA;&#x9;const LSA_4 : integer = 6&#xA;&#x9;const LSA_5 : integer = 7&#xA;&#x9;const LSA_B : integer = 8&#xA;&#x9;const LSA_C : integer = 9&#xA;&#x9;const LSA_D : integer = 10&#xA;&#x9;const LSA_E : integer = 11&#xA;&#x9;const LSA_F : integer = 12&#xA;&#x9;const LSA_OppD : integer = 13&#xA;&#x9;const LSA_OppE : integer = 14&#xA;&#x9;const LSA_OppF : integer = 15&#xA;&#x9;const LSA_6 : integer = 16&#xA;&#x9;const LSA_IA : integer = 17" name="FSM_LSA_PooMiddle">
     <regions xmi:id="_FFjy8ioLEee0mqFmHUZWcA" name="main region">
       <vertices xsi:type="sgraph:Entry" xmi:id="_FFmPMyoLEee0mqFmHUZWcA">
         <outgoingTransitions xmi:id="_FFoEZSoLEee0mqFmHUZWcA" target="_FFm2RyoLEee0mqFmHUZWcA"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_FFm2RyoLEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;goForward(50);&#xD;&#xA;logInfo(&quot;[LSA Poo Middle] Engaging storing area&quot;)" name="Engage PooArea" incomingTransitions="_FFoEZSoLEee0mqFmHUZWcA">
-        <outgoingTransitions xmi:id="_Tsj-8CoTEee0mqFmHUZWcA" specification="[targetReached()] / cylinderToPut = robotStockCount()" target="_SJjUECoTEee0mqFmHUZWcA"/>
+      <vertices xsi:type="sgraph:FinalState" xmi:id="_2d2-MCoUEee0mqFmHUZWcA" incomingTransitions="_JvkfcCoVEee0mqFmHUZWcA _o-LV0DSwEeeAruf_Oz5lkQ"/>
+      <vertices xsi:type="sgraph:State" xmi:id="_cY-v4DSwEeeAruf_Oz5lkQ" name="Composite_Engage PooArea_Put 1 cylinder_Exit Poo Area">
+        <outgoingTransitions xmi:id="_lUpqYDSwEeeAruf_Oz5lkQ" specification="after 12s" target="_hpu33TSwEeeAruf_Oz5lkQ"/>
+        <regions xmi:id="_cZAlEDSwEeeAruf_Oz5lkQ" name="inner region">
+          <vertices xsi:type="sgraph:State" xmi:id="_FFm2RyoLEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;goForward(50);&#xD;&#xA;logInfo(&quot;[LSA Poo Middle] start&quot;)" name="Engage PooArea" incomingTransitions="_FFoEZSoLEee0mqFmHUZWcA">
+            <outgoingTransitions xmi:id="_Tsj-8CoTEee0mqFmHUZWcA" specification="[targetReached()] / cylinderToPut = robotStockCount()" target="_SJjUECoTEee0mqFmHUZWcA"/>
+          </vertices>
+          <vertices xsi:type="sgraph:State" xmi:id="_SJjUECoTEee0mqFmHUZWcA" specification="exit/&#xD;&#xA;informPoo_generic();&#xD;&#xA;cylinderToPut -= 1" name="Put 1 cylinder" incomingTransitions="_Tsj-8CoTEee0mqFmHUZWcA _wp1KECoUEee0mqFmHUZWcA">
+            <outgoingTransitions xmi:id="_jwxCYCoTEee0mqFmHUZWcA" specification="after 1500ms " target="_smWtkCoUEee0mqFmHUZWcA"/>
+          </vertices>
+          <vertices xsi:type="sgraph:State" xmi:id="_FuvuUCoVEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;goToEntryPoint();&#xD;&#xA;logInfo(&quot;[LSA Poo Middle] Cylinders successfully pooed&quot;)" name="Exit Poo Area" incomingTransitions="_7XQWECoUEee0mqFmHUZWcA">
+            <outgoingTransitions xmi:id="_JvkfcCoVEee0mqFmHUZWcA" specification="[targetReached()] / &#xD;&#xA;setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
+          </vertices>
+          <vertices xsi:type="sgraph:Choice" xmi:id="_smWtkCoUEee0mqFmHUZWcA" incomingTransitions="_jwxCYCoTEee0mqFmHUZWcA">
+            <outgoingTransitions xmi:id="_wp1KECoUEee0mqFmHUZWcA" specification="[0 &lt; cylinderToPut]" target="_SJjUECoTEee0mqFmHUZWcA"/>
+            <outgoingTransitions xmi:id="_7XQWECoUEee0mqFmHUZWcA" specification="else" target="_FuvuUCoVEee0mqFmHUZWcA"/>
+          </vertices>
+        </regions>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_SJjUECoTEee0mqFmHUZWcA" specification="exit/&#xD;&#xA;informPoo_generic();&#xD;&#xA;cylinderToPut -= 1" name="Put 1 cylinder" incomingTransitions="_Tsj-8CoTEee0mqFmHUZWcA _wp1KECoUEee0mqFmHUZWcA">
-        <outgoingTransitions xmi:id="_jwxCYCoTEee0mqFmHUZWcA" specification="after 1500ms " target="_smWtkCoUEee0mqFmHUZWcA"/>
-      </vertices>
-      <vertices xsi:type="sgraph:Choice" xmi:id="_smWtkCoUEee0mqFmHUZWcA" incomingTransitions="_jwxCYCoTEee0mqFmHUZWcA">
-        <outgoingTransitions xmi:id="_wp1KECoUEee0mqFmHUZWcA" specification="[0 &lt; cylinderToPut]" target="_SJjUECoTEee0mqFmHUZWcA"/>
-        <outgoingTransitions xmi:id="_7XQWECoUEee0mqFmHUZWcA" specification="else" target="_FuvuUCoVEee0mqFmHUZWcA"/>
-      </vertices>
-      <vertices xsi:type="sgraph:FinalState" xmi:id="_2d2-MCoUEee0mqFmHUZWcA" incomingTransitions="_JvkfcCoVEee0mqFmHUZWcA"/>
-      <vertices xsi:type="sgraph:State" xmi:id="_FuvuUCoVEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;goToEntryPoint();&#xD;&#xA;logInfo(&quot;[LSA Poo Middle] Cylinders successfully pooed&quot;)" name="Exit Poo Area" incomingTransitions="_7XQWECoUEee0mqFmHUZWcA">
-        <outgoingTransitions xmi:id="_JvkfcCoVEee0mqFmHUZWcA" specification="[targetReached()] / setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
+      <vertices xsi:type="sgraph:State" xmi:id="_hpu33TSwEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;logError(&quot;[LSA Poo Middle] timeout&quot;);&#xD;&#xA;stopMoving()" name="Stopping" incomingTransitions="_lUpqYDSwEeeAruf_Oz5lkQ">
+        <outgoingTransitions xmi:id="_o-LV0DSwEeeAruf_Oz5lkQ" specification="[targetReached()] / &#xD;&#xA;setStatus(FAILURE)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
       </vertices>
     </regions>
   </sgraph:Statechart>
@@ -39,66 +47,110 @@
           </children>
           <styles xsi:type="notation:ShapeStyle" xmi:id="_FFmPNSoLEee0mqFmHUZWcA" fontName="Verdana" fillColor="0" lineColor="16777215"/>
           <styles xsi:type="notation:NamedStyle" xmi:id="_FFmPNioLEee0mqFmHUZWcA" name="allowColors"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFm2RioLEee0mqFmHUZWcA" x="231" y="28"/>
-        </children>
-        <children xmi:id="_FFndUioLEee0mqFmHUZWcA" type="State" element="_FFm2RyoLEee0mqFmHUZWcA">
-          <children xsi:type="notation:DecorationNode" xmi:id="_FFndVioLEee0mqFmHUZWcA" type="StateName">
-            <styles xsi:type="notation:ShapeStyle" xmi:id="_FFndVyoLEee0mqFmHUZWcA"/>
-            <layoutConstraint xsi:type="notation:Location" xmi:id="_FFndWCoLEee0mqFmHUZWcA"/>
-          </children>
-          <children xsi:type="notation:Compartment" xmi:id="_FFndWSoLEee0mqFmHUZWcA" type="StateTextCompartment">
-            <children xsi:type="notation:Shape" xmi:id="_FFoEYCoLEee0mqFmHUZWcA" type="StateTextCompartmentExpression" fontName="Verdana" lineColor="4210752">
-              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFoEYSoLEee0mqFmHUZWcA"/>
-            </children>
-          </children>
-          <children xsi:type="notation:Compartment" xmi:id="_FFoEYioLEee0mqFmHUZWcA" type="StateFigureCompartment"/>
-          <styles xsi:type="notation:ShapeStyle" xmi:id="_FFndUyoLEee0mqFmHUZWcA" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
-          <styles xsi:type="notation:FontStyle" xmi:id="_FFndVCoLEee0mqFmHUZWcA"/>
-          <styles xsi:type="notation:BooleanValueStyle" xmi:id="_FFoEYyoLEee0mqFmHUZWcA" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFoEZCoLEee0mqFmHUZWcA" x="78" y="88"/>
-        </children>
-        <children xmi:id="_SJj7ICoTEee0mqFmHUZWcA" type="State" element="_SJjUECoTEee0mqFmHUZWcA">
-          <children xsi:type="notation:DecorationNode" xmi:id="_SJkiMCoTEee0mqFmHUZWcA" type="StateName">
-            <styles xsi:type="notation:ShapeStyle" xmi:id="_SJkiMSoTEee0mqFmHUZWcA"/>
-            <layoutConstraint xsi:type="notation:Location" xmi:id="_SJkiMioTEee0mqFmHUZWcA"/>
-          </children>
-          <children xsi:type="notation:Compartment" xmi:id="_SJkiMyoTEee0mqFmHUZWcA" type="StateTextCompartment">
-            <children xsi:type="notation:Shape" xmi:id="_SJkiNCoTEee0mqFmHUZWcA" type="StateTextCompartmentExpression" fontName="Verdana" lineColor="4210752">
-              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_SJkiNSoTEee0mqFmHUZWcA"/>
-            </children>
-          </children>
-          <children xsi:type="notation:Compartment" xmi:id="_SJkiNioTEee0mqFmHUZWcA" type="StateFigureCompartment"/>
-          <styles xsi:type="notation:ShapeStyle" xmi:id="_SJj7ISoTEee0mqFmHUZWcA" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
-          <styles xsi:type="notation:FontStyle" xmi:id="_SJj7IioTEee0mqFmHUZWcA"/>
-          <styles xsi:type="notation:BooleanValueStyle" xmi:id="_SJkiNyoTEee0mqFmHUZWcA" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_SJj7IyoTEee0mqFmHUZWcA" x="144" y="216"/>
-        </children>
-        <children xsi:type="notation:Shape" xmi:id="_smZJ0CoUEee0mqFmHUZWcA" type="Choice" element="_smWtkCoUEee0mqFmHUZWcA" fontName="Verdana" lineColor="4210752">
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_smZJ0SoUEee0mqFmHUZWcA" x="231" y="315"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFm2RioLEee0mqFmHUZWcA" x="232" y="-21"/>
         </children>
         <children xsi:type="notation:Shape" xmi:id="_2d4MUCoUEee0mqFmHUZWcA" type="FinalState" element="_2d2-MCoUEee0mqFmHUZWcA" fontName="Verdana" lineColor="4210752">
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_2d4MUSoUEee0mqFmHUZWcA" x="228" y="516"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_2d4MUSoUEee0mqFmHUZWcA" x="192" y="656"/>
         </children>
-        <children xmi:id="_FuwVYCoVEee0mqFmHUZWcA" type="State" element="_FuvuUCoVEee0mqFmHUZWcA">
-          <children xsi:type="notation:DecorationNode" xmi:id="_FuwVZCoVEee0mqFmHUZWcA" type="StateName">
-            <styles xsi:type="notation:ShapeStyle" xmi:id="_FuwVZSoVEee0mqFmHUZWcA"/>
-            <layoutConstraint xsi:type="notation:Location" xmi:id="_FuwVZioVEee0mqFmHUZWcA"/>
+        <children xmi:id="_cZBzMDSwEeeAruf_Oz5lkQ" type="State" element="_cY-v4DSwEeeAruf_Oz5lkQ">
+          <children xsi:type="notation:DecorationNode" xmi:id="_cZBzNDSwEeeAruf_Oz5lkQ" type="StateName">
+            <styles xsi:type="notation:ShapeStyle" xmi:id="_cZBzNTSwEeeAruf_Oz5lkQ"/>
+            <layoutConstraint xsi:type="notation:Location" xmi:id="_cZCaQDSwEeeAruf_Oz5lkQ"/>
           </children>
-          <children xsi:type="notation:Compartment" xmi:id="_FuwVZyoVEee0mqFmHUZWcA" type="StateTextCompartment">
-            <children xsi:type="notation:Shape" xmi:id="_FuwVaCoVEee0mqFmHUZWcA" type="StateTextCompartmentExpression" fontName="Verdana" lineColor="4210752">
-              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FuwVaSoVEee0mqFmHUZWcA"/>
+          <children xsi:type="notation:Compartment" xmi:id="_cZCaQTSwEeeAruf_Oz5lkQ" type="StateTextCompartment">
+            <children xsi:type="notation:Shape" xmi:id="_cZCaQjSwEeeAruf_Oz5lkQ" type="StateTextCompartmentExpression" fontName="Verdana" lineColor="4210752">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cZCaQzSwEeeAruf_Oz5lkQ"/>
             </children>
           </children>
-          <children xsi:type="notation:Compartment" xmi:id="_FuwVaioVEee0mqFmHUZWcA" type="StateFigureCompartment"/>
-          <styles xsi:type="notation:ShapeStyle" xmi:id="_FuwVYSoVEee0mqFmHUZWcA" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
-          <styles xsi:type="notation:FontStyle" xmi:id="_FuwVYioVEee0mqFmHUZWcA"/>
-          <styles xsi:type="notation:BooleanValueStyle" xmi:id="_FuwVayoVEee0mqFmHUZWcA" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FuwVYyoVEee0mqFmHUZWcA" x="37" y="389"/>
+          <children xsi:type="notation:Compartment" xmi:id="_cZCaRDSwEeeAruf_Oz5lkQ" type="StateFigureCompartment">
+            <children xmi:id="_cZDBUDSwEeeAruf_Oz5lkQ" type="Region" element="_cZAlEDSwEeeAruf_Oz5lkQ">
+              <children xsi:type="notation:DecorationNode" xmi:id="_cZDBUzSwEeeAruf_Oz5lkQ" type="RegionName">
+                <styles xsi:type="notation:ShapeStyle" xmi:id="_cZDBVDSwEeeAruf_Oz5lkQ"/>
+                <layoutConstraint xsi:type="notation:Location" xmi:id="_cZDBVTSwEeeAruf_Oz5lkQ"/>
+              </children>
+              <children xsi:type="notation:Shape" xmi:id="_cZDBVjSwEeeAruf_Oz5lkQ" type="RegionCompartment" fontName="Verdana" lineColor="4210752">
+                <children xmi:id="_FFndUioLEee0mqFmHUZWcA" type="State" element="_FFm2RyoLEee0mqFmHUZWcA">
+                  <children xsi:type="notation:DecorationNode" xmi:id="_FFndVioLEee0mqFmHUZWcA" type="StateName">
+                    <styles xsi:type="notation:ShapeStyle" xmi:id="_FFndVyoLEee0mqFmHUZWcA"/>
+                    <layoutConstraint xsi:type="notation:Location" xmi:id="_FFndWCoLEee0mqFmHUZWcA"/>
+                  </children>
+                  <children xsi:type="notation:Compartment" xmi:id="_FFndWSoLEee0mqFmHUZWcA" type="StateTextCompartment">
+                    <children xsi:type="notation:Shape" xmi:id="_FFoEYCoLEee0mqFmHUZWcA" type="StateTextCompartmentExpression" fontName="Verdana" lineColor="4210752">
+                      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFoEYSoLEee0mqFmHUZWcA"/>
+                    </children>
+                  </children>
+                  <children xsi:type="notation:Compartment" xmi:id="_FFoEYioLEee0mqFmHUZWcA" type="StateFigureCompartment"/>
+                  <styles xsi:type="notation:ShapeStyle" xmi:id="_FFndUyoLEee0mqFmHUZWcA" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
+                  <styles xsi:type="notation:FontStyle" xmi:id="_FFndVCoLEee0mqFmHUZWcA"/>
+                  <styles xsi:type="notation:BooleanValueStyle" xmi:id="_FFoEYyoLEee0mqFmHUZWcA" name="isHorizontal" booleanValue="true"/>
+                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cZDoYDSwEeeAruf_Oz5lkQ" x="89"/>
+                </children>
+                <children xmi:id="_SJj7ICoTEee0mqFmHUZWcA" type="State" element="_SJjUECoTEee0mqFmHUZWcA">
+                  <children xsi:type="notation:DecorationNode" xmi:id="_SJkiMCoTEee0mqFmHUZWcA" type="StateName">
+                    <styles xsi:type="notation:ShapeStyle" xmi:id="_SJkiMSoTEee0mqFmHUZWcA"/>
+                    <layoutConstraint xsi:type="notation:Location" xmi:id="_SJkiMioTEee0mqFmHUZWcA"/>
+                  </children>
+                  <children xsi:type="notation:Compartment" xmi:id="_SJkiMyoTEee0mqFmHUZWcA" type="StateTextCompartment">
+                    <children xsi:type="notation:Shape" xmi:id="_SJkiNCoTEee0mqFmHUZWcA" type="StateTextCompartmentExpression" fontName="Verdana" lineColor="4210752">
+                      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_SJkiNSoTEee0mqFmHUZWcA"/>
+                    </children>
+                  </children>
+                  <children xsi:type="notation:Compartment" xmi:id="_SJkiNioTEee0mqFmHUZWcA" type="StateFigureCompartment"/>
+                  <styles xsi:type="notation:ShapeStyle" xmi:id="_SJj7ISoTEee0mqFmHUZWcA" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
+                  <styles xsi:type="notation:FontStyle" xmi:id="_SJj7IioTEee0mqFmHUZWcA"/>
+                  <styles xsi:type="notation:BooleanValueStyle" xmi:id="_SJkiNyoTEee0mqFmHUZWcA" name="isHorizontal" booleanValue="true"/>
+                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cZDoYTSwEeeAruf_Oz5lkQ" x="155" y="128"/>
+                </children>
+                <children xmi:id="_FuwVYCoVEee0mqFmHUZWcA" type="State" element="_FuvuUCoVEee0mqFmHUZWcA">
+                  <children xsi:type="notation:DecorationNode" xmi:id="_FuwVZCoVEee0mqFmHUZWcA" type="StateName">
+                    <styles xsi:type="notation:ShapeStyle" xmi:id="_FuwVZSoVEee0mqFmHUZWcA"/>
+                    <layoutConstraint xsi:type="notation:Location" xmi:id="_FuwVZioVEee0mqFmHUZWcA"/>
+                  </children>
+                  <children xsi:type="notation:Compartment" xmi:id="_FuwVZyoVEee0mqFmHUZWcA" type="StateTextCompartment">
+                    <children xsi:type="notation:Shape" xmi:id="_FuwVaCoVEee0mqFmHUZWcA" type="StateTextCompartmentExpression" fontName="Verdana" lineColor="4210752">
+                      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FuwVaSoVEee0mqFmHUZWcA"/>
+                    </children>
+                  </children>
+                  <children xsi:type="notation:Compartment" xmi:id="_FuwVaioVEee0mqFmHUZWcA" type="StateFigureCompartment"/>
+                  <styles xsi:type="notation:ShapeStyle" xmi:id="_FuwVYSoVEee0mqFmHUZWcA" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
+                  <styles xsi:type="notation:FontStyle" xmi:id="_FuwVYioVEee0mqFmHUZWcA"/>
+                  <styles xsi:type="notation:BooleanValueStyle" xmi:id="_FuwVayoVEee0mqFmHUZWcA" name="isHorizontal" booleanValue="true"/>
+                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cZDoYjSwEeeAruf_Oz5lkQ" x="48" y="301"/>
+                </children>
+                <children xsi:type="notation:Shape" xmi:id="_smZJ0CoUEee0mqFmHUZWcA" type="Choice" element="_smWtkCoUEee0mqFmHUZWcA" fontName="Verdana" lineColor="4210752">
+                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_smZJ0SoUEee0mqFmHUZWcA" x="192" y="230"/>
+                </children>
+                <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cZDBVzSwEeeAruf_Oz5lkQ"/>
+              </children>
+              <styles xsi:type="notation:ShapeStyle" xmi:id="_cZDBUTSwEeeAruf_Oz5lkQ" fontName="Verdana" fillColor="15790320" lineColor="12632256"/>
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cZDBUjSwEeeAruf_Oz5lkQ"/>
+            </children>
+          </children>
+          <styles xsi:type="notation:ShapeStyle" xmi:id="_cZBzMTSwEeeAruf_Oz5lkQ" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
+          <styles xsi:type="notation:FontStyle" xmi:id="_cZBzMjSwEeeAruf_Oz5lkQ"/>
+          <styles xsi:type="notation:BooleanValueStyle" xmi:id="_cZCaRTSwEeeAruf_Oz5lkQ" name="isHorizontal" booleanValue="true"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cZCaRjSwEeeAruf_Oz5lkQ" x="64" y="53" width="492" height="484"/>
+        </children>
+        <children xmi:id="_hpu30TSwEeeAruf_Oz5lkQ" type="State" element="_hpu33TSwEeeAruf_Oz5lkQ">
+          <children xsi:type="notation:DecorationNode" xmi:id="_hpu30jSwEeeAruf_Oz5lkQ" type="StateName">
+            <styles xsi:type="notation:ShapeStyle" xmi:id="_hpu30zSwEeeAruf_Oz5lkQ"/>
+            <layoutConstraint xsi:type="notation:Location" xmi:id="_hpu31DSwEeeAruf_Oz5lkQ"/>
+          </children>
+          <children xsi:type="notation:Compartment" xmi:id="_hpu31TSwEeeAruf_Oz5lkQ" type="StateTextCompartment">
+            <children xsi:type="notation:Shape" xmi:id="_hpu31jSwEeeAruf_Oz5lkQ" type="StateTextCompartmentExpression" fontName="Verdana" lineColor="4210752">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_hpu31zSwEeeAruf_Oz5lkQ"/>
+            </children>
+          </children>
+          <children xsi:type="notation:Compartment" xmi:id="_hpu32DSwEeeAruf_Oz5lkQ" type="StateFigureCompartment"/>
+          <styles xsi:type="notation:ShapeStyle" xmi:id="_hpu32TSwEeeAruf_Oz5lkQ" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
+          <styles xsi:type="notation:FontStyle" xmi:id="_hpu32jSwEeeAruf_Oz5lkQ"/>
+          <styles xsi:type="notation:BooleanValueStyle" xmi:id="_hpu32zSwEeeAruf_Oz5lkQ" name="isHorizontal" booleanValue="true"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_hpu33DSwEeeAruf_Oz5lkQ" x="362" y="603" width="271"/>
         </children>
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFmPMSoLEee0mqFmHUZWcA"/>
       </children>
       <styles xsi:type="notation:ShapeStyle" xmi:id="_FFlBECoLEee0mqFmHUZWcA" fontName="Verdana" fillColor="15790320" lineColor="12632256"/>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFmPMioLEee0mqFmHUZWcA" x="112" y="8" width="579" height="624"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFmPMioLEee0mqFmHUZWcA" x="112" y="8" width="724" height="788"/>
     </children>
     <children xsi:type="notation:Shape" xmi:id="_FFp5kCoLEee0mqFmHUZWcA" type="StatechartText" fontName="Verdana" lineColor="4210752">
       <children xsi:type="notation:DecorationNode" xmi:id="_FFp5kioLEee0mqFmHUZWcA" type="StatechartName">
@@ -108,7 +160,7 @@
       <children xsi:type="notation:Shape" xmi:id="_FFp5lSoLEee0mqFmHUZWcA" type="StatechartTextExpression" fontName="Verdana" lineColor="4210752">
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFp5lioLEee0mqFmHUZWcA"/>
       </children>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFp5lyoLEee0mqFmHUZWcA" x="750" y="8" width="680" height="1956"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFp5lyoLEee0mqFmHUZWcA" x="875" y="-5" width="680" height="1956"/>
     </children>
     <styles xsi:type="notation:DiagramStyle" xmi:id="_FFjy8SoLEee0mqFmHUZWcA"/>
     <edges xmi:id="_FFpSgCoLEee0mqFmHUZWcA" type="Transition" element="_FFoEZSoLEee0mqFmHUZWcA" source="_FFmPNCoLEee0mqFmHUZWcA" target="_FFndUioLEee0mqFmHUZWcA">
@@ -133,7 +185,7 @@
     <edges xmi:id="_jwyQgCoTEee0mqFmHUZWcA" type="Transition" element="_jwxCYCoTEee0mqFmHUZWcA" source="_SJj7ICoTEee0mqFmHUZWcA" target="_smZJ0CoUEee0mqFmHUZWcA">
       <children xsi:type="notation:DecorationNode" xmi:id="_jwyQhCoTEee0mqFmHUZWcA" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_jwyQhSoTEee0mqFmHUZWcA"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_jwyQhioTEee0mqFmHUZWcA" x="-26" y="-55"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_jwyQhioTEee0mqFmHUZWcA" x="-65" y="3"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_jwyQgSoTEee0mqFmHUZWcA" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_jwyQgyoTEee0mqFmHUZWcA" fontName="Verdana"/>
@@ -164,11 +216,32 @@
     <edges xmi:id="_JvlGgCoVEee0mqFmHUZWcA" type="Transition" element="_JvkfcCoVEee0mqFmHUZWcA" source="_FuwVYCoVEee0mqFmHUZWcA" target="_2d4MUCoUEee0mqFmHUZWcA">
       <children xsi:type="notation:DecorationNode" xmi:id="_JvltkCoVEee0mqFmHUZWcA" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_JvltkSoVEee0mqFmHUZWcA"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_JvltkioVEee0mqFmHUZWcA" y="10"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_JvltkioVEee0mqFmHUZWcA" x="-8" y="-69"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_JvlGgSoVEee0mqFmHUZWcA" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_JvlGgyoVEee0mqFmHUZWcA" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_JvlGgioVEee0mqFmHUZWcA" points="[-2, 27, -12, -67]$[-2, 97, -12, 3]$[18, 97, 8, 3]"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_JvlGgioVEee0mqFmHUZWcA" points="[-114, 34, 3, -176]$[-114, 212, 3, 2]$[-110, 212, 7, 2]"/>
+    </edges>
+    <edges xmi:id="_lUqRcDSwEeeAruf_Oz5lkQ" type="Transition" element="_lUpqYDSwEeeAruf_Oz5lkQ" source="_cZBzMDSwEeeAruf_Oz5lkQ" target="_hpu30TSwEeeAruf_Oz5lkQ">
+      <children xsi:type="notation:DecorationNode" xmi:id="_lUqRdDSwEeeAruf_Oz5lkQ" type="TransitionExpression">
+        <styles xsi:type="notation:ShapeStyle" xmi:id="_lUqRdTSwEeeAruf_Oz5lkQ"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_lUqRdjSwEeeAruf_Oz5lkQ" x="-2" y="-41"/>
+      </children>
+      <styles xsi:type="notation:ConnectorStyle" xmi:id="_lUqRcTSwEeeAruf_Oz5lkQ" routing="Rectilinear" lineColor="4210752"/>
+      <styles xsi:type="notation:FontStyle" xmi:id="_lUqRczSwEeeAruf_Oz5lkQ" fontName="Verdana"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_lUqRcjSwEeeAruf_Oz5lkQ" points="[0, 0, 2, -54]$[0, 54, 2, 0]"/>
+      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_lUq4gDSwEeeAruf_Oz5lkQ" id="(0.806910569105691,1.0)"/>
+      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_lUq4gTSwEeeAruf_Oz5lkQ" id="(0.34317343173431736,0.0)"/>
+    </edges>
+    <edges xmi:id="_o-L84DSwEeeAruf_Oz5lkQ" type="Transition" element="_o-LV0DSwEeeAruf_Oz5lkQ" source="_hpu30TSwEeeAruf_Oz5lkQ" target="_2d4MUCoUEee0mqFmHUZWcA">
+      <children xsi:type="notation:DecorationNode" xmi:id="_o-L85DSwEeeAruf_Oz5lkQ" type="TransitionExpression">
+        <styles xsi:type="notation:ShapeStyle" xmi:id="_o-L85TSwEeeAruf_Oz5lkQ"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_o-L85jSwEeeAruf_Oz5lkQ" x="-11" y="-22"/>
+      </children>
+      <styles xsi:type="notation:ConnectorStyle" xmi:id="_o-L84TSwEeeAruf_Oz5lkQ" routing="Rectilinear" lineColor="4210752"/>
+      <styles xsi:type="notation:FontStyle" xmi:id="_o-L84zSwEeeAruf_Oz5lkQ" fontName="Verdana"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_o-L84jSwEeeAruf_Oz5lkQ" points="[-94, -16, 93, 11]$[-191, -31, -4, -4]"/>
+      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_o-Mj8DSwEeeAruf_Oz5lkQ" id="(0.47232472324723246,1.0)"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>
