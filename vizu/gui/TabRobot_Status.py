@@ -42,8 +42,7 @@ class TabRobot_Status(QWidget):
         self.addSensorXor("switchArmLout", 1)
         self.addSensorXor("switchArmLin", 1)
         self.addSensorXor("switchRecalFL", 1)
-        self.addSensorXor("omronFL", 1)
-        self.addSensorXor("omronRL", 1)
+        self.addSensorXor("omronFront", 1)
         self.addSensorXor("start", 1)
         self.addSensorXor("colorSwitch", 1)
 
@@ -51,8 +50,7 @@ class TabRobot_Status(QWidget):
         self.addSensorXor("switchArmRout", 2)
         self.addSensorXor("switchArmRin", 2)
         self.addSensorXor("switchRecalFR", 2)
-        self.addSensorXor("omronFR", 2)
-        self.addSensorXor("omronRR", 2)
+        self.addSensorXor("omronRear", 2)
         self.addSensorXor("user1", 2)
         self.addSensorXor("user2", 2)
         
@@ -110,10 +108,8 @@ class TabRobot_Status(QWidget):
             self.user1.light(msg.hmi.user1)
             self.user2.light(msg.hmi.user2)
             
-            self.omronFL.light(msg.nav.omronFL)
-            self.omronFR.light(msg.nav.omronFR)
-            self.omronRL.light(msg.nav.omronRL)
-            self.omronRR.light(msg.nav.omronRR)
+            self.omronFront.light(msg.nav.omronFront)
+            self.omronRear.light(msg.nav.omronRear)
             self.switchRecalFL.light(msg.nav.switchRecalFL)
             self.switchRecalFR.light(msg.nav.switchRecalFR)
             self.switchRecalRC.light(msg.nav.switchRecalRC)

@@ -128,8 +128,7 @@ class TabCom(QWidget):
             self.combo_Baudrate.setEnabled(True)
             self.combo_COM.removeItem(self.combo_COM.findText(port))
             self._updateComInfo()
-            self.connecte
-            dLed.light(False)
+            self.connectedLed.light(False)
             
     def _disconnect(self):
         self.com.disconnect()
