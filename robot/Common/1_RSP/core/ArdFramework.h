@@ -25,6 +25,7 @@
 
 // Utilities to initialize arrays
 #define INIT_TABLE_TO_ZERO(x) memset(x, 0, sizeof(x))
+#define INIT_TABLE_TO(x, value) memset(x, value, sizeof(x))
 #define INIT_STRUCT_TO_ZERO(x) memset(&x, 0, sizeof(x))
 #define ARRAY_SIZE(a)               (sizeof(a)/sizeof(a[0]))
 

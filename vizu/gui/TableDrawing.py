@@ -31,6 +31,7 @@ ardBackground   = QColor(0xADAFAF)
 darkRed         = QColor(0x800000)
 transparent     = QColor(0,0,0,0)
 redTranslucid   = QColor(255,0,0,80)
+pink            = QColor(0xFF33CC)    
 
 markPen = QPen(ardGray)
 markPen.setWidth(1)
@@ -57,6 +58,9 @@ class TableOverview(QWidget):
         self.robot = None
         self.mouseTransform = None
         self.robotProxy = robotProxy
+        self.graphState = None
+        self.graphNodes = None
+        self.graphLinks = None
         self.drawTraj = False
         self.view = QRect( - T_SPARE,
                    - T_SPARE,
@@ -84,7 +88,6 @@ class TableOverview(QWidget):
         self.p.setWindow(self.view)
         self.p.setViewport(0., 0., aspectW, aspectH)
         #---DEBUG--- print(self.view)
-        
         self.table.draw(self.parent().robotState.stratInfo)
         self.p.translate(T_WIDTH/2, T_HEIGHT/2)
         self.mouseTransform, invertible = self.p.combinedTransform().inverted()
@@ -98,6 +101,7 @@ class TableOverview(QWidget):
         drawingPose.x = x
         drawingPose.y = -y
         drawingPose.h = math.degrees(-self.robotPose.h)
+        self.drawGraph()
         if self.robot != None and self.parent().robotConfig != None:
             self.drawTrajectory()
             self.robot.draw(drawingPose, self.parent().robotConfig, self.parent().robotState.stratInfo)
@@ -170,6 +174,67 @@ class TableOverview(QWidget):
             
             self.p.drawPolyline(QPolygonF(polyline))
             self.p.restore()
+
+    def drawGraph(self):
+        if self.graphState == None or self.graphNodes == None or self.graphLinks == None:
+            return
+
+        #Drawing links to other nodes
+        for i in range(self.graphLinks.count):
+            #if self.graphState.valid[i].valid:
+            #    self.p.setPen(pinkPen)
+            #else:
+            self.p.setPen(markPen)
+            #print(ord(self.graphLinks.sources[i])-1)
+            #print(ord(self.graphLinks.targets[i])-1)
+            source = self.graphNodes.nodes[ord(self.graphLinks.sources[i])-1]
+            target = self.graphNodes.nodes[ord(self.graphLinks.targets[i])-1]
+            
+            
+            self.p.drawLine(source.x, -source.y, target.x, -target.y)
+
+        #Drawing nodes
+        for i, node in enumerate(self.graphNodes.nodes):
+            self.p.setPen(markPen)
+            self.p.setBrush(trafficWhite)
+            drawCircle(self.p, node.x, -node.y, 10)
+            pinkPen = QPen(trafficWhite)
+            pinkPen.setWidth(3)
+            pinkPen.setCosmetic(True)
+            self.p.setPen(pinkPen)
+            self.p.setFont(QFont("Lucida Sans", 30, QFont.Bold))
+            self.p.drawText(QRectF(node.x, -node.y, 50, 80), str(i), QTextOption(Qt.AlignCenter))
+        
+        #Drawing current way
+        if self.graphState != None:
+            prevNode = None
+            pinkPen = QPen(Qt.darkGreen)
+            pinkPen.setWidth(3)
+            pinkPen.setCosmetic(True)
+            for i in range(self.graphState.way_count):
+                wayId = ord(self.graphState.way[i])-1
+                node = self.graphNodes.nodes[wayId]
+                
+                #Draw line to previous point
+                if prevNode != None:
+                    self.p.setPen(pinkPen)
+                    self.p.drawLine(node.x, -node.y, prevNode.x, -prevNode.y)
+                #Draw way-point
+                self.p.setPen(markPen)
+                self.p.setBrush(Qt.green)
+                drawCircle(self.p, node.x, -node.y, 20)
+                
+                prevNode = copy.copy(node)
+                
+            for i, validity in enumerate(self.graphState.valid):
+                redPen = QPen(Qt.red)
+                redPen.setWidth(3)
+                redPen.setCosmetic(True)
+                self.p.setPen(redPen)
+                if not validity:
+                    source = self.graphNodes.nodes[self.graphLinks.source[i]]
+                    target = self.graphNodes.nodes[self.graphLinks.target[i]]
+                    self.p.drawLine(source.x, -source.y, target.x, -target.y)
 
 class RobotWidget():
     def __init__(self, painter):
@@ -257,11 +322,15 @@ class RobotWidget():
         self.p.drawPath(carriage)
         
         self.p.save()
-        self.p.rotate(-90)
         if self.color == trafficWhite:
             self.p.setPen(Qt.black)
         else:
             self.p.setPen(trafficWhite)
+        self.p.setFont(QFont("Arial", 20, QFont.Bold))
+        self.p.drawText(QRectF(0, -cfg.yside, 2*cfg.yside, 2*cfg.xar), "8=>", QTextOption(Qt.AlignCenter))
+        self.p.setFont(QFont("Lucida Sans", 20, QFont.Bold))
+        self.p.drawText(QRectF(0,  40, 2*cfg.yside, 2*cfg.xar), "A.R.D.", QTextOption(Qt.AlignCenter))
+        self.p.rotate(-90)
         self.p.setFont(QFont("Lucida Sans", 30, QFont.Bold))
         self.p.drawText(QRectF(-cfg.yside, -cfg.xar, 2*cfg.yside, 2*cfg.xar), cfg.serialNumber, QTextOption(Qt.AlignCenter))
         self.p.restore()
@@ -748,7 +817,7 @@ class TableWidget():
         if stratInfo.cylinderCrater and stratInfo.matchColor == Types_pb2.SYM \
             or stratInfo.matchColor == Types_pb2.PREF:
             drawVerticalCylinder(self.p, Types_pb2.SYM, 800, 1850)
-        
+            
     
 def drawCircle(painter, x, y, radius):
     painter.save()

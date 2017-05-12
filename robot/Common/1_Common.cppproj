@@ -1175,16 +1175,22 @@
     <Compile Include="1_RSP\Log.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Navigation.cpp">
+    <Compile Include="1_RSP\Motion\Graph.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\Navigation.h">
+    <Compile Include="1_RSP\Motion\Graph.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\OppDetection.cpp">
+    <Compile Include="1_RSP\Motion\Navigation.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="1_RSP\OppDetection.h">
+    <Compile Include="1_RSP\Motion\Navigation.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Motion\OppDetection.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Motion\OppDetection.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\RobotParameters.cpp">
@@ -1430,6 +1436,7 @@
     <Folder Include="1_RSP\Actuators\" />
     <Folder Include="1_RSP\ComStack\" />
     <Folder Include="1_RSP\core\" />
+    <Folder Include="1_RSP\Motion\" />
     <Folder Include="1_RSP\Sensors\" />
     <Folder Include="2_AL" />
     <Folder Include="2_AL\1_Robot\" />

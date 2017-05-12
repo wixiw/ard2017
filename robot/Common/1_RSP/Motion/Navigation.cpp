@@ -6,6 +6,7 @@
 #include "Actuators/Buzzer.h"
 #include "OppDetection.h"
 #include "RobotParameters.h"
+#include "Graph.h"
 
 using namespace ard;
 
@@ -20,7 +21,7 @@ using namespace ard;
 #define ACCEL_RAMPS_DURATION 1000 //ms
 #define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT((m_state == eNavState_IDLE || m_state == eNavState_BLOCKED) && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
-Navigation::Navigation(Buzzer& klaxon, OppDetection& detection)
+Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph)
         :
                 Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
                 switchRecalFL(BORDURE_AVG, 1000, 10),
@@ -29,7 +30,7 @@ Navigation::Navigation(Buzzer& klaxon, OppDetection& detection)
                 m_pose(),
                 m_state(eNavState_IDLE),
                 m_target(),
-                m_sensTarget(eDir_UNDEFINED),
+                m_sensTarget(eDir_BEST),
                 m_order(eNavOrder_NOTHING),
                 userMaxSpeed(0),
                 userMaxTurnSpeed(0),
@@ -41,11 +42,13 @@ Navigation::Navigation(Buzzer& klaxon, OppDetection& detection)
                 m_mutex(),
                 oldStepL(0),
                 oldStepR(0),
+                currentWayPoint(0),
                 conf(NULL),
                 noSwitchMode(false),
                 state(),
                 klaxon(klaxon),
-                detection(detection)
+                detection(detection),
+                graph(graph)
 {
     state = apb_NavState_init_default;
 }
@@ -408,11 +411,22 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
     CHECK_ONE_ORDER_AT_A_TIME();
 
     m_order = eNavOrder_GOTO;
+
+    //Symetrize target
     if(sym)
         m_target = target.toAmbiPoint(m_color);
     else
         m_target = target;
-    m_sensTarget = sens;
+
+    //Choose direction
+    if(sens == eDir_BEST)
+    {
+        //TODO compute best direction
+        m_sensTarget = eDir_FORWARD;
+    }
+    else
+        m_sensTarget = sens;
+
     LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
 
@@ -427,11 +441,22 @@ void Navigation::goToCap(PointCap target, eDir sens, bool sym)
     CHECK_ONE_ORDER_AT_A_TIME();
 
     m_order = eNavOrder_GOTO_CAP;
+
+    //Symetrize target
     if(sym)
         m_target = target.toAmbiPose(m_color);
     else
         m_target = target;
-    m_sensTarget = sens;
+
+    //Choose direction
+    if(sens == eDir_BEST)
+    {
+        //TODO compute best direction
+        m_sensTarget = eDir_FORWARD;
+    }
+    else
+        m_sensTarget = sens;
+
     LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
 
@@ -572,6 +597,49 @@ void Navigation::recalRear(eTableBorder border)
     orderTimeout.arm(RECAL_TIMEOUT);
 
     m_mutex.unlock();
+}
+
+void Navigation::graphTo(float x/*mm*/, float y/*mm*/)
+{
+    m_mutex.lock();
+    CHECK_ONE_ORDER_AT_A_TIME();
+
+    LOG_INFO(String("   new request :  graphTo (") + x + ", " + y + ")");
+
+    DelayMs startCompute = millis();
+    NodeId entry = graph.getShortestNodeId(m_pose.toAmbiPoint(m_color));
+    NodeId exit = graph.getShortestNodeId(Point(x,y));
+    if(!graph.computeShortestPath(entry,exit))
+    {
+        LOG_ERROR("No path found in graph !");
+        m_mutex.unlock();
+        return;
+    }
+    DelayMs endCompute = millis();
+
+    LOG_INFO(String("   --> from ") + String(entry) + " to " + String(exit) + " computed in " + String(endCompute - startCompute) + " ms.");
+
+//    //Go to first point
+//    currentWayPoint = 0;
+//    m_target = graph.getWayPoint(currentWayPoint).toAmbiPoint(m_color);
+//    //TODO compute best direction
+//    m_sensTarget = eDir_FORWARD;
+//    //TODO change that
+//    m_order = eNavOrder_GOTO;
+//
+//    LOG_INFO(String("   going to next waypoint ") + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
+//    action_startOrder();
+//
+//    orderTimeout.arm(15000);
+
+    m_mutex.unlock();
+
+
+//    m_mutex.lock();
+//    graph.setValidLink(0, false);
+//    graph.reset();
+
+//    m_mutex.unlock();
 }
 
 void Navigation::stopMoving(eNavState targetState)
@@ -949,7 +1017,7 @@ String Navigation::sensToString(eDir sens)
         ASSERT(false);
         return "";
         break;
-    ENUM2STR(eDir_UNDEFINED)
+    ENUM2STR(eDir_BEST)
 ;        ENUM2STR(eDir_FORWARD);
         ENUM2STR(eDir_BACKWARD);
     }

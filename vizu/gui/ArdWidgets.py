@@ -99,7 +99,7 @@ class DirectionInput(QComboBox):
         super().__init__(parent)
         self.addItem("Forward", Types_pb2.FORWARD)
         self.addItem("Backward", Types_pb2.BACKWARD)
-        self.addItem("Undefined", Types_pb2.UNDEFINED)
+        self.addItem("Best", Types_pb2.BEST)
         self.setEditable(True)
         self.lineEdit().setReadOnly(True)
         self.lineEdit().setAlignment(Qt.AlignHCenter)

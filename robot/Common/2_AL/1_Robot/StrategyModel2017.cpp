@@ -131,7 +131,7 @@ void StrategyModel2017::poo(uint8_t nb, uint8_t max, uint32_t& containerCount, u
     }
 }
 
-void StrategyModel2017::take(bool& objectPresent, eCylinderType cylType, const String& caller)
+void StrategyModel2017::take(uint32_t& objectPresent, eCylinderType cylType, const String& caller)
 {
     uint32_t nbTransfered = 1;
     bool res = true;
@@ -172,7 +172,7 @@ void StrategyModel2017::take(bool& objectPresent, eCylinderType cylType, const S
     }
 }
 
-void StrategyModel2017::push(bool& objectPresent, const String& caller)
+void StrategyModel2017::push(uint32_t& objectPresent, const String& caller)
 {
     objectPresent = false;
     LOG_INFO(caller);

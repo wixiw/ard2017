@@ -84,6 +84,13 @@ void Point::translatePolar(double dtheta, double dist)
     y += dist * sin( radians(dtheta) );
 }
 
+Point Point::fromProto(apb_Point const& p)
+{
+    Point res;
+    res.x = p.x;
+    res.y = p.y;
+    return res;
+}
 
 /**
  * ----------------------------------------------------------------------------

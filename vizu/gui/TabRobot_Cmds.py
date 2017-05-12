@@ -43,6 +43,7 @@ class GeneralTeleopWidget(QWidget):
     getComStatsLogs = pyqtSignal()
     getTelemetry = pyqtSignal()
     resetCpu = pyqtSignal()
+    requestMotionGraph = pyqtSignal()
                         
     def __init__(self, parent):
         super().__init__(parent)
@@ -60,6 +61,9 @@ class GeneralTeleopWidget(QWidget):
         
         self.btn_cmds["resetCpu"] = QPushButton('Reset CPU', self)
         self.btn_cmds["resetCpu"].clicked.connect(self._resetCpu) 
+        
+        self.btn_cmds["motionGraph"] = QPushButton('Get motion graph', self)
+        self.btn_cmds["motionGraph"].clicked.connect(self._motionGraph) 
         
         self.layout["Commands"] = QVBoxLayout(self)
         for button in self.btn_cmds:    
@@ -93,6 +97,11 @@ class GeneralTeleopWidget(QWidget):
        print("Reset CPU request")
        self.resetCpu.emit()
    
+    @pyqtSlot()
+    def _motionGraph(self): 
+       print("Request motion graph")
+       self.requestMotionGraph.emit()
+   
 class NavigationTeleopWidget(QWidget): 
     blocked = pyqtSignal(bool)
                           
@@ -109,6 +118,7 @@ class NavigationTeleopWidget(QWidget):
         self.navTab["turnDelta"] = TurnDeltaForm(self)
         self.navTab["turnTo"] = TurnToForm(self)
         self.navTab["faceTo"] = FaceToForm(self)
+        self.navTab["graphTo"] = GraphToForm(self)
         self.navCombo = QComboBox(self)
         for tabName, tab in self.navTab.items():
             self.navCombo.addItem(tabName, tab)
@@ -409,4 +419,34 @@ class FaceToForm(QWidget):
         
     @pyqtSlot()
     def _execute(self):
-        self.execute.emit(Point(self.x.getValue(), self.y.getValue()))
+        self.execute.emit(Point(self.x.getValue(), self.y.getValue()))        
+        
+class GraphToForm(QWidget):
+    execute = pyqtSignal(Pose2D)
+                        
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.x = IntegerInput(self, -2000, 2000)
+        self.y = IntegerInput(self, -1500, 1500)
+        self.h = HeadingInput(self)
+        self.exe = QPushButton('Execute', self)
+        self.exe.clicked.connect(self._execute) 
+        
+        layout = QHBoxLayout(self)
+        layoutForm = QFormLayout()
+        layout.addLayout(layoutForm)
+        layout.addWidget(self.exe)
+        layoutForm.addRow("x (mm)", self.x)
+        layoutForm.addRow("y (mm)", self.y)
+        layoutForm.addRow("h (°)", self.h)
+        
+    def reset(self):
+        self.x.clear()
+        self.y.clear()
+        self.h.clear()
+        
+    @pyqtSlot()
+    def _execute(self):
+        self.execute.emit(Pose2D(self.x.getValue(), 
+                                 self.y.getValue(), 
+                                 self.h.getValue()))

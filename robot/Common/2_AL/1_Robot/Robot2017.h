@@ -145,6 +145,9 @@ namespace ard
         //keep tracks of opponent presense
         OppDetection detection;
 
+        //Graph of common way points
+        Graph motionGraph;
+
         //moves the robot
         Navigation nav;
 

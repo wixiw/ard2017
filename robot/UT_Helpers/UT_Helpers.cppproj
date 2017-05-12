@@ -39,7 +39,7 @@
       </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.samice</avrtool>
-    <avrtoolserialnumber>158006664</avrtoolserialnumber>
+    <avrtoolserialnumber>158002621</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x285E0A60</avrdeviceexpectedsignature>
     <com_atmel_avrdbg_tool_samice>
       <ToolOptions>
@@ -61,7 +61,7 @@
         <JlinkConfigFile>C:\Users\wix\Documents\GitHub\ard2017\robot\UT_Helpers\jlink.config</JlinkConfigFile>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.samice</ToolType>
-      <ToolNumber>158006664</ToolNumber>
+      <ToolNumber>158002621</ToolNumber>
       <ToolName>J-Link</ToolName>
     </com_atmel_avrdbg_tool_samice>
     <avrtoolinterface>JTAG</avrtoolinterface>
@@ -154,9 +154,9 @@
         </armgcc.compiler.symbols.DefSymbols>
         <armgcc.compiler.directories.IncludePaths>
           <ListValues>
-			<Value>../../../com</Value>
-			<Value>../../../com/generated</Value>
-			<Value>../../../com/nanopb</Value>
+            <Value>../../../com</Value>
+            <Value>../../../com/generated</Value>
+            <Value>../../../com/nanopb</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -191,9 +191,9 @@
         </armgcccpp.compiler.symbols.DefSymbols>
         <armgcccpp.compiler.directories.IncludePaths>
           <ListValues>
-			<Value>../../../com</Value>
-			<Value>../../../com/generated</Value>
-			<Value>../../../com/nanopb</Value>
+            <Value>../../../com</Value>
+            <Value>../../../com/generated</Value>
+            <Value>../../../com/nanopb</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
             <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
             <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
@@ -251,6 +251,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="UT_buffer_tools.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UT_graph.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

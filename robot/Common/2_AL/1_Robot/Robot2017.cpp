@@ -24,7 +24,8 @@ Robot2017::Robot2017():
     m_params(),
     hmi(TIMER_BUZZER),
     detection(SAFETY_AREA),
-    nav(hmi.buzzer, detection),
+    motionGraph(),
+    nav(hmi.buzzer, detection, motionGraph),
     chrono(),
     stratInfo(),
     actuators(),
@@ -40,7 +41,7 @@ void Robot2017::init(Robot2017Listener* client)
     ASSERT_TEXT(instance == NULL,"You should not call init twice.");
     instance = this;
 
-    ASSERT_TEXT(listener == NULL, "You should not replace the current client.");
+    ASSERT_TEXT(listener == NULL, "You should not replace the current client (or you have a memory corruption...).");//It's quite common to come here when you srewed up memory during initialization
     listener = client;
 
     ASSERT(instance);

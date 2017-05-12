@@ -48,7 +48,7 @@ bool OppDetection::isOpponentOnPath(eDir direction, PointCap& robotPose)
     case eDir_BACKWARD:
         return isOpponentBehind(robotPose);
         break;
-    case eDir_UNDEFINED:
+    case eDir_BEST:
     default:
         ASSERT_TEXT(false, "unexpected default case");
         return false;

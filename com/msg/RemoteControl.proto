@@ -10,7 +10,7 @@ message ConfigureMatch
 {
     uint32 strategy = 1;
     eColor matchColor = 2;
-    bool simulated = 3;
+    uint32 simulated = 3;
 }
 
 //request the robot to modify its speeds. If params are set to 0 => restore config speed
@@ -51,6 +51,46 @@ message Telemetry
     StratInfo2017     stratInfo         = 6;
 }
 
+message ActuatorsCmd
+{
+    uint32 hasLifter              = 11;
+    int32 lifter       = 1; //angle in per thousand
+    uint32 hasLeftArm             = 12;
+    int32 leftArm      = 2; //angle in per thousand
+    uint32 hasRightArm            = 13;
+    int32 rightArm     = 3; //angle in per thousand
+    uint32 hasLeftWheel           = 14;
+    int32 leftWheel    = 4; //angle in per thousand
+    uint32 hasRightWheel          = 15;
+    int32 rightWheel   = 5; //angle in per thousand
+    uint32 hasFunnyAction         = 16;
+    int32 funnyAction  = 6; //angle in per thousand
+}
+
+message SerialNumber
+{
+    string value         = 1 [(nanopb).max_size = 16];
+}
+
+message GraphNodes {
+    repeated Point nodes = 1 [(nanopb).max_count = 30];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_NODE)
+}
+
+//manual encoding to save space
+message GraphLinks {
+    uint32 count   = 4;
+    string sources = 1 [(nanopb).max_size = 200];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
+    string targets = 2 [(nanopb).max_size = 200];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
+}
+
+//manual encoding in string to save space
+message GraphState{
+    uint32               way_count   = 4;
+    string               way         = 1 [(nanopb).max_size = 30];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_NODE)
+    string               valid       = 2 [(nanopb).max_size = 200];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
+    eGraphState          state       = 3;
+}
+
 //WARNING : To keep in sync with RobotParameters.h/cpp
 message Configuration
 {
@@ -77,33 +117,12 @@ message Configuration
 
     //Avoidance config
     uint32 detectionWaitForOppMove = 21;  //in ms
-    bool detectionActive         = 22; //activates (or not) the avoidance system.
+    uint32 detectionActive         = 22; //activates (or not) the avoidance system.
 
     //Strat config
     uint32 strategyDuration      = 31; //in ms
 
-    bool logDebug                = 32; //set to true to activate debug logs
-}
-
-message ActuatorsCmd
-{
-    bool hasLifter              = 11;
-    int32 lifter       = 1; //angle in per thousand
-    bool hasLeftArm             = 12;
-    int32 leftArm      = 2; //angle in per thousand
-    bool hasRightArm            = 13;
-    int32 rightArm     = 3; //angle in per thousand
-    bool hasLeftWheel           = 14;
-    int32 leftWheel    = 4; //angle in per thousand
-    bool hasRightWheel          = 15;
-    int32 rightWheel   = 5; //angle in per thousand
-    bool hasFunnyAction         = 16;
-    int32 funnyAction  = 6; //angle in per thousand
-}
-
-message SerialNumber
-{
-    string value         = 1 [(nanopb).max_size = 16];
+    uint32 logDebug                = 32; //set to true to activate debug logs
 }
 
 //----------------------------------------------------------------------
@@ -143,7 +162,10 @@ message RemoteControlRequest
         Point               requestFaceTo       = 215;
         eTableBorder        recalFaceOnBorder   = 216;
         eTableBorder        recalRearOnBorder   = 217;
-        bool                requestBlockRobot   = 230;
+        PointCap            requestGraphTo      = 218;
+        uint32              requestBlockRobot   = 230;
+        EmptyMsg            requestMotionGraph  = 231;
+        EmptyMsg            requestMotionGraphState   = 232;
 
         //messages from 300 to 399 for design tests
             //communication tests
@@ -162,5 +184,8 @@ message RemoteControlResponse
         Configuration        config               = 3;
         SerialNumber         serialNumber         = 4;
         Telemetry            telemetry            = 200;
+        GraphState           graphState           = 201;
+        GraphNodes           graphNodes           = 202;
+        GraphLinks           graphLinks           = 203;
     }
 }

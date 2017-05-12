@@ -114,8 +114,8 @@ namespace ard
         //helper function for updating stratInfo
         void withdraw(uint8_t nb, uint32_t& dispenserCount, eCylinderType cylType, String const& caller);
         void poo(uint8_t nb, uint8_t max, uint32_t& containerCount, uint8_t points, String const& caller);
-        void take(bool& objectPresent, eCylinderType cylType, String const& caller);
-        void push(bool& objectPresent, const String& caller);
+        void take(uint32_t& objectPresent, eCylinderType cylType, String const& caller);
+        void push(uint32_t& objectPresent, const String& caller);
 
     };
 

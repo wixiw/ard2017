@@ -103,10 +103,14 @@ namespace ard
         void requestFaceTo          (apb_RemoteControlRequest const & request);
         void recalFaceOnBorder      (apb_RemoteControlRequest const & request);
         void recalRearOnBorder      (apb_RemoteControlRequest const & request);
+        void requestGraphTo         (apb_RemoteControlRequest const & request);
         void requestBlockRobot      (apb_RemoteControlRequest const & request);
+        void requestMotionGraph     (apb_RemoteControlRequest const & request);
+        void requestMotionGraphState(apb_RemoteControlRequest const & request);
         void requestMaxLengthMsg    (apb_RemoteControlRequest const & request);
         void requestCrcFailMsg      (apb_RemoteControlRequest const & request);
         void requestTooLittleMsg    (apb_RemoteControlRequest const & request);
+
 
     };
 

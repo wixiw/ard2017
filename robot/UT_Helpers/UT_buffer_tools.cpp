@@ -11,7 +11,7 @@ bool UT_buffer_tools_Linear()
 	memset(memory, 1, MEM_SIZE);
 	LinearBuffer buffer;
 	linear_init(&buffer, memory, MEM_SIZE);
-	
+
 	//Check initial condition
 	for(unsigned int i = 0; i < MEM_SIZE ; i++)
 	{
@@ -255,13 +255,13 @@ bool UT_buffer_tools_Copy_raw2cir()
     //Move max - 1 discontiguous elements  (note that max - 1 is (MEM_SIZE-1) - 1)
     {
         uint8_t byte = 0;
-        
+
         //move buffer head/tail ahead
         res &= circular_appendByte(&buffer, byte);
         res &= circular_popByte(&buffer, &byte);
         res &= circular_appendByte(&buffer, byte);
         res &= circular_popByte(&buffer, &byte);
-        
+
         res &= buffer_copy_raw2cir(&buffer, raw, MEM_SIZE-2);
         res &= circular_getOccupiedRoom(&buffer) == MEM_SIZE-2;
         res &= circular_getFreeRoom(&buffer) == 1;
@@ -276,18 +276,18 @@ bool UT_buffer_tools_Copy_raw2cir()
         res &= memory[0] == 0; //index we didn't fill on purpose
         res &= memory[1] == 0; //index we can't fill to allow a separation between head/tail of circular buffer
         circular_reset(&buffer);
-    }        
+    }
 
     //Move max discontiguous elements (note that max = MEM_SIZE-1)
     {
         uint8_t byte = 0;
-        
+
         //move buffer head/tail ahead
         res &= circular_appendByte(&buffer, byte);
         res &= circular_popByte(&buffer, &byte);
         res &= circular_appendByte(&buffer, byte);
         res &= circular_popByte(&buffer, &byte);
-        
+
         res &= buffer_copy_raw2cir(&buffer, raw, MEM_SIZE-1);
         res &= circular_getOccupiedRoom(&buffer) == MEM_SIZE-1;
         res &= circular_getFreeRoom(&buffer) == 0;
@@ -299,9 +299,9 @@ bool UT_buffer_tools_Copy_raw2cir()
         {
             res &= raw[i] == i+1;
         }
-        res &= memory[0] == MEM_SIZE-1; 
+        res &= memory[0] == MEM_SIZE-1;
         res &= memory[1] == 0; //index we can't fill to allow a separation between head/tail of circular buffer
-        circular_reset(&buffer); 
+        circular_reset(&buffer);
     }
 
     //Move max + 1 discontiguous elements : no operation is done on buffer (note that max +1 = (MEM_SIZE-1)+1)
@@ -325,7 +325,7 @@ bool UT_buffer_tools_Copy_raw2cir()
         res &= raw[i] == i+1;
     }
     circular_reset(&buffer);
-    
+
     return res;
 }
 

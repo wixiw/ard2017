@@ -12,6 +12,7 @@ namespace ard
     class Buzzer;
     class OppDetection;
     class RobotParameters;
+    class Graph;
 
     /**
      * This class manage the robot position movements, and avoidance
@@ -21,7 +22,7 @@ namespace ard
     class Navigation: public Thread
     {
     public:
-        Navigation(Buzzer& klaxon, OppDetection& detection);
+        Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph);
 
         //Reread the configuration and maps default config. Shall be called at least once
         //before the OS is initialized
@@ -158,6 +159,11 @@ namespace ard
         void recalRear(eTableBorder border);
 
         /**
+         * Reach a target destination running in the graph
+         */
+        void graphTo(float x/*mm*/, float y/*mm*/);
+
+        /**
          * Stops the robot. It interrupts current order.
          */
         void stopMoving(eNavState targetState = eNavState_STOPPING);
@@ -267,6 +273,8 @@ namespace ard
         //opponent management
         SwTimer orderTimeout;
 
+        //GraphTo management
+        uint8_t currentWayPoint;
 
         RobotParameters* conf;
 
@@ -278,8 +286,8 @@ namespace ard
 
         //klaxon to warn for failure and request opponent to move
         Buzzer& klaxon;
-
         OppDetection& detection;
+        Graph& graph;
     };
 }    //end namespace
 

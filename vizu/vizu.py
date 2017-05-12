@@ -96,6 +96,9 @@ class VizuMainScreen(QWidget):
         # connect Strat tab
         self.teleop.telemetry.connect(self.tabContexts["Strat"].tab._telemetryDataCb)
         self.teleop.config.connect(self.tabContexts["Strat"].tab._updateConfig)
+        self.teleop.graphState.connect(self.tabContexts["Strat"].tab._updateGraphState)
+        self.teleop.graphNodes.connect(self.tabContexts["Strat"].tab._updateGraphNodes)
+        self.teleop.graphLinks.connect(self.tabContexts["Strat"].tab._updateGraphLinks)
         
         # connect Robot tab
         self.tabContexts["Robot"].tab.tab["Commands"].sections["sound"].requestPlaySound      .connect(self.teleop.requestPlaySound)
@@ -103,6 +106,7 @@ class VizuMainScreen(QWidget):
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getComStatsLogs     .connect(self.teleop.getComStatsLogs)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].getTelemetry        .connect(self.teleop.getTelemetry)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].resetCpu            .connect(self.tabContexts["Strat"].tab.resetCpu)
+        self.tabContexts["Robot"].tab.tab["Commands"].sections["general"].requestMotionGraph  .connect(self.teleop.requestMotionGraph)
         self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].blocked                 .connect(self.teleop.requestBlockRobot)
         for cmd, widget in self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  # getattr is used to get a method reference from name, hence automatically binding signals ;p
@@ -170,6 +174,8 @@ class VizuMainScreen(QWidget):
         #print("New serial received : " + serial.value)
         self.setWindowTitle('8=> Vizu [' + serial.value + ']') 
         self.tabContexts["Strat"].tab.updateRobot(serial.value)
+        time.sleep(0.100)
+        self.teleop.requestMotionGraph()
     
     #Signal activated by shortcuts (helper to being able to map in conneciton)
     @pyqtSlot(int)

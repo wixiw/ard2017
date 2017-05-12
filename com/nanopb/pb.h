@@ -15,7 +15,7 @@
 
 /* Define this if your CPU / compiler combination does not support
  * unaligned memory access to packed structures. */
-/* #define PB_NO_PACKED_STRUCTS 1 */
+//#define PB_NO_PACKED_STRUCTS 1
 
 /* Increase the number of required fields that are tracked.
  * A compiler warning will tell if you need this. */
@@ -28,10 +28,10 @@
 /* #define PB_FIELD_32BIT 1 */
 
 /* Disable support for error messages in order to save some code space. */
-/* #define PB_NO_ERRMSG 1 */
+//#define PB_NO_ERRMSG 1
 
 /* Disable support for custom streams (support only memory buffers). */
-/* #define PB_BUFFER_ONLY 1 */
+//#define PB_BUFFER_ONLY 1
 
 /* Switch back to the old-style callback function signature.
  * This was the default until nanopb-0.2.1. */

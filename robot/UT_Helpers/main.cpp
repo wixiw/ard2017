@@ -8,24 +8,17 @@
 #include "BSP.hpp"
 
 extern bool UT_buffer_tools();
+extern bool UT_graph();
 using namespace ard;
-
-ArdUART serial0(UART, ID_UART, SERIAL_BUF_SIZE /*RX bvuf size*/, SERIAL_BUF_SIZE /*TX bvuf size*/);
 
 int main(void)
 {
     bool res = true;
 
     digitalWrite(LED_DUE_L, HIGH);
-    serial0.setInterruptPriority(0);
-    serial0.start(/*baurate = */115200);
 
-
-
-    //TODO test
-    //...
-    //...
     res &= UT_buffer_tools();
+    res &= UT_graph();
 
     //No led on on success (only the GREEN on led)
     if( res )

@@ -251,6 +251,24 @@ class TabStrat(QWidget):
             
             self.update()
 
+    @pyqtSlot(RemoteControl_pb2.GraphState)     
+    def _updateGraphState(self, msg):
+        self.overview.graphState = msg
+        #print("New graph state received")
+        #print(msg)
+        
+    @pyqtSlot(RemoteControl_pb2.GraphNodes)     
+    def _updateGraphNodes(self, msg):
+        self.overview.graphNodes = msg
+        #print("New graph nodes received")
+        #print(msg)
+
+    @pyqtSlot(RemoteControl_pb2.GraphLinks)     
+    def _updateGraphLinks(self, msg):
+        self.overview.graphLinks = msg
+        #print("New graph links received")
+        #print(msg)
+
     @pyqtSlot(RemoteControl_pb2.Configuration)    
     def _updateConfig(self, msg):
         #print("New config received from robot, updating tab")

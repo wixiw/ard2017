@@ -88,7 +88,10 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(requestFaceTo)
         HANDLE_MSG(recalFaceOnBorder)
         HANDLE_MSG(recalRearOnBorder)
+        HANDLE_MSG(requestGraphTo)
         HANDLE_MSG(requestBlockRobot)
+        HANDLE_MSG(requestMotionGraph)
+        HANDLE_MSG(requestMotionGraphState)
         HANDLE_MSG(requestMaxLengthMsg)
         HANDLE_MSG(requestCrcFailMsg)
         HANDLE_MSG(requestTooLittleMsg)
@@ -198,11 +201,12 @@ void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
     response.type.telemetry.nav             = robot.nav.serealize();
     response.type.telemetry.actuators       = robot.actuators.serealize();
     response.type.telemetry.stratInfo       = robot.stratInfo.serialize();
-    response.type.telemetry.hmi            = robot.hmi.serealize();
-    response.type.telemetry.chrono         = robot.chrono.serialize();
+    response.type.telemetry.hmi             = robot.hmi.serealize();
+    response.type.telemetry.chrono          = robot.chrono.serialize();
 
     /* Now we are ready to encode the message! */
-    ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode telemetry message.");
+    bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
+    ASSERT_TEXT(res, stream.errmsg);
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get telemetry failed");
 }
 
@@ -233,7 +237,8 @@ void RemoteControl::getConfig(apb_RemoteControlRequest const & request)
     response.type.config                = robot.getConfig();
 
     /* Now we are ready to encode the message! */
-    ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode config message.");
+    bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
+    ASSERT_TEXT(res, stream.errmsg);
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get config failed");
 }
 
@@ -341,6 +346,12 @@ void RemoteControl::recalRearOnBorder(apb_RemoteControlRequest const & request)
     robot.nav.recalRear(request.type.recalRearOnBorder);
 }
 
+void RemoteControl::requestGraphTo(apb_RemoteControlRequest const & request)
+{
+    robot.nav.graphTo(request.type.requestGraphTo.x,
+                      request.type.requestGraphTo.y);
+}
+
 void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)
 {
     if(request.type.requestBlockRobot)
@@ -348,6 +359,47 @@ void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)
     else
         LOG_INFO("Robot unblock request.");
     robot.detection.fakeRobot = request.type.requestBlockRobot;
+}
+
+void RemoteControl::requestMotionGraph(apb_RemoteControlRequest const & request)
+{
+    pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
+
+    /* Send NODES */
+    INIT_TABLE_TO_ZERO(msg_send_buffer);
+    apb_RemoteControlResponse response  = apb_RemoteControlResponse_init_default;
+    response.which_type                 = apb_RemoteControlResponse_graphNodes_tag;
+    robot.motionGraph.serializeNodes(response.type.graphNodes);
+    bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
+    ASSERT_TEXT(res, stream.errmsg);
+    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get graph failed (nodes)");
+
+    /* Send LINKS */
+    INIT_TABLE_TO_ZERO(msg_send_buffer);
+    stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
+    memset(&response, 0, sizeof(apb_RemoteControlResponse));
+    response.which_type                 = apb_RemoteControlResponse_graphLinks_tag;
+    robot.motionGraph.serializeLinks(response.type.graphLinks);
+    res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
+    ASSERT_TEXT(res, stream.errmsg);
+    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get graph failed (links)");
+}
+
+void RemoteControl::requestMotionGraphState(apb_RemoteControlRequest const & request)
+{
+    /* Clean send buffer and create a stream that will write to our buffer. */
+    INIT_TABLE_TO_ZERO(msg_send_buffer);
+    pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
+
+    /* populates message */
+    apb_RemoteControlResponse response  = apb_RemoteControlResponse_init_default;
+    response.which_type                 = apb_RemoteControlResponse_graphState_tag;
+    response.type.graphState            = robot.motionGraph.serializeState();
+
+    /* Now we are ready to encode the message! */
+    bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
+    ASSERT_TEXT(res, stream.errmsg);
+    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get graph state failed");
 }
 
 void RemoteControl::requestMaxLengthMsg(apb_RemoteControlRequest const & request)
@@ -399,7 +451,8 @@ void RemoteControl::log(LogMsg const & log)
     strcpy(response.type.log.text, log.text);
 
     /* Now we are ready to encode the message! */
-    ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode Log message.");
+    bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
+    ASSERT_TEXT(res, stream.errmsg);
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: log failed");
 
     mutex.unlock();
@@ -419,7 +472,8 @@ void RemoteControl::bootUp()
     strcpy(response.type.serialNumber.value, robot.getSerialNumber());
 
     /* Now we are ready to encode the message! */
-    ASSERT_TEXT(pb_encode(&stream, apb_RemoteControlResponse_fields, &response), "Failed to encode serial number.");
+    bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
+    ASSERT_TEXT(res, stream.errmsg);
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: serial number send failed");
 
     mutex.unlock();

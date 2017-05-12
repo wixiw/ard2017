@@ -34,6 +34,9 @@ class RemoteControl(QObject):
     config          = pyqtSignal(RemoteControl_pb2.Configuration)
     serialNumber    = pyqtSignal(RemoteControl_pb2.SerialNumber)
     telemetry       = pyqtSignal(RemoteControl_pb2.Telemetry)
+    graphState     = pyqtSignal(RemoteControl_pb2.GraphState)
+    graphNodes     = pyqtSignal(RemoteControl_pb2.GraphNodes)
+    graphLinks     = pyqtSignal(RemoteControl_pb2.GraphLinks)
     #-------------------------
     
     #trigger listeners
@@ -47,6 +50,7 @@ class RemoteControl(QObject):
         self.serialNumber.connect(self._bootup)
         self.bootupReceived = False
         self.simulated = False
+        self.count = 10
           
 #---------------------------------------------------------------------------------
 # Public API :
@@ -213,6 +217,13 @@ class RemoteControl(QObject):
         msg.requestFaceTo.y = point.y
         self._sendMsg(msg)
         print(msg)
+        
+    @pyqtSlot(Pose2D)
+    def graphTo(self, pose):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        pose.toPoseMsg(msg.requestGraphTo)
+        self._sendMsg(msg)
+        print(msg)
                 
     @pyqtSlot()
     def requestMaxLengthMsg(self):
@@ -237,6 +248,19 @@ class RemoteControl(QObject):
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestBlockRobot = blocked
         self._sendMsg(msg)
+        
+    @pyqtSlot()
+    def requestMotionGraph(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestMotionGraph.SetInParent()
+        self._sendMsg(msg)
+        
+    @pyqtSlot()
+    def requestMotionGraphState(self):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestMotionGraphState.SetInParent()
+        self._sendMsg(msg)
+        
         
     @pyqtSlot()
     def requestTooLittleMsg(self):
@@ -338,6 +362,11 @@ class RemoteControl(QObject):
     def _telemetryTick(self):
         #print("tick")
         self.getTelemetry()
+        if self.count == 10:
+            self.requestMotionGraphState()
+            self.count = 0
+        else:
+            self.count = self.count + 1
 
     @pyqtSlot(RemoteControl_pb2.SerialNumber)        
     def _bootup(self, serial):

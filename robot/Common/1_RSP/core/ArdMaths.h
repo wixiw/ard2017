@@ -50,6 +50,9 @@ namespace ard
         //Translate the point of the following distances in mm
         void translate(double dx, double dy);
 
+        //Build from the associated proto struct
+        static Point fromProto(apb_Point const& p);
+
         //Translate the point from the following angle and distance (degree and mm).
         void translatePolar(double dtheta, double dist);
 

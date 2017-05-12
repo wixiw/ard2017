@@ -5,7 +5,7 @@ syntax = "proto3";
 // with communication types. It's an architectureal coupling done on purpose
 
 enum eDir{
-    UNDEFINED     =  0;
+    BEST          =  0;
     FORWARD       =  1;
     BACKWARD      = -1;
 }
@@ -39,6 +39,7 @@ enum eNavOrder {
     STOP             = 3;
     RECAL_FACE       = 4;
     RECAL_REAR       = 5;
+    GRAPH_TO         = 6;
 }
 
 enum eLogLevel {
@@ -46,6 +47,12 @@ enum eLogLevel {
     INFO              = 1;
     ERROR             = 2;
     ASSERT            = 3;
+}
+
+enum eGraphState {
+    GS_UNDEFINED     = 0;
+    GS_IDLE          = 1;
+    GS_COMPUTED      = 2;
 }
 
 // Specific 2017

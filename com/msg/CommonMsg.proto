@@ -23,7 +23,7 @@ message PointCap
 }
 
 message Chrono {
-    bool       started         = 1; // is the match started
+    uint32       started         = 1; // is the match started
     uint32     chrono_ms       = 2; // time since beginnnog of the match
     uint32     timeLeft_ms     = 3; // time left for the match (funny action non included)
 }
@@ -32,11 +32,11 @@ message NavState {
     eNavState       state                  = 10; //current motion state
     eNavOrder       order                  = 11; //current motion order
     PointCap        pos                    = 12; //robot position
-    bool            omronFront             = 21; //front avoidance omrons, true = presence
-    bool            omronRear              = 23; //rear avoidance omrons, true = presence
-    bool            switchRecalFL          = 30; //front left recal on border switch
-    bool            switchRecalFR          = 31; //front right recal on border switch
-    bool            switchRecalRC          = 32; //rear center recal on border switch
+    uint32            omronFront             = 21; //front avoidance omrons, true = presence
+    uint32            omronRear              = 23; //rear avoidance omrons, true = presence
+    uint32            switchRecalFL          = 30; //front left recal on border switch
+    uint32            switchRecalFR          = 31; //front right recal on border switch
+    uint32            switchRecalRC          = 32; //rear center recal on border switch
 }
 
 message ColorSensorState {
@@ -49,15 +49,15 @@ message ColorSensorState {
 
 message ActuatorsState {
     ColorSensorState   colorSensor        = 1;
-    bool               switchArmLout      = 2; //left arm extended (fully outside robot) position end course switch
-    bool               switchArmLin       = 3; //left arm retracted (fully inside robot) position end course switch
-    bool               switchArmRout      = 4; //right arm extended (fully outside robot) position end course switch
-    bool               switchArmRin       = 5; //right arm retracted (fully inside robot) position end course switch
-    bool               omronCylinder      = 6; //swallow mouth cylinder presence detection (lateral omron)
-    bool               switchCylinder     = 7; //swallow mouth cylinder ready to lift, switch detection
-    bool               omronSpare         = 8; //Rear center spare omron, close to the recal switch
-    bool               switchLifterUp     = 9; //lifter upside end course switch
-    bool               switchLifterDown   = 10; //lifter upside end course switch
+    uint32               switchArmLout      = 2; //left arm extended (fully outside robot) position end course switch
+    uint32               switchArmLin       = 3; //left arm retracted (fully inside robot) position end course switch
+    uint32               switchArmRout      = 4; //right arm extended (fully outside robot) position end course switch
+    uint32               switchArmRin       = 5; //right arm retracted (fully inside robot) position end course switch
+    uint32               omronCylinder      = 6; //swallow mouth cylinder presence detection (lateral omron)
+    uint32               switchCylinder     = 7; //swallow mouth cylinder ready to lift, switch detection
+    uint32               omronSpare         = 8; //Rear center spare omron, close to the recal switch
+    uint32               switchLifterUp     = 9; //lifter upside end course switch
+    uint32               switchLifterDown   = 10; //lifter upside end course switch
 
     int32              servoLifter        = 30;
     int32              servoLeftArm       = 31;
@@ -68,20 +68,19 @@ message ActuatorsState {
 }
 
 message HmiState {
-    bool               led1               = 2;
-    bool               led2               = 3;
-    bool               led3               = 4;
-    bool               led4               = 5;
+    uint32               led1               = 2;
+    uint32               led2               = 3;
+    uint32               led3               = 4;
+    uint32               led4               = 5;
     uint32             ledRgb             = 6;
-    bool               start              = 7;
-    bool               colorSwitch        = 8;
-    bool               user1              = 9;
-    bool               user2              = 10;
-    bool               ledDue_Rx          = 11;
-    bool               ledDue_Tx          = 12;
-    bool               ledDue_L           = 13;
+    uint32               start              = 7;
+    uint32               colorSwitch        = 8;
+    uint32               user1              = 9;
+    uint32               user2              = 10;
+    uint32               ledDue_Rx          = 11;
+    uint32               ledDue_Tx          = 12;
+    uint32               ledDue_L           = 13;
 }
-
 
 message Tone
 {
@@ -91,7 +90,7 @@ message Tone
 
 message Melody
 {
-    repeated Tone tones = 1 [(nanopb).max_count = 150]; //size to be adjusted with Buzzer.cpp
+    repeated Tone tones = 1 [(nanopb).max_count = 10]; //size to be adjusted with Buzzer.cpp
 }
 
 message StratInfo2017
@@ -109,15 +108,17 @@ message StratInfo2017
     uint32 containerBorderOppNb           = 8; //Nb cylinders present in the border container on opponent side
     uint32 containerStartNb               = 9; //Nb cylinders present in our start area
 
-    bool   cylinderStart                  = 10; //Cylinder close to our start position is present on table
-    bool   cylinderContainer              = 11; //Cylinder close to our midle center container is present on table
-    bool   cylinderCenter                 = 12; //Cylinder in the middle of our table side is present on table
-    bool   cylinderCorner                 = 13; //Cylinder close to our start position table corner is present on table
-    bool   cylinderCrater                 = 14; //Cylinder close to our bottom craters is present on table
-    bool   cylinderOppStart               = 15; //Cylinder close to opponent start position is present on table
-    bool   cylinderOppContainer           = 16; //Cylinder close to opponent midle center container is present on table
-    bool   cylinderOppCenter              = 17; //Cylinder in the middle of opponent table side is present on table
+    uint32   cylinderStart                  = 10; //Cylinder close to our start position is present on table
+    uint32   cylinderContainer              = 11; //Cylinder close to our midle center container is present on table
+    uint32   cylinderCenter                 = 12; //Cylinder in the middle of our table side is present on table
+    uint32   cylinderCorner                 = 13; //Cylinder close to our start position table corner is present on table
+    uint32   cylinderCrater                 = 14; //Cylinder close to our bottom craters is present on table
+    uint32   cylinderOppStart               = 15; //Cylinder close to opponent start position is present on table
+    uint32   cylinderOppContainer           = 16; //Cylinder close to opponent midle center container is present on table
+    uint32   cylinderOppCenter              = 17; //Cylinder in the middle of opponent table side is present on table
     repeated uint32  stock                = 19 [(nanopb).max_count = 6]; //The type of each stocked cylinder (index 0 is highest level, and 5 is stocked in arms)
 
     uint32 score                          = 20; //Expected match point count
 }
+
+
