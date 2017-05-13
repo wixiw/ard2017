@@ -41,7 +41,7 @@ class TabRobot_Cmds(QWidget):
 class GeneralTeleopWidget(QWidget):    
     getOsStatsLogs = pyqtSignal()
     getComStatsLogs = pyqtSignal()
-    getTelemetry = pyqtSignal()
+    getTelemetry = pyqtSignal(bool)
     resetCpu = pyqtSignal()
     requestMotionGraph = pyqtSignal()
                         
@@ -90,7 +90,7 @@ class GeneralTeleopWidget(QWidget):
     @pyqtSlot()
     def _getTelemetry(self): 
        print("Telemetry request")
-       self.getTelemetry.emit()
+       self.getTelemetry.emit(True)
        
     @pyqtSlot()
     def _resetCpu(self): 
@@ -422,13 +422,14 @@ class FaceToForm(QWidget):
         self.execute.emit(Point(self.x.getValue(), self.y.getValue()))        
         
 class GraphToForm(QWidget):
-    execute = pyqtSignal(Pose2D)
+    execute = pyqtSignal(Pose2D, int)
                         
     def __init__(self, parent):
         super().__init__(parent)
         self.x = IntegerInput(self, -2000, 2000)
         self.y = IntegerInput(self, -1500, 1500)
         self.h = HeadingInput(self)
+        self.dir = DirectionInput(self)
         self.exe = QPushButton('Execute', self)
         self.exe.clicked.connect(self._execute) 
         
@@ -439,6 +440,7 @@ class GraphToForm(QWidget):
         layoutForm.addRow("x (mm)", self.x)
         layoutForm.addRow("y (mm)", self.y)
         layoutForm.addRow("h (°)", self.h)
+        layoutForm.addRow("dir", self.dir)
         
     def reset(self):
         self.x.clear()
@@ -449,4 +451,5 @@ class GraphToForm(QWidget):
     def _execute(self):
         self.execute.emit(Pose2D(self.x.getValue(), 
                                  self.y.getValue(), 
-                                 self.h.getValue()))
+                                 self.h.getValue()), 
+                          self.dir.getValue())

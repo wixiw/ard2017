@@ -284,6 +284,7 @@ namespace ard
 
         //GraphTo management
         uint8_t currentWayPoint;
+        eDir m_graphDir;
 
         RobotParameters* conf;
 

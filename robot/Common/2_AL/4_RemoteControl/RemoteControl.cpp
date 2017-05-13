@@ -91,7 +91,6 @@ void RemoteControl::handleMsg(ICom const* origin, char const * msg, size_t msgLe
         HANDLE_MSG(requestGraphTo)
         HANDLE_MSG(requestBlockRobot)
         HANDLE_MSG(requestMotionGraph)
-        HANDLE_MSG(requestMotionGraphState)
         HANDLE_MSG(requestMaxLengthMsg)
         HANDLE_MSG(requestCrcFailMsg)
         HANDLE_MSG(requestTooLittleMsg)
@@ -190,24 +189,45 @@ void RemoteControl::getComStatsLogs(apb_RemoteControlRequest const & request)
 
 void RemoteControl::getTelemetry(apb_RemoteControlRequest const & request)
 {
-    /* Clean send buffer and create a stream that will write to our buffer. */
-    INIT_TABLE_TO_ZERO(msg_send_buffer);
-    pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
+    {
+        /* Clean send buffer and create a stream that will write to our buffer. */
+        INIT_TABLE_TO_ZERO(msg_send_buffer);
+        pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
 
-    /* populates message */
-    apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
-    response.which_type                     = apb_RemoteControlResponse_telemetry_tag;
-    response.type.telemetry.date            = millis();
-    response.type.telemetry.nav             = robot.nav.serealize();
-    response.type.telemetry.actuators       = robot.actuators.serealize();
-    response.type.telemetry.stratInfo       = robot.stratInfo.serialize();
-    response.type.telemetry.hmi             = robot.hmi.serealize();
-    response.type.telemetry.chrono          = robot.chrono.serialize();
+        /* populates message */
+        apb_RemoteControlResponse response = apb_RemoteControlResponse_init_default;
+        response.which_type                     = apb_RemoteControlResponse_telemetry_tag;
+        response.type.telemetry.date            = millis();
+        response.type.telemetry.nav             = robot.nav.serealize();
+        response.type.telemetry.actuators       = robot.actuators.serealize();
+        response.type.telemetry.stratInfo       = robot.stratInfo.serialize();
+        response.type.telemetry.hmi             = robot.hmi.serealize();
+        response.type.telemetry.chrono          = robot.chrono.serialize();
 
-    /* Now we are ready to encode the message! */
-    bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
-    ASSERT_TEXT(res, stream.errmsg);
-    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get telemetry failed");
+        /* Now we are ready to encode the message! */
+        bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
+        ASSERT_TEXT(res, stream.errmsg);
+        ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get telemetry failed");
+    }
+
+    //As all graph data doesn't fit in the telemetry message, it's better to send an independent message.
+    //Only send the graph info if requested explicitely
+    if(request.type.getTelemetry)
+    {
+        /* Clean send buffer and create a stream that will write to our buffer. */
+        INIT_TABLE_TO_ZERO(msg_send_buffer);
+        pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
+
+        /* populates message */
+        apb_RemoteControlResponse response  = apb_RemoteControlResponse_init_default;
+        response.which_type                 = apb_RemoteControlResponse_graphState_tag;
+        response.type.graphState            = robot.motionGraph.serializeState();
+
+        /* Now we are ready to encode the message! */
+        bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
+        ASSERT_TEXT(res, stream.errmsg);
+        ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get graph state failed");
+    }
 }
 
 void RemoteControl::reboot(apb_RemoteControlRequest const & request)
@@ -348,9 +368,10 @@ void RemoteControl::recalRearOnBorder(apb_RemoteControlRequest const & request)
 
 void RemoteControl::requestGraphTo(apb_RemoteControlRequest const & request)
 {
-    robot.nav.graphTo(request.type.requestGraphTo.x,
-                      request.type.requestGraphTo.y,
-                      request.type.requestGraphTo.h);
+    robot.nav.graphTo(request.type.requestGraphTo.target.x,
+                      request.type.requestGraphTo.target.y,
+                      request.type.requestGraphTo.target.h,
+                      request.type.requestGraphTo.direction);
 }
 
 void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)
@@ -384,23 +405,6 @@ void RemoteControl::requestMotionGraph(apb_RemoteControlRequest const & request)
     res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
     ASSERT_TEXT(res, stream.errmsg);
     ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get graph failed (links)");
-}
-
-void RemoteControl::requestMotionGraphState(apb_RemoteControlRequest const & request)
-{
-    /* Clean send buffer and create a stream that will write to our buffer. */
-    INIT_TABLE_TO_ZERO(msg_send_buffer);
-    pb_ostream_t stream = pb_ostream_from_buffer((pb_byte_t*) msg_send_buffer, sizeof(msg_send_buffer));
-
-    /* populates message */
-    apb_RemoteControlResponse response  = apb_RemoteControlResponse_init_default;
-    response.which_type                 = apb_RemoteControlResponse_graphState_tag;
-    response.type.graphState            = robot.motionGraph.serializeState();
-
-    /* Now we are ready to encode the message! */
-    bool res = pb_encode(&stream, apb_RemoteControlResponse_fields, &response);
-    ASSERT_TEXT(res, stream.errmsg);
-    ASSERT_TEXT(com.sendMsg(msg_send_buffer, stream.bytes_written), "RemoteControl: get graph state failed");
 }
 
 void RemoteControl::requestMaxLengthMsg(apb_RemoteControlRequest const & request)

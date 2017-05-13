@@ -168,14 +168,17 @@ class TabStrat(QWidget):
         self.cbox["actuators out"] = QCheckBox()
         self.cbox["mire"] = QCheckBox()
         self.cbox["traj"] = QCheckBox()
+        self.cbox["graph"] = QCheckBox()
         box_layout = QFormLayout()
         box_layout.addRow("actuators out : ", self.cbox["actuators out"])
         box_layout.addRow("mire : ", self.cbox["mire"])
         box_layout.addRow("traj : ", self.cbox["traj"])
+        box_layout.addRow("graph : ", self.cbox["graph"])
         self.box_viewConf.setLayout(box_layout)
         self.cbox["actuators out"].stateChanged.connect(self._actuatorsChecked)
         self.cbox["mire"].stateChanged.connect(self._mireChecked) #nearly milk-shake ^^ oOooO
         self.cbox["traj"].stateChanged.connect(self._trajChecked)
+        self.cbox["graph"].stateChanged.connect(self._graphChecked)
        
     def buildGhostInfo(self):
         self.box_ghost = QGroupBox("Ghost")
@@ -278,7 +281,6 @@ class TabStrat(QWidget):
     def _actuatorsChecked(self, state):
         if state == Qt.Checked:
             self.overview.setActuators(True)
-            
         else:
             self.overview.setActuators(False)
             
@@ -295,6 +297,15 @@ class TabStrat(QWidget):
             self.overview.drawTraj = True;
         else:
             self.overview.drawTraj = False;
+
+    @pyqtSlot(int)
+    def _graphChecked(self, state):
+        if state == Qt.Checked:
+            self.overview.drawGraph = True;
+            self.teleop.graphActive = True
+        else:
+            self.overview.drawGraph = False;
+            self.teleop.graphActive = False
 
     @pyqtSlot(int)
     def selectStrat(self, comboId):

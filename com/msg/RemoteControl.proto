@@ -141,7 +141,7 @@ message RemoteControlRequest
         //messages from 0 to 99 are general purpose messages
         EmptyMsg             getOsStats         = 1;
         EmptyMsg             getOsStatsLogs     = 2;
-        EmptyMsg             getTelemetry       = 3;
+        bool                 getTelemetry       = 3;
         EmptyMsg             reboot             = 4;
         Melody               requestPlaySound   = 5;
         EmptyMsg             getConfig          = 6;
@@ -165,10 +165,9 @@ message RemoteControlRequest
         Point               requestFaceTo       = 215;
         eTableBorder        recalFaceOnBorder   = 216;
         eTableBorder        recalRearOnBorder   = 217;
-        PointCap            requestGraphTo      = 218;
+        RequestGotoCap      requestGraphTo      = 218;
         uint32              requestBlockRobot   = 230;
         EmptyMsg            requestMotionGraph  = 231;
-        EmptyMsg            requestMotionGraphState   = 232;
 
         //messages from 300 to 399 for design tests
             //communication tests

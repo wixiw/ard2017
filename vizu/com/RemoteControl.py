@@ -50,7 +50,7 @@ class RemoteControl(QObject):
         self.serialNumber.connect(self._bootup)
         self.bootupReceived = False
         self.simulated = False
-        self.count = 10
+        self.graphActive = False
           
 #---------------------------------------------------------------------------------
 # Public API :
@@ -107,10 +107,10 @@ class RemoteControl(QObject):
         msg.getComStatsLogs.SetInParent()
         self._sendMsg(msg)
         
-    @pyqtSlot()
-    def getTelemetry(self):
+    @pyqtSlot(bool)
+    def getTelemetry(self, graphActive):
         msg = RemoteControl_pb2.RemoteControlRequest()
-        msg.getTelemetry.SetInParent()
+        msg.getTelemetry = graphActive
         self._sendMsg(msg)
     
     @pyqtSlot(Melody)
@@ -218,10 +218,11 @@ class RemoteControl(QObject):
         self._sendMsg(msg)
         print(msg)
         
-    @pyqtSlot(Pose2D)
-    def graphTo(self, pose):
+    @pyqtSlot(Pose2D, int)
+    def graphTo(self, pose, dir):
         msg = RemoteControl_pb2.RemoteControlRequest()
-        pose.toPoseMsg(msg.requestGraphTo)
+        pose.toPoseMsg(msg.requestGraphTo.target)
+        msg.requestGraphTo.direction = dir
         self._sendMsg(msg)
         print(msg)
                 
@@ -253,14 +254,7 @@ class RemoteControl(QObject):
     def requestMotionGraph(self):
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestMotionGraph.SetInParent()
-        self._sendMsg(msg)
-        
-    @pyqtSlot()
-    def requestMotionGraphState(self):
-        msg = RemoteControl_pb2.RemoteControlRequest()
-        msg.requestMotionGraphState.SetInParent()
-        self._sendMsg(msg)
-        
+        self._sendMsg(msg)        
         
     @pyqtSlot()
     def requestTooLittleMsg(self):
@@ -361,13 +355,7 @@ class RemoteControl(QObject):
     @pyqtSlot()
     def _telemetryTick(self):
         #print("tick")
-        self.getTelemetry()
-        if self.count == 10:
-            time.sleep(0.050)
-            self.requestMotionGraphState()
-            self.count = 0
-        else:
-            self.count = self.count + 1
+        self.getTelemetry(self.graphActive)
 
     @pyqtSlot(RemoteControl_pb2.SerialNumber)        
     def _bootup(self, serial):

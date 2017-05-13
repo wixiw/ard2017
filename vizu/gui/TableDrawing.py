@@ -62,6 +62,7 @@ class TableOverview(QWidget):
         self.graphNodes = None
         self.graphLinks = None
         self.drawTraj = False
+        self.drawGraph = False
         self.view = QRect( - T_SPARE,
                    - T_SPARE,
                     T_WIDTH     +  2.*T_SPARE,
@@ -101,9 +102,10 @@ class TableOverview(QWidget):
         drawingPose.x = x
         drawingPose.y = -y
         drawingPose.h = math.degrees(-self.robotPose.h)
-        self.drawGraph()
+        if self.drawGraph:
+            self._drawGraph()
         if self.robot != None and self.parent().robotConfig != None:
-            self.drawTrajectory()
+            self._drawTrajectory()
             self.robot.draw(drawingPose, self.parent().robotConfig, self.parent().robotState.stratInfo)
             self.ghost.draw(self.ghost.pose, self.parent().robotConfig, self.parent().robotState.stratInfo)
         self.p.end()
@@ -154,7 +156,7 @@ class TableOverview(QWidget):
             
         return QWidget.mouseMoveEvent(self, event)
             
-    def drawTrajectory(self):
+    def _drawTrajectory(self):
         if self.drawTraj:
             self.p.save()
             pen = QPen(darkRed)
@@ -175,15 +177,12 @@ class TableOverview(QWidget):
             self.p.drawPolyline(QPolygonF(polyline))
             self.p.restore()
 
-    def drawGraph(self):
-        if self.graphState == None or self.graphNodes == None or self.graphLinks == None:
+    def _drawGraph(self):
+        if self.graphNodes == None or self.graphLinks == None:
             return
 
         #Drawing links to other nodes
         for i in range(self.graphLinks.count):
-            #if self.graphState.valid[i].valid:
-            #    self.p.setPen(pinkPen)
-            #else:
             self.p.setPen(markPen)
             #print(ord(self.graphLinks.sources[i])-1)
             #print(ord(self.graphLinks.targets[i])-1)

@@ -334,6 +334,7 @@ bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, 
         setWayPoint(2, 1);
         m_state.way_count = 3;
         m_state.headings_count = m_state.way_count;
+        m_state.state = eGraphState_GS_COMPUTED;
     }
     else
     {
@@ -358,6 +359,11 @@ bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, 
         LOG_INFO(String("   --> computed in ") + String(endCompute - startCompute) + " ms.");
 
     return res;
+}
+
+uint16_t Graph::computeDistance(NodeId a, NodeId b)
+{
+    //d_ab =
 }
 
 bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
@@ -452,11 +458,14 @@ void Graph::optimizeHeadings(eDir sens)
     ASSERT(2 < getWayPointNb());
     m_state.headings[getWayPointNb()-1] = m_state.targetPoint.h;
 
+    if( sens == eDir_BEST )
+        sens = eDir_FORWARD;//TODO do the real job
+
     for( int i = getWayPointNb()-2 ; i != 0 ; i--)
     {
-        m_state.headings[i] = getWayPoint(i).angleTo(getWayPoint(i+1));
+        m_state.headings[i] = headingToDir(getWayPoint(i).angleTo(getWayPoint(i+1)), sens);
     }
-    m_state.headings[0] = getWayPoint(0).angleTo(getWayPoint(1));
+    m_state.headings[0] = m_state.startPoint.h;
 }
 
 NodeId Graph::getShortestNodeId(Point pos, uint16_t* distance)

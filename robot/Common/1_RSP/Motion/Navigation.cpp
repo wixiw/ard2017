@@ -43,6 +43,7 @@ Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph)
                 oldStepL(0),
                 oldStepR(0),
                 currentWayPoint(0),
+                m_graphDir(eDir_BEST),
                 conf(NULL),
                 noSwitchMode(false),
                 state(),
@@ -331,7 +332,7 @@ void Navigation::run()
          --------------------------------------------------------------------------------------*/
         case eNavState_COMPUTING_GRAPH:
         {
-            if(!graph.computeShortertPath(m_pose.toAmbiPose(m_color), m_target.toAmbiPose(m_color), m_targetDir))
+            if(!graph.computeShortertPath(m_pose.toAmbiPose(m_color), m_target.toAmbiPose(m_color), m_graphDir))
             {
                 LOG_ERROR("No path found in graph !");
                 m_order = eNavOrder_NOTHING;
@@ -645,6 +646,7 @@ void Navigation::graphTo(PointCap target, eDir sens)
     m_target = target;
     m_state = eNavState_COMPUTING_GRAPH;
     m_targetDir = sens;
+    m_graphDir = sens;
     m_order = eNavOrder_GRAPH_TO;
     orderTimeout.arm(GRAPH_TIMEOUT);
 
@@ -866,7 +868,10 @@ void Navigation::action_gotoNextWaypoint()
 
     currentWayPoint++;
     m_target = graph.getWayPoint(currentWayPoint).toAmbiPose(m_color);
-    m_targetDir = findOptimalDir(m_pose, m_target, eNavOrder_GOTO_CAP);
+    if(m_graphDir == eDir_BEST)
+        m_targetDir = findOptimalDir(m_pose, m_target, eNavOrder_GOTO_CAP);
+    else
+        m_targetDir = m_graphDir;
     LOG_INFO(String("   going to next waypoint ") + m_target.toString() + " "  + sensToString(m_targetDir) + ".");
     action_startOrder();
 }

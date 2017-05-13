@@ -19,7 +19,7 @@
       </vertices>
       <vertices xsi:type="sgraph:FinalState" xmi:id="_Kzhp0y-GEee1v-eVh51XZQ" incomingTransitions="_MTp_0C-GEee1v-eVh51XZQ"/>
       <vertices xsi:type="sgraph:State" xmi:id="_P5do7S-GEee1v-eVh51XZQ" specification="entry/&#xD;&#xA;logInfo(&quot;Waiting for Pen to arrive...&quot;)" name="Wait for Pen to finish his move" incomingTransitions="_xivA0DGPEee8x-mo8uJzlg">
-        <outgoingTransitions xmi:id="_qFWMwDGQEee8x-mo8uJzlg" specification="after 6s" target="_tXGG0DGPEee8x-mo8uJzlg"/>
+        <outgoingTransitions xmi:id="_qFWMwDGQEee8x-mo8uJzlg" specification="[40000 &lt; matchDuration()]" target="_tXGG0DGPEee8x-mo8uJzlg"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_DtdhUDGPEee8x-mo8uJzlg" specification="entry/&#xD;&#xA;logInfo(&quot;Going to poo in start area...&quot;);&#xD;&#xA;goToCap(1150, 0, -25, FWD, SYM)" name="Escape and avoid Pen" incomingTransitions="_SZLMkC-GEee1v-eVh51XZQ">
         <outgoingTransitions xmi:id="_xivA0DGPEee8x-mo8uJzlg" specification="[targetReached]" target="_P5do7S-GEee1v-eVh51XZQ"/>
@@ -404,7 +404,7 @@
     <edges xmi:id="_qFWz0DGQEee8x-mo8uJzlg" type="Transition" element="_qFWMwDGQEee8x-mo8uJzlg" source="_P5do4S-GEee1v-eVh51XZQ" target="_tXGt4DGPEee8x-mo8uJzlg">
       <children xsi:type="notation:DecorationNode" xmi:id="_qFWz1DGQEee8x-mo8uJzlg" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_qFWz1TGQEee8x-mo8uJzlg"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_qFWz1jGQEee8x-mo8uJzlg" x="2" y="-35"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_qFWz1jGQEee8x-mo8uJzlg" x="-1" y="-95"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_qFWz0TGQEee8x-mo8uJzlg" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_qFWz0zGQEee8x-mo8uJzlg" fontName="Verdana"/>

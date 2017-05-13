@@ -21,6 +21,7 @@ namespace ard
 {
     /*rad*/ double moduloPiPi(double a /*rad*/);
 
+    //Eventually add 180° to an angle representing the fact that you are facing rear
     /*rad*/ double headingToDir(double h /*rad*/, eDir sens);
 
     //Represent a geometric point in a 2D space
