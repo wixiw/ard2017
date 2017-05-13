@@ -349,7 +349,8 @@ void RemoteControl::recalRearOnBorder(apb_RemoteControlRequest const & request)
 void RemoteControl::requestGraphTo(apb_RemoteControlRequest const & request)
 {
     robot.nav.graphTo(request.type.requestGraphTo.x,
-                      request.type.requestGraphTo.y);
+                      request.type.requestGraphTo.y,
+                      request.type.requestGraphTo.h);
 }
 
 void RemoteControl::requestBlockRobot(apb_RemoteControlRequest const & request)

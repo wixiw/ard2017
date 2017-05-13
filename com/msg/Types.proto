@@ -30,6 +30,7 @@ enum eNavState {
     BLOCKED           = 10;
     STOPPING_IN_BLOCKED = 11;
     STOPPING_IN_WALL  = 12;
+    COMPUTING_GRAPH   = 14;
 }
 
 enum eNavOrder {
@@ -52,7 +53,8 @@ enum eLogLevel {
 enum eGraphState {
     GS_UNDEFINED     = 0;
     GS_IDLE          = 1;
-    GS_COMPUTED      = 2;
+    GS_COMPUTING     = 2;
+    GS_COMPUTED      = 3;
 }
 
 // Specific 2017

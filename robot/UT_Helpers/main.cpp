@@ -17,8 +17,16 @@ int main(void)
 
     digitalWrite(LED_DUE_L, HIGH);
 
-    res &= UT_buffer_tools();
-    res &= UT_graph();
+    uint16_t bite = 555;
+    double x = bite;
+
+    if( x < 200)
+    {
+        res = true;
+    }        
+
+//    res &= UT_buffer_tools();
+//    res &= UT_graph();
 
     //No led on on success (only the GREEN on led)
     if( res )
