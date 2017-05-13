@@ -193,8 +193,12 @@ namespace ard
 
         void setColor(eColor c);
 
-        //Compute the expected duration of a move
-        DelayMs motionDuration(PointCap start, PointCap end, eDir sens);
+        //Compute the expected duration of a move from start point to target point, going in direction "sens" and turning at target if isGoto is true
+        DelayMs motionDuration(PointCap const& start, PointCap const& end, eDir sens, bool isGotoCap);
+
+        //Find the best direction (minimizing travel time) from start point to target point, turning at target if isGoto is true
+        //duration is an optional output to get the best travel duration
+        eDir findOptimalDir(PointCap const& start, PointCap const& end, bool isGotoCap, DelayMs* duration = NULL);
 
         /**---------------------------------
          * Publish state
@@ -221,6 +225,7 @@ namespace ard
         void action_startOrder();
         void action_goingToTarget();
         void action_turningAtTarget();
+        void action_gotoNextWaypoint();
         void action_finishOrder();
         void action_waitOppMove();
 
@@ -253,7 +258,7 @@ namespace ard
 
         //target definition
         PointCap m_target;
-        eDir m_sensTarget;
+        eDir m_targetDir;
         eNavOrder m_order;
 
         //move constraints

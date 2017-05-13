@@ -168,7 +168,7 @@ namespace ard
         void publishOutputs();
 
         //force the match configuration without using the HMI
-        void configureMatch(uint8_t strategyId, eColor matchColor);
+        void configureMatch(uint8_t strategyId, eColor matchColor, bool simulated);
 
         //a value identifying the strategy choosed by the user
         uint8_t strategyId;

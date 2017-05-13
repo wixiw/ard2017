@@ -12,7 +12,7 @@
 using namespace ard;
 
 OppDetection::OppDetection(uint16_t safetyArea):
-        simulated(false),
+        simulated(true),
         fakeRobot(false),
         color(eColor_PREF),
         omronFront(OMRON1, 50, 1000),

@@ -22,7 +22,7 @@ Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi, OppDetecti
         detection(detection),
         currentMode(MODE_NONE),
         currentModeStatus(0),
-        simulated(false)
+        simulated(true)
 {
     fsm.setDefaultSCI_OCB(this);
     fsm.setTimer(&fsmTimer);
@@ -93,9 +93,7 @@ void Lifecycle::registerSelftest(IStrategy* _selftest)
 
 void Lifecycle::networkConfigRequest(uint8_t strategyId_, eColor matchColor, bool _simulated)
 {
-    simulated = _simulated;
-    detection.simulated = _simulated;
-    configureMatch(strategyId_, matchColor);
+    configureMatch(strategyId_, matchColor, _simulated);
     fsm.raise_networkConfigRequest();
 }
 
@@ -109,7 +107,7 @@ void Lifecycle::configureColor()
         selectedColor = eColor_SYM;
 
     //Read strat config
-    configureMatch(hmi.getStrategyId(), selectedColor);
+    configureMatch(hmi.getStrategyId(), selectedColor, false);
 }
 
 void Lifecycle::networkStartRequest()
@@ -292,8 +290,11 @@ void Lifecycle::stopMode()
     currentMode = fsm.get_mODE_NONE();
 }
 
-void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor)
+void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor, bool _simulated)
 {
+    simulated = _simulated;
+    detection.simulated = _simulated;
+
     //Check selected strategy
     if( nbRegisteredStrats <= strategyId_)
     {
