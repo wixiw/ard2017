@@ -207,6 +207,9 @@ class TableOverview(QWidget):
         
         #Drawing current way
         if self.graphState != None:
+            
+            
+            
             prevNode = None
             pinkPen = QPen(Qt.darkGreen)
             pinkPen.setWidth(3)
@@ -215,6 +218,13 @@ class TableOverview(QWidget):
                 wayId = ord(self.graphState.way[i])-1
                 node = self.graphNodes.nodes[wayId]
                 
+                if wayId == 0:
+                    node.x = self.graphState.startPoint.x
+                    node.y = self.graphState.startPoint.y
+                if wayId == 1:
+                    node.x = self.graphState.targetPoint.x
+                    node.y = self.graphState.targetPoint.y
+                    
                 #Draw line to previous point
                 if prevNode != None:
                     self.p.setPen(pinkPen)

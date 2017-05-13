@@ -331,17 +331,20 @@ void Navigation::run()
          --------------------------------------------------------------------------------------*/
         case eNavState_COMPUTING_GRAPH:
         {
+            //TODO
+            graph.setStartPoint(m_pose.toAmbiPoint(m_color));
+            graph.setTargetPoint(m_target.toAmbiPoint(m_color));
             NodeId entry = graph.getShortestNodeId(m_pose.toAmbiPoint(m_color));
             NodeId exit = graph.getShortestNodeId(m_target.toAmbiPoint(m_color));
             LOG_INFO(String("   --> from ") + String(entry) + " to " + String(exit));
-            if(!graph.computeShortestPath(entry,exit))
+            if(!graph.computePathBetweenNodes(entry,exit))
             {
                 LOG_ERROR("No path found in graph !");
                 m_order = eNavOrder_NOTHING;
                 m_state = eNavState_BLOCKED;
                 return;
             }
-//            if(!graph.computeShortertParth(m_pose.toAmbiPoint(m_color), m_target.toAmbiPoint(m_color)))
+//            if(!graph.computeShortertPath(m_pose.toAmbiPoint(m_color), m_target.toAmbiPoint(m_color)))
 //            {
 //                LOG_ERROR("No path found in graph !");
 //                m_order = eNavOrder_NOTHING;
@@ -887,17 +890,19 @@ void Navigation::action_turningAtTarget()
 
 void Navigation::action_gotoNextWaypoint()
 {
+    ASSERT(1 < graph.getWayPointNb());
     ASSERT(currentWayPoint < graph.getWayPointNb());
+
+    currentWayPoint++;
     
     //last point : do a go to cap
-    if(graph.getWayPointNb() == 0 || currentWayPoint == graph.getWayPointNb()-1 )
+    if( currentWayPoint == graph.getWayPointNb()-1 )
         m_order = eNavOrder_GOTO_CAP;
 
     m_target = graph.getWayPoint(currentWayPoint).toAmbiPoint(m_color);
     m_targetDir = findOptimalDir(m_pose, m_target, m_order==eNavOrder_GOTO_CAP);
     LOG_INFO(String("   going to next waypoint ") + m_target.toString() + " "  + sensToString(m_targetDir) + ".");
     action_startOrder();
-    currentWayPoint++;
 }
 
 void Navigation::action_finishOrder()

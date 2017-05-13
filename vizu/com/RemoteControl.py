@@ -363,6 +363,7 @@ class RemoteControl(QObject):
         #print("tick")
         self.getTelemetry()
         if self.count == 10:
+            time.sleep(0.050)
             self.requestMotionGraphState()
             self.count = 0
         else:

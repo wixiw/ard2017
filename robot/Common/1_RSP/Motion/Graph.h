@@ -51,22 +51,33 @@ namespace ard
     {
         uint16_t distance;
         NodeId prev_node;
+        NodeId next_node;
         uint8_t is_best;
     } GraphDijkstraInfo;
 
-
+    /**
+     * Nodes id 0 and 1 reserved for start/end point which are dynamically modified
+     */
     class Graph
     {
         public:
             Graph();
 
+            //Find the best path between 2 points on the table
+            bool computeShortertPath(const Point& source, const Point& target);
+
             //! lancement de l'algo dijkstra entre 2 points identifiés par idA et idB
             //it's a disktra algorithm with a reduced heuristic d'(x,y) = d(x,y) + h(y) - h(x)
             //@return true if the path is found, false if no solution exists.
-            bool computeShortestPath(NodeId idA, NodeId idB);
+            bool computePathBetweenNodes(NodeId idA, NodeId idB);
+
+            //Find the graph node which is the closest from start/target points and update graph
+            void setStartPoint(const Point& source);
+            void setTargetPoint(const Point& target);
 
             //! calcule la distance entre le point et tout les noeuds du graph
             //! resultat dans un tableau trié de la plus petite distance à la plus grande
+            // les points de départ et d'arrivee sont exclut
             NodeId getShortestNodeId(Point pos);
 
             void setValidLink(LinkId id, bool valid)
@@ -86,7 +97,10 @@ namespace ard
 
             uint8_t getWayPointNb() const{return m_state.way_count;};
 
-            //return a way point in the path, as determined by its rank in the waypoint list.
+            //return a way point id in the computed path.
+            NodeId getWayPointId(uint8_t rank) const;
+
+            //return a way point in the computed path, as determined by its rank in the waypoint list.
             //0 being the start point, and n the target point
             Point getWayPoint(uint8_t rank) const;
 
@@ -108,7 +122,14 @@ namespace ard
             
             GraphDijkstraInfo* m_info;//GRAPH_NUM_NODE
             
+
+
+            //builder function to set up nodes and links
             void defineGraph();
+
+            //Setter to insert a point in the path trajectory
+            void setWayPoint(uint8_t rank, NodeId id);
+
     };
 }
 
