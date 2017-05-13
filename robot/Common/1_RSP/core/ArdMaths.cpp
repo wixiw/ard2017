@@ -20,6 +20,22 @@ double ard::moduloPiPi(double a)
         return a;
 }
 
+double ard::headingToDir(double h, eDir sens)
+{
+    switch (sens) {
+        case eDir_FORWARD:
+            return moduloPiPi(h);
+            break;
+        case eDir_BACKWARD:
+            return moduloPiPi(h+M_PI);
+            break;
+        default:
+            ASSERT(false);
+            return 0;
+            break;
+    }
+}
+
 Point::Point()
         : x(0), y(0)
 {

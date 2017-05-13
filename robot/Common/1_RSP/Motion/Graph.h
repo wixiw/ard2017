@@ -64,16 +64,7 @@ namespace ard
             Graph();
 
             //Find the best path between 2 points on the table
-            bool computeShortertPath(const Point& source, const Point& target);
-
-            //! lancement de l'algo dijkstra entre 2 points identifiés par idA et idB
-            //it's a disktra algorithm with a reduced heuristic d'(x,y) = d(x,y) + h(y) - h(x)
-            //@return true if the path is found, false if no solution exists.
-            bool computePathBetweenNodes(NodeId idA, NodeId idB);
-
-            //Find the graph node which is the closest from start/target points and update graph
-            NodeId setStartPoint(const Point& source);
-            NodeId setTargetPoint(const Point& target);
+            bool computeShortertPath(const PointCap& source, const PointCap& target, eDir sens);
 
             //! calcule la distance entre le point et tout les noeuds du graph
             //! resultat dans un tableau trié de la plus petite distance à la plus grande
@@ -102,7 +93,7 @@ namespace ard
 
             //return a way point in the computed path, as determined by its rank in the waypoint list.
             //0 being the start point, and n the target point
-            Point getWayPoint(uint8_t rank) const;
+            PointCap getWayPoint(uint8_t rank) const;
 
             //Reset any ongoing computation
             void reset();
@@ -129,6 +120,17 @@ namespace ard
             //Setter to insert a point in the path trajectory
             void setWayPoint(uint8_t rank, NodeId id);
 
+            //walk throught the path and optimize headings
+            void optimizeHeadings(eDir sens);
+
+            //! lancement de l'algo dijkstra entre 2 points identifiés par idA et idB
+            //it's a disktra algorithm with a reduced heuristic d'(x,y) = d(x,y) + h(y) - h(x)
+            //@return true if the path is found, false if no solution exists.
+            bool computePathBetweenNodes(NodeId idA, NodeId idB);
+
+            //Find the graph node which is the closest from start/target points and update graph
+            NodeId setStartPoint(const PointCap& source);
+            NodeId setTargetPoint(const PointCap& target);
     };
 }
 

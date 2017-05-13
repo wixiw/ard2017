@@ -247,7 +247,9 @@ Graph::Graph()
 void Graph::reset()
 {
     m_state.way_count = 0;
+    m_state.headings_count = 0;
     memset(m_state.way, 0, MAX_NODES*sizeof(uint8_t));
+    memset(m_state.headings, 0, MAX_NODES*sizeof(float));
     memset(m_info, 0, MAX_LINKS*sizeof(GraphDijkstraInfo));
 
     m_state.state = eGraphState_GS_IDLE;
@@ -267,7 +269,7 @@ void Graph::setAllValid()
     }
 }
 
-NodeId Graph::setStartPoint(const Point& source)
+NodeId Graph::setStartPoint(const PointCap& source)
 {
     //Update graph with source point position
     GraphNode* node = &m_graph.nodes.list[START_POINT_ID];
@@ -275,6 +277,7 @@ NodeId Graph::setStartPoint(const Point& source)
     node->y = source.y;
     m_state.startPoint.x = node->x;
     m_state.startPoint.y = node->y;
+    m_state.startPoint.h = source.h;
 
     //compute entry point : the shortest graph point
     NodeId entry = getShortestNodeId(source, &m_graph.links.list[0].distance);
@@ -288,7 +291,7 @@ NodeId Graph::setStartPoint(const Point& source)
 }
 
 
-NodeId Graph::setTargetPoint(const Point& target)
+NodeId Graph::setTargetPoint(const PointCap& target)
 {
     //Update graph with source point position
     GraphNode* node = &m_graph.nodes.list[TARGET_POINT_ID];
@@ -296,6 +299,7 @@ NodeId Graph::setTargetPoint(const Point& target)
     node->y = target.y;
     m_state.targetPoint.x = node->x;
     m_state.targetPoint.y = node->y;
+    m_state.targetPoint.h = target.h;
     
     //compute entry point : the shortest graph point
     NodeId exit = getShortestNodeId(target, &m_graph.links.list[1].distance);
@@ -308,7 +312,7 @@ NodeId Graph::setTargetPoint(const Point& target)
     return exit;
 }
 
-bool Graph::computeShortertPath(const Point& source, const Point& target)
+bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, eDir sens)
 {
     bool res = true;
     
@@ -329,16 +333,20 @@ bool Graph::computeShortertPath(const Point& source, const Point& target)
         setWayPoint(1, entry);
         setWayPoint(2, 1);
         m_state.way_count = 3;
+        m_state.headings_count = m_state.way_count;
     }
     else
     {
         setWayPoint(0, 0);
         res = computePathBetweenNodes(entry, exit);    
         setWayPoint(m_state.way_count++, 1);
+        m_state.headings_count = m_state.way_count;
     }
     
+    optimizeHeadings(sens);
+
     // affichage debug
-    for(i=0; i < m_state.way_count; i++)
+    for(int i=0; i < m_state.way_count; i++)
     {
         String s = String("    graph path : [" + String(i) + "] : id=" + int(m_state.way[i]-1) + " p=" + getWayPoint(i).toString());
         LOG_INFO(s);
@@ -347,7 +355,7 @@ bool Graph::computeShortertPath(const Point& source, const Point& target)
     //Display results
     DelayMs endCompute = millis();
     if(res)
-        LOG_INFO(String("   --> from ") + (int)getWayPointId(0) + " to " + (int)getWayPointId(getWayPointNb()-1) + " computed in " + String(endCompute - startCompute) + " ms.");
+        LOG_INFO(String("   --> computed in ") + String(endCompute - startCompute) + " ms.");
 
     return res;
 }
@@ -414,11 +422,13 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
     // on met le chemin dans l'ordre de a vers b dans le tableau m_way
         //count items on path (one is already present before computation, and 2 are always found as we expect 2 different nodes)
     m_state.way_count = 3;
+    m_state.headings_count = m_state.way_count;
     i = idTarget;
     while(m_info[i].prev_node != idSource)
     {
         i = m_info[i].prev_node;
         m_state.way_count++;
+        m_state.headings_count = m_state.way_count;
     }
 
     setWayPoint(1, idSource);
@@ -435,6 +445,18 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
     m_state.state = eGraphState_GS_COMPUTED;
     
     return true;
+}
+
+void Graph::optimizeHeadings(eDir sens)
+{
+    ASSERT(2 < getWayPointNb());
+    m_state.headings[getWayPointNb()-1] = m_state.targetPoint.h;
+
+    for( int i = getWayPointNb()-2 ; i != 0 ; i--)
+    {
+        m_state.headings[i] = getWayPoint(i).angleTo(getWayPoint(i+1));
+    }
+    m_state.headings[0] = getWayPoint(0).angleTo(getWayPoint(1));
 }
 
 NodeId Graph::getShortestNodeId(Point pos, uint16_t* distance)
@@ -474,9 +496,10 @@ void Graph::setWayPoint(uint8_t rank, NodeId newId)
     m_state.way[rank] = newId+1;
 }
 
-Point Graph::getWayPoint(uint8_t rank) const
+PointCap Graph::getWayPoint(uint8_t rank) const
 {
-    return getNode(getWayPointId(rank));
+    Point waypoint = getNode(getWayPointId(rank));
+    return PointCap(waypoint.x, waypoint.y, degrees(m_state.headings[rank]));
 }
 
 void Graph::serializeNodes(apb_GraphNodes& nodes) const

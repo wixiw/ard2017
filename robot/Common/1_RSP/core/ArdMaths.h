@@ -19,8 +19,9 @@
 
 namespace ard
 {
-    double
-    moduloPiPi(double a);
+    /*rad*/ double moduloPiPi(double a /*rad*/);
+
+    /*rad*/ double headingToDir(double h /*rad*/, eDir sens);
 
     //Represent a geometric point in a 2D space
     class Point

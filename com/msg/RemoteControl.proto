@@ -87,10 +87,10 @@ message GraphLinks {
 message GraphState{
     uint32               way_count   = 1;
     eGraphState          state       = 2;
-    Point                startPoint  = 3;
-    Point                targetPoint = 4;
-    string               way         = 5 [(nanopb).max_size = 30];//  !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_NODE)
-    float                headings    = 7 [(nanopb).max_size = 30];//  !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_NODE)
+    PointCap             startPoint  = 3;
+    PointCap             targetPoint = 4;
+    string               way         = 5 [(nanopb).max_size = 15];//  !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_NODE)
+    repeated float       headings    = 7 [(nanopb).max_count = 15];//  !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_NODE)
     string               valid       = 6 [(nanopb).max_size = 200];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
 }
 

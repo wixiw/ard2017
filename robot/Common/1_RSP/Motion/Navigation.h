@@ -161,10 +161,10 @@ namespace ard
         /**
          * Reach a target destination running in the graph
          */
-        void graphTo(PointCap target);
-        void graphTo(float x/*mm*/, float y/*mm*/, float h)
+        void graphTo(PointCap target, eDir sens = eDir_BEST);
+        void graphTo(float x/*mm*/, float y/*mm*/, float h, eDir sens = eDir_BEST)
         {
-            graphTo(PointCap(x,y,h));
+            graphTo(PointCap(x,y,h), sens);
         }
 
         /**

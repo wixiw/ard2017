@@ -331,20 +331,7 @@ void Navigation::run()
          --------------------------------------------------------------------------------------*/
         case eNavState_COMPUTING_GRAPH:
         {
-//            //TODO
-//            graph.setStartPoint(m_pose.toAmbiPoint(m_color));
-//            graph.setTargetPoint(m_target.toAmbiPoint(m_color));
-//            NodeId entry = graph.getShortestNodeId(m_pose.toAmbiPoint(m_color));
-//            NodeId exit = graph.getShortestNodeId(m_target.toAmbiPoint(m_color));
-//            LOG_INFO(String("   --> from ") + String(entry) + " to " + String(exit));
-//            if(!graph.computePathBetweenNodes(entry,exit))
-//            {
-//                LOG_ERROR("No path found in graph !");
-//                m_order = eNavOrder_NOTHING;
-//                m_state = eNavState_BLOCKED;
-//                return;
-//            }
-            if(!graph.computeShortertPath(m_pose.toAmbiPoint(m_color), m_target.toAmbiPoint(m_color)))
+            if(!graph.computeShortertPath(m_pose.toAmbiPose(m_color), m_target.toAmbiPose(m_color), m_targetDir))
             {
                 LOG_ERROR("No path found in graph !");
                 m_order = eNavOrder_NOTHING;
@@ -586,11 +573,11 @@ void Navigation::rearTo(Point p, bool sym)
     PointCap target = m_pose;
     m_mutex.unlock();
     if( sym )
-        target.h = moduloPiPi(M_PI + m_pose.angleTo(p.toAmbiPoint(m_color)));
+        target.h = headingToDir(m_pose.angleTo(p.toAmbiPoint(m_color)), eDir_BACKWARD);
     else
-        target.h = moduloPiPi(M_PI + m_pose.angleTo(p));
+        target.h =headingToDir(m_pose.angleTo(p), eDir_BACKWARD);
 
-    goToCap(target, eDir_FORWARD, true);
+    goToCap(target, eDir_BACKWARD, true);
 }
 
 void Navigation::recalFace(eTableBorder border)
@@ -647,7 +634,7 @@ void Navigation::recalRear(eTableBorder border)
     m_mutex.unlock();
 }
 
-void Navigation::graphTo(PointCap target)
+void Navigation::graphTo(PointCap target, eDir sens)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
@@ -657,7 +644,7 @@ void Navigation::graphTo(PointCap target)
     //Computation is delayed for a further time to prevent the caller from making the graph search
     m_target = target;
     m_state = eNavState_COMPUTING_GRAPH;
-    m_targetDir = eDir_BEST;
+    m_targetDir = sens;
     m_order = eNavOrder_GRAPH_TO;
     orderTimeout.arm(GRAPH_TIMEOUT);
 
@@ -723,21 +710,9 @@ DelayMs Navigation::motionDuration(PointCap const& start, PointCap const& end, e
     double endAngle = 0;
 
     //Determine start and stop angles
-    if(sens == eDir_FORWARD)
-    {
-        startAngle = degrees(fabs(start.angleHeadingTo(end)));
-        if(isGotoCap)
-            endAngle = degrees(fabs(start.angleTo(end) - end.h));
-
-    }
-    else if( sens == eDir_BACKWARD)
-    {
-        startAngle = degrees(fabs(moduloPiPi(M_PI + start.angleHeadingTo(end) )));
-        if(isGotoCap)
-            endAngle   = degrees(fabs(moduloPiPi(M_PI + start.angleTo(end) - end.h)));
-    }
-    else
-        ASSERT(false);
+    startAngle = degrees(fabs(headingToDir(start.angleHeadingTo(end), sens)));
+    if(isGotoCap)
+        endAngle = degrees(fabs(headingToDir(start.angleTo(end) - end.h, sens)));
 
     //compute durations
     DelayMs translationDuration = start.distanceTo(end)*1000./conf->maxSpeed();
@@ -829,11 +804,7 @@ void Navigation::action_startOrder()
     }
     else
     {
-        double angleDelta = m_pose.angleHeadingTo(m_target);
-        if (m_targetDir == eDir_BACKWARD)
-        {
-            angleDelta = moduloPiPi(angleDelta + M_PI);
-        }
+        double angleDelta = headingToDir(m_pose.angleHeadingTo(m_target), m_targetDir);
 
         //Do not turn if already facing right direction
         if (fabs(angleDelta) <= NO_TURN_DELTA)
@@ -863,7 +834,7 @@ void Navigation::action_goingToTarget()
 void Navigation::action_turningAtTarget()
 {
     //Request rotation to final heading
-    if (m_order == eNavOrder_GOTO_CAP)
+    if( m_order == eNavOrder_GOTO_CAP || m_order == eNavOrder_GRAPH_TO )
     {
         double angleDelta = moduloPiPi(m_target.h - m_pose.h);
         //Do not turn if already facing right direction
@@ -894,13 +865,8 @@ void Navigation::action_gotoNextWaypoint()
     ASSERT(currentWayPoint < graph.getWayPointNb());
 
     currentWayPoint++;
-    
-    //last point : do a go to cap
-    if( currentWayPoint == graph.getWayPointNb()-1 )
-        m_order = eNavOrder_GOTO_CAP;
-
-    m_target = graph.getWayPoint(currentWayPoint).toAmbiPoint(m_color);
-    m_targetDir = findOptimalDir(m_pose, m_target, m_order==eNavOrder_GOTO_CAP);
+    m_target = graph.getWayPoint(currentWayPoint).toAmbiPose(m_color);
+    m_targetDir = findOptimalDir(m_pose, m_target, eNavOrder_GOTO_CAP);
     LOG_INFO(String("   going to next waypoint ") + m_target.toString() + " "  + sensToString(m_targetDir) + ".");
     action_startOrder();
 }
@@ -937,7 +903,7 @@ void Navigation::action_finishOrder()
 
         case eNavOrder_GRAPH_TO:
             //If last point is not reached, continue to execute path
-            if(currentWayPoint < graph.getWayPointNb())
+            if(currentWayPoint < graph.getWayPointNb()-1)
             {
                 action_gotoNextWaypoint();
                 return;
@@ -945,7 +911,7 @@ void Navigation::action_finishOrder()
             else
             {
                 LOG_INFO(String("   graph target reached"));
-                graph.reset();
+                //graph.reset();
             }
             break;
     }
