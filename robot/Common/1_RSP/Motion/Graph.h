@@ -72,13 +72,13 @@ namespace ard
             bool computePathBetweenNodes(NodeId idA, NodeId idB);
 
             //Find the graph node which is the closest from start/target points and update graph
-            void setStartPoint(const Point& source);
-            void setTargetPoint(const Point& target);
+            NodeId setStartPoint(const Point& source);
+            NodeId setTargetPoint(const Point& target);
 
             //! calcule la distance entre le point et tout les noeuds du graph
             //! resultat dans un tableau trié de la plus petite distance à la plus grande
             // les points de départ et d'arrivee sont exclut
-            NodeId getShortestNodeId(Point pos);
+            NodeId getShortestNodeId(Point pos, uint16_t* distance);
 
             void setValidLink(LinkId id, bool valid)
             {
@@ -118,7 +118,6 @@ namespace ard
         protected:
             GraphDefinition m_graph;
             apb_GraphState m_state;
-            uint8_t way_count;
             
             GraphDijkstraInfo* m_info;//GRAPH_NUM_NODE
             

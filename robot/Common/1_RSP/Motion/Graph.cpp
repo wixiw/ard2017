@@ -59,9 +59,7 @@ void Graph::defineGraph()
     m_graph.links.list = new GraphLink[MAX_LINKS];
     memset(m_graph.links.list, 0, MAX_LINKS*sizeof(GraphLink));
 
-    LinkId j = 0;
-    NEW_LINK( START_POINT_ID , TARGET_POINT_ID ); //fake link
-    NEW_LINK( TARGET_POINT_ID , START_POINT_ID ); //fake link
+    LinkId j = 2;
     NEW_LINK( 2 , 3 );
     NEW_LINK( 2 , 4 );
     NEW_LINK( 2 , 5 );
@@ -182,14 +180,21 @@ Graph::Graph()
 
     m_info = new GraphDijkstraInfo[m_graph.nodes.count];
     ASSERT_TEXT(m_info, "heap exhausted");
-
-    ASSERT_TEXT( m_graph.links.list[0].target == TARGET_POINT_ID, "Start point shall be connected to target point by default.");
-    ASSERT_TEXT( m_graph.links.list[1].target == START_POINT_ID, "Target point shall be connected to start point by default.");
-
+    
+    m_graph.links.list[0].source = START_POINT_ID;
+    m_graph.links.list[0].target = START_POINT_ID;
+    m_graph.nodes.list[START_POINT_ID].link_id = 0;
+    m_graph.nodes.list[START_POINT_ID].link_num = 1;
+    
+    m_graph.links.list[1].source = TARGET_POINT_ID;
+    m_graph.links.list[1].target = TARGET_POINT_ID;
+    m_graph.nodes.list[TARGET_POINT_ID].link_id = 1;
+    m_graph.nodes.list[TARGET_POINT_ID].link_num = 1;
+    
     //Compute the number of links to the node and the starting link index
-    LinkId currentLinkId = 0;
+    LinkId currentLinkId = 2;
     uint8_t nbLinks = 0;
-    for(NodeId currentNodeId = 0; currentNodeId < m_graph.nodes.count ; currentNodeId++)
+    for(NodeId currentNodeId = TARGET_POINT_ID+1; currentNodeId < m_graph.nodes.count ; currentNodeId++)
     {
         //The starting index is the current linkId
         m_graph.nodes.list[currentNodeId].link_id = currentLinkId;
@@ -201,7 +206,7 @@ Graph::Graph()
         {
             ASSERT_TEXT(m_graph.links.list[currentLinkId].source != m_graph.links.list[currentLinkId].target, "A source can't also be a target");
             ASSERT_TEXT(currentLinkId < m_graph.links.count, "The number of links is ill defined");
-            //Check link reciprocity (only when source is smaller than target)
+            //Check link reciprocity (only when source is smaller than target, first 2 links are reserved)
             if( m_graph.links.list[currentLinkId].source < m_graph.links.list[currentLinkId].target )
             {
                 bool found = false;
@@ -228,7 +233,7 @@ Graph::Graph()
     ASSERT_TEXT(currentLinkId == m_graph.links.count, "The number of links is ill defined");
 
     //Compute distances between nodes
-    for(LinkId linkId = 0 ; linkId < m_graph.links.count ; linkId++)
+    for(LinkId linkId = TARGET_POINT_ID+1 ; linkId < m_graph.links.count ; linkId++)
     {
         GraphLink* link = &m_graph.links.list[linkId];
         ASSERT_TEXT(link->source < m_graph.nodes.count, (String("A source node id[") + link->source + "] is too big").c_str());
@@ -248,7 +253,10 @@ void Graph::reset()
     m_state.state = eGraphState_GS_IDLE;
 
     m_graph.links.list[0].target = TARGET_POINT_ID;
-    m_graph.links.list[1].source = TARGET_POINT_ID;
+    m_graph.links.list[0].distance = 0;
+    
+    m_graph.links.list[1].source = START_POINT_ID;
+    m_graph.links.list[1].distance = 0;
 }
 
 void Graph::setAllValid()
@@ -259,7 +267,7 @@ void Graph::setAllValid()
     }
 }
 
-void Graph::setStartPoint(const Point& source)
+NodeId Graph::setStartPoint(const Point& source)
 {
     //Update graph with source point position
     GraphNode* node = &m_graph.nodes.list[START_POINT_ID];
@@ -269,14 +277,18 @@ void Graph::setStartPoint(const Point& source)
     m_state.startPoint.y = node->y;
 
     //compute entry point : the shortest graph point
-    NodeId entry = getShortestNodeId(source);
+    NodeId entry = getShortestNodeId(source, &m_graph.links.list[0].distance);
+    LOG_INFO(String("    Entry point is : ") + (int)entry);
 
     //Update link list with start<->entry link
     m_graph.links.list[0].target = entry;
+    m_state.valid[0] = true;
+    
+    return entry;
 }
 
 
-void Graph::setTargetPoint(const Point& target)
+NodeId Graph::setTargetPoint(const Point& target)
 {
     //Update graph with source point position
     GraphNode* node = &m_graph.nodes.list[TARGET_POINT_ID];
@@ -286,35 +298,63 @@ void Graph::setTargetPoint(const Point& target)
     m_state.targetPoint.y = node->y;
     
     //compute entry point : the shortest graph point
-    NodeId exit = getShortestNodeId(target);
+    NodeId exit = getShortestNodeId(target, &m_graph.links.list[1].distance);
+    LOG_INFO(String("    Exit point is : ") + (int)exit);
     
     //Update link list with start<->entry link
-    m_graph.links.list[1].target = exit;
+    m_graph.links.list[1].source = exit;
+    m_state.valid[1] = true;
+    
+    return exit;
 }
 
 bool Graph::computeShortertPath(const Point& source, const Point& target)
 {
+    bool res = true;
+    
     ASSERT(m_state.state != eGraphState_GS_COMPUTING);
     m_state.state = eGraphState_GS_COMPUTING;
 
     DelayMs startCompute = millis();
 
     //Compute entry/exit point
-    setStartPoint(source);
-    setTargetPoint(target);
+    NodeId entry = setStartPoint(source);
+    NodeId exit = setTargetPoint(target);
 
     //Compute path
-    bool res = computePathBetweenNodes(START_POINT_ID, TARGET_POINT_ID);
-
+    if(entry == exit )
+    {
+        res = true;
+        setWayPoint(0, 0);
+        setWayPoint(1, entry);
+        setWayPoint(2, 1);
+        m_state.way_count = 3;
+    }
+    else
+    {
+        setWayPoint(0, 0);
+        res = computePathBetweenNodes(entry, exit);    
+        setWayPoint(m_state.way_count++, 1);
+    }
+    
+    // affichage debug
+    for(i=0; i < m_state.way_count; i++)
+    {
+        String s = String("    graph path : [" + String(i) + "] : id=" + int(m_state.way[i]-1) + " p=" + getWayPoint(i).toString());
+        LOG_INFO(s);
+    }
+    
     //Display results
     DelayMs endCompute = millis();
-    LOG_INFO(String("   --> from ") + (int)getWayPointId(0) + " to " + (int)getWayPointId(getWayPointNb()) + " computed in " + String(endCompute - startCompute) + " ms.");
+    if(res)
+        LOG_INFO(String("   --> from ") + (int)getWayPointId(0) + " to " + (int)getWayPointId(getWayPointNb()-1) + " computed in " + String(endCompute - startCompute) + " ms.");
 
     return res;
 }
 
 bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
 {
+    ASSERT(idSource != idTarget);
     m_state.state = eGraphState_GS_COMPUTING;
     uint32_t i;
     uint32_t j;
@@ -342,8 +382,8 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
             {
                 int connected_node = m_graph.links.list[j].target;
                 // calcul de la distance en passant par la
-                uint16_t dist = m_info[i].distance + m_graph.links.list[j].distance + 200; //200 is a penalty to penalize manoeuvers
-                if( m_info[connected_node].distance > dist)
+                uint16_t dist = m_info[i].distance + m_graph.links.list[j].distance + 200; //200 is a penalty to penalize manoeuvers TODO replace by motion duration calculation
+                if( dist < m_info[connected_node].distance)
                 {
                     // on a trouvé un chemin plus court pour aller vers "connected_node"
                     m_info[connected_node].distance = dist;
@@ -372,7 +412,8 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
     m_info[i].is_best = 1;
 
     // on met le chemin dans l'ordre de a vers b dans le tableau m_way
-    m_state.way_count = 2;
+        //count items on path (one is already present before computation, and 2 are always found as we expect 2 different nodes)
+    m_state.way_count = 3;
     i = idTarget;
     while(m_info[i].prev_node != idSource)
     {
@@ -380,7 +421,7 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
         m_state.way_count++;
     }
 
-    setWayPoint(0, idSource);
+    setWayPoint(1, idSource);
     j = m_state.way_count - 1;
     setWayPoint(j, idTarget);
     i = idTarget;
@@ -393,17 +434,10 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
 
     m_state.state = eGraphState_GS_COMPUTED;
     
-    // affichage debug
-    for(i=0; i < m_state.way_count; i++)
-    {
-        String s = String("    graph path : [" + String(i) + "] : id=" + int(m_state.way[i]-1) + " p=" + getWayPoint(i).toString());
-        LOG_INFO(s);
-    }
-
     return true;
 }
 
-NodeId Graph::getShortestNodeId(Point pos)
+NodeId Graph::getShortestNodeId(Point pos, uint16_t* distance)
 {
     int i;
     uint16_t dist = 0;
@@ -420,6 +454,9 @@ NodeId Graph::getShortestNodeId(Point pos)
             shortestId = i;
         }
     }
+
+    if(distance)
+        *distance = shortestDist;
 
     return shortestId;
 }

@@ -331,26 +331,26 @@ void Navigation::run()
          --------------------------------------------------------------------------------------*/
         case eNavState_COMPUTING_GRAPH:
         {
-            //TODO
-            graph.setStartPoint(m_pose.toAmbiPoint(m_color));
-            graph.setTargetPoint(m_target.toAmbiPoint(m_color));
-            NodeId entry = graph.getShortestNodeId(m_pose.toAmbiPoint(m_color));
-            NodeId exit = graph.getShortestNodeId(m_target.toAmbiPoint(m_color));
-            LOG_INFO(String("   --> from ") + String(entry) + " to " + String(exit));
-            if(!graph.computePathBetweenNodes(entry,exit))
-            {
-                LOG_ERROR("No path found in graph !");
-                m_order = eNavOrder_NOTHING;
-                m_state = eNavState_BLOCKED;
-                return;
-            }
-//            if(!graph.computeShortertPath(m_pose.toAmbiPoint(m_color), m_target.toAmbiPoint(m_color)))
+//            //TODO
+//            graph.setStartPoint(m_pose.toAmbiPoint(m_color));
+//            graph.setTargetPoint(m_target.toAmbiPoint(m_color));
+//            NodeId entry = graph.getShortestNodeId(m_pose.toAmbiPoint(m_color));
+//            NodeId exit = graph.getShortestNodeId(m_target.toAmbiPoint(m_color));
+//            LOG_INFO(String("   --> from ") + String(entry) + " to " + String(exit));
+//            if(!graph.computePathBetweenNodes(entry,exit))
 //            {
 //                LOG_ERROR("No path found in graph !");
 //                m_order = eNavOrder_NOTHING;
 //                m_state = eNavState_BLOCKED;
 //                return;
 //            }
+            if(!graph.computeShortertPath(m_pose.toAmbiPoint(m_color), m_target.toAmbiPoint(m_color)))
+            {
+                LOG_ERROR("No path found in graph !");
+                m_order = eNavOrder_NOTHING;
+                m_state = eNavState_BLOCKED;
+                return;
+            }
             else
             {
                 //Go to first point
