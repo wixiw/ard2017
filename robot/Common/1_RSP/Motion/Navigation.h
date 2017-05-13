@@ -161,7 +161,11 @@ namespace ard
         /**
          * Reach a target destination running in the graph
          */
-        void graphTo(float x/*mm*/, float y/*mm*/);
+        void graphTo(PointCap target);
+        void graphTo(float x/*mm*/, float y/*mm*/, float h)
+        {
+            graphTo(PointCap(x,y,h));
+        }
 
         /**
          * Stops the robot. It interrupts current order.
@@ -190,7 +194,7 @@ namespace ard
         void setColor(eColor c);
 
         //Compute the expected duration of a move
-        DelayMs motionDuration(PointCap start, PointCap end);
+        DelayMs motionDuration(PointCap start, PointCap end, eDir sens);
 
         /**---------------------------------
          * Publish state

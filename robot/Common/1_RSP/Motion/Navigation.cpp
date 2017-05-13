@@ -17,6 +17,7 @@ using namespace ard;
 #define RECAL_FORCING 400     //mm
 #define RECAL_ESCAPE_MARGIN 30 //mm
 #define RECAL_TIMEOUT 5000 //ms
+#define GRAPH_TIMEOUT 15000 //ms
 #define OPP_IMPATIENCE_TIMEOUT 5000 //ms
 #define ACCEL_RAMPS_DURATION 1000 //ms
 #define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT((m_state == eNavState_IDLE || m_state == eNavState_BLOCKED) && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
@@ -322,6 +323,20 @@ void Navigation::run()
             }
             break;
         }
+
+        /** -----------------------------------------------------------------------------------
+         * GRAPH MANAGEMENT
+         --------------------------------------------------------------------------------------*/
+        case eNavState_COMPUTING_GRAPH:
+        {
+
+            break;
+        }
+
+        /** -----------------------------------------------------------------------------------
+         *  --------------------------------
+         --------------------------------------------------------------------------------------*/
+
     }
     m_mutex.unlock();
 
@@ -419,18 +434,32 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
         m_target = target;
 
     //Choose direction
+    DelayMs moveDur = 0;
     if(sens == eDir_BEST)
     {
-        //TODO compute best direction
-        m_sensTarget = eDir_FORWARD;
+        DelayMs moveDurFront = motionDuration(m_pose, m_target, eDir_FORWARD);
+        DelayMs moveDurRear = motionDuration(m_pose, m_target, eDir_FORWARD);
+        if( moveDurFront < moveDurRear)
+        {
+            moveDur = moveDurFront;
+            m_sensTarget = eDir_FORWARD;
+        }
+        else
+        {
+            moveDur = moveDurRear;
+            m_sensTarget = eDir_BACKWARD;
+        }
     }
     else
+    {
+        moveDur = motionDuration(m_pose, m_target, sens);
         m_sensTarget = sens;
+    }
 
     LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
 
-    orderTimeout.arm(motionDuration(m_pose, m_target)+OPP_IMPATIENCE_TIMEOUT);
+    orderTimeout.arm(moveDur + OPP_IMPATIENCE_TIMEOUT);
 
     m_mutex.unlock();
 }
@@ -449,18 +478,32 @@ void Navigation::goToCap(PointCap target, eDir sens, bool sym)
         m_target = target;
 
     //Choose direction
+    DelayMs moveDur = 0;
     if(sens == eDir_BEST)
     {
-        //TODO compute best direction
-        m_sensTarget = eDir_FORWARD;
+        DelayMs moveDurFront = motionDuration(m_pose, m_target, eDir_FORWARD);
+        DelayMs moveDurRear = motionDuration(m_pose, m_target, eDir_FORWARD);
+        if( moveDurFront < moveDurRear)
+        {
+            moveDur = moveDurFront;
+            m_sensTarget = eDir_FORWARD;
+        }
+        else
+        {
+            moveDur = moveDurRear;
+            m_sensTarget = eDir_BACKWARD;
+        }
     }
     else
+    {
+        moveDur = motionDuration(m_pose, m_target, sens);
         m_sensTarget = sens;
+    }
 
     LOG_INFO("   new request : goToCap" + m_target.toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
 
-    orderTimeout.arm(motionDuration(m_pose, m_target)+OPP_IMPATIENCE_TIMEOUT);
+    orderTimeout.arm(moveDur + OPP_IMPATIENCE_TIMEOUT);
 
     m_mutex.unlock();
 }
@@ -599,47 +642,37 @@ void Navigation::recalRear(eTableBorder border)
     m_mutex.unlock();
 }
 
-void Navigation::graphTo(float x/*mm*/, float y/*mm*/)
+void Navigation::graphTo(PointCap target)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
 
-    LOG_INFO(String("   new request :  graphTo (") + x + ", " + y + ")");
+    LOG_INFO(String("   new request :  graphTo ") + target.toString() + ", computation in progress...");
 
-    DelayMs startCompute = millis();
-    NodeId entry = graph.getShortestNodeId(m_pose.toAmbiPoint(m_color));
-    NodeId exit = graph.getShortestNodeId(Point(x,y));
-    if(!graph.computeShortestPath(entry,exit))
+    //Computation is delayed for a further time to prevent the caller from making the graph search
+    m_target = target;
+    m_state = eNavState_COMPUTING_GRAPH;
+    m_sensTarget = eDir_BEST;
+    m_order = eNavOrder_GRAPH_TO;
+    orderTimeout.arm(GRAPH_TIMEOUT);
+
+    if(!graph.computeShortertParth(m_pose.toAmbiPoint(m_color), m_target.toAmbiPoint(m_color)))
     {
         LOG_ERROR("No path found in graph !");
-        m_mutex.unlock();
+        m_order = eNavOrder_NOTHING;
+        m_state = eNavState_BLOCKED;
         return;
     }
-    DelayMs endCompute = millis();
-
-    LOG_INFO(String("   --> from ") + String(entry) + " to " + String(exit) + " computed in " + String(endCompute - startCompute) + " ms.");
-
-//    //Go to first point
-//    currentWayPoint = 0;
-//    m_target = graph.getWayPoint(currentWayPoint).toAmbiPoint(m_color);
-//    //TODO compute best direction
-//    m_sensTarget = eDir_FORWARD;
-//    //TODO change that
-//    m_order = eNavOrder_GOTO;
-//
-//    LOG_INFO(String("   going to next waypoint ") + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
-//    action_startOrder();
-//
-//    orderTimeout.arm(15000);
+    else
+    {
+        //Go to first point
+        currentWayPoint = 0;
+        m_target = graph.getWayPoint(currentWayPoint).toAmbiPoint(m_color);
+        LOG_INFO(String("   going to next waypoint ") + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
+        action_startOrder();
+    }
 
     m_mutex.unlock();
-
-
-//    m_mutex.lock();
-//    graph.setValidLink(0, false);
-//    graph.reset();
-
-//    m_mutex.unlock();
 }
 
 void Navigation::stopMoving(eNavState targetState)
@@ -695,11 +728,28 @@ void Navigation::setColor(eColor c)
     m_color = c;
 }
 
-DelayMs Navigation::motionDuration(PointCap start, PointCap end)
+DelayMs Navigation::motionDuration(PointCap start, PointCap end, eDir sens)
 {
+    double startAngle = 0;
+    double endAngle = 0;
+
+    //Determine start and stop angles
+    if(sens == eDir_FORWARD)
+    {
+        startAngle = degrees(fabs(start.angleHeadingTo(end)));
+        endAngle = degrees(fabs(start.angleTo(end) - end.h));
+    }
+    else if( sens == eDir_BACKWARD)
+    {
+        //TODO le calcul est copie du forward, il faut le faire
+        startAngle = degrees(moduloPiPi(M_PI + fabs(start.angleHeadingTo(end) )));
+        endAngle   = degrees(moduloPiPi(M_PI + fabs(start.angleTo(end) - end.h)));
+    }
+    else
+        ASSERT(false);
+
+    //compute durations
     DelayMs translationDuration = start.distanceTo(end)*1000./conf->maxSpeed();
-    double startAngle = degrees(fabs(start.angleHeadingTo(end)));
-    double endAngle = degrees(fabs(start.angleTo(end) - end.h));
     DelayMs rotationStartDuration = startAngle*1000. / (double)conf->maxTurnSpeed();
     DelayMs rotationEndDuration = endAngle*1000. / (double)conf->maxTurnSpeed();
     DelayMs timeout = translationDuration + rotationStartDuration + rotationEndDuration + ACCEL_RAMPS_DURATION;
@@ -833,8 +883,6 @@ void Navigation::action_turningAtTarget()
 
 void Navigation::action_finishOrder()
 {
-    //As move is expected to be perfect, correct any numerical instability by forcing position to be exactly the target
-    enterCriticalSection();
     switch(m_order)
     {
         default:
@@ -842,18 +890,41 @@ void Navigation::action_finishOrder()
             ASSERT(false);
             break;
 
+
         case eNavOrder_GOTO:
+            //TODO a enlever
+            //As move is expected to be perfect, correct any numerical instability by forcing position to be exactly the target
+            enterCriticalSection();
             m_pose.x = m_target.x;
             m_pose.y = m_target.y;
+            exitCriticalSection();
             break;
 
+
         case eNavOrder_GOTO_CAP:
+            //TODO a enlever
+            //As move is expected to be perfect, correct any numerical instability by forcing position to be exactly the target
+            enterCriticalSection();
             m_pose.x = m_target.x;
             m_pose.y = m_target.y;
             m_pose.h = m_target.h;
+            exitCriticalSection();
+            break;
+
+        case eNavOrder_GRAPH_TO:
+            //If last point is not reached, continue to execute path
+            if(currentWayPoint < graph.getWayPointNb())
+            {
+                currentWayPoint++;
+                m_target = graph.getWayPoint(currentWayPoint).toAmbiPoint(m_color);
+                m_sensTarget = eDir_BEST;
+                LOG_INFO(String("   going to next waypoint ") + m_target.toString() + " "  + sensToString(m_sensTarget) + ".");
+                action_startOrder();
+                return;
+            }
             break;
     }
-    exitCriticalSection();
+
     
     m_state = eNavState_IDLE;
     m_order = eNavOrder_NOTHING;
