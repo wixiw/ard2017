@@ -22,6 +22,7 @@ Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi, OppDetecti
         detection(detection),
         currentMode(MODE_NONE),
         currentModeStatus(0),
+        matchColor(eColor_UNKNOWN),
         simulated(true)
 {
     fsm.setDefaultSCI_OCB(this);
@@ -131,6 +132,33 @@ void Lifecycle::bootUp()
         listener->bootUp();
     LOG_INFO(String("Robot is booted successfully, it took ") + millis() + " ms.");
 }
+
+void Lifecycle::ledRGB(sc_integer color, sc_integer blink)
+{
+    ASSERT(color < eRgb_Max);
+    ASSERT(blink < eLedState_Max);
+    hmi.ledRGB.set((eRgb)(color), eLedState(blink));
+}
+
+void Lifecycle::displayMatchRGB(sc_integer blink)
+{
+    ASSERT(blink < eLedState_Max);
+
+    switch (matchColor) {
+        case eColor_PREF:
+            hmi.ledRGB.set(YELLOW, eLedState(blink));
+            break;
+        case  eColor_SYM:
+            hmi.ledRGB.set(BLUE, eLedState(blink));
+            break;
+
+        default:
+            ASSERT(false);
+            break;
+    }
+
+}
+
 
 void Lifecycle::readInputs()
 {
@@ -290,7 +318,7 @@ void Lifecycle::stopMode()
     currentMode = fsm.get_mODE_NONE();
 }
 
-void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor, bool _simulated)
+void Lifecycle::configureMatch(uint8_t strategyId_, eColor _matchColor, bool _simulated)
 {
     simulated = _simulated;
     detection.simulated = _simulated;
@@ -307,6 +335,7 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor matchColor, bool _sim
     LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + matchs[strategyId].name + ".");
 
     //Configure color
+    matchColor = _matchColor;
     if(listener)
         listener->colorChoosed(matchColor);
 

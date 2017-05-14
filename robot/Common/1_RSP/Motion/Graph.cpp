@@ -57,7 +57,6 @@ void Graph::defineGraph()
     NEW_NODE( -875,  -535);//21 sym of 11
     NEW_NODE( -485,   385);//22 nearly sym of 12
     NEW_NODE(-1160,   180);//23 sym of 13
-    NEW_NODE( -260,   340);//24 sym of 14
 
     m_graph.nodes.count = i;
     ASSERT_TEXT(i <= MAX_NODES, "Too many nodes defined.");
@@ -77,8 +76,13 @@ void Graph::defineGraph()
     NEW_LINK( 2 , 6 );
     NEW_LINK( 2 , 8 );
     NEW_LINK( 2 , 9 );
-    NEW_LINK( 2 , 10 );
     NEW_LINK( 2 , 12 );
+    NEW_LINK( 2 , 14 );
+    NEW_LINK( 2 , 15 );
+    NEW_LINK( 2 , 16 );
+    NEW_LINK( 2 , 18 );
+    NEW_LINK( 2 , 19 );
+    NEW_LINK( 2 , 22 );
     NEW_LINK( 3 , 2 );
     NEW_LINK( 3 , 4 );
     NEW_LINK( 3 , 5 );
@@ -86,8 +90,14 @@ void Graph::defineGraph()
     NEW_LINK( 3 , 7 );
     NEW_LINK( 3 , 8 );
     NEW_LINK( 3 , 9 );
-    NEW_LINK( 3 , 10 );
     NEW_LINK( 3 , 12);
+    NEW_LINK( 3 , 14);
+    NEW_LINK( 3 , 15);
+    NEW_LINK( 3 , 16);
+    NEW_LINK( 3 , 17);
+    NEW_LINK( 3 , 18);
+    NEW_LINK( 3 , 19);
+    NEW_LINK( 3 , 22);
     NEW_LINK( 4 , 2 );
     NEW_LINK( 4 , 3 );
     NEW_LINK( 4 , 5 );
@@ -95,9 +105,16 @@ void Graph::defineGraph()
     NEW_LINK( 4 , 7 );
     NEW_LINK( 4 , 8 );
     NEW_LINK( 4 , 9 );
-    NEW_LINK( 4 , 10 );
     NEW_LINK( 4 , 12 );
     NEW_LINK( 4 , 13 );
+    NEW_LINK( 4 , 14 );
+    NEW_LINK( 4 , 15 );
+    NEW_LINK( 4 , 16 );
+    NEW_LINK( 4 , 17 );
+    NEW_LINK( 4 , 18 );
+    NEW_LINK( 4 , 19 );
+    NEW_LINK( 4 , 22 );
+    NEW_LINK( 4 , 23 );
     NEW_LINK( 5 , 2 );
     NEW_LINK( 5 , 3 );
     NEW_LINK( 5 , 4 );
@@ -109,6 +126,7 @@ void Graph::defineGraph()
     NEW_LINK( 5 , 11 );
     NEW_LINK( 5 , 12 );
     NEW_LINK( 5 , 13 );
+    NEW_LINK( 5 , 14 );
     NEW_LINK( 5 , 15 );
     NEW_LINK( 6 , 2 );
     NEW_LINK( 6 , 3 );
@@ -120,6 +138,7 @@ void Graph::defineGraph()
     NEW_LINK( 6 , 10 );
     NEW_LINK( 6 , 12 );
     NEW_LINK( 6 , 13 );
+    NEW_LINK( 6 , 14 );
     NEW_LINK( 7 , 3 );
     NEW_LINK( 7 , 4 );
     NEW_LINK( 7 , 5 );
@@ -129,6 +148,7 @@ void Graph::defineGraph()
     NEW_LINK( 7 , 10 );
     NEW_LINK( 7 , 11 );
     NEW_LINK( 7 , 13 );
+    NEW_LINK( 7 , 14 );
     NEW_LINK( 8 , 2 );
     NEW_LINK( 8 , 3 );
     NEW_LINK( 8 , 4 );
@@ -139,7 +159,7 @@ void Graph::defineGraph()
     NEW_LINK( 8 , 10 );
     NEW_LINK( 8 , 11 );
     NEW_LINK( 8 , 13 );
-    NEW_LINK( 8 , 23 );
+    NEW_LINK( 8 , 14 );
     NEW_LINK( 9 , 2 );
     NEW_LINK( 9 , 3 );
     NEW_LINK( 9 , 4 );
@@ -151,9 +171,7 @@ void Graph::defineGraph()
     NEW_LINK( 9 , 11 );
     NEW_LINK( 9 , 12 );
     NEW_LINK( 9 , 13 );
-    NEW_LINK( 10 , 2 );
-    NEW_LINK( 10 , 3 );
-    NEW_LINK( 10 , 4 );
+    NEW_LINK( 9 , 14 );
     NEW_LINK( 10 , 5 );
     NEW_LINK( 10 , 6 );
     NEW_LINK( 10 , 7 );
@@ -161,7 +179,7 @@ void Graph::defineGraph()
     NEW_LINK( 10 , 9 );
     NEW_LINK( 10 , 11 );
     NEW_LINK( 10 , 13 );
-    NEW_LINK( 10 , 22 );
+    NEW_LINK( 10 , 14 );
     NEW_LINK( 11 , 5 );
     NEW_LINK( 11 , 7 );
     NEW_LINK( 11 , 8 );
@@ -169,6 +187,7 @@ void Graph::defineGraph()
     NEW_LINK( 11 , 10 );
     NEW_LINK( 11 , 12 );
     NEW_LINK( 11 , 13 );
+    NEW_LINK( 11 , 14 );
     NEW_LINK(12 , 2 );
     NEW_LINK(12 , 3 );
     NEW_LINK(12 , 4 );
@@ -176,6 +195,7 @@ void Graph::defineGraph()
     NEW_LINK(12 , 6 );
     NEW_LINK(12 , 9 );
     NEW_LINK(12 , 11 );
+    NEW_LINK(12 , 14 );
     NEW_LINK(12 , 15 );
     NEW_LINK(12 , 16 );
     NEW_LINK(12 , 20 );
@@ -188,7 +208,6 @@ void Graph::defineGraph()
     NEW_LINK(13 , 9 );
     NEW_LINK(13 , 10 );
     NEW_LINK(13 , 11 );
-    NEW_LINK(13 , 15 );
     NEW_LINK(13 , 18 );
     NEW_LINK(14 , 2 );
     NEW_LINK(14 , 3 );
@@ -203,14 +222,11 @@ void Graph::defineGraph()
     NEW_LINK(14 , 12 );
     NEW_LINK(14 , 15 );
     NEW_LINK(14 , 16 );
-    NEW_LINK(14 , 24 );
     NEW_LINK(15 , 2 );
     NEW_LINK(15 , 3 );
     NEW_LINK(15 , 4 );
     NEW_LINK(15 , 5 );
-    NEW_LINK(15 , 6 );
     NEW_LINK(15 , 12 );
-    NEW_LINK(15 , 13 );
     NEW_LINK(15 , 14 );
     NEW_LINK(15 , 16 );
     NEW_LINK(15 , 17 );
@@ -223,7 +239,6 @@ void Graph::defineGraph()
     NEW_LINK(16 , 2 );
     NEW_LINK(16 , 3 );
     NEW_LINK(16 , 4 );
-    NEW_LINK(16 , 5 );
     NEW_LINK(16 , 12 );
     NEW_LINK(16 , 14 );
     NEW_LINK(16 , 15 );
@@ -264,9 +279,6 @@ void Graph::defineGraph()
     NEW_LINK(19 , 21 );
     NEW_LINK(19 , 22 );
     NEW_LINK(19 , 23 );
-    NEW_LINK(20 , 2 );
-    NEW_LINK(20 , 3 );
-    NEW_LINK(20 , 4 );
     NEW_LINK(20 , 12 );
     NEW_LINK(20 , 15 );
     NEW_LINK(20 , 16 );
@@ -285,14 +297,12 @@ void Graph::defineGraph()
     NEW_LINK(22 , 2 );
     NEW_LINK(22 , 3 );
     NEW_LINK(22 , 4 );
-    NEW_LINK(22 , 10 );
     NEW_LINK(22 , 12 );
     NEW_LINK(22 , 15 );
     NEW_LINK(22 , 16 );
     NEW_LINK(22 , 19 );
     NEW_LINK(22 , 21 );
     NEW_LINK(23 , 4 );
-    NEW_LINK(23 , 8 );
     NEW_LINK(23 , 15 );
     NEW_LINK(23 , 16 );
     NEW_LINK(23 , 17 );
@@ -300,18 +310,6 @@ void Graph::defineGraph()
     NEW_LINK(23 , 19 );
     NEW_LINK(23 , 20 );
     NEW_LINK(23 , 21 );
-    NEW_LINK(24 , 2 );
-    NEW_LINK(24 , 3 );
-    NEW_LINK(24 , 4 );
-    NEW_LINK(24 , 14 );
-    NEW_LINK(24 , 15 );
-    NEW_LINK(24 , 16 );
-    NEW_LINK(24 , 17 );
-    NEW_LINK(24 , 18 );
-    NEW_LINK(24 , 19 );
-    NEW_LINK(24 , 20 );
-    NEW_LINK(24 , 21 );
-    NEW_LINK(24 , 22 );
     m_graph.links.count = j;
     ASSERT_TEXT(j <= MAX_LINKS, "Too many links defined.");
 }
@@ -350,11 +348,29 @@ Graph::Graph()
         {
             ASSERT_TEXT(m_graph.links.list[currentLinkId].source != m_graph.links.list[currentLinkId].target, "A source can't also be a target");
             ASSERT_TEXT(currentLinkId < m_graph.links.count, "The number of links is ill defined");
-            //Check link reciprocity (only when source is smaller than target, first 2 links are reserved)
+            //Check link reciprocity (when source is smaller than target, search ahead)
             if( m_graph.links.list[currentLinkId].source < m_graph.links.list[currentLinkId].target )
             {
                 bool found = false;
                 for(int j = currentLinkId+1; j < m_graph.links.count ; j++)
+                {
+                    if(m_graph.links.list[currentLinkId].source == m_graph.links.list[j].target
+                    && m_graph.links.list[currentLinkId].target == m_graph.links.list[j].source)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                ASSERT_TEXT(found, (String("A link (")
+                    + int(m_graph.links.list[currentLinkId].source) + ", "
+                    + int(m_graph.links.list[currentLinkId].target)
+                    + ") has no reciproque").c_str());
+            }
+            //Check link reciprocity (when source is bigger than target, search backward)
+            else
+            {
+                bool found = false;
+                for(int j = currentLinkId-1; 1 < j ; j--)
                 {
                     if(m_graph.links.list[currentLinkId].source == m_graph.links.list[j].target
                     && m_graph.links.list[currentLinkId].target == m_graph.links.list[j].source)

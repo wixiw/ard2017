@@ -54,6 +54,21 @@ void Pen::init(Robot2017Listener* client)
     cfg.detectionWaitForOppMove = 1000;
     setConfig(cfg);
 
+//    //PMI 2016 config
+//    apb_Configuration cfg = getConfig();
+//    strcpy(cfg.serialNumber,    "Pen");
+//    cfg.leftWheelDiameter       = 60.66;
+//    cfg.rightWheelDiameter      = 60.66;
+//    cfg.voie                    = 105.9156479;
+//    cfg.maxAcc                  = 700;
+//    cfg.maxTurnAcc              = 300;
+//    cfg.maxTurnSpeed            = 125.0;
+//    cfg.deccDist                = 150.0;
+//    cfg.strategyDuration        = 89500;
+//    cfg.detectionWaitForOppMove = 1000;
+//    setConfig(cfg);
+
+
 }
 
 String const& Pen::getExeVersion()

@@ -110,6 +110,7 @@ class VizuMainScreen(QWidget):
         self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].blocked                 .connect(self.teleop.requestBlockRobot)
         for cmd, widget in self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  # getattr is used to get a method reference from name, hence automatically binding signals ;p
+        self.tabContexts["Robot"].tab.tab["Calib"].sections["Linear"].move                    .connect(self.teleop.goForward)
         self.tabContexts["Robot"].tab.tab["Servos"].lifterCmd                                 .connect(self.teleop.requestLifterServo)
         self.tabContexts["Robot"].tab.tab["Servos"].leftArmCmd                                .connect(self.teleop.requestLeftArmServo)
         self.tabContexts["Robot"].tab.tab["Servos"].rightArmCmd                               .connect(self.teleop.requestRightArmServo)
@@ -123,6 +124,8 @@ class VizuMainScreen(QWidget):
         self.tabContexts["Config"].tab.getConfig          .connect(self.teleop.getConfig)
         self.tabContexts["Config"].tab.setConfig          .connect(self.teleop.setConfig)
         self.teleop.config.connect(self.tabContexts["Config"].tab.updateConfig)
+        self.teleop.config.connect(self.tabContexts["Robot"].tab.tab["Calib"].sections["Linear"].updateConfig)
+        self.teleop.config.connect(self.tabContexts["Robot"].tab.tab["Calib"].sections["Rotation"].updateConfig)
         
         #RobotProxy
         self.teleop.telemetry.connect(self.robotProxy._telemetryDataCb)
@@ -216,7 +219,9 @@ class VizuMainScreen(QWidget):
         self.shortcuts["x"] = ShortcutContext("x", self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"]._blockFromShortcut, "Create/destroy a virtual opponent on the robot path.") 
             # CGTC
         self.shortcuts["g"] = ShortcutContext("g", self.tabContexts["Strat"].tab.copyGhostToClipboard, "*THE* famous copy ghost to clipboard feature.")
-        
+            #Connect/Disconnect
+        self.shortcuts["c"] = ShortcutContext("c", self.tabContexts["Com"].tab._connectFromShorcut, "Connects or disconnect from the robot", ShortcutContext.AVAILABLE_OFFLINE)
+
         #register shortcuts into main widget
         for name, shortcutContext in self.shortcuts.items():
             shortcutContext.build(self)
@@ -224,7 +229,6 @@ class VizuMainScreen(QWidget):
         self.configureMap.setMapping(self.shortcuts["y"].widget, Types_pb2.PREF)
         self.configureMap.setMapping(self.shortcuts["b"].widget, Types_pb2.SYM)
    
-      
    
 class VizuApplication(QApplication):
     

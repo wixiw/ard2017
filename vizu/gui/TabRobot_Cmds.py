@@ -357,7 +357,7 @@ class TurnDeltaForm(QWidget):
                         
     def __init__(self, parent):
         super().__init__(parent)
-        self.dh = HeadingInput(self)
+        self.dh = IntegerInput(self, -8000, 8000)
         self.exe = QPushButton('Execute', self)
         self.exe.clicked.connect(self._execute) 
         

@@ -152,12 +152,13 @@ void Buzzer::naderBell()
 
     if(m_soundPlayed && state)
     {
-        playTone(3000, 1000);
+        playTone(3000, 500);
         state = !state;
     }
     if(m_soundPlayed && !state)
     {
-        silence(500);
+        silence(250);
+        state = !state;
     }
 }
 

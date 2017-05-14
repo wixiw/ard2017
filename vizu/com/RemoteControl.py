@@ -333,6 +333,10 @@ class RemoteControl(QObject):
     #serialize and send the message on communication link
     #do not use this function directly, use TELEOP API above
     def _sendMsg(self, msg):
+        if not self.isConnected():
+            print("RemoteControl : Message not send because not connected.")
+            return
+        
         assert isinstance(msg, RemoteControl_pb2.RemoteControlRequest), "RemoteControl_pb2._sendMsg expects to receive a RemoteControlRequest class"
         #---DEBUG--- print("RemoteControl request : " + str(msg))
 

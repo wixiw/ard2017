@@ -175,4 +175,23 @@ class LedIndicator(QWidget):
                 print("Error loading img/grey_light.png");
             self.l.setPixmap(pixmap)
             
-            
+       
+       
+class RobotConfigWidget(QWidget):
+    
+    getConfig = pyqtSignal()
+    setConfig = pyqtSignal(RemoteControl_pb2.RemoteControlRequest)
+    
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.config = RemoteControl_pb2.Configuration()
+
+    #Override in order to initialize the view each time the widget is shown
+    def showEvent (self, QShowEvent):
+        self.getConfig.emit()
+        
+    @pyqtSlot(RemoteControl_pb2.Configuration)    
+    def updateConfig(self, msg):
+        self.config = msg
+        
+   

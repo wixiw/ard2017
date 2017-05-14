@@ -127,6 +127,12 @@ namespace ard
         //for the first time, it means that anything else has finished booting.
         void bootUp() override;
 
+        //FSM callback : change LED color
+        void ledRGB(sc_integer color, sc_integer blink);
+
+        //FSM callback
+        void displayMatchRGB(sc_integer blink);
+
         void logDebug(sc_string msg) override
         {
             LOG_DEBUG(String(msg));
@@ -190,6 +196,8 @@ namespace ard
 
         uint8_t currentMode;
         uint8_t currentModeStatus;
+
+        eColor matchColor;
 
         bool simulated;
 

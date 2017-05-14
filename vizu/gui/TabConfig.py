@@ -12,10 +12,7 @@ from core import *
 # This class is a pre-built widget which is designed 
 # to configure the robot at run time 
 #
-class TabConfig(QWidget):
-    
-    getConfig = pyqtSignal()
-    setConfig = pyqtSignal(RemoteControl_pb2.RemoteControlRequest)
+class TabConfig(RobotConfigWidget):
     
     def __init__(self, parent):
         super().__init__(parent)
@@ -123,11 +120,6 @@ class TabConfig(QWidget):
         
         #Other
         self.otherConfig.logDebug.setChecked(msg.logDebug)
-        
-    #Override in order to initialize the view each time the widget is shown
-    def showEvent (self, QShowEvent):
-        self._getConfig()
-
         
 class CalibConfigWidget(QWidget): 
     

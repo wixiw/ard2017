@@ -332,7 +332,7 @@ void Navigation::run()
          --------------------------------------------------------------------------------------*/
         case eNavState_COMPUTING_GRAPH:
         {
-            if(!graph.computeShortertPath(m_pose.toAmbiPose(m_color), m_target.toAmbiPose(m_color), m_graphDir))
+            if(!graph.computeShortertPath(m_pose.toAmbiPose(m_color), m_target, m_graphDir))
             {
                 LOG_ERROR("No path found in graph !");
                 m_order = eNavOrder_NOTHING;
@@ -507,9 +507,8 @@ void Navigation::goForward(float distanceMm)
 
     m_mutex.lock();
     PointCap target = m_pose;
-    m_mutex.unlock();
-
     target.translatePolar(m_pose.hDegree(), distanceMm);
+    m_mutex.unlock();
 
     if(0 <= distanceMm)
     {
@@ -523,17 +522,26 @@ void Navigation::goForward(float distanceMm)
 
 void Navigation::turnDelta(float angle, bool sym)
 {
-    LOG_INFO(String("   new request : turnDelta(") + angle + "°).");
-
     m_mutex.lock();
-    PointCap target = m_pose;
-    m_mutex.unlock();
-    if(sym && m_color == eColor_SYM)
-        target.hDegree(target.hDegree() - angle);
-    else
-        target.hDegree(target.hDegree() + angle);
+    CHECK_ONE_ORDER_AT_A_TIME();
 
-    goToCap(target, eDir_FORWARD, false);
+    LOG_INFO(String("   new request : turnDelta(") + angle + "°).");
+    float target = angle;
+
+    if(sym && m_color == eColor_SYM)
+        target = -angle;
+    else
+        target = angle;
+
+    //Request turn
+    applyCmdToTurn(radians(target), userMaxTurnSpeed, userMaxTurnAcc);
+    orderTimeout.arm(fabs(target)*1000. / (double)conf->maxTurnSpeed()*1.1);
+
+    //Change state
+    m_order = eNavOrder_GOTO_CAP;
+    m_state = eNavState_TURNING_AT_TARGET;
+
+    m_mutex.unlock();
 }
 
 void Navigation::turnTo(float angle, bool sym)
