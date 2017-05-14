@@ -5,7 +5,7 @@
 using namespace ard;
 
 #define MAX_NODES       30 // !! CAUTION : Keep in sync with CommonMsg.proto and RemoteControl.proto
-#define MAX_LINKS      200 // !! CAUTION : Keep in sync with CommonMsg.proto and RemoteControl.proto
+#define MAX_LINKS      250 // !! CAUTION : Keep in sync with CommonMsg.proto and RemoteControl.proto
 
 #define START_POINT_ID 0
 #define TARGET_POINT_ID 1
@@ -47,6 +47,17 @@ void Graph::defineGraph()
     NEW_NODE(  875,  -535);//11
     NEW_NODE(  515,   625);//12
     NEW_NODE( 1160,   180);//13
+    NEW_NODE(  260,   340);//14
+    NEW_NODE( -530,   160);//15 sym of 5
+    NEW_NODE( -340,  -190);//16 sym of 6
+    NEW_NODE(-1016,   116);//17 sym of 7
+    NEW_NODE( -890,   -65);//18 sym of 8
+    NEW_NODE( -756,  -244);//19 sym of 9
+    NEW_NODE(-1155,  -350);//20 sym of 10
+    NEW_NODE( -875,  -535);//21 sym of 11
+    NEW_NODE( -485,   385);//22 nearly sym of 12
+    NEW_NODE(-1160,   180);//23 sym of 13
+    NEW_NODE( -260,   340);//24 sym of 14
 
     m_graph.nodes.count = i;
     ASSERT_TEXT(i <= MAX_NODES, "Too many nodes defined.");
@@ -95,8 +106,10 @@ void Graph::defineGraph()
     NEW_LINK( 5 , 8 );
     NEW_LINK( 5 , 9 );
     NEW_LINK( 5 , 10 );
+    NEW_LINK( 5 , 11 );
     NEW_LINK( 5 , 12 );
     NEW_LINK( 5 , 13 );
+    NEW_LINK( 5 , 15 );
     NEW_LINK( 6 , 2 );
     NEW_LINK( 6 , 3 );
     NEW_LINK( 6 , 4 );
@@ -126,6 +139,7 @@ void Graph::defineGraph()
     NEW_LINK( 8 , 10 );
     NEW_LINK( 8 , 11 );
     NEW_LINK( 8 , 13 );
+    NEW_LINK( 8 , 23 );
     NEW_LINK( 9 , 2 );
     NEW_LINK( 9 , 3 );
     NEW_LINK( 9 , 4 );
@@ -147,6 +161,8 @@ void Graph::defineGraph()
     NEW_LINK( 10 , 9 );
     NEW_LINK( 10 , 11 );
     NEW_LINK( 10 , 13 );
+    NEW_LINK( 10 , 22 );
+    NEW_LINK( 11 , 5 );
     NEW_LINK( 11 , 7 );
     NEW_LINK( 11 , 8 );
     NEW_LINK( 11 , 9 );
@@ -160,6 +176,10 @@ void Graph::defineGraph()
     NEW_LINK(12 , 6 );
     NEW_LINK(12 , 9 );
     NEW_LINK(12 , 11 );
+    NEW_LINK(12 , 15 );
+    NEW_LINK(12 , 16 );
+    NEW_LINK(12 , 20 );
+    NEW_LINK(12 , 22 );
     NEW_LINK(13 , 4 );
     NEW_LINK(13 , 5 );
     NEW_LINK(13 , 6 );
@@ -168,6 +188,130 @@ void Graph::defineGraph()
     NEW_LINK(13 , 9 );
     NEW_LINK(13 , 10 );
     NEW_LINK(13 , 11 );
+    NEW_LINK(13 , 15 );
+    NEW_LINK(13 , 18 );
+    NEW_LINK(14 , 2 );
+    NEW_LINK(14 , 3 );
+    NEW_LINK(14 , 4 );
+    NEW_LINK(14 , 5 );
+    NEW_LINK(14 , 6 );
+    NEW_LINK(14 , 7 );
+    NEW_LINK(14 , 8 );
+    NEW_LINK(14 , 9 );
+    NEW_LINK(14 , 10 );
+    NEW_LINK(14 , 11 );
+    NEW_LINK(14 , 12 );
+    NEW_LINK(14 , 15 );
+    NEW_LINK(14 , 16 );
+    NEW_LINK(14 , 24 );
+    NEW_LINK(15 , 2 );
+    NEW_LINK(15 , 3 );
+    NEW_LINK(15 , 4 );
+    NEW_LINK(15 , 5 );
+    NEW_LINK(15 , 6 );
+    NEW_LINK(15 , 12 );
+    NEW_LINK(15 , 13 );
+    NEW_LINK(15 , 14 );
+    NEW_LINK(15 , 16 );
+    NEW_LINK(15 , 17 );
+    NEW_LINK(15 , 18 );
+    NEW_LINK(15 , 19 );
+    NEW_LINK(15 , 20 );
+    NEW_LINK(15 , 21 );
+    NEW_LINK(15 , 22 );
+    NEW_LINK(15 , 23 );
+    NEW_LINK(16 , 2 );
+    NEW_LINK(16 , 3 );
+    NEW_LINK(16 , 4 );
+    NEW_LINK(16 , 5 );
+    NEW_LINK(16 , 12 );
+    NEW_LINK(16 , 14 );
+    NEW_LINK(16 , 15 );
+    NEW_LINK(16 , 17 );
+    NEW_LINK(16 , 18 );
+    NEW_LINK(16 , 19 );
+    NEW_LINK(16 , 20 );
+    NEW_LINK(16 , 22 );
+    NEW_LINK(16 , 23 );
+    NEW_LINK(17 , 3 );
+    NEW_LINK(17 , 4 );
+    NEW_LINK(17 , 15 );
+    NEW_LINK(17 , 16 );
+    NEW_LINK(17 , 18 );
+    NEW_LINK(17 , 19 );
+    NEW_LINK(17 , 20 );
+    NEW_LINK(17 , 21 );
+    NEW_LINK(17 , 23 );
+    NEW_LINK(18 , 2 );
+    NEW_LINK(18 , 3 );
+    NEW_LINK(18 , 4 );
+    NEW_LINK(18 , 13 );
+    NEW_LINK(18 , 15 );
+    NEW_LINK(18 , 16 );
+    NEW_LINK(18 , 17 );
+    NEW_LINK(18 , 19 );
+    NEW_LINK(18 , 20 );
+    NEW_LINK(18 , 21 );
+    NEW_LINK(18 , 23 );
+    NEW_LINK(19 , 2 );
+    NEW_LINK(19 , 3 );
+    NEW_LINK(19 , 4 );
+    NEW_LINK(19 , 15 );
+    NEW_LINK(19 , 16 );
+    NEW_LINK(19 , 17 );
+    NEW_LINK(19 , 18 );
+    NEW_LINK(19 , 20 );
+    NEW_LINK(19 , 21 );
+    NEW_LINK(19 , 22 );
+    NEW_LINK(19 , 23 );
+    NEW_LINK(20 , 2 );
+    NEW_LINK(20 , 3 );
+    NEW_LINK(20 , 4 );
+    NEW_LINK(20 , 12 );
+    NEW_LINK(20 , 15 );
+    NEW_LINK(20 , 16 );
+    NEW_LINK(20 , 17 );
+    NEW_LINK(20 , 18 );
+    NEW_LINK(20 , 19 );
+    NEW_LINK(20 , 21 );
+    NEW_LINK(20 , 23 );
+    NEW_LINK(21 , 15 );
+    NEW_LINK(21 , 17 );
+    NEW_LINK(21 , 18 );
+    NEW_LINK(21 , 19 );
+    NEW_LINK(21 , 20 );
+    NEW_LINK(21 , 22 );
+    NEW_LINK(21 , 23 );
+    NEW_LINK(22 , 2 );
+    NEW_LINK(22 , 3 );
+    NEW_LINK(22 , 4 );
+    NEW_LINK(22 , 10 );
+    NEW_LINK(22 , 12 );
+    NEW_LINK(22 , 15 );
+    NEW_LINK(22 , 16 );
+    NEW_LINK(22 , 19 );
+    NEW_LINK(22 , 21 );
+    NEW_LINK(23 , 4 );
+    NEW_LINK(23 , 8 );
+    NEW_LINK(23 , 15 );
+    NEW_LINK(23 , 16 );
+    NEW_LINK(23 , 17 );
+    NEW_LINK(23 , 18 );
+    NEW_LINK(23 , 19 );
+    NEW_LINK(23 , 20 );
+    NEW_LINK(23 , 21 );
+    NEW_LINK(24 , 2 );
+    NEW_LINK(24 , 3 );
+    NEW_LINK(24 , 4 );
+    NEW_LINK(24 , 14 );
+    NEW_LINK(24 , 15 );
+    NEW_LINK(24 , 16 );
+    NEW_LINK(24 , 17 );
+    NEW_LINK(24 , 18 );
+    NEW_LINK(24 , 19 );
+    NEW_LINK(24 , 20 );
+    NEW_LINK(24 , 21 );
+    NEW_LINK(24 , 22 );
     m_graph.links.count = j;
     ASSERT_TEXT(j <= MAX_LINKS, "Too many links defined.");
 }
@@ -347,7 +491,7 @@ bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, 
     optimizeHeadings(sens);
 
     // affichage debug
-    for(int i=0; i < m_state.way_count; i++)
+    for(uint8_t i=0; i < m_state.way_count; i++)
     {
         String s = String("    graph path : [" + String(i) + "] : id=" + int(m_state.way[i]-1) + " p=" + getWayPoint(i).toString());
         LOG_INFO(s);
@@ -359,11 +503,6 @@ bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, 
         LOG_INFO(String("   --> computed in ") + String(endCompute - startCompute) + " ms.");
 
     return res;
-}
-
-uint16_t Graph::computeDistance(NodeId a, NodeId b)
-{
-    //d_ab =
 }
 
 bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
@@ -396,7 +535,9 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
             {
                 int connected_node = m_graph.links.list[j].target;
                 // calcul de la distance en passant par la
-                uint16_t dist = m_info[i].distance + m_graph.links.list[j].distance + 200; //200 is a penalty to penalize manoeuvers TODO replace by motion duration calculation
+                uint16_t dist = m_info[i].distance
+                        + m_graph.links.list[j].distance
+                        + 200; //200 is a penalty to penalize manoeuvers TODO replace by motion duration calculation
                 if( dist < m_info[connected_node].distance)
                 {
                     // on a trouvé un chemin plus court pour aller vers "connected_node"

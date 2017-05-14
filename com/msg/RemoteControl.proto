@@ -79,8 +79,8 @@ message GraphNodes {
 //manual encoding to save space
 message GraphLinks {
     uint32 count   = 4;
-    string sources = 1 [(nanopb).max_size = 200];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
-    string targets = 2 [(nanopb).max_size = 200];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
+    string sources = 1 [(nanopb).max_size = 250];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
+    string targets = 2 [(nanopb).max_size = 250];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
 }
 
 //manual encoding in string to save space
@@ -91,7 +91,7 @@ message GraphState{
     PointCap             targetPoint = 4;
     string               way         = 5 [(nanopb).max_size = 15];//  !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_NODE)
     repeated float       headings    = 7 [(nanopb).max_count = 15];//  !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_NODE)
-    string               valid       = 6 [(nanopb).max_size = 200];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
+    string               valid       = 6 [(nanopb).max_size = 250];// !! CAUTION : Keep in sync with Graph.h (GRAPH_NUM_LINK)
 }
 
 //WARNING : To keep in sync with RobotParameters.h/cpp

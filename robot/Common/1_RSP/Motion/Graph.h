@@ -131,14 +131,6 @@ namespace ard
             //Find the graph node which is the closest from start/target points and update graph
             NodeId setStartPoint(const PointCap& source);
             NodeId setTargetPoint(const PointCap& target);
-
-            //Defines the disktra distance, in our case it's a reduced distance so that we are as efficient as an A*
-            //it's possible because we are in the monotone case
-            //with d(x,y) the euclidian distance between 2 nodes, and h(x) the heuristic to the target = d(x,target)
-            // h(a) <= d(a,b) +h(b) (due to the triangle inequality)
-            //so we use d'(a,b) = d(a,b) + h(b) - h(a)
-            //see https://en.wikipedia.org/wiki/A*_search_algorithm
-            uint16_t computeDistance(NodeId a, NodeId b);
     };
 }
 
