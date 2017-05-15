@@ -91,9 +91,6 @@ class TabCom(QWidget):
         layoutBtnGroup.addWidget(self.btn_crcErrReq)
         layoutBtnGroup.addWidget(self.btn_tooLittleReq)
         
-        #keyboard shortcuts
-        QShortcut(QKeySequence(Qt.Key_C), self).activated.connect(self._connectFromShorcut)
-
     @pyqtSlot(bool)
     def _connectFromButton(self, pressed):
         if pressed:
@@ -101,7 +98,9 @@ class TabCom(QWidget):
         else:
             self._disconnect()
         
+    @pyqtSlot()
     def _connectFromShorcut(self):
+        print("truc")
         self.btn_connect.toggle()            
         
     def _connect(self):

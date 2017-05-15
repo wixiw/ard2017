@@ -44,6 +44,7 @@ RobotParameters::RobotParameters()
     cfg.detectionWaitForOppMove = 1000;
     cfg.detectionActive         = true;
     cfg.logDebug                = false;
+    cfg.bipAllowed              = true;
 }
 
 void RobotParameters::setComputedVars()
@@ -237,4 +238,10 @@ bool RobotParameters::logDebug() const
 {
     ASSERT(m_configuredOnce);
     return cfg.logDebug;
+}
+
+bool RobotParameters::bipAllowed() const
+{
+    ASSERT(m_configuredOnce);
+    return cfg.bipAllowed;
 }

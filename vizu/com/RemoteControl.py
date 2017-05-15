@@ -225,6 +225,20 @@ class RemoteControl(QObject):
         msg.requestGraphTo.direction = dir
         self._sendMsg(msg)
         print(msg)
+              
+    @pyqtSlot(int)
+    def recalFace(self, wall):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.recalFaceOnBorder = wall
+        self._sendMsg(msg)
+        print(msg)
+
+    @pyqtSlot(int)
+    def recalRear(self, wall):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.recalRearOnBorder = wall
+        self._sendMsg(msg)
+        print(msg)        
                 
     @pyqtSlot()
     def requestMaxLengthMsg(self):
@@ -333,6 +347,10 @@ class RemoteControl(QObject):
     #serialize and send the message on communication link
     #do not use this function directly, use TELEOP API above
     def _sendMsg(self, msg):
+        if not self.isConnected():
+            print("RemoteControl : Message not send because not connected.")
+            return
+        
         assert isinstance(msg, RemoteControl_pb2.RemoteControlRequest), "RemoteControl_pb2._sendMsg expects to receive a RemoteControlRequest class"
         #---DEBUG--- print("RemoteControl request : " + str(msg))
 

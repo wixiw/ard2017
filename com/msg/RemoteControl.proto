@@ -125,7 +125,8 @@ message Configuration
     //Strat config
     uint32 strategyDuration      = 31; //in ms
 
-    uint32 logDebug                = 32; //set to true to activate debug logs
+    uint32 logDebug              = 32; //set to true to activate debug logs
+    bool   bipAllowed            = 33; //activate buzzer
 }
 
 //----------------------------------------------------------------------
