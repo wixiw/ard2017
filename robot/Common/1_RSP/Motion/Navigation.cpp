@@ -24,8 +24,8 @@ using namespace ard;
 Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph)
         :
                 Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
-                switchRecalFL(BORDURE_AVG, 1000, 10),
-                switchRecalFR(BORDURE_AVD, 1000, 10),
+                switchRecalFL(BORDURE_AVG, 1000, 10, true),
+                switchRecalFR(BORDURE_AVD, 1000, 10, true),
                 switchRecalRC(BORDURE_ARC, 1000, 10),
                 m_pose(),
                 m_state(eNavState_IDLE),
