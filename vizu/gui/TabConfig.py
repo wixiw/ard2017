@@ -82,6 +82,7 @@ class TabConfig(RobotConfigWidget):
         
         #Other
         req.setConfig.logDebug = self.otherConfig.logDebug.isChecked()
+        req.setConfig.bipAllowed = self.otherConfig.bipAllowed.isChecked()
         
         self.setConfig.emit(req)
         print("New config send to robot")
@@ -120,6 +121,7 @@ class TabConfig(RobotConfigWidget):
         
         #Other
         self.otherConfig.logDebug.setChecked(msg.logDebug)
+        self.otherConfig.bipAllowed.setChecked(msg.bipAllowed)
         
 class CalibConfigWidget(QWidget): 
     
@@ -218,6 +220,7 @@ class OtherConfigWidget(QWidget):
         super().__init__(parent)
         
         self.logDebug  = QCheckBox()
+        self.bipAllowed  = QCheckBox()
         
         self.layoutH = QHBoxLayout(self)
         self.layoutV = QGroupBox("Other")
@@ -226,3 +229,5 @@ class OtherConfigWidget(QWidget):
         self.layoutV.setLayout(self.form)
         
         self.form.addRow("activate debug logs", self.logDebug)
+        self.form.addRow("activate buzzer", self.bipAllowed)
+        

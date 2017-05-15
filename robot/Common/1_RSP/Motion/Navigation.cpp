@@ -124,10 +124,6 @@ void Navigation::run()
 
         case eNavState_GOING_TO_TARGET:
         {
-            //This is the MOST important thing to have a working robot
-            if(m_targetDir == eDir_BACKWARD)
-                klaxon.naderBell();
-
             if (subOrderFinished())
             {
                 //Request rotation to final heading
@@ -230,9 +226,6 @@ void Navigation::run()
 
         case eNavState_CONTACTING_WALL:
         {
-            //Most important thing EVER
-            klaxon.naderBell();
-
             //If target is reached (in switch mode) then the recal failed
             if(!noSwitchMode && subOrderFinished())
             {

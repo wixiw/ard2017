@@ -77,9 +77,12 @@ void Buzzer::playTone(uint16_t frequency, uint16_t lengthMs)
 
 void Buzzer::playTone(Tone const& tone)
 {
-    m_soundPlayed = false;
-    queue.push(&tone, 0);
-    timer.start(10000);//start timer 10ms after having received data.
+    if( bipAllowed)
+    {
+        m_soundPlayed = false;
+        queue.push(&tone, 0);
+        timer.start(10000);//start timer 10ms after having received data.
+    }
 }
 
 void Buzzer::silence(uint16_t lengthMs)

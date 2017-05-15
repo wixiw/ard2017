@@ -71,6 +71,9 @@ namespace ard
         bool soundPlayed();
 
         void interrupt();
+
+        //Configure if bip is activated
+        bool bipAllowed;
         
     private:
         uint8_t pin;

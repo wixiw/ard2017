@@ -184,6 +184,7 @@ void Robot2017::setConfig(apb_Configuration const& newConf)
     m_params.setConfig(newConf);
     detection.updateConf(&m_params);
     nav.updateConf(&m_params);
+    hmi.buzzer.bipAllowed = newConf.bipAllowed;
 }
 
 char const * const Robot2017::getSerialNumber() const

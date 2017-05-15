@@ -225,6 +225,20 @@ class RemoteControl(QObject):
         msg.requestGraphTo.direction = dir
         self._sendMsg(msg)
         print(msg)
+              
+    @pyqtSlot(int)
+    def recalFace(self, wall):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.recalFaceOnBorder = wall
+        self._sendMsg(msg)
+        print(msg)
+
+    @pyqtSlot(int)
+    def recalRear(self, wall):
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.recalRearOnBorder = wall
+        self._sendMsg(msg)
+        print(msg)        
                 
     @pyqtSlot()
     def requestMaxLengthMsg(self):

@@ -119,6 +119,8 @@ class NavigationTeleopWidget(QWidget):
         self.navTab["turnTo"] = TurnToForm(self)
         self.navTab["faceTo"] = FaceToForm(self)
         self.navTab["graphTo"] = GraphToForm(self)
+        self.navTab["recalFace"] = RecalFaceForm(self)
+        self.navTab["recalRear"] = RecalRearForm(self)
         self.navCombo = QComboBox(self)
         for tabName, tab in self.navTab.items():
             self.navCombo.addItem(tabName, tab)
@@ -453,3 +455,48 @@ class GraphToForm(QWidget):
                                  self.y.getValue(), 
                                  self.h.getValue()), 
                           self.dir.getValue())
+        
+class RecalFaceForm(QWidget):
+    execute = pyqtSignal(int)
+                        
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.wall = IntegerInput(self, 0, 5)
+        self.exe = QPushButton('Execute', self)
+        self.exe.clicked.connect(self._execute) 
+        
+        layout = QHBoxLayout(self)
+        layoutForm = QFormLayout()
+        layout.addLayout(layoutForm)
+        layout.addWidget(self.exe)
+        layoutForm.addRow("wall ID : ", self.wall)
+    
+    def reset(self):
+        self.wall.clear()
+        
+    @pyqtSlot()
+    def _execute(self):
+        self.execute.emit(self.wall.getValue())
+        
+class RecalRearForm(QWidget):
+    execute = pyqtSignal(int)
+                        
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.wall = IntegerInput(self, 0, 5)
+        self.exe = QPushButton('Execute', self)
+        self.exe.clicked.connect(self._execute) 
+        
+        layout = QHBoxLayout(self)
+        layoutForm = QFormLayout()
+        layout.addLayout(layoutForm)
+        layout.addWidget(self.exe)
+        layoutForm.addRow("wall ID : ", self.wall)
+    
+    def reset(self):
+        self.wall.clear()
+        
+    @pyqtSlot()
+    def _execute(self):
+        self.execute.emit(self.wall.getValue())
+        
