@@ -59,22 +59,22 @@ namespace ard
          * 0 means : go until min switch is reached
          * 1000 means : go until max switch is reached
          */
-        void goTo(uint16_t _target);
+        virtual void goTo(uint16_t _target) override;
 
         /**
          * Motion command finished
          */
-        bool isTargetReached(){return cmd == target;};
+        virtual bool isTargetReached(){return cmd == target;};
 
     protected:
         Servo servo;
         DelayUs cmdVmaxInc; //The duration of the PWM high value to add to previous value duration vmax situation
         DelayUs cmdAccMaxInc; //The duration of the PWM high value to add to previous value
         DelayUs startDeccDelta; //The PWM duration at which we should begin to slow
-        DelayUs target;
-        DelayUs cmd;
-        DelayUs cmdSpeed;
-        int8_t  direction; //1 or -1 depending on move direction
+        DelayUs target; //the target set with goTo
+        DelayUs cmd; //the current position command evolving to reach target
+        DelayUs cmdSpeed; //the current command speed making a trapeze to reach target
+        int8_t  direction; //1 or -1 depending on move direction (it's an interval info, not a servo CC/CCW reverse config)
         Mutex mutex;
         bool enabled;
         uint16_t m_min;

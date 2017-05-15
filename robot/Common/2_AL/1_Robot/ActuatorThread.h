@@ -75,9 +75,9 @@ namespace ard
         FilteredInput switchLifterUp;
         FilteredInput switchLifterDown;
 
-        AccelServo    servoLifter;
-        AccelServo    servoLeftArm;
-        AccelServo    servoRightArm;
+        HomingServo    servoLifter;
+        HomingServo    servoLeftArm;
+        HomingServo    servoRightArm;
         Servo         servoLeftWheel;
         Servo         servoRightWheel;
         Servo         servoFunnyAction;

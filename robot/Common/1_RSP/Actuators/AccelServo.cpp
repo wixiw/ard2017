@@ -26,7 +26,7 @@ AccelServo::AccelServo(String const& name, int servoOutPin, uint16_t _min, uint1
     ASSERT_TEXT(PERIOD_ACTUATORS==20,"AccelServo acc/vmax configs depends on period, if you change the period, check the configs");
 }
 
-void ard::AccelServo::update(DelayMs sinceLastCall)
+void AccelServo::update(DelayMs sinceLastCall)
 {
     //Servo is not powered, no need to command
     if(!enabled)
@@ -96,7 +96,7 @@ void ard::AccelServo::update(DelayMs sinceLastCall)
     mutex.unlock();
 }
 
-void ard::AccelServo::disable()
+void AccelServo::disable()
 {
     mutex.lock();
     enabled = false;
@@ -104,7 +104,7 @@ void ard::AccelServo::disable()
     mutex.unlock();
 }
 
-void ard::AccelServo::setVmax(DelayMs increment)
+void AccelServo::setVmax(DelayMs increment)
 {
     ASSERT(increment != 0);
     cmd = target;
@@ -112,14 +112,14 @@ void ard::AccelServo::setVmax(DelayMs increment)
     cmdVmaxInc = increment;
 }
 
-void ard::AccelServo::setAccMax(DelayMs increment)
+void AccelServo::setAccMax(DelayMs increment)
 {
     cmd = target;
     cmdSpeed = 0;
     cmdAccMaxInc = increment;
 }
 
-void ard::AccelServo::goTo(uint16_t _target)
+void AccelServo::goTo(uint16_t _target)
 {
     if (_target < m_min)
         _target = m_min;

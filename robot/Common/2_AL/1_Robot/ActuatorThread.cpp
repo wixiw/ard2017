@@ -21,9 +21,9 @@ ActuatorThread::ActuatorThread():
         omronSpare(         OMRON_SPARE, 50, 50),
         switchLifterUp(     SWITCH_LIFTER_UP, 100, 10),
         switchLifterDown(   SWITCH_LIFTER_DOWN, 100, 10),
-        servoLifter(        "Lifter", SERVO1, 100, 900),
-        servoLeftArm(       "LeftArm", SERVO2, 100, 900),
-        servoRightArm(      "RightArm", SERVO3, 100, 900),
+        servoLifter("Lifter", SERVO1, &switchLifterDown, &switchLifterUp),
+        servoLeftArm("LeftArm", SERVO2,  &switchArmLin, &switchArmLout),
+        servoRightArm("RightArm", SERVO3, &switchArmRin, &switchArmRout, true),
         servoLeftWheel(     SERVO4, 0, 1000),
         servoRightWheel(    SERVO5, 0, 1000),
         servoFunnyAction(   SERVO6, 0, 1000),
@@ -60,7 +60,6 @@ void ActuatorThread::init()
     addPolledObject(servoLifter);
     addPolledObject(servoLeftArm);
     addPolledObject(servoRightArm);
-
     PollerThread::init();
 }
 

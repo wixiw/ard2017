@@ -23,6 +23,7 @@
 #include "Actuators/AccelServo.h"
 #include "Actuators/AccelStepper.h"
 #include "Actuators/Buzzer.h"
+#include "Actuators/HomingServo.h"
 #include "Actuators/Servo.h"
 #include "Motion/Graph.h"
 #include "Motion/Navigation.h"

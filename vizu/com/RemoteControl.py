@@ -280,36 +280,42 @@ class RemoteControl(QObject):
     def requestLifterServo(self, angle): 
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestActuators.lifter = angle
+        msg.requestActuators.hasLifter = True
         self._sendMsg(msg)
         
     @pyqtSlot(int)
     def requestLeftArmServo(self, angle): 
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestActuators.leftArm = angle
+        msg.requestActuators.hasLeftArm = True
         self._sendMsg(msg)
         
     @pyqtSlot(int)
     def requestRightArmServo(self, angle): 
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestActuators.rightArm = angle
+        msg.requestActuators.hasRightArm = True
         self._sendMsg(msg)
         
     @pyqtSlot(int)
     def requestLeftWheelServo(self, angle): 
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestActuators.leftWheel = angle
+        msg.requestActuators.hasLeftWheel = True
         self._sendMsg(msg)
         
     @pyqtSlot(int)
     def requestRightWheelServo(self, angle): 
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestActuators.rightWheel = angle
+        msg.requestActuators.hasRightWheel = True
         self._sendMsg(msg)
         
     @pyqtSlot(int)
     def requestFunnyActionServo(self, angle): 
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestActuators.funnyAction = angle
+        msg.requestActuators.hasFunnyAction = True
         self._sendMsg(msg)
         
 #---------------------------------------------------------------------------------
