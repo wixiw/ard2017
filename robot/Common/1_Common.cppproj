@@ -1284,9 +1284,6 @@
     <Compile Include="2_AL\Strategies.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="K_constants.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="K_thread_config.h">
       <SubType>compile</SubType>
     </Compile>

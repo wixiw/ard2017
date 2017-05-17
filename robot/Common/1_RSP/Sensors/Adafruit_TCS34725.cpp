@@ -21,7 +21,7 @@
   #include <pgmspace.h>
 #endif
 #include <stdlib.h>
-#include <math.h>
+#include "arm_math.h"
 
 #include "Adafruit_TCS34725.h"
 

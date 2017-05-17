@@ -52,7 +52,14 @@
 
 #include "../CpuIo/SD.h"
 
+#ifdef BUILD_SD_LOG
+
 namespace SDLib {
+
+/* for debugging file open/close leaks
+   uint8_t nfilecount=0;
+*/
+
 
 // Used by `getNextPathComponent`
 #define MAX_COMPONENT_LEN 12 // What is max length?
@@ -618,3 +625,5 @@ void File::rewindDirectory(void) {
 SDClass SD;
 
 };
+
+#endif BUILD_SD_LOG

@@ -6,8 +6,6 @@
  */
 
 #include "RobotParameters.h"
-
-#include "K_constants.h"
 #include "core/ArdMaths.h"
 #include "Log.h"
 

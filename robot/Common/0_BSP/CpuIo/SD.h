@@ -15,6 +15,10 @@
 #ifndef __SD_H__
 #define __SD_H__
 
+//Configure build
+#define BUILD_SD_LOG
+#ifdef BUILD_SD_LOG
+
 #include "../ArduinoCore/Arduino.h"
 
 #include "../CpuIo/utility/SdFat.h"
@@ -50,7 +54,7 @@ public:
   boolean isDirectory(void);
   File openNextFile(uint8_t mode = O_RDONLY);
   void rewindDirectory(void);
-  
+
   using Print::write;
 };
 
@@ -120,4 +124,8 @@ typedef SDLib::File    SDFile;
 typedef SDLib::SDClass SDFileSystemClass;
 #define SDFileSystem   SDLib::SD
 
+#endif //BUILD_SD_LOG
+
 #endif
+
+

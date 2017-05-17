@@ -142,7 +142,6 @@
       <Value>ARDUINO=10612</Value>
       <Value>ARDUINO_SAM_DUE</Value>
       <Value>ARDUINO_ARCH_SAM</Value>
-      <Value>USBCON</Value>
       <Value>PB_FIELD_32BIT</Value>
     </ListValues>
   </armgcccpp.compiler.symbols.DefSymbols>

@@ -10,6 +10,11 @@
 
 #include "BSP.hpp"
 
+//Configure build system
+#define BUILD_LOG
+
+#ifdef BUILD_LOG
+
 namespace ard
 {
     //fifo item
@@ -18,7 +23,7 @@ namespace ard
         TimeMs date;
         eLogLevel level;
         char component[configMAX_TASK_NAME_LEN];
-        char text[LOG_MAX_SIZE];
+        char text[200]; //Keep in sync with proto message
     };
 
     /**
@@ -37,6 +42,7 @@ namespace ard
         virtual bool isReady() const = 0;
     };
 
+#ifdef BUILD_SD_LOG
     /**
      * Write a log on an SD Card
      * This class is very limited with connection/unconnection. You cannot hotplug SDcard.
@@ -73,6 +79,7 @@ namespace ard
         //SC card write buffer to unpile queue
         LogMsg writeBuffer;
     };
+#endif
 
     //alias to get ArdOs singleton instance
     #define LOG_DEBUG(msg)  LogDispatcher::getInstance().log(eLogLevel_DEBUG,msg)
@@ -132,5 +139,14 @@ namespace ard
         LogDispatcher();COPY_CONSTRUCTORS (LogDispatcher)
     };
 }
+
+#else
+
+#define LOG_DEBUG(msg)
+#define LOG_INFO(msg)
+#define LOG_ERROR(msg)
+#define LOG_ASSERT(msg)
+
+#endif
 
 #endif /* ROBOTS_LOGTHREAD_H_ */

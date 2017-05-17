@@ -14,12 +14,18 @@ int main( void )
     //new required to handle the fact that FreeRtos will destroy the default stack
     Tration* robot = new Tration();
     ASSERT(robot);
+#ifdef BUILD_MOTION_CONTROL
     RemoteControl* remoteControl = new RemoteControl(*robot);
     ASSERT(remoteControl);
+#endif
 
     //Build and start robot
+#ifdef BUILD_MOTION_CONTROL
     robot->init(remoteControl);
     remoteControl->start();
+#else
+    robot->init(NULL);
+#endif
     robot->boot();
 
     return 0;

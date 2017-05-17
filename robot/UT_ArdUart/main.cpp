@@ -7,6 +7,8 @@
 #include "ArdOs.h"
 #include "variant.h"
 #include "debug_history.h"
+#include "RobotParameters.h"
+#include "ArdHdlc.h"
 
 using namespace ard;
 

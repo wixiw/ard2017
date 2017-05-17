@@ -6,6 +6,9 @@
  */
 
 #include "RemoteControl.h"
+
+#ifdef BUILD_MOTION_CONTROL
+
 using namespace ard;
 
 void UART_Handler(void)
@@ -484,3 +487,4 @@ void RemoteControl::bootUp()
     mutex.unlock();
 }
 
+#endif //BUILD_MOTION_CONTROL

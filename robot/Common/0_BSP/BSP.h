@@ -12,9 +12,7 @@
 #include "ArduinoCore/Stream.h"
 #include "CMSIS/CMSIS/Include/core_cm3.h"
 #include "CMSIS/Device/ATMEL/sam.h"
-
 #include "variant.h"
-#include "K_constants.h"
 
 // cf svn://109.10.110.62/ARD_svn/1_Eurobot_2017/Elec/IO Mapping _ ARD2017.xlsx
 

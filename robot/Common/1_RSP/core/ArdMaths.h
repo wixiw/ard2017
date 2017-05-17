@@ -9,7 +9,7 @@
 #define ROBOTS_ARDMATHS_H_
 
 #include "string/WString.h"
-#include <math.h>
+#include "arm_math.h"
 #include "CommonMsg.pb.h"
 #include "wiring_constants.h"
 

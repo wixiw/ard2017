@@ -120,12 +120,12 @@ void ArdHdlc::parseBuffer()
         if (0 < res)
         {
             //A clean message has been parsed : send it to the listener and clean the input buffer
-#ifdef ARD_DEBUG
+
             //checksum set to zero so that it's not displayed
             hdlc_recv_framebuffer[hdlc_length] = 0;
             hdlc_recv_framebuffer[hdlc_length + 1] = 0;
             //LOG_DEBUG("HDLC frame received size=" + String(hdlc_length));
-#endif
+
             //A message has been found
             msgFound = true;
             nbMsgRecv++;

@@ -9,9 +9,11 @@
 #define ROBOT_COMMON_1_RSP_COM_ARDHDLC_H_
 
 #include "ComInterfaces.h"
-#include "K_constants.h"
 #include "string/WString.h"
 #include <hdlc.h>
+
+//Serial buffer set to 3 times the HDLC value in hdlc.h
+#define SERIAL_BUF_SIZE 3*1024
 
 namespace ard
 {

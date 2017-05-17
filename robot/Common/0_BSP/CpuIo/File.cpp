@@ -15,19 +15,15 @@
 #include "../CpuIo/SD.h"
 #include "ArduinoCore/Print.h"
 
-/* for debugging file open/close leaks
-   uint8_t nfilecount=0;
-*/
-
 File::File(SdFile f, const char *n) {
   // oh man you are kidding me, new() doesnt exist? Ok we do it by hand!
-  _file = (SdFile *)malloc(sizeof(SdFile)); 
+  _file = (SdFile *)malloc(sizeof(SdFile));
   if (_file) {
     memcpy(_file, &f, sizeof(SdFile));
-    
+
     strncpy(_name, n, 12);
     _name[12] = 0;
-    
+
     /* for debugging file open/close leaks
        nfilecount++;
        Serial.print("Created \"");
@@ -75,7 +71,7 @@ size_t File::write(const uint8_t *buf, size_t size) {
 }
 
 int File::peek() {
-  if (! _file) 
+  if (! _file)
     return 0;
 
   int c = _file->read();
@@ -84,14 +80,14 @@ int File::peek() {
 }
 
 int File::read() {
-  if (_file) 
+  if (_file)
     return _file->read();
   return -1;
 }
 
 // buffered read for more efficient, high speed reading
 int File::read(void *buf, uint16_t nbyte) {
-  if (_file) 
+  if (_file)
     return _file->read(buf, nbyte);
   return 0;
 }
@@ -128,7 +124,7 @@ uint32_t File::size() {
 void File::close() {
   if (_file) {
     _file->close();
-    free(_file); 
+    free(_file);
     _file = 0;
 
     /* for debugging file open/close leaks
@@ -140,8 +136,9 @@ void File::close() {
 }
 
 File::operator bool() {
-  if (_file) 
+  if (_file)
     return  _file->isOpen();
   return false;
 }
+
 

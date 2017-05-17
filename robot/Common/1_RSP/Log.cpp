@@ -10,9 +10,12 @@
 
 using namespace ard;
 
+#ifdef BUILD_LOG
+
 //singleton instanciation
 LogDispatcher LogDispatcher::instance = LogDispatcher();
 
+#ifdef BUILD_SD_LOG
 SdCardLogger::SdCardLogger(uint8_t recvQueueSize):
         Thread("SDCard", PRIO_SDCARD_WRITER, STACK_SDCARD_WRITER),
         sdCardPresent(false),
@@ -83,6 +86,7 @@ String SdCardLogger::formatLogMsg(LogMsg const& msg)
 
     return String(msg.date) + " [" + level + "] [" + msg.component + "] " + msg.text;
 }
+#endif //BUILD_SD_LOG
 
 LogDispatcher::LogDispatcher():
         nbLoggers(0),
@@ -144,4 +148,4 @@ void LogDispatcher::disptachLogToChannels(LogMsg const& log)
     }
 }
 
-
+#endif

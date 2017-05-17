@@ -8,6 +8,10 @@
 #ifndef ROBOTS_TELEOPTHREAD_H_
 #define ROBOTS_TELEOPTHREAD_H_
 
+#define BUILD_MOTION_CONTROL
+
+#ifdef BUILD_MOTION_CONTROL
+
 #include <Com.h>
 #include "RSP.h"
 #include "Robot.h"
@@ -115,6 +119,6 @@ namespace ard
 
 } /* namespace ard */
 
-
+#endif //BUILD_MOTION_CONTROL
 
 #endif /* ROBOTS_TELEOPTHREAD_H_ */

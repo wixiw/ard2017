@@ -109,22 +109,6 @@ namespace ard
     };
 }
 
-/**
- * The list of awsome strategies to beat RCVA
- * If you read this before the contest you are cheating, it's bad !
- * However we'll break the strategy the last night as always to create a brand new one,
- * so don't expect anything about the current information.
- *
- * Yes, I'm saying bullshit, but's it's 3h since I'm trying to make a template to compile.
- * Bad life.
- */
-#define private public //#porky : workaround to gain introspection, because Yakindu guys thinks they'll anoy me in making data private...
-
-    #include "generated/FSM_SelfTest.h"
-    DECLARE_FSM_STRATEGY(Selftest);
-
-#undef private
-
 #endif /* ROBOT_COMMON_2_AL_STRATEGIES_2017_H_ */
 
 

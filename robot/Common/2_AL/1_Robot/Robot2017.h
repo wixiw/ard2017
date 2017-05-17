@@ -127,10 +127,14 @@ namespace ard
         //hardware layer
         BSP bsp;
 
+#ifdef BUILD_LOG
         LogDispatcher& log;
+#endif
 
     protected:
+#ifdef BUILD_SD_LOG
         SdCardLogger fileLogger;
+#endif
 
         //Save the ARD library build date in the binary
         String buildDate;

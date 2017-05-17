@@ -123,111 +123,112 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <ArmGccCpp>
-        <armgcc.common.outputfiles.hex>True</armgcc.common.outputfiles.hex>
-        <armgcc.common.outputfiles.lss>True</armgcc.common.outputfiles.lss>
-        <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
-        <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
-        <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
-        <armgcc.compiler.symbols.DefSymbols>
-          <ListValues>
-            <Value>F_CPU=84000000L</Value>
-            <Value>ARDUINO=10612</Value>
-            <Value>ARDUINO_SAM_DUE</Value>
-            <Value>ARDUINO_ARCH_SAM</Value>
-            <Value>USBCON</Value>
-          </ListValues>
-        </armgcc.compiler.symbols.DefSymbols>
-        <armgcc.compiler.directories.IncludePaths>
-          <ListValues>
-            <Value>../../../com</Value>
-            <Value>../../../com/generated</Value>
-            <Value>../../../com/nanopb</Value>
-            <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
-            <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
-            <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
-            <Value>../../Common/0_BSP/ArduinoCore/include</Value>
-            <Value>../../Common/0_BSP/ArduinoCore</Value>
-            <Value>../../Common/0_BSP/FreeRtos</Value>
-            <Value>../../Common/0_BSP</Value>
-            <Value>../../Common/0_BSP/Drivers</Value>
-            <Value>../../Common/1_RSP</Value>
-            <Value>../../Common</Value>
-            <Value>../../Common/1_RSP</Value>
-            <Value>../../Common/1_RSP/ComStack</Value>
-            <Value>../../Common/1_RSP/Core</Value>
-            <Value>../../Common/2_AL</Value>
-            <Value>../../Common/2_AL/ActuatorsCtrl</Value>
-            <Value>../../Common/2_AL/Strategies</Value>
-          </ListValues>
-        </armgcc.compiler.directories.IncludePaths>
-        <armgcc.compiler.optimization.level>Optimize (-O0)</armgcc.compiler.optimization.level>
-        <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
-        <armgcc.compiler.optimization.PrepareDataForGarbageCollection>True</armgcc.compiler.optimization.PrepareDataForGarbageCollection>
-        <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
-        <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
-        <armgcccpp.compiler.symbols.DefSymbols>
-          <ListValues>
-            <Value>F_CPU=84000000L</Value>
-            <Value>ARDUINO=10612</Value>
-            <Value>ARDUINO_SAM_DUE</Value>
-            <Value>ARDUINO_ARCH_SAM</Value>
-            <Value>USBCON</Value>
-          </ListValues>
-        </armgcccpp.compiler.symbols.DefSymbols>
-        <armgcccpp.compiler.directories.IncludePaths>
-          <ListValues>
-            <Value>../../../com</Value>
-            <Value>../../../com/generated</Value>
-            <Value>../../../com/nanopb</Value>
-            <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
-            <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
-            <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
-            <Value>../../Common/0_BSP/ArduinoCore/include</Value>
-            <Value>../../Common/0_BSP/ArduinoCore</Value>
-            <Value>../../Common/0_BSP/FreeRtos</Value>
-            <Value>../../Common/0_BSP</Value>
-            <Value>../../Common/0_BSP/Drivers</Value>
-            <Value>../../Common/1_RSP</Value>
-            <Value>../../Common</Value>
-            <Value>../../Common/1_RSP</Value>
-            <Value>../../Common/1_RSP/ComStack</Value>
-            <Value>../../Common/1_RSP/Core</Value>
-            <Value>../../Common/2_AL</Value>
-            <Value>../../Common/2_AL/ActuatorsCtrl</Value>
-            <Value>../../Common/2_AL/Strategies</Value>
-          </ListValues>
-        </armgcccpp.compiler.directories.IncludePaths>
-        <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>
-        <armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>
-        <armgcccpp.compiler.optimization.DebugLevel>Maximum (-g3)</armgcccpp.compiler.optimization.DebugLevel>
-        <armgcccpp.compiler.warnings.AllWarnings>True</armgcccpp.compiler.warnings.AllWarnings>
-        <armgcccpp.compiler.miscellaneous.OtherFlags>-nostdlib -std=gnu++11</armgcccpp.compiler.miscellaneous.OtherFlags>
-        <armgcccpp.linker.general.NoSharedLibraries>True</armgcccpp.linker.general.NoSharedLibraries>
-        <armgcccpp.linker.libraries.Libraries>
-          <ListValues>
-            <Value>libm</Value>
-            <Value>libARD</Value>
-            <Value>libARDcom</Value>
-          </ListValues>
-        </armgcccpp.linker.libraries.Libraries>
-        <armgcccpp.linker.libraries.LibrarySearchPaths>
-          <ListValues>
-            <Value>../../Common/Debug</Value>
-            <Value>../../Common/0_BSP/ArduinoCore/linker_scripts</Value>
-            <Value>../../../com/Debug</Value>
-          </ListValues>
-        </armgcccpp.linker.libraries.LibrarySearchPaths>
-        <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
-        <armgcccpp.linker.memorysettings.ExternalRAM />
-        <armgcccpp.linker.miscellaneous.LinkerFlags>-Tflash.ld</armgcccpp.linker.miscellaneous.LinkerFlags>
-        <armgcccpp.linker.miscellaneous.OtherObjects>
-          <ListValues>
-            <Value>-Wl,--cref -Wl,--check-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid</Value>
-          </ListValues>
-        </armgcccpp.linker.miscellaneous.OtherObjects>
-        <armgcccpp.assembler.debugging.DebugLevel>Default (-g)</armgcccpp.assembler.debugging.DebugLevel>
-        <armgcccpp.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcccpp.preprocessingassembler.debugging.DebugLevel>
-      </ArmGccCpp>
+  <armgcc.common.outputfiles.hex>True</armgcc.common.outputfiles.hex>
+  <armgcc.common.outputfiles.lss>True</armgcc.common.outputfiles.lss>
+  <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
+  <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
+  <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
+  <armgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>F_CPU=84000000L</Value>
+      <Value>ARDUINO=10612</Value>
+      <Value>ARDUINO_SAM_DUE</Value>
+      <Value>ARDUINO_ARCH_SAM</Value>
+      <Value>USBCON</Value>
+    </ListValues>
+  </armgcc.compiler.symbols.DefSymbols>
+  <armgcc.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>../../../com</Value>
+      <Value>../../../com/generated</Value>
+      <Value>../../../com/nanopb</Value>
+      <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
+      <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
+      <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
+      <Value>../../Common/0_BSP/ArduinoCore/include</Value>
+      <Value>../../Common/0_BSP/ArduinoCore</Value>
+      <Value>../../Common/0_BSP/FreeRtos</Value>
+      <Value>../../Common/0_BSP</Value>
+      <Value>../../Common/0_BSP/Drivers</Value>
+      <Value>../../Common/1_RSP</Value>
+      <Value>../../Common</Value>
+      <Value>../../Common/1_RSP</Value>
+      <Value>../../Common/1_RSP/ComStack</Value>
+      <Value>../../Common/1_RSP/Core</Value>
+      <Value>../../Common/2_AL</Value>
+      <Value>../../Common/2_AL/ActuatorsCtrl</Value>
+      <Value>../../Common/2_AL/Strategies</Value>
+    </ListValues>
+  </armgcc.compiler.directories.IncludePaths>
+  <armgcc.compiler.optimization.level>Optimize (-O0)</armgcc.compiler.optimization.level>
+  <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
+  <armgcc.compiler.optimization.PrepareDataForGarbageCollection>True</armgcc.compiler.optimization.PrepareDataForGarbageCollection>
+  <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
+  <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
+  <armgcccpp.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>F_CPU=84000000L</Value>
+      <Value>ARM_MATH_CM3=true</Value>
+      <Value>ARDUINO=10612</Value>
+      <Value>ARDUINO_SAM_DUE</Value>
+      <Value>ARDUINO_ARCH_SAM</Value>
+      <Value>PB_FIELD_32BIT</Value>
+    </ListValues>
+  </armgcccpp.compiler.symbols.DefSymbols>
+  <armgcccpp.compiler.directories.IncludePaths>
+    <ListValues>
+      <Value>../../../com</Value>
+      <Value>../../../com/generated</Value>
+      <Value>../../../com/nanopb</Value>
+      <Value>../../Common/0_BSP/CMSIS/Device/ATMEL/sam3xa/include</Value>
+      <Value>../../Common/0_BSP/CMSIS/Device/ATMEL</Value>
+      <Value>../../Common/0_BSP/CMSIS/CMSIS/Include</Value>
+      <Value>../../Common/0_BSP/ArduinoCore/include</Value>
+      <Value>../../Common/0_BSP/ArduinoCore</Value>
+      <Value>../../Common/0_BSP/FreeRtos</Value>
+      <Value>../../Common/0_BSP</Value>
+      <Value>../../Common/0_BSP/Drivers</Value>
+      <Value>../../Common/1_RSP</Value>
+      <Value>../../Common</Value>
+      <Value>../../Common/1_RSP</Value>
+      <Value>../../Common/1_RSP/ComStack</Value>
+      <Value>../../Common/1_RSP/Core</Value>
+      <Value>../../Common/2_AL</Value>
+      <Value>../../Common/2_AL/ActuatorsCtrl</Value>
+      <Value>../../Common/2_AL/Strategies</Value>
+    </ListValues>
+  </armgcccpp.compiler.directories.IncludePaths>
+  <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>
+  <armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>
+  <armgcccpp.compiler.optimization.DebugLevel>Maximum (-g3)</armgcccpp.compiler.optimization.DebugLevel>
+  <armgcccpp.compiler.warnings.AllWarnings>True</armgcccpp.compiler.warnings.AllWarnings>
+  <armgcccpp.compiler.miscellaneous.OtherFlags>-nostdlib -std=gnu++11</armgcccpp.compiler.miscellaneous.OtherFlags>
+  <armgcccpp.linker.general.NoSharedLibraries>True</armgcccpp.linker.general.NoSharedLibraries>
+  <armgcccpp.linker.libraries.Libraries>
+    <ListValues>
+      <Value>libm</Value>
+      <Value>libARD</Value>
+      <Value>libARDcom</Value>
+    </ListValues>
+  </armgcccpp.linker.libraries.Libraries>
+  <armgcccpp.linker.libraries.LibrarySearchPaths>
+    <ListValues>
+      <Value>../../Common/Debug</Value>
+      <Value>../../Common/0_BSP/ArduinoCore/linker_scripts</Value>
+      <Value>../../../com/Debug</Value>
+    </ListValues>
+  </armgcccpp.linker.libraries.LibrarySearchPaths>
+  <armgcccpp.linker.optimization.GarbageCollectUnusedSections>True</armgcccpp.linker.optimization.GarbageCollectUnusedSections>
+  <armgcccpp.linker.memorysettings.ExternalRAM />
+  <armgcccpp.linker.miscellaneous.LinkerFlags>-Tflash.ld</armgcccpp.linker.miscellaneous.LinkerFlags>
+  <armgcccpp.linker.miscellaneous.OtherObjects>
+    <ListValues>
+      <Value>-Wl,--cref -Wl,--check-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common -Wl,--warn-section-align -u _sbrk -u link -u _close -u _fstat -u _isatty -u _lseek -u _read -u _write -u _exit -u kill -u _getpid</Value>
+    </ListValues>
+  </armgcccpp.linker.miscellaneous.OtherObjects>
+  <armgcccpp.assembler.debugging.DebugLevel>Default (-g)</armgcccpp.assembler.debugging.DebugLevel>
+  <armgcccpp.preprocessingassembler.debugging.DebugLevel>Default (-Wa,-g)</armgcccpp.preprocessingassembler.debugging.DebugLevel>
+</ArmGccCpp>
     </ToolchainSettings>
     <PreBuildEvent>DEL $(OutputDirectory)\UT_Yakindu* /Q</PreBuildEvent>
   </PropertyGroup>

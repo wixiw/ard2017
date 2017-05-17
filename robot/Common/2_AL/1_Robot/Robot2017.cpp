@@ -18,8 +18,12 @@ extern void fast_interrupt();
 
 Robot2017::Robot2017():
     bsp(),
+#ifdef BUILD_LOG
     log(LogDispatcher::getInstance()),
+#endif
+#ifdef BUILD_SD_LOG
     fileLogger(LOG_QUEUE_SIZE),
+#endif
     buildDate("unknown"),
     m_params(),
     hmi(TIMER_BUZZER),
@@ -47,8 +51,12 @@ void Robot2017::init(Robot2017Listener* client)
     ASSERT(instance);
 
     //Connect the log service
+#ifdef BUILD_LOG
     Thread::setLogger(&log);
+#endif
+#ifdef BUILD_SD_LOG
     log.addLogger(fileLogger);
+#endif
 
     lifecycle.attach(this);
 
@@ -122,12 +130,6 @@ void Robot2017::bootUp()
 {
     LOG_INFO(String("----------------- ") + getSerialNumber() + " -------------------");
 
-    #ifdef ARD_DEBUG
-    LOG_INFO(" --- DEBUG --- (see ARD_DEBUG in K_constants.h) ");
-    #else
-    LOG_INFO("Tips : In order to see debug logs, define ARD_DEBUG in ArdOs.h.");
-    #endif
-
     //Trace binary version to prevent miss build error and usage error during the middle of the night.
     LOG_INFO("Version libArd : " + getVersion());
     LOG_INFO(getExeVersion());
@@ -180,7 +182,9 @@ void Robot2017::funnyActionEnded()
 
 void Robot2017::setConfig(apb_Configuration const& newConf)
 {
+#ifdef BUILD_LOG
     log.setDebugLevel(newConf.logDebug);
+#endif
     m_params.setConfig(newConf);
     detection.updateConf(&m_params);
     nav.updateConf(&m_params);
