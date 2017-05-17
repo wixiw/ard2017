@@ -23,7 +23,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
+#include "Stream.h"
+#include <arm_math.h>
 
 #ifdef __cplusplus
 extern "C"{
@@ -181,9 +182,6 @@ extern const PinDescription g_APinDescription[] ;
 
 #include "string/WCharacter.h"
 #include "string/WString.h"
-#include "WMath.h"
-#include "HardwareSerial.h"
-#include "wiring_pulse.h"
 
 #endif // __cplusplus
 
@@ -193,18 +191,5 @@ extern const PinDescription g_APinDescription[] ;
 #include "wiring.h"
 #include "wiring_digital.h"
 #include "wiring_analog.h"
-#include "wiring_shift.h"
-#include "WInterrupts.h"
-
-#include "watchdog.h"
-
-// USB Device
-#ifndef USB_VID
-#define USB_VID 0x2341 // arduino LLC vid
-#endif
-
-#ifndef USB_PID
-#define USB_PID 0x003E // arduino Due pid
-#endif
 
 #endif // Arduino_h

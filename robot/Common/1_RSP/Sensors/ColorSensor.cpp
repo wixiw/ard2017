@@ -1,5 +1,5 @@
 #include "ColorSensor.h"
-
+#include "core/ArdMaths.h"
 #include "Log.h"
 
 using namespace ard;

@@ -13,6 +13,7 @@
  */
 
 #include "../CpuIo/SD.h"
+#include "ArduinoCore/Print.h"
 
 /* for debugging file open/close leaks
    uint8_t nfilecount=0;

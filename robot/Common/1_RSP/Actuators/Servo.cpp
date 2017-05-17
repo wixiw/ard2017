@@ -21,6 +21,7 @@
 #include "Servo.h"
 #include "BSP.hpp"
 #include "ArdOs.h"
+#include "core/ArdMaths.h"
 
 // Architecture specific include
 #include "ServoTimers.h"

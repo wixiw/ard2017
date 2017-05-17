@@ -25,8 +25,7 @@
 //  dh_init(); //in main() or anywhere in the init process
 //  dh_publish_event("MyEvent", 12, 0);
 
-//define DH_ENABLE to activate the feature
-//#define DH_ENABLE
+//define DH_ENABLE to activate the feature in K_constants.h
 
 // We may change this value to change the number of events in the queue
 // The challenge is to get to big enougth value to record your problem

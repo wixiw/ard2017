@@ -17,6 +17,8 @@
 #define IS_IN_RANGE(min, value, max) if( min <= value && value <= max)
 #define IS_OUT_RANGE(min, value, max) if( !(min <= value && value <= max))
 
+uint32_t map(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max) ;
+
 namespace ard
 {
     /*rad*/ double moduloPiPi(double a /*rad*/);

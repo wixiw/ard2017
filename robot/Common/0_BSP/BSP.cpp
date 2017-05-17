@@ -27,8 +27,6 @@ USARTClass Serial3(USART3, USART3_IRQn, ID_USART3, &rx_buffer4, &tx_buffer4);
 
 BSP::BSP ()
 {      
-    watchdogSetup();
-
     //#if defined(USBCON)
     //    USBDevice.attach();
     //#endif

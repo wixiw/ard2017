@@ -18,6 +18,7 @@
 
     //Configure build
 //#define ARD_DEBUG
+//#define DH_ENABLE
 
 #define LOG_QUEUE_SIZE 20       //number of logs that can be queued before being sent on the network
 #define LOG_MAX_SIZE 200       //maximal log string length in characters

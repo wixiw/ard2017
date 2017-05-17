@@ -347,6 +347,7 @@
   </armgcccpp.compiler.directories.IncludePaths>
   <armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>True</armgcccpp.compiler.optimization.PrepareDataForGarbageCollection>
+  <armgcccpp.compiler.optimization.EnableFastMath>True</armgcccpp.compiler.optimization.EnableFastMath>
   <armgcccpp.compiler.optimization.DebugLevel>Maximum (-g3)</armgcccpp.compiler.optimization.DebugLevel>
   <armgcccpp.compiler.warnings.AllWarnings>True</armgcccpp.compiler.warnings.AllWarnings>
   <armgcccpp.compiler.miscellaneous.OtherFlags>-nostdlib -std=gnu++11</armgcccpp.compiler.miscellaneous.OtherFlags>
@@ -389,6 +390,18 @@
     <Compile Include="0_BSP\ArduinoCore\Arduino.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="0_BSP\ArduinoCore\include\pmc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\ArduinoCore\include\pwmc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\ArduinoCore\source\pmc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="0_BSP\ArduinoCore\source\pwmc.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="0_BSP\ArduinoCore\string\dtostrf.c">
       <SubType>compile</SubType>
     </Compile>
@@ -410,28 +423,13 @@
     <Compile Include="0_BSP\ArduinoCore\cortex_handlers.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\HardwareSerial.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\hooks.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\adc.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\can.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\dacc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\efc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\gpbr.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\interrupt_sam_nvic.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\pio.h">
@@ -440,25 +438,7 @@
     <Compile Include="0_BSP\ArduinoCore\include\pio_it.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\pmc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\pwmc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\rstc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\rtc.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\rtt.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\spi.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\ssc.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\tc.h">
@@ -467,16 +447,7 @@
     <Compile Include="0_BSP\ArduinoCore\include\timetick.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\trng.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\include\twi.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\usart.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\include\wdt.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\Print.cpp">
@@ -491,46 +462,13 @@
     <Compile Include="0_BSP\ArduinoCore\source\adc.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\adc12_sam3u.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\can.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\source\dacc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\efc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\gpbr.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\interrupt_sam_nvic.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\source\pio.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\pmc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\pwmc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\rstc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\rtc.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\rtt.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\source\spi.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\ssc.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\source\tc.c">
@@ -539,16 +477,7 @@
     <Compile Include="0_BSP\ArduinoCore\source\timetick.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\trng.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\source\twi.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\usart.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\source\wdt.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\Stream.cpp">
@@ -572,18 +501,6 @@
     <Compile Include="0_BSP\ArduinoCore\syscalls_sam3.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="0_BSP\ArduinoCore\watchdog.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\watchdog.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\WInterrupts.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\WInterrupts.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="0_BSP\ArduinoCore\wiring.c">
       <SubType>compile</SubType>
     </Compile>
@@ -603,30 +520,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\ArduinoCore\wiring_digital.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\wiring_private.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\wiring_pulse.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\wiring_pulse.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\wiring_pulse_asm.S">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\wiring_shift.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\wiring_shift.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\WMath.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\ArduinoCore\WMath.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\BSP.cpp">
@@ -984,12 +877,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\CpuIo\utility\SdVolume.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\FreeRTOS\croutine.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="0_BSP\FreeRTOS\croutine.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="0_BSP\FreeRTOS\debug_history.c">
