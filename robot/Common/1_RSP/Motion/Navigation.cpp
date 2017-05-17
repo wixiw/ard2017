@@ -27,6 +27,7 @@ Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph)
                 switchRecalFL(BORDURE_AVG, 1000, 10, true),
                 switchRecalFR(BORDURE_AVD, 1000, 10, true),
                 switchRecalRC(BORDURE_ARC, 1000, 10),
+                simulated(true),
                 m_pose(),
                 m_state(eNavState_IDLE),
                 m_target(),
@@ -45,7 +46,6 @@ Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph)
                 currentWayPoint(0),
                 m_graphDir(eDir_BEST),
                 conf(NULL),
-                noSwitchMode(false),
                 state(),
                 klaxon(klaxon),
                 detection(detection),
@@ -205,6 +205,7 @@ void Navigation::run()
         {
             if (subOrderFinished())
             {
+                LOG_INFO("    wall faced.");
                 switch (m_order) {
                     case eNavOrder_RECAL_FACE:
                         //Request straight line
@@ -227,7 +228,7 @@ void Navigation::run()
         case eNavState_CONTACTING_WALL:
         {
             //If target is reached (in switch mode) then the recal failed
-            if(!noSwitchMode && subOrderFinished())
+            if(!simulated && subOrderFinished())
             {
                 LOG_ERROR("Failed to recal on border.");
                 klaxon.bip(5);
@@ -235,9 +236,9 @@ void Navigation::run()
                 m_state = eNavState_IDLE;
             }
             //If both switch are contacted (or target reached in no switch mode)
-            else if( (noSwitchMode  && subOrderFinished())
-                  || (!noSwitchMode && m_order == eNavOrder_RECAL_FACE && switchRecalFL.read() && switchRecalFR.read())
-                  || (!noSwitchMode && m_order == eNavOrder_RECAL_REAR && switchRecalRC.read()))
+            else if( (simulated  && subOrderFinished())
+                  || (!simulated && m_order == eNavOrder_RECAL_FACE && switchRecalFL.read() && switchRecalFR.read())
+                  || (!simulated && m_order == eNavOrder_RECAL_REAR && switchRecalRC.read()))
             {
                 LOG_INFO(String("   wall touched"));
 
@@ -593,12 +594,6 @@ void Navigation::recalFace(eTableBorder border)
     m_target = getRecalPointFace(border).toAmbiPose(m_color);
     double angleDelta = moduloPiPi(m_target.h - m_pose.h);
 
-    //In case the switch are not mapped, they will always be set to 1, so we deactivate the switch reading
-    if( switchRecalFL.read() && switchRecalFR.read() )
-        noSwitchMode = true;
-    else
-        noSwitchMode = false;
-
     //Request turn
     LOG_INFO(String("    Facing wall to recal at ") + m_target.toString() + "...");
     applyCmdToTurn(angleDelta, userMaxSpeed, userMaxAcc); //We will go to reset position, so let do it quickly ^^
@@ -619,12 +614,6 @@ void Navigation::recalRear(eTableBorder border)
     m_targetDir = eDir_BACKWARD;
     m_target = getRecalPointRear(border).toAmbiPose(m_color);;
     double angleDelta = moduloPiPi(m_target.h - m_pose.h);
-
-    //In case the switch are not mapped, they will always be set to 1, so we deactivate the switch reading
-    if( switchRecalRC.read() )
-        noSwitchMode = true;
-    else
-        noSwitchMode = false;
 
     //Request turn
     LOG_INFO(String("    Facing table to recal at ") + m_target.toString() + "...");

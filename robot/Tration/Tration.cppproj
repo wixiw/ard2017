@@ -123,11 +123,11 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <ArmGccCpp>
-        <armgcc.common.outputfiles.hex>True</armgcc.common.outputfiles.hex>
-        <armgcc.common.outputfiles.lss>True</armgcc.common.outputfiles.lss>
-        <armgcc.common.outputfiles.eep>True</armgcc.common.outputfiles.eep>
+        <armgcc.common.outputfiles.hex>False</armgcc.common.outputfiles.hex>
+        <armgcc.common.outputfiles.lss>False</armgcc.common.outputfiles.lss>
+        <armgcc.common.outputfiles.eep>False</armgcc.common.outputfiles.eep>
         <armgcc.common.outputfiles.bin>True</armgcc.common.outputfiles.bin>
-        <armgcc.common.outputfiles.srec>True</armgcc.common.outputfiles.srec>
+        <armgcc.common.outputfiles.srec>False</armgcc.common.outputfiles.srec>
         <armgcc.compiler.optimization.level>Optimize (-O0)</armgcc.compiler.optimization.level>
         <armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</armgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
         <armgcc.compiler.optimization.PrepareDataForGarbageCollection>True</armgcc.compiler.optimization.PrepareDataForGarbageCollection>
@@ -135,11 +135,15 @@
         <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
         <armgcccpp.compiler.symbols.DefSymbols>
           <ListValues>
+            <Value>__FREERTOS__</Value>
+            <Value>BOARD=ARDUINO_DUE_X</Value>
+            <Value>ARM_MATH_CM3=true</Value>
             <Value>F_CPU=84000000L</Value>
             <Value>ARDUINO=10612</Value>
             <Value>ARDUINO_SAM_DUE</Value>
             <Value>ARDUINO_ARCH_SAM</Value>
             <Value>USBCON</Value>
+            <Value>PB_FIELD_32BIT</Value>
           </ListValues>
         </armgcccpp.compiler.symbols.DefSymbols>
         <armgcccpp.compiler.directories.IncludePaths>
@@ -219,6 +223,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="generated\FSM_WipTration.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="generated\StatemachineInterface.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main_tration.cpp">

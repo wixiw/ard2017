@@ -5,8 +5,9 @@
       <vertices xsi:type="sgraph:Entry" xmi:id="_KdS2UCYeEeeh1o2kvtdb7w">
         <outgoingTransitions xmi:id="_KdUrgCYeEeeh1o2kvtdb7w" target="_Fk9akC-DEee1v-eVh51XZQ"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_Fk9akC-DEee1v-eVh51XZQ" specification="entry/ &#xD;&#xA;setPosition(518, 785, -90);&#xD;&#xA;goTo(518, 382, FWD, SYM);&#xD;&#xA;//swallow(true);&#xD;&#xA;logInfo(&quot;Moving away from start area so that Pen begin its match...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Start area is freed for PEN.&quot;);&#xD;&#xA;informTaken_D()" name="Escaping from Start area : Goto Thru D" incomingTransitions="_KdUrgCYeEeeh1o2kvtdb7w">
+      <vertices xsi:type="sgraph:State" xmi:id="_Fk9akC-DEee1v-eVh51XZQ" specification="entry/ &#xD;&#xA;setPosition(518, 785, -90);&#xD;&#xA;goTo(518, 382, FWD, SYM);&#xD;&#xA;//swallow(true);&#xD;&#xA;logInfo(&quot;Moving away from start area so that Pen begin its match...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Start area is freed for PEN.&quot;);&#xD;&#xA;informTaken_D()" name="Escaping from Start area : Goto Thru D" incomingTransitions="_KdUrgCYeEeeh1o2kvtdb7w _bGGWYDp8EeeEg_kfp8WLCA">
         <outgoingTransitions xmi:id="_EXE1sC-EEee1v-eVh51XZQ" specification="[targetReached]" target="_B_NxAC-FEee1v-eVh51XZQ"/>
+        <outgoingTransitions xmi:id="_bGGWYDp8EeeEg_kfp8WLCA" specification="after 1s [false]" target="_Fk9akC-DEee1v-eVh51XZQ"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_xM-YXS-DEee1v-eVh51XZQ" specification="entry /&#xD;&#xA;logInfo(&quot;Going to dispenser G...&quot;);&#xD;&#xA;goToLSAEntry(LSA_G, FWD)" name="Go To Dispenser G" incomingTransitions="_CtTSADElEeeGIe7nJUg0RQ" documentation="">
         <outgoingTransitions xmi:id="_6i4F0C-FEee1v-eVh51XZQ" specification="[targetReached]" target="_vaVEEC-FEee1v-eVh51XZQ"/>
@@ -443,6 +444,17 @@
       <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_UPhr0jGXEeexn7S6mRK2_g" points="[-123, 0, -123, -66]$[-123, 59, -123, -7]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_UPi58DGXEeexn7S6mRK2_g" id="(0.4,1.0)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_UPi58TGXEeexn7S6mRK2_g" id="(0.4052132701421801,0.07547169811320754)"/>
+    </edges>
+    <edges xmi:id="_bGh0MDp8EeeEg_kfp8WLCA" type="Transition" element="_bGGWYDp8EeeEg_kfp8WLCA" source="_Fk8zgC-DEee1v-eVh51XZQ" target="_Fk8zgC-DEee1v-eVh51XZQ">
+      <children xsi:type="notation:DecorationNode" xmi:id="_bGjCUDp8EeeEg_kfp8WLCA" type="TransitionExpression">
+        <styles xsi:type="notation:ShapeStyle" xmi:id="_bGjCUTp8EeeEg_kfp8WLCA"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_bGjCUjp8EeeEg_kfp8WLCA" y="10"/>
+      </children>
+      <styles xsi:type="notation:ConnectorStyle" xmi:id="_bGh0MTp8EeeEg_kfp8WLCA" routing="Rectilinear" lineColor="4210752"/>
+      <styles xsi:type="notation:FontStyle" xmi:id="_bGibQDp8EeeEg_kfp8WLCA" fontName="Verdana"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_bGh0Mjp8EeeEg_kfp8WLCA" points="[45, 78, 10, 55]$[112, 78, 77, 55]$[112, 13, 77, -10]$[45, 13, 10, -10]"/>
+      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_bGlekDp8EeeEg_kfp8WLCA" id="(0.8955916473317865,0.2982456140350877)"/>
+      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_bGlekTp8EeeEg_kfp8WLCA" id="(0.9767981438515081,0.43859649122807015)"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>

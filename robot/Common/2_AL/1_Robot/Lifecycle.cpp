@@ -96,6 +96,7 @@ void Lifecycle::networkConfigRequest(uint8_t strategyId_, eColor matchColor, boo
 {
     configureMatch(strategyId_, matchColor, _simulated);
     fsm.raise_networkConfigRequest();
+    nav.simulated = _simulated;
 }
 
 void Lifecycle::configureColor()

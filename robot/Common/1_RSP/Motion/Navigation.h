@@ -211,6 +211,9 @@ namespace ard
         FilteredInput switchRecalFR;
         FilteredInput switchRecalRC;
 
+        //ignore inputs when simulated
+        bool simulated;
+
     protected:
         void recalSwitchContacted(bool contactOk, double escapeDist);
 
@@ -287,9 +290,6 @@ namespace ard
         eDir m_graphDir;
 
         RobotParameters* conf;
-
-        //recal managemement
-        bool noSwitchMode;
 
         //for telemetry
         apb_NavState state;
