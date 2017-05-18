@@ -142,11 +142,11 @@ void ActuatorThread::lifterCmd(bool up)
 {
     if(up)
     {
-        servoLifter.goTo(750);
+        servoLifter.goTo(380);
     }
     else
     {
-        servoLifter.goTo(345);
+        servoLifter.goTo(750);
     }
 }
 

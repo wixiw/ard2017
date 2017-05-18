@@ -16,6 +16,7 @@ Pen::Pen():
     stratInstall    (*this, lsaList),
     stratSelftest   (*this, lsaList),
     stratWIP        (*this, lsaList),
+    stratSmallTable (*this, lsaList),
     stratFunnyAction(*this)
 {
     exeBuildDate = String(__DATE__) + " " + __TIME__;
@@ -32,6 +33,7 @@ void Pen::init(Robot2017Listener* client)
     lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Selftest",       NULL,               &stratSelftest, NULL);
     lifecycle.registerMatchType("WIP",            NULL,               &stratWIP,      NULL);
+    lifecycle.registerMatchType("SmallTable",     NULL,               &stratSmallTable,NULL);
     lifecycle.registerLinearStrat("Old Tanguy",   Strategy_Tanguy);
     lifecycle.registerLinearStrat("UT LEDs",      Strategy_LedTest);
     lifecycle.registerLinearStrat("UT Button",    Strategy_ButtonTest);

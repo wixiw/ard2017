@@ -9,14 +9,14 @@
       <vertices xsi:type="sgraph:State" xmi:id="_JI9m0DSnEeeAruf_Oz5lkQ" name="nominal">
         <outgoingTransitions xmi:id="_1p8z8DSnEeeAruf_Oz5lkQ" specification="after 30s" target="_S_KTHTSrEeeAruf_Oz5lkQ"/>
         <regions xmi:id="_JI-N4jSnEeeAruf_Oz5lkQ" name="nominal">
-          <vertices xsi:type="sgraph:State" xmi:id="_N_45gDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;arms(768, 219);&#xD;&#xA;turnWheels(WHEEL_SWALLOW);&#xD;&#xA;goForward(120); &#xD;&#xA;logInfo(&quot;[LSA Dispenser] Engaging dispenser&quot;)" name="Engage dispenser" incomingTransitions="_W2DMcDSoEeeAruf_Oz5lkQ">
+          <vertices xsi:type="sgraph:State" xmi:id="_N_45gDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;arms(768, 768);&#xD;&#xA;turnWheels(WHEEL_SWALLOW);&#xD;&#xA;goForward(120); &#xD;&#xA;logInfo(&quot;[LSA Dispenser] Engaging dispenser&quot;)" name="Engage dispenser" incomingTransitions="_W2DMcDSoEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_N_45pTSnEeeAruf_Oz5lkQ" specification="[targetReached() &amp;&amp; armsAtTarget()] /&#xD;&#xA; cylinderToTake = dispenserCount()" target="_OAAOQDSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:Choice" xmi:id="_N_7VwDSnEeeAruf_Oz5lkQ" incomingTransitions="_OAQF8TSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_N_7VwTSnEeeAruf_Oz5lkQ" specification="[0 &lt; cylinderToTake]" target="_OAG78DSnEeeAruf_Oz5lkQ"/>
             <outgoingTransitions xmi:id="_N_781jSnEeeAruf_Oz5lkQ" specification="else" target="_N_9yADSnEeeAruf_Oz5lkQ"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_N_9yADSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;goToEntryPoint();&#xD;&#xA;turnWheels(WHEEL_STOP);&#xD;&#xA;arms(300, 650);&#xD;&#xA;logInfo(&quot;[LSA Dispenser] Cylinders successfully withdrawn&quot;)" name="Exit dispenser" incomingTransitions="_N_781jSnEeeAruf_Oz5lkQ">
+          <vertices xsi:type="sgraph:State" xmi:id="_N_9yADSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;goToEntryPoint();&#xD;&#xA;turnWheels(WHEEL_STOP);&#xD;&#xA;arms(300, 285);&#xD;&#xA;logInfo(&quot;[LSA Dispenser] Cylinders successfully withdrawn&quot;)" name="Exit dispenser" incomingTransitions="_N_781jSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_N_9yITSnEeeAruf_Oz5lkQ" specification="[targetReached()]/ setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAAOQDSnEeeAruf_Oz5lkQ" name="Wait Cylinder extraction from Dispenser" incomingTransitions="_N_45pTSnEeeAruf_Oz5lkQ _OAHjHjSnEeeAruf_Oz5lkQ">
@@ -25,22 +25,22 @@
           <vertices xsi:type="sgraph:State" xmi:id="_OAA1VDSnEeeAruf_Oz5lkQ" specification="entry/ goForward(-120)" name="Moving back to get some space" incomingTransitions="_OAAOQzSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_OABccjSnEeeAruf_Oz5lkQ" specification="[targetReached()]" target="_OACqgDSnEeeAruf_Oz5lkQ"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_OACqgDSnEeeAruf_Oz5lkQ" specification="entry/ &#xD;&#xA;arms(450, 750);&#xD;&#xA;goForward(60)" name="Moving forward a bit to lay the cylinder" incomingTransitions="_OABccjSnEeeAruf_Oz5lkQ">
+          <vertices xsi:type="sgraph:State" xmi:id="_OACqgDSnEeeAruf_Oz5lkQ" specification="entry/ &#xD;&#xA;arms(450, 450);&#xD;&#xA;goForward(60)" name="Moving forward a bit to lay the cylinder" incomingTransitions="_OABccjSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_OADRqjSnEeeAruf_Oz5lkQ" specification="[targetReached()]" target="_OANCkDSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAFGwDSnEeeAruf_Oz5lkQ" specification="entry/ lifter(LIFT_DOWN)" name="Lowering Lifter to get next cylinder" incomingTransitions="_OANptTSnEeeAruf_Oz5lkQ">
-            <outgoingTransitions xmi:id="_OAFGzzSnEeeAruf_Oz5lkQ" specification="[lifterAtTarget]" target="_OAJ_QDSnEeeAruf_Oz5lkQ"/>
+            <outgoingTransitions xmi:id="_OAFGzzSnEeeAruf_Oz5lkQ" specification="after 500ms" target="_OAJ_QDSnEeeAruf_Oz5lkQ"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_OAG78DSnEeeAruf_Oz5lkQ" specification="entry/ &#xD;&#xA;goForward(60);&#xD;&#xA;arms(768,219);&#xD;&#xA;turnWheels(WHEEL_SWALLOW)" name="Re-engaging dispenser" incomingTransitions="_N_7VwTSnEeeAruf_Oz5lkQ">
+          <vertices xsi:type="sgraph:State" xmi:id="_OAG78DSnEeeAruf_Oz5lkQ" specification="entry/ &#xD;&#xA;goForward(60);&#xD;&#xA;arms(768,768);&#xD;&#xA;turnWheels(WHEEL_SWALLOW)" name="Re-engaging dispenser" incomingTransitions="_N_7VwTSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_OAHjHjSnEeeAruf_Oz5lkQ" specification="[targetReached]" target="_OAAOQDSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAJ_QDSnEeeAruf_Oz5lkQ" specification="entry/ lifter(LIFT_UP)" name="Lifting cylinder" incomingTransitions="_OAFGzzSnEeeAruf_Oz5lkQ">
-            <outgoingTransitions xmi:id="_OAKmXjSnEeeAruf_Oz5lkQ" specification="[lifterAtTarget]" target="_OAPe0DSnEeeAruf_Oz5lkQ"/>
+            <outgoingTransitions xmi:id="_OAKmXjSnEeeAruf_Oz5lkQ" specification="after 500ms" target="_OAPe0DSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OANCkDSnEeeAruf_Oz5lkQ" specification="" name="Waiting swallow ended" incomingTransitions="_OADRqjSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_OANCkzSnEeeAruf_Oz5lkQ" specification="after 500ms" target="_OANpoDSnEeeAruf_Oz5lkQ"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_OANpoDSnEeeAruf_Oz5lkQ" specification="entry/ arms(300, 650)" name="Retracting arms at maximum to let lifter rising" incomingTransitions="_OANCkzSnEeeAruf_Oz5lkQ">
+          <vertices xsi:type="sgraph:State" xmi:id="_OANpoDSnEeeAruf_Oz5lkQ" specification="entry/ arms(300, 285)" name="Retracting arms at maximum to let lifter rising" incomingTransitions="_OANCkzSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_OANptTSnEeeAruf_Oz5lkQ" specification="[armsAtTarget]" target="_OAFGwDSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAPe0DSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;informWithdraw_generic();&#xD;&#xA;cylinderToTake -= 1" name="Validating extraction" incomingTransitions="_OAKmXjSnEeeAruf_Oz5lkQ">

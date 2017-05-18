@@ -30,6 +30,9 @@
     #include "generated/FSM_WipPen.h"
     DECLARE_FSM_STRATEGY(WipPen);
 
+    #include "generated/FSM_SmallTablePen.h"
+    DECLARE_FSM_STRATEGY(SmallTablePen);
+
 #undef private
 
 namespace ard
@@ -56,6 +59,7 @@ namespace ard
         InstallPen stratInstall;
         Selftest stratSelftest;
         WipPen stratWIP;
+        SmallTablePen stratSmallTable;
         FunnyAction stratFunnyAction;
 
     protected:
