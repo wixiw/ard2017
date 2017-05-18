@@ -626,4 +626,4 @@ SDClass SD;
 
 };
 
-#endif BUILD_SD_LOG
+#endif //BUILD_SD_LOG

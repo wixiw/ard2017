@@ -124,17 +124,24 @@ void ActuatorThread::swallow(bool on)
     NOT_IMPLEMENTED();
 }
 
-void ActuatorThread::turnWheels(uint8_t on)
+void ActuatorThread::turnWheels(eWheelsCmd on)
 {
-    if(on)
+    switch(on)
     {
-        servoLeftWheel.goTo(0);
-        servoRightWheel.goTo(1000);
-    }
-    else
-    {
+    case WC_IDLE:
         servoLeftWheel.goTo(480);
         servoRightWheel.goTo(480);
+        break;
+
+    case WC_SWALLOW:
+        servoLeftWheel.goTo(0);
+        servoRightWheel.goTo(1000);
+        break;
+
+    case WC_WITHDRAW:
+        servoLeftWheel.goTo(1000);
+        servoRightWheel.goTo(0);
+        break;
     }
 }
 

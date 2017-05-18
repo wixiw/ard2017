@@ -169,7 +169,6 @@ const DeviceVectors exception_table = {
  * \brief This is the code that gets called on processor reset.
  * To initialize the device, and call the main() routine.
  */
-
 void Reset_Handler(void)
 {
 	uint32_t *pSrc, *pDest;
@@ -212,7 +211,6 @@ void Reset_Handler(void)
     //Wait 1 ms
     uint32_t start = GetTickCount();
     do {
-        yield();
     } while (GetTickCount() - start < 1);
 
     // Initialize C library

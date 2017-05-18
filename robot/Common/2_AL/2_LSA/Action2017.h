@@ -312,7 +312,7 @@ namespace ard
 
         void turnWheels(sc_integer on) override
         {
-            robot.actuators.turnWheels((uint8_t)on);
+            robot.actuators.turnWheels((eWheelsCmd)on);
         }
 
         void lifter(sc_boolean up) override

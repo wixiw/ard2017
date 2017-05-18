@@ -24,6 +24,7 @@ void ard::gpioToolsIsrCallback(DelayUs period_us)
     ASSERT(period_us);
     for (int i = 0; i < fio_manager_nbIo; i++)
     {
+        ASSERT(fio_manager_table[i]);
         fio_manager_table[i]->update(period_us);
     }
 }

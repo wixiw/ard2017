@@ -3,7 +3,7 @@ GeneratorModel for yakindu::cpp {
     statechart FSM_Lifecycle {
 
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -12,7 +12,7 @@ GeneratorModel for yakindu::cpp {
     statechart FSM_Arms {
 
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -21,7 +21,7 @@ GeneratorModel for yakindu::cpp {
     statechart FSM_Lifter {
 
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -33,7 +33,7 @@ GeneratorModel for yakindu::cpp {
       
     statechart FSM_LSA_Dispenser {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -41,7 +41,7 @@ GeneratorModel for yakindu::cpp {
     
     statechart FSM_LSA_GetCylinder_B {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -50,7 +50,7 @@ GeneratorModel for yakindu::cpp {
     statechart FSM_LSA_GetCylinder_C {
 
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -58,7 +58,7 @@ GeneratorModel for yakindu::cpp {
         
     statechart FSM_LSA_PooBorderOwn {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -66,7 +66,7 @@ GeneratorModel for yakindu::cpp {
     
     statechart FSM_LSA_PooBorderOpp {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -74,7 +74,7 @@ GeneratorModel for yakindu::cpp {
     
     statechart FSM_LSA_PooMiddle {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -82,7 +82,7 @@ GeneratorModel for yakindu::cpp {
     
     statechart FSM_LSA_PooStartArea {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -90,40 +90,19 @@ GeneratorModel for yakindu::cpp {
     
     statechart FSM_LSA_PooMiddle {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Common/2_AL/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
     }
     
-    
-     /**
-      * Common strategies ---------------------
-      */
-    
-    statechart FSM_Selftest {
-        feature Outlet {
-            targetProject = "ard2017_master"
-            targetFolder = "robot/Common/2_AL/generated"
-            libraryTargetFolder = "robot/Common/1_RSP/core"
-        }
-    }
-    
-            
      /**
       * Pen ---------------------
       */
-    statechart FSM_InstallPen {
-            feature Outlet {
-                targetProject = "ard2017_master"
-                targetFolder = "robot/Pen/generated"
-                libraryTargetFolder = "robot/Common/1_RSP/core"
-            }
-        }
     
     statechart FSM_HomolPen {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Pen/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -131,7 +110,7 @@ GeneratorModel for yakindu::cpp {
     
     statechart FSM_WipPen {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Pen/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -141,17 +120,9 @@ GeneratorModel for yakindu::cpp {
       * Tration ---------------------
       */
       
-    statechart FSM_InstallTration {
-        feature Outlet {
-            targetProject = "ard2017_master"
-            targetFolder = "robot/Tration/generated"
-            libraryTargetFolder = "robot/Common/1_RSP/core"
-        }
-    }
-    
     statechart FSM_HomolTration {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Tration/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }
@@ -159,7 +130,7 @@ GeneratorModel for yakindu::cpp {
     
     statechart FSM_WipTration {
         feature Outlet {
-            targetProject = "ard2017_master"
+            targetProject = "ard2017"
             targetFolder = "robot/Tration/generated"
             libraryTargetFolder = "robot/Common/1_RSP/core"
         }

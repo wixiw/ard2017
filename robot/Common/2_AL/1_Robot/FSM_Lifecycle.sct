@@ -24,7 +24,6 @@
           <vertices xsi:type="sgraph:State" xmi:id="_vHfTEC_yEeeSSu2RwF8Pmw" specification="entry/ startMode(MODE_SELFTEST); logInfo(&quot;[Lifecycle] Selftesting...&quot;)&#xD;&#xA;exit/ stopMode()" name="Selftesting" incomingTransitions="_W8r78C_yEeeSSu2RwF8Pmw">
             <outgoingTransitions xmi:id="_Ik6IoC_zEeeSSu2RwF8Pmw" specification="[SUCCESS == getModeStatus()] / &#xD;&#xA;beep(2);&#xD;&#xA;logInfo(&quot;Selftest success !&quot;)" target="_FJFiAC_zEeeSSu2RwF8Pmw"/>
             <outgoingTransitions xmi:id="_-NWCcC_zEeeSSu2RwF8Pmw" specification="[FAILURE == getModeStatus()]" target="_oGCv8C_6EeeSSu2RwF8Pmw"/>
-            <outgoingTransitions xmi:id="_PwveEDjDEeed4f7G5ORNLA" specification="after 20s" target="_oGCv8C_6EeeSSu2RwF8Pmw"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_whGiUCUmEeeHgPR3RzRZqA" specification="entry/&#xD;&#xA;beep(1);&#xD;&#xA;logInfo(&quot;[Lifecycle] Waiting strat withdraw to begin table installation&quot;)&#xD;&#xA;&#xD;&#xA;exit/&#xD;&#xA;beep(1)" name="Waiting table installation" incomingTransitions="_8n-ckC_yEeeSSu2RwF8Pmw _o0IvkC_7EeeSSu2RwF8Pmw" documentation="This state is used for a safety reason : the user has to make a voluntary action to begin robot life. So here we are waiting the explicit demand">
             <outgoingTransitions xmi:id="_iDhZQCU4EeeHgPR3RzRZqA" specification="[!startIn]" target="_Wh8zgCU4EeeHgPR3RzRZqA"/>
@@ -32,7 +31,6 @@
           <vertices xsi:type="sgraph:State" xmi:id="_Wh8zgCU4EeeHgPR3RzRZqA" specification="entry/ startMode(MODE_INSTALL); logInfo(&quot;[Lifecycle] Installing...&quot;)&#xD;&#xA;exit/ stopMode()" name="Table installation" incomingTransitions="_iDhZQCU4EeeHgPR3RzRZqA">
             <outgoingTransitions xmi:id="_No44gC_2EeeSSu2RwF8Pmw" specification="[SUCCESS == getModeStatus()] / beep(2)" target="_JORHUC_2EeeSSu2RwF8Pmw"/>
             <outgoingTransitions xmi:id="_qEfWcC_2EeeSSu2RwF8Pmw" specification="[FAILURE == getModeStatus()]" target="_ehcXwC_7EeeSSu2RwF8Pmw"/>
-            <outgoingTransitions xmi:id="_FSeIYDjDEeed4f7G5ORNLA" specification="after 20s" target="_ehcXwC_7EeeSSu2RwF8Pmw"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_FJFiAC_zEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;logInfo(&quot;[Lifecycle] Waiting start insertion to continue&quot;)" name="SelftestEnded" incomingTransitions="_Ik6IoC_zEeeSSu2RwF8Pmw">
             <outgoingTransitions xmi:id="_8n-ckC_yEeeSSu2RwF8Pmw" specification="[startIn]" target="_whGiUCUmEeeHgPR3RzRZqA"/>
@@ -44,10 +42,10 @@
             <outgoingTransitions xmi:id="_K9N1EC_5EeeSSu2RwF8Pmw" specification="" target="_nyOyMC_xEeeSSu2RwF8Pmw"/>
           </vertices>
           <vertices xsi:type="sgraph:Exit" xmi:id="_LAADUC_5EeeSSu2RwF8Pmw" name="exit_PreparationOk" incomingTransitions="_l810MCU4EeeHgPR3RzRZqA"/>
-          <vertices xsi:type="sgraph:State" xmi:id="_oGCv8C_6EeeSSu2RwF8Pmw" specification="entry/ &#xD;&#xA;beep(5);&#xD;&#xA;ledRGB(ledRED, FAST_BLINK);&#xD;&#xA;logError(&quot;[Lifecycle] Failed to execute selftest&quot;);&#xD;&#xA;logInfo(&quot;[Lifecycle] Waiting strat insertion to restart selftest&quot;)&#xD;&#xA;&#xD;&#xA;exit/displayMatchRGB(LED_ON)" name="Waiting Restart Selftest" incomingTransitions="_-NWCcC_zEeeSSu2RwF8Pmw _PwveEDjDEeed4f7G5ORNLA">
+          <vertices xsi:type="sgraph:State" xmi:id="_oGCv8C_6EeeSSu2RwF8Pmw" specification="entry/ &#xD;&#xA;beep(5);&#xD;&#xA;ledRGB(ledRED, FAST_BLINK);&#xD;&#xA;logError(&quot;[Lifecycle] Failed to execute selftest&quot;);&#xD;&#xA;logInfo(&quot;[Lifecycle] Waiting strat insertion to restart selftest&quot;)&#xD;&#xA;&#xD;&#xA;exit/displayMatchRGB(LED_ON)" name="Waiting Restart Selftest" incomingTransitions="_-NWCcC_zEeeSSu2RwF8Pmw">
             <outgoingTransitions xmi:id="_7RxlAC_6EeeSSu2RwF8Pmw" specification="[startIn]" target="_nyOyMC_xEeeSSu2RwF8Pmw"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_ehcXwC_7EeeSSu2RwF8Pmw" specification="entry/ &#xD;&#xA;beep(5);&#xD;&#xA;ledRGB(ledRED, FAST_BLINK);&#xD;&#xA;logError(&quot;[Lifecycle] Failed to install robot on table&quot;);&#xD;&#xA;logInfo(&quot;[Lifecycle] Waiting strat insertion to restart robot installation&quot;)&#xD;&#xA;&#xD;&#xA;exit/displayMatchRGB(LED_ON)" name="Waiting Restart Install" incomingTransitions="_qEfWcC_2EeeSSu2RwF8Pmw _FSeIYDjDEeed4f7G5ORNLA">
+          <vertices xsi:type="sgraph:State" xmi:id="_ehcXwC_7EeeSSu2RwF8Pmw" specification="entry/ &#xD;&#xA;beep(5);&#xD;&#xA;ledRGB(ledRED, FAST_BLINK);&#xD;&#xA;logError(&quot;[Lifecycle] Failed to install robot on table&quot;);&#xD;&#xA;logInfo(&quot;[Lifecycle] Waiting strat insertion to restart robot installation&quot;)&#xD;&#xA;&#xD;&#xA;exit/displayMatchRGB(LED_ON)" name="Waiting Restart Install" incomingTransitions="_qEfWcC_2EeeSSu2RwF8Pmw">
             <outgoingTransitions xmi:id="_o0IvkC_7EeeSSu2RwF8Pmw" specification="[startIn]" target="_whGiUCUmEeeHgPR3RzRZqA"/>
           </vertices>
         </regions>
@@ -728,28 +726,6 @@
       <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_o0JWoi_7EeeSSu2RwF8Pmw" points="[0, -19, 276, 2]$[-252, -19, 24, 2]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_o0J9sC_7EeeSSu2RwF8Pmw" id="(0.0,0.24736842105263157)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_o0J9sS_7EeeSSu2RwF8Pmw" id="(0.9427207637231504,0.43859649122807015)"/>
-    </edges>
-    <edges xmi:id="_FShLsDjDEeed4f7G5ORNLA" type="Transition" element="_FSeIYDjDEeed4f7G5ORNLA" source="_gFfW2S_2EeeSSu2RwF8Pmw" target="_ehdl4C_7EeeSSu2RwF8Pmw">
-      <children xsi:type="notation:DecorationNode" xmi:id="_FSiZ0DjDEeed4f7G5ORNLA" type="TransitionExpression">
-        <styles xsi:type="notation:ShapeStyle" xmi:id="_FSjA4DjDEeed4f7G5ORNLA"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_FSjA4TjDEeed4f7G5ORNLA" y="10"/>
-      </children>
-      <styles xsi:type="notation:ConnectorStyle" xmi:id="_FShLsTjDEeed4f7G5ORNLA" routing="Rectilinear" lineColor="4210752"/>
-      <styles xsi:type="notation:FontStyle" xmi:id="_FShywDjDEeed4f7G5ORNLA" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_FShLsjjDEeed4f7G5ORNLA" points="[10, 1, -275, 4]$[286, 43, 1, 46]"/>
-      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_FSk2EDjDEeed4f7G5ORNLA" id="(0.9722921914357683,0.2631578947368421)"/>
-      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_FSk2ETjDEeed4f7G5ORNLA" id="(0.033210332103321034,0.7421052631578947)"/>
-    </edges>
-    <edges xmi:id="_Pw0WkDjDEeed4f7G5ORNLA" type="Transition" element="_PwveEDjDEeed4f7G5ORNLA" source="_gFfWwS_2EeeSSu2RwF8Pmw" target="_oGFMMC_6EeeSSu2RwF8Pmw">
-      <children xsi:type="notation:DecorationNode" xmi:id="_Pw09oDjDEeed4f7G5ORNLA" type="TransitionExpression">
-        <styles xsi:type="notation:ShapeStyle" xmi:id="_Pw09oTjDEeed4f7G5ORNLA"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_Pw09ojjDEeed4f7G5ORNLA" x="-12" y="-6"/>
-      </children>
-      <styles xsi:type="notation:ConnectorStyle" xmi:id="_Pw0WkTjDEeed4f7G5ORNLA" routing="Rectilinear" lineColor="4210752"/>
-      <styles xsi:type="notation:FontStyle" xmi:id="_Pw0WkzjDEeed4f7G5ORNLA" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_Pw0WkjjDEeed4f7G5ORNLA" points="[0, 20, -299, 66]$[277, 20, -22, 66]"/>
-      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_Pw2LwDjDEeed4f7G5ORNLA" id="(1.0,0.4520547945205479)"/>
-      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_Pw2y0DjDEeed4f7G5ORNLA" id="(0.08712121212121213,0.6101694915254238)"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>

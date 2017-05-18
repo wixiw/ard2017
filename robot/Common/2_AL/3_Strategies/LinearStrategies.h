@@ -12,15 +12,10 @@
 
 namespace ard
 {
-    //development in progress
-    void Strategy_Tanguy(Robot2017& robot);
-
     //testing purposes
     void Strategy_LedTest(Robot2017& robot);
     void Strategy_ButtonTest(Robot2017& robot);
     void Strategy_OmronTest(Robot2017& robot);
-    void Strategy_CalibRot(Robot2017& robot);
-    void Strategy_CalibLin(Robot2017& robot);
     void Strategy_MotionTest(Robot2017& robot);
 }
 

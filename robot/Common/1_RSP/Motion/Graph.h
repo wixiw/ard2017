@@ -51,7 +51,6 @@ namespace ard
     {
         uint16_t distance;
         NodeId prev_node;
-        NodeId next_node;
         uint8_t is_best;
     } GraphDijkstraInfo;
 

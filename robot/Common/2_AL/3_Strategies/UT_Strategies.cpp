@@ -115,51 +115,6 @@ void ard::Strategy_OmronTest(Robot2017& robot)
     }
 }
 
-void ard::Strategy_CalibRot(Robot2017& robot)
-{
-    LOG_ERROR("Strategy_CalibRot is not implemented.");
-}
-
-void ard::Strategy_CalibLin(Robot2017& robot)
-{
-    LOG_INFO("STRAT : Strategy_CalibRot.");
-
-    while( !robot.hmi.isStartPlugged() )
-    {
-        ArdOs::sleepMs (50);
-    }
-
-    while( robot.hmi.isStartPlugged() )
-    {
-        ArdOs::sleepMs (50);
-    }
-
-    //robot.nav.setPosition(610,820,-90);
-
-    while(1)
-    {
-        LOG_INFO("STRAT : Move order sent");
-        robot.nav.setPosition(0,0,0);
-        robot.nav.goTo(0, 300, eDir_FORWARD);
-        robot.nav.wait();
-
-        while( !robot.hmi.isStartPlugged() )
-        {
-            ArdOs::sleepMs (50);
-        }
-
-        while( robot.hmi.isStartPlugged() )
-        {
-            ArdOs::sleepMs (50);
-        }
-
-    }
-
-    LOG_INFO("STRAT : Finished.");
-
-    robot.dieMotherFucker();
-}
-
 void ard::Strategy_MotionTest(Robot2017& robot)
 {
     LOG_INFO("STRAT : Strategy_Alpha.");

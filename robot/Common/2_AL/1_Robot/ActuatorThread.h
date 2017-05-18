@@ -17,6 +17,13 @@
 
 namespace ard
 {
+    typedef enum
+    {
+        WC_IDLE = 0,
+        WC_SWALLOW = 1,
+        WC_WITHDRAW = -1
+    } eWheelsCmd;
+
     class ActuatorThread: public PollerThread
     {
     public:
@@ -29,7 +36,7 @@ namespace ard
         void swallow(bool on);
 
         //1 : swallow, -1 : expusle, 0 : stops
-        void turnWheels(uint8_t on);
+        void turnWheels(eWheelsCmd on);
 
         //Rise lifter when true, lower if false
         void lifterCmd(bool up);

@@ -79,12 +79,9 @@ class TabStrat(QWidget):
         self.addStrategy("Homol")
         self.addStrategy("Selftest")
         self.addStrategy("WIP")
-        self.addStrategy("Old Tanguy")
         self.addStrategy("UT LEDs")
         self.addStrategy("UT Button")
         self.addStrategy("UT Omron")
-        self.addStrategy("UT CalibRot")
-        self.addStrategy("UT CalibLin")
         self.addStrategy("UT Motion")
         self.comboStratId.currentIndexChanged[int].connect(self.selectStrat)
             #retrieve persisted choice

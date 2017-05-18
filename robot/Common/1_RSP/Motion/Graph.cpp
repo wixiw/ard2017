@@ -6,9 +6,12 @@ using namespace ard;
 
 #define MAX_NODES       30 // !! CAUTION : Keep in sync with CommonMsg.proto and RemoteControl.proto
 #define MAX_LINKS      250 // !! CAUTION : Keep in sync with CommonMsg.proto and RemoteControl.proto
+#define MAX_PATH_COUNT  15 // !! CAUTION : Keep in sync with CommonMsg.proto and RemoteControl.proto
 
 #define START_POINT_ID 0
 #define TARGET_POINT_ID 1
+
+#define PROXIMITY 20 //mm : distance under which way point are skipped
 
 //User helper to create a new node, node 0 is reserved for start point
 #define NEW_NODE(XXX,YYY) \
@@ -408,9 +411,13 @@ void Graph::reset()
 {
     m_state.way_count = 0;
     m_state.headings_count = 0;
-    memset(m_state.way, 0, MAX_NODES*sizeof(uint8_t));
-    memset(m_state.headings, 0, MAX_NODES*sizeof(float));
-    memset(m_info, 0, MAX_LINKS*sizeof(GraphDijkstraInfo));
+    for(int i = 0; i < MAX_PATH_COUNT ; i++)
+    {
+        m_state.way[i] = 0;
+        m_state.headings[i] = 0;
+    }
+    
+    //m_info is always reset at computation time
 
     m_state.state = eGraphState_GS_IDLE;
 
@@ -478,7 +485,8 @@ bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, 
     
     ASSERT(m_state.state != eGraphState_GS_COMPUTING);
     m_state.state = eGraphState_GS_COMPUTING;
-
+    reset();
+    
     DelayMs startCompute = millis();
 
     //Compute entry/exit point
@@ -490,19 +498,28 @@ bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, 
     {
         res = true;
         setWayPoint(0, 0);
-        setWayPoint(1, entry);
-        setWayPoint(2, 1);
-        m_state.way_count = 3;
-        m_state.headings_count = m_state.way_count;
+        if( PROXIMITY <= getNode(0).distanceTo(getNode(entry)) && PROXIMITY <= getNode(1).distanceTo(getNode(entry)) )
+        {
+            setWayPoint(1, entry);
+            m_state.way_count = 3;
+            setWayPoint(2, 1);
+        }
+        else //waypoint is too close
+        {
+            m_state.way_count = 2;
+            setWayPoint(1, 1);
+        }            
         m_state.state = eGraphState_GS_COMPUTED;
     }
     else
     {
-        setWayPoint(0, 0);
+        setWayPoint(m_state.way_count++, 0);
         res = computePathBetweenNodes(entry, exit);    
         setWayPoint(m_state.way_count++, 1);
-        m_state.headings_count = m_state.way_count;
     }
+    
+    m_state.headings_count = m_state.way_count;
+    ASSERT(m_state.way_count <= MAX_PATH_COUNT);
     
     optimizeHeadings(sens);
 
@@ -584,18 +601,15 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
 
     // on met le chemin dans l'ordre de a vers b dans le tableau m_way
         //count items on path (one is already present before computation, and 2 are always found as we expect 2 different nodes)
-    m_state.way_count = 3;
-    m_state.headings_count = m_state.way_count;
     i = idTarget;
     while(m_info[i].prev_node != idSource)
     {
         i = m_info[i].prev_node;
         m_state.way_count++;
-        m_state.headings_count = m_state.way_count;
     }
-
-    setWayPoint(1, idSource);
-    j = m_state.way_count - 1;
+    m_state.way_count++;//count source
+    
+    j = m_state.way_count-1;
     setWayPoint(j, idTarget);
     i = idTarget;
     while(m_info[i].prev_node != idSource)
@@ -604,6 +618,7 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
         j--;
         setWayPoint(j, i);
     }
+    setWayPoint(1, idSource);
 
     m_state.state = eGraphState_GS_COMPUTED;
     
@@ -612,6 +627,13 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
 
 void Graph::optimizeHeadings(eDir sens)
 {
+    //if there is only 2 waypoints then it is start and end point, just take target point heading
+    if(getWayPointNb()==2)
+    {
+        m_state.headings[1] = m_state.targetPoint.h;
+        return;
+    }        
+    
     ASSERT(2 < getWayPointNb());
     m_state.headings[getWayPointNb()-1] = m_state.targetPoint.h;
 
@@ -659,6 +681,7 @@ NodeId Graph::getWayPointId(uint8_t rank) const
 
 void Graph::setWayPoint(uint8_t rank, NodeId newId)
 {
+    ASSERT_TEXT(rank < MAX_PATH_COUNT, "Too many point in path");
     m_state.way[rank] = newId+1;
 }
 

@@ -41,7 +41,7 @@ SwTimer::SwTimer()
     objectCount++;
 }
 
-void SwTimer::arm(uint32_t delayInMs)
+void SwTimer::arm(DelayMs delayInMs)
 {
     ASSERT(isInitialized());
     ASSERT_OS_STARTED;

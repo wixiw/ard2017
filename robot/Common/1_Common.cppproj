@@ -311,7 +311,7 @@
   <armgcc.compiler.optimization.PrepareDataForGarbageCollection>True</armgcc.compiler.optimization.PrepareDataForGarbageCollection>
   <armgcc.compiler.optimization.DebugLevel>Maximum (-g3)</armgcc.compiler.optimization.DebugLevel>
   <armgcc.compiler.warnings.AllWarnings>True</armgcc.compiler.warnings.AllWarnings>
-  <armgcc.compiler.miscellaneous.OtherFlags>-std=gnu99  -nostdlib</armgcc.compiler.miscellaneous.OtherFlags>
+  <armgcc.compiler.miscellaneous.OtherFlags>-std=gnu99  -nostdlib -Wno-sign-compare -Wno-strict-aliasing</armgcc.compiler.miscellaneous.OtherFlags>
   <armgcccpp.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>__FREERTOS__</Value>
@@ -350,7 +350,7 @@
   <armgcccpp.compiler.optimization.EnableFastMath>True</armgcccpp.compiler.optimization.EnableFastMath>
   <armgcccpp.compiler.optimization.DebugLevel>Maximum (-g3)</armgcccpp.compiler.optimization.DebugLevel>
   <armgcccpp.compiler.warnings.AllWarnings>True</armgcccpp.compiler.warnings.AllWarnings>
-  <armgcccpp.compiler.miscellaneous.OtherFlags>-nostdlib -std=gnu++11</armgcccpp.compiler.miscellaneous.OtherFlags>
+  <armgcccpp.compiler.miscellaneous.OtherFlags>-nostdlib -std=gnu++11 -Wno-write-strings  -Wno-sign-compare  -Wno-strict-aliasing</armgcccpp.compiler.miscellaneous.OtherFlags>
   <armgcccpp.linker.general.NoSharedLibraries>True</armgcccpp.linker.general.NoSharedLibraries>
   <armgcccpp.linker.libraries.Libraries>
     <ListValues>
@@ -1185,13 +1185,22 @@
     <Compile Include="2_AL\3_Strategies\FunnyAction.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="2_AL\3_Strategies\Installation.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Installation.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="2_AL\3_Strategies\LinearStrategies.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\Strategy2017.h">
+    <Compile Include="2_AL\3_Strategies\Selftest.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="2_AL\3_Strategies\StrategyTanguy.cpp">
+    <Compile Include="2_AL\3_Strategies\Selftest.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="2_AL\3_Strategies\Strategy2017.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\3_Strategies\UT_Strategies.cpp">
@@ -1264,12 +1273,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\FSM_LSA_PooStartArea.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_Selftest.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="2_AL\generated\FSM_Selftest.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="2_AL\generated\StatemachineInterface.h">

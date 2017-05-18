@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ard2017_master</name>
+	<name>ard2017</name>
 	<comment></comment>
 	<projects>
 		<project>arduino_libs</project>

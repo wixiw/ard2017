@@ -24,9 +24,6 @@
     #include "generated/FSM_HomolTration.h"
     DECLARE_FSM_STRATEGY(HomolTration);
 
-    #include "generated/FSM_InstallTration.h"
-    DECLARE_FSM_STRATEGY(InstallTration);
-
     #include "generated/FSM_WipTration.h"
     DECLARE_FSM_STRATEGY(WipTration);
 

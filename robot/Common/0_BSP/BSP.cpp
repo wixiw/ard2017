@@ -27,6 +27,9 @@ USARTClass Serial3(USART3, USART3_IRQn, ID_USART3, &rx_buffer4, &tx_buffer4);
 
 BSP::BSP ()
 {      
+    //Disable watchdog
+    WDT->WDT_MR = WDT_MR_WDDIS;
+
     pinMode(MOSFET1, OUTPUT);
     //pinMode(MOSFET2, OUTPUT);
     pinMode (SERVO1, 		        OUTPUT);

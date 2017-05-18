@@ -24,9 +24,6 @@
     #include "generated/FSM_HomolPen.h"
     DECLARE_FSM_STRATEGY(HomolPen);
 
-    #include "generated/FSM_InstallPen.h"
-    DECLARE_FSM_STRATEGY(InstallPen);
-
     #include "generated/FSM_WipPen.h"
     DECLARE_FSM_STRATEGY(WipPen);
 

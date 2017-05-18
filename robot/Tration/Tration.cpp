@@ -12,8 +12,8 @@ Tration::Tration():
     Robot2017(),
     lsaList(*this),
     stratHomol      (*this, lsaList),
-    stratInstall    (*this, lsaList),
-    stratSelftest   (*this, lsaList),
+    stratInstall    (*this),
+    stratSelftest   (*this),
     stratWIP        (*this, lsaList),
     stratFunnyAction(*this)
 {
@@ -31,12 +31,9 @@ void Tration::init(Robot2017Listener* client)
     lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Selftest",       NULL,               &stratSelftest, NULL);
     lifecycle.registerMatchType("WIP",            &stratInstall,      &stratWIP,      NULL);
-    lifecycle.registerLinearStrat("Old Tanguy",   Strategy_Tanguy);
     lifecycle.registerLinearStrat("UT LEDs",      Strategy_LedTest);
     lifecycle.registerLinearStrat("UT Button",    Strategy_ButtonTest);
     lifecycle.registerLinearStrat("UT Omron",     Strategy_OmronTest);
-    lifecycle.registerLinearStrat("UT CalibRot",  Strategy_CalibRot);
-    lifecycle.registerLinearStrat("UT CalibLin",  Strategy_CalibLin);
     lifecycle.registerLinearStrat("UT Motion",    Strategy_MotionTest);
 
     //Retrieve and modify config
