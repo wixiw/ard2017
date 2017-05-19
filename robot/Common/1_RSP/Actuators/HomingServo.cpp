@@ -31,7 +31,7 @@ void HomingServo::update(DelayMs sinceLastCall)
             state = IDLE;
         break;
     case HOMING_MAX:
-        if(pinMax->readRaw())//TODO remettre read()
+        if(pinMax->read())
             state = IDLE;
         if(AccelServo::isTargetReached())
             state = IDLE;

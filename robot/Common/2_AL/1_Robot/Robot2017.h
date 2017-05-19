@@ -99,15 +99,12 @@ namespace ard
         //anything until the end of the match
         virtual void dieMotherFucker();
 
-        //Get the robot parameters
-        RobotParameters const& params() const {return m_params;};
-
         //-------------------------------------------------------------------
         // End of Strategy API
         //-------------------------------------------------------------------
 
         //Get the robot config
-        apb_Configuration const& getConfig() const {return m_params.getConfig();};
+        apb_Configuration const& getConfig() const {return conf.getConfig();};
 
         //Set the robot config (you cannot do this at any time, think twice before using)
         void setConfig(apb_Configuration const& newConf);
@@ -139,10 +136,10 @@ namespace ard
         //Save the ARD library build date in the binary
         String buildDate;
 
-        //Robot parameters
-        RobotParameters m_params;
-
     public:
+        //Robot parameters
+        RobotParameters conf;
+
         //RSP implementation
         HmiThread hmi;
 

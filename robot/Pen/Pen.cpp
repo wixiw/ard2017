@@ -40,15 +40,9 @@ void Pen::init(Robot2017Listener* client)
     //Retrieve and modify config
     apb_Configuration cfg = getConfig();
     strcpy(cfg.serialNumber,    "Pen");
-    cfg.leftWheelDiameter       = 60.000;
-    cfg.rightWheelDiameter      = 60.000;
-    cfg.voie                    = 168;
-    cfg.maxAcc                  = 700;
-    cfg.maxTurnAcc              = 300;
-    cfg.maxTurnSpeed            = 125.0;
-    cfg.deccDist                = 150.0;
-    cfg.strategyDuration        = 89500;
-    cfg.detectionWaitForOppMove = 1000;
+    cfg.leftWheelDiameter       = 59.340; //Calib 19/may
+    cfg.rightWheelDiameter      = 59.340; //Calib 19/may
+    cfg.voie                    = 160;    //Calib 19/may
     setConfig(cfg);
 
 //    //PMI 2016 config

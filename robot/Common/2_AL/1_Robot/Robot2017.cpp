@@ -25,7 +25,7 @@ Robot2017::Robot2017():
     fileLogger(LOG_QUEUE_SIZE),
 #endif
     buildDate("unknown"),
-    m_params(),
+    conf(),
     hmi(TIMER_BUZZER),
     detection(SAFETY_AREA),
     motionGraph(),
@@ -102,12 +102,12 @@ YakardTimer& Robot2017::getFsmTimer()
 
 bool Robot2017::isPen() const
 {
-    return 0 == strcmp(m_params.serialNumber(), "Pen");
+    return 0 == strcmp(conf.serialNumber(), "Pen");
 }
 
 bool Robot2017::isTration() const
 {
-    return 0 == strcmp(m_params.serialNumber(), "Tration");
+    return 0 == strcmp(conf.serialNumber(), "Tration");
 }
 
 void Robot2017::dieMotherFucker()
@@ -185,15 +185,16 @@ void Robot2017::setConfig(apb_Configuration const& newConf)
 #ifdef BUILD_LOG
     log.setDebugLevel(newConf.logDebug);
 #endif
-    m_params.setConfig(newConf);
-    detection.updateConf(&m_params);
-    nav.updateConf(&m_params);
+    conf.setConfig(newConf);
+    detection.updateConf(&conf);
+    nav.updateConf(&conf);
+    actuators.updateConf(&conf);
     hmi.buzzer.bipAllowed = newConf.bipAllowed;
 }
 
 char const * const Robot2017::getSerialNumber() const
 {
-    return m_params.serialNumber();
+    return conf.serialNumber();
 }
 
 void Robot2017::SWAssert()

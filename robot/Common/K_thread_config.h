@@ -49,7 +49,7 @@ static const StackSize STACK_HMI                =  200;
 static const StackSize STACK_REMOTE_CTRL_RX     = 2000;
 static const StackSize STACK_REMOTE_CTRL_TX     =  500;
 static const StackSize STACK_STRATEGY           = 1500; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
-static const StackSize STACK_ACTUATORS          =  200; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
+static const StackSize STACK_ACTUATORS          = 1000; //This thread is subject to high stack changes in rougth debug/dev/no-sleep/no-eat condition, so we keep a lot of free space
 static const StackSize STACK_NAVIGATION         = 1000;
 static const StackSize STACK_UNIT_TEST          = 2000;
 #define STACK_TOTAL 4*(STACK_SDCARD_WRITER    \

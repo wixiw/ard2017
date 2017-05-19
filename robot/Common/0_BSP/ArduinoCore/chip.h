@@ -48,29 +48,15 @@
 #include "include/dacc.h"
 #endif // (SAM3XA_SERIES) || (SAM3N_SERIES) || (SAM3S_SERIES)
 
-//#include "include/interrupt_sam_nvic.h.no"
-//TODO
-//#include "include/efc.h"
-//#include "include/gpbr.h"
 #include "include/pio.h"
 #include "include/pmc.h"
 #include "include/pwmc.h"
-//#include "include/rstc.h"
-//#include "include/rtc.h"
-//#include "include/rtt.h.no"
 #include "include/spi.h"
-//#include "include/ssc.h.no"
 #include "include/tc.h"
 #include "include/twi.h"
-//#include "include/usart.h.no"
-//#include "include/wdt.h"
-
 #include "include/timetick.h"
 
 #if (SAM3XA_SERIES)
-//#include "include/can.h"
-//#include "include/emac.h"
-//#include "include/trng.h"
 #endif /* (SAM3XA_SERIES) */
 
 #endif /* _LIB_SAM_ */

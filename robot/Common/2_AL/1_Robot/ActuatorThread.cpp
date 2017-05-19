@@ -30,7 +30,8 @@ ActuatorThread::ActuatorThread():
         fsmTimeWheel(),
         lifter(*this, fsmTimeWheel),
         arms(*this, fsmTimeWheel),
-        faceUp(*this)
+        faceUp(*this),
+		conf(NULL)
 {
     state = apb_ActuatorsState_init_default;
 
@@ -43,6 +44,12 @@ ActuatorThread::ActuatorThread():
     servoLeftArm.setVmax(150);
     servoRightArm.setVmax(150);
 
+}
+
+void ActuatorThread::updateConf(RobotParameters* newConf)
+{
+    ASSERT(newConf);
+    conf = newConf;
 }
 
 void ActuatorThread::setColor(eColor color)
@@ -61,12 +68,22 @@ void ActuatorThread::init()
     addPolledObject(servoLeftArm);
     addPolledObject(servoRightArm);
     PollerThread::init();
+    ASSERT_TEXT(conf, "You forgot to map the configuration.");
 }
 
 void ActuatorThread::run()
 {
     fsmTimeWheel.run(getPeriod());
     PollerThread::run();
+
+    if( 350 < servoLeftArm.read() || 350 < servoRightArm.read())
+    {
+    	conf->frontActuatorsOut(true);
+    }
+    else
+    {
+    	conf->frontActuatorsOut(false);
+    }
 }
 
 void ard::ActuatorThread::turnCylinder(bool turn)
@@ -149,11 +166,11 @@ void ActuatorThread::lifterCmd(bool up)
 {
     if(up)
     {
-        servoLifter.goTo(750);
+        servoLifter.goTo(380);
     }
     else
     {
-        servoLifter.goTo(345);
+        servoLifter.goTo(750);
     }
 }
 

@@ -314,7 +314,7 @@ void RemoteControl::setPosition(apb_RemoteControlRequest const & request)
 
 void RemoteControl::setSpeedAcc(apb_RemoteControlRequest const & request)
 {
-    robot.nav.setSpeedAcc(
+    robot.conf.setSpeedAcc(
             request.type.setSpeedAcc.vMax,
             request.type.setSpeedAcc.vMaxTurn,
             request.type.setSpeedAcc.accMax,

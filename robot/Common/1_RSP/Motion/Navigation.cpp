@@ -13,7 +13,8 @@ using namespace ard;
 #define NO_TURN_DELTA 0.0005 //rad
 #define NO_MOVE_DELTA 1      //mm
 #define KLAXON_FREQ 1000     //Hz
-#define RECAL_FORCING 400     //mm
+#define RECAL_FORCING_SLOW 300     //mm
+#define RECAL_FORCING_FAST 250     //mm
 #define RECAL_ESCAPE_MARGIN 30 //mm
 #define RECAL_TIMEOUT 5000 //ms
 #define GRAPH_TIMEOUT 15000 //ms
@@ -32,10 +33,6 @@ Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph)
                 m_target(),
                 m_targetDir(eDir_BEST),
                 m_order(eNavOrder_NOTHING),
-                userMaxSpeed(0),
-                userMaxTurnSpeed(0),
-                userMaxAcc(0),
-                userMaxTurnAcc(0),
                 stepperL(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
                 stepperR(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
                 m_color(eColor_PREF),
@@ -57,11 +54,6 @@ void Navigation::updateConf(RobotParameters* newConf)
 {
     ASSERT(newConf);
     conf = newConf;
-
-    userMaxSpeed        = conf->maxSpeed();
-    userMaxTurnSpeed    = conf->maxTurnSpeed();
-    userMaxAcc          = conf->maxAcc();
-    userMaxTurnAcc      = conf->maxTurnAcc();
 }
 
 /**---------------------------------
@@ -204,15 +196,15 @@ void Navigation::run()
         {
             if (subOrderFinished())
             {
-                LOG_INFO("    wall faced.");
+                LOG_INFO("    wall faced, contacting...");
                 switch (m_order) {
                     case eNavOrder_RECAL_FACE:
                         //Request straight line
-                        applyCmdToGoStraight(RECAL_FORCING, conf->recalSpeed(), userMaxAcc);
+                        applyCmdToGoStraight(RECAL_FORCING_SLOW, conf->recalSpeed(), conf->maxAcc());
                         break;
                     case eNavOrder_RECAL_REAR:
                         //Request straight line
-                        applyCmdToGoStraight(-RECAL_FORCING, conf->recalSpeed(), userMaxAcc);
+                        applyCmdToGoStraight(-RECAL_FORCING_SLOW, conf->recalSpeed(), conf->maxAcc());
                         break;
                     default:
                         ASSERT(false); //should not be reached, dev bug
@@ -225,6 +217,30 @@ void Navigation::run()
         }
 
         case eNavState_CONTACTING_WALL:
+        {
+            if (subOrderFinished())
+            {
+                LOG_INFO("    wall contacted, forcing...");
+                switch (m_order) {
+                    case eNavOrder_RECAL_FACE:
+                        //Request straight line
+                        applyCmdToGoStraight(RECAL_FORCING_FAST, conf->maxSpeed(m_targetDir), conf->maxAcc());
+                        break;
+                    case eNavOrder_RECAL_REAR:
+                        //Request straight line
+                        applyCmdToGoStraight(-RECAL_FORCING_FAST, conf->maxSpeed(m_targetDir), conf->maxAcc());
+                        break;
+                    default:
+                        ASSERT(false); //should not be reached, dev bug
+                        break;
+                }
+
+                m_state = eNavState_PUSHING_WALL;
+            }
+        	break;
+        }
+
+        case eNavState_PUSHING_WALL:
         {
             //If target is reached (in switch mode) then the recal failed
             if(!simulated && subOrderFinished())
@@ -266,7 +282,7 @@ void Navigation::run()
                 else
                     ASSERT(false);
                 m_target.translatePolar(m_target.hDegree(), m_targetDir * distance);
-                applyCmdToGoStraight(m_targetDir * distance, userMaxSpeed, userMaxAcc);
+                applyCmdToGoStraight(m_targetDir * distance, conf->maxSpeed(m_targetDir), conf->maxAcc());
                 m_state = eNavState_ESCAPING_WALL;
                 orderTimeout.arm(1000+OPP_IMPATIENCE_TIMEOUT);
                 LOG_INFO(String("   escaping of distance=") + distance + " to reach pose=" + m_target.toString()+".");
@@ -315,7 +331,7 @@ void Navigation::run()
 
                 //Reset order
                 ASSERT(m_targetDir);
-                applyCmdToGoStraight(m_targetDir * m_pose.distanceTo(m_target), userMaxSpeed, userMaxAcc);
+                applyCmdToGoStraight(m_targetDir * m_pose.distanceTo(m_target), conf->maxSpeed(m_targetDir), conf->maxAcc());
             }
             break;
         }
@@ -389,54 +405,6 @@ void Navigation::setPosition(PointCap newPose, bool sym)
     LOG_INFO("   position set to :" + newPose.toString());
 }
 
-
-void ard::Navigation::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t accMax, uint16_t accMaxTurn)
-{
-    m_mutex.lock();
-
-    CHECK_ONE_ORDER_AT_A_TIME();
-
-    //If a config is NULL, then restore default configuration
-    if( vMax != 0 )
-    {
-        LOG_ERROR("New vMax config saturated");
-        userMaxSpeed = saturate(vMax, RobotParameters::MINBOUND_MAXSPEED, RobotParameters::MAXBOUND_MAXSPEED);
-    }
-    else
-        userMaxSpeed = conf->maxSpeed();
-
-    //If a config is NULL, then restore default configuration
-    if( vMaxTurn    != 0 )
-    {
-        LOG_ERROR("New vMaxTurn config saturated");
-        userMaxTurnSpeed = saturate(vMaxTurn, RobotParameters::MINBOUND_MAXTURNSPEED, RobotParameters::MAXBOUND_MAXTURNSPEED);
-    }
-    else
-        userMaxTurnSpeed = conf->maxTurnSpeed();
-
-    //If a config is NULL, then restore default configuration
-    if( accMax != 0 )
-    {
-        LOG_ERROR("New accMax config saturated");
-        userMaxAcc = saturate(accMax, RobotParameters::MINBOUND_MAXACC, RobotParameters::MAXBOUND_MAXACC);
-    }
-    else
-        userMaxAcc = conf->maxAcc();
-
-    //If a config is NULL, then restore default configuration
-    if( accMaxTurn != 0 )
-    {
-        LOG_ERROR("New accMaxTurn config saturated");
-        userMaxTurnAcc = saturate(accMaxTurn, RobotParameters::MINBOUND_MAXTURNACC, RobotParameters::MAXBOUND_MAXTURNACC);
-    }
-    else
-        userMaxTurnAcc = conf->maxTurnAcc();
-
-    m_mutex.unlock();
-
-    LOG_INFO(String("    speed set to : (") + userMaxSpeed + "mm/s, " + userMaxTurnSpeed +
-            "°/s), acc set to (" + userMaxAcc + "mm/s², " + userMaxTurnAcc + "°/s²)");
-}
 
 void Navigation::goTo(Point target, eDir sens, bool sym)
 {
@@ -537,8 +505,8 @@ void Navigation::turnDelta(float angle, bool sym)
         target = angle;
 
     //Request turn
-    applyCmdToTurn(radians(target), userMaxTurnSpeed, userMaxTurnAcc);
-    orderTimeout.arm(fabs(target)*1000. / (double)conf->maxTurnSpeed()*1.1);
+    applyCmdToTurn(radians(target), conf->maxTurnSpeed(), conf->maxTurnAcc());
+    orderTimeout.arm(fabs(target)*1000. / (double)conf->maxTurnSpeed()*2);
 
     //Change state
     m_order = eNavOrder_GOTO_CAP;
@@ -605,7 +573,7 @@ void Navigation::recalFace(eTableBorder border)
 
     //Request turn
     LOG_INFO(String("    Facing wall to recal at ") + m_target.toString() + "...");
-    applyCmdToTurn(angleDelta, userMaxSpeed, userMaxAcc); //We will go to reset position, so let do it quickly ^^
+    applyCmdToTurn(angleDelta, conf->maxSpeed(m_targetDir), conf->maxAcc()); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
 
     orderTimeout.arm(RECAL_TIMEOUT);
@@ -626,7 +594,7 @@ void Navigation::recalRear(eTableBorder border)
 
     //Request turn
     LOG_INFO(String("    Facing table to recal at ") + m_target.toString() + "...");
-    applyCmdToTurn(angleDelta, userMaxSpeed, userMaxAcc); //We will go to reset position, so let do it quickly ^^
+    applyCmdToTurn(angleDelta, conf->maxSpeed(m_targetDir), conf->maxAcc()); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
 
     orderTimeout.arm(RECAL_TIMEOUT);
@@ -716,7 +684,7 @@ DelayMs Navigation::motionDuration(PointCap const& start, PointCap const& end, e
         endAngle = degrees(fabs(headingToDir(start.angleTo(end) - end.h, sens)));
 
     //compute durations
-    DelayMs translationDuration = start.distanceTo(end)*1000./conf->maxSpeed();
+    DelayMs translationDuration = start.distanceTo(end)*1000./conf->maxSpeed(sens);
     DelayMs rotationStartDuration = startAngle*1000. / (double)conf->maxTurnSpeed();
     DelayMs rotationEndDuration = endAngle*1000. / (double)conf->maxTurnSpeed();
     DelayMs duration = translationDuration + rotationStartDuration + rotationEndDuration;
@@ -816,7 +784,7 @@ void Navigation::action_startOrder()
         else
         {
             //Request turn
-            applyCmdToTurn(angleDelta, userMaxTurnSpeed, userMaxTurnAcc);
+            applyCmdToTurn(angleDelta, conf->maxTurnSpeed(), conf->maxTurnAcc());
             //Change state
             m_state = eNavState_FACING_DEST;
         }
@@ -827,7 +795,7 @@ void Navigation::action_goingToTarget()
 {
     //Request straight line
     ASSERT(m_targetDir);
-    applyCmdToGoStraight(m_targetDir * m_pose.distanceTo(m_target), userMaxSpeed, userMaxAcc);
+    applyCmdToGoStraight(m_targetDir * m_pose.distanceTo(m_target), conf->maxSpeed(m_targetDir), conf->maxAcc());
     //Change state
     m_state = eNavState_GOING_TO_TARGET;
 }
@@ -847,7 +815,7 @@ void Navigation::action_turningAtTarget()
         else
         {
             //Request turn
-            applyCmdToTurn(angleDelta, userMaxTurnSpeed, userMaxTurnAcc);
+            applyCmdToTurn(angleDelta, conf->maxTurnSpeed(), conf->maxTurnAcc());
             LOG_DEBUG("target destination reached, facing end move heading.");
             //Change state
             m_state = eNavState_TURNING_AT_TARGET;
@@ -886,23 +854,23 @@ void Navigation::action_finishOrder()
 
 
         case eNavOrder_GOTO:
-            //TODO a enlever
-            //As move is expected to be perfect, correct any numerical instability by forcing position to be exactly the target
-            enterCriticalSection();
-            m_pose.x = m_target.x;
-            m_pose.y = m_target.y;
-            exitCriticalSection();
+//            //TODO a enlever
+//            //As move is expected to be perfect, correct any numerical instability by forcing position to be exactly the target
+//            enterCriticalSection();
+//            m_pose.x = m_target.x;
+//            m_pose.y = m_target.y;
+//            exitCriticalSection();
             break;
 
 
         case eNavOrder_GOTO_CAP:
-            //TODO a enlever
-            //As move is expected to be perfect, correct any numerical instability by forcing position to be exactly the target
-            enterCriticalSection();
-            m_pose.x = m_target.x;
-            m_pose.y = m_target.y;
-            m_pose.h = m_target.h;
-            exitCriticalSection();
+//            //TODO a enlever
+//            //As move is expected to be perfect, correct any numerical instability by forcing position to be exactly the target
+//            enterCriticalSection();
+//            m_pose.x = m_target.x;
+//            m_pose.y = m_target.y;
+//            m_pose.h = m_target.h;
+//            exitCriticalSection();
             break;
 
         case eNavOrder_GRAPH_TO:
@@ -1123,6 +1091,7 @@ String Navigation::stateToString(eNavState state)
         ENUM2STR(eNavState_WAIT_OPP_MOVE);
         ENUM2STR(eNavState_FACING_WALL);
         ENUM2STR(eNavState_CONTACTING_WALL);
+		ENUM2STR(eNavState_PUSHING_WALL);
         ENUM2STR(eNavState_ESCAPING_WALL);
         ENUM2STR(eNavState_WAIT_OPP_ESCAPE_RECALL);
         ENUM2STR(eNavState_BLOCKED);

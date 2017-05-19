@@ -29,6 +29,10 @@ namespace ard
     public:
         ActuatorThread();
 
+        //Reread the configuration and maps default config. Shall be called at least once
+        //before the OS is initialized
+        void updateConf(RobotParameters* newConf);
+
         /**---------------------------------
          * Strat API
          ---------------------------------*/
@@ -96,6 +100,8 @@ namespace ard
         Lifter        lifter;
         Arms          arms;
         FaceUp        faceUp;
+
+        RobotParameters* conf;
     };
 
 } /* namespace ard */
