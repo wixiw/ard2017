@@ -93,7 +93,7 @@ namespace ard
         //FSM API : LSA
         void goToLSAEntry(sc_integer id, sc_integer dir)
         {
-            Action2017<FSM, States_t>::robot.nav.goTo(getLSA(id).getEntryPoint(), (eDir)(dir));
+            Action2017<FSM, States_t>::robot.nav.goToCap(getLSA(id).getEntryPoint(), (eDir)(dir));
         }
 
         //FSM API : LSA

@@ -13,8 +13,8 @@ using namespace ard;
 #define NO_TURN_DELTA 0.0005 //rad
 #define NO_MOVE_DELTA 1      //mm
 #define KLAXON_FREQ 1000     //Hz
-#define RECAL_FORCING_SLOW 300     //mm
-#define RECAL_FORCING_FAST 250     //mm
+#define RECAL_FORCING_SLOW 200     //mm
+#define RECAL_FORCING_FAST 200     //mm
 #define RECAL_ESCAPE_MARGIN 30 //mm
 #define RECAL_TIMEOUT 5000 //ms
 #define GRAPH_TIMEOUT 15000 //ms
