@@ -63,7 +63,15 @@ namespace ard
             Graph();
 
             //Find the best path between 2 points on the table
+            //It's advice to call the optimizePath() method after,
+            //the both calls are splitted to provide a better integration
+            //in real time systems.
             bool computeShortertPath(const PointCap& source, const PointCap& target, eDir sens);
+
+            //walk throught the path and optimize it :
+            // * delete waypoint that are too close from each other
+            // * find headings on each waypoint
+            void optimizePath(eDir sens);
 
             //! calcule la distance entre le point et tout les noeuds du graph
             //! resultat dans un tableau trié de la plus petite distance à la plus grande
@@ -118,9 +126,6 @@ namespace ard
 
             //Setter to insert a point in the path trajectory
             void setWayPoint(uint8_t rank, NodeId id);
-
-            //walk throught the path and optimize headings
-            void optimizeHeadings(eDir sens);
 
             //! lancement de l'algo dijkstra entre 2 points identifiés par idA et idB
             //it's a disktra algorithm with a reduced heuristic d'(x,y) = d(x,y) + h(y) - h(x)

@@ -334,11 +334,21 @@ void Navigation::run()
             }
             else
             {
-                //Go to first point
-                currentWayPoint = 0;
-                action_gotoNextWaypoint();
+            	//A state is dedicated to prevent holding the thread too long
+            	m_state = eNavState_OPTIMIZING_GRAPH;
             }
             break;
+        }
+
+        case eNavState_OPTIMIZING_GRAPH:
+        {
+        	graph.optimizePath(m_graphDir);
+
+            //Go to first point
+            currentWayPoint = 0;
+            action_gotoNextWaypoint();
+
+        	break;
         }
 
         /** -----------------------------------------------------------------------------------
@@ -905,7 +915,7 @@ void Navigation::action_finishOrder()
             else
             {
                 LOG_INFO(String("   graph target reached"));
-                //graph.reset();
+                graph.reset();
             }
             break;
     }
@@ -1119,6 +1129,7 @@ String Navigation::stateToString(eNavState state)
         ENUM2STR(eNavState_STOPPING_IN_BLOCKED);
         ENUM2STR(eNavState_STOPPING_IN_WALL);
         ENUM2STR(eNavState_COMPUTING_GRAPH);
+        ENUM2STR(eNavState_OPTIMIZING_GRAPH);
     }
 }
 

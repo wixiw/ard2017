@@ -31,10 +31,10 @@ void Tration::init(Robot2017Listener* client)
     lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Selftest",       NULL,               &stratSelftest, NULL);
     lifecycle.registerMatchType("WIP",            &stratInstall,      &stratWIP,      NULL);
-    lifecycle.registerLinearStrat("UT LEDs",      Strategy_LedTest);
-    lifecycle.registerLinearStrat("UT Button",    Strategy_ButtonTest);
-    lifecycle.registerLinearStrat("UT Omron",     Strategy_OmronTest);
-    lifecycle.registerLinearStrat("UT Motion",    Strategy_MotionTest);
+//    lifecycle.registerLinearStrat("UT LEDs",      Strategy_LedTest);
+//    lifecycle.registerLinearStrat("UT Button",    Strategy_ButtonTest);
+//    lifecycle.registerLinearStrat("UT Omron",     Strategy_OmronTest);
+//    lifecycle.registerLinearStrat("UT Motion",    Strategy_MotionTest);
 
     //Retrieve and modify config
     apb_Configuration cfg = getConfig();

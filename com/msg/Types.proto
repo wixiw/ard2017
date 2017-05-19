@@ -16,21 +16,22 @@ enum eColor {
     SYM              = 2;
 }
 
-enum eNavState {
-    IDLE              = 0;
-    FACING_DEST       = 1;
-    GOING_TO_TARGET   = 2;
-    TURNING_AT_TARGET = 3;
-    STOPPING          = 4;
-    WAIT_OPP_MOVE     = 5;
-    FACING_WALL       = 6;
-    CONTACTING_WALL   = 7;
-    ESCAPING_WALL     = 8;
-    WAIT_OPP_ESCAPE_RECALL = 9;
-    BLOCKED           = 10;
-    STOPPING_IN_BLOCKED = 11;
-    STOPPING_IN_WALL  = 12;
-    COMPUTING_GRAPH   = 14;
+enum eNavState { 
+    IDLE              		=  0;
+    FACING_DEST       		=  1;
+    GOING_TO_TARGET   		=  2;
+    TURNING_AT_TARGET 		=  3;
+    STOPPING          		=  4;
+    WAIT_OPP_MOVE     		=  5;
+    FACING_WALL       		=  6;
+    CONTACTING_WALL   		=  7;
+    ESCAPING_WALL     		=  8;
+    WAIT_OPP_ESCAPE_RECALL 	=  9;
+    BLOCKED           		= 10;
+    STOPPING_IN_BLOCKED 	= 11;
+    STOPPING_IN_WALL 	 	= 12;
+    COMPUTING_GRAPH   		= 14;
+    OPTIMIZING_GRAPH  		= 15;
 }
 
 enum eNavOrder {
@@ -55,6 +56,7 @@ enum eGraphState {
     GS_IDLE          = 1;
     GS_COMPUTING     = 2;
     GS_COMPUTED      = 3;
+    GS_OPTIMIZED     = 4;
 }
 
 // Specific 2017

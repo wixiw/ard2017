@@ -9,7 +9,6 @@ from ArdWidgets import *
 from core import *
 from TableDrawing import *
 import math
-import _tkinter
 
 
 # This class is a pre-built widget which is designed to display 
@@ -79,10 +78,10 @@ class TabStrat(QWidget):
         self.addStrategy("Homol")
         self.addStrategy("Selftest")
         self.addStrategy("WIP")
-        self.addStrategy("UT LEDs")
-        self.addStrategy("UT Button")
-        self.addStrategy("UT Omron")
-        self.addStrategy("UT Motion")
+#         self.addStrategy("UT LEDs")
+#         self.addStrategy("UT Button")
+#         self.addStrategy("UT Omron")
+#         self.addStrategy("UT Motion")
         self.comboStratId.currentIndexChanged[int].connect(self.selectStrat)
             #retrieve persisted choice
         settings = QSettings("config.ini", QSettings.IniFormat)

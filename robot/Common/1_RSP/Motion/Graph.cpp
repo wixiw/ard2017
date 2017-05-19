@@ -483,7 +483,7 @@ bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, 
 {
     bool res = true;
     
-    ASSERT(m_state.state != eGraphState_GS_COMPUTING);
+    ASSERT_TEXT(m_state.state == eGraphState_GS_IDLE, "You should reset the graph before computing a new one");
     m_state.state = eGraphState_GS_COMPUTING;
     reset();
     
@@ -497,39 +497,22 @@ bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, 
     if(entry == exit )
     {
         res = true;
-        setWayPoint(0, 0);
-        if( PROXIMITY <= getNode(0).distanceTo(getNode(entry)) && PROXIMITY <= getNode(1).distanceTo(getNode(entry)) )
-        {
-            setWayPoint(1, entry);
-            m_state.way_count = 3;
-            setWayPoint(2, 1);
-        }
-        else //waypoint is too close
-        {
-            m_state.way_count = 2;
-            setWayPoint(1, 1);
-        }            
+        setWayPoint(m_state.way_count++, START_POINT_ID);
+        setWayPoint(m_state.way_count++, entry);
+        setWayPoint(m_state.way_count++, TARGET_POINT_ID);
+
         m_state.state = eGraphState_GS_COMPUTED;
     }
     else
     {
-        setWayPoint(m_state.way_count++, 0);
+        setWayPoint(m_state.way_count++, START_POINT_ID);
         res = computePathBetweenNodes(entry, exit);    
-        setWayPoint(m_state.way_count++, 1);
+        setWayPoint(m_state.way_count++, TARGET_POINT_ID);
     }
     
-    m_state.headings_count = m_state.way_count;
     ASSERT(m_state.way_count <= MAX_PATH_COUNT);
-    
-    optimizeHeadings(sens);
+    m_state.headings_count = m_state.way_count;
 
-    // affichage debug
-    for(uint8_t i=0; i < m_state.way_count; i++)
-    {
-        String s = String("    graph path : [" + String(i) + "] : id=" + int(m_state.way[i]-1) + " p=" + getWayPoint(i).toString());
-        LOG_INFO(s);
-    }
-    
     //Display results
     DelayMs endCompute = millis();
     if(res)
@@ -541,6 +524,7 @@ bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, 
 bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
 {
     ASSERT(idSource != idTarget);
+    ASSERT_TEXT(m_state.state = eGraphState_GS_IDLE, "You have to reset the path before computing a new one.");
     m_state.state = eGraphState_GS_COMPUTING;
     uint32_t i;
     uint32_t j;
@@ -602,54 +586,88 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
     // on met le chemin dans l'ordre de a vers b dans le tableau m_way
         //count items on path (one is already present before computation, and 2 are always found as we expect 2 different nodes)
     i = idTarget;
+	uint8_t pathLength = 1; //there is at least the target point
     while(m_info[i].prev_node != idSource)
     {
         i = m_info[i].prev_node;
-        m_state.way_count++;
+        ++pathLength;
     }
-    m_state.way_count++;//count source
-    
-    j = m_state.way_count-1;
-    setWayPoint(j, idTarget);
-    i = idTarget;
+    ++pathLength;//count source
+	
+	//build path starting from path end
+	j = pathLength-1;
+	i = idTarget;
+	setWayPoint(m_state.way_count + j , idTarget);
     while(m_info[i].prev_node != idSource)
     {
         i = m_info[i].prev_node;
         j--;
-        setWayPoint(j, i);
+        setWayPoint(m_state.way_count + j, i);
     }
-    setWayPoint(1, idSource);
+	setWayPoint(m_state.way_count, idSource);
 
+    m_state.way_count+=pathLength;
     m_state.state = eGraphState_GS_COMPUTED;
-    
     return true;
 }
 
-void Graph::optimizeHeadings(eDir sens)
+void Graph::optimizePath(eDir sens)
 {
-    //if there is only 2 waypoints then it is start and end point, just take target point heading
-    if(getWayPointNb()==2)
-    {
-        m_state.headings[1] = m_state.targetPoint.h;
-        return;
-    }        
-    
-    ASSERT(2 < getWayPointNb());
-    m_state.headings[getWayPointNb()-1] = m_state.targetPoint.h;
+	ASSERT_TEXT(m_state.state = eGraphState_GS_COMPUTED, "You have to compute the path before optimizing it.");
+	DelayMs startCompute = millis();
 
-    if( sens == eDir_BEST )
-        sens = eDir_FORWARD;//TODO do the real job
+	//At this time there is at least 3 points in path (start - one point in graph - target)
+	ASSERT(3 <= getWayPointNb());
 
-    for( int i = getWayPointNb()-2 ; i != 0 ; i--)
+	//If the 2 last waypoint are too close of each other, delete a waypoint
+	if( getWayPoint(getWayPointNb()-2).distanceTo(getWayPoint(getWayPointNb()- 1)) <= PROXIMITY )
+	{
+		setWayPoint(getWayPointNb()-2, TARGET_POINT_ID);
+		--m_state.way_count;
+	}
+
+	//At this there is at least 2 points in path (as one may have been remove in previous step)
+	//When there is 2 way points there is nothing to do, it's the simpliest path start-target
+	//If there is more waypoints points and the 2 first waypoints are close to each other, then
+	//remove a waypoint (and so shift left all other waypoint)
+	if(3 <= getWayPointNb() && getWayPoint(0).distanceTo(getWayPoint(1)) <= PROXIMITY)
+	{
+		for(uint8_t i = 1; i < getWayPointNb() ; ++i)
+		{
+			setWayPoint(i-1, getWayPointId(i));
+		}
+		--m_state.way_count;
+	}
+
+	//Initialize heading computation with last point heading on target heading
+	m_state.headings[getWayPointNb()-1] = m_state.targetPoint.h;
+
+	//Beginning with path end, compute each waypoint heading
+    if(2 < getWayPointNb())
     {
-        m_state.headings[i] = headingToDir(getWayPoint(i).angleTo(getWayPoint(i+1)), sens);
+		if( sens == eDir_BEST )
+			sens = eDir_FORWARD;//TODO do the real job
+
+		for( uint8_t i = getWayPointNb()-2 ; i != START_POINT_ID ; i--)
+			m_state.headings[i] = headingToDir(getWayPoint(i).angleTo(getWayPoint(i+1)), sens);
+		m_state.headings[START_POINT_ID] = m_state.startPoint.h;
     }
-    m_state.headings[0] = m_state.startPoint.h;
+
+	// affichage debug
+	for(uint8_t i=0; i < m_state.way_count; i++)
+	{
+		String s = String("    graph path : [" + String(i) + "] : id=" + int(m_state.way[i]-1) + " p=" + getWayPoint(i).toString());
+		LOG_INFO(s);
+	}
+
+    //Display results
+    DelayMs endCompute = millis();
+    LOG_INFO(String("   --> optimized in ") + String(endCompute - startCompute) + " ms.");
 }
 
 NodeId Graph::getShortestNodeId(Point pos, uint16_t* distance)
 {
-    int i;
+    uint8_t i;
     uint16_t dist = 0;
     NodeId shortestId = 0;
     uint16_t shortestDist = 0xFFFF;
@@ -674,7 +692,7 @@ NodeId Graph::getShortestNodeId(Point pos, uint16_t* distance)
 NodeId Graph::getWayPointId(uint8_t rank) const
 {
     ASSERT_TEXT(rank < m_state.way_count, "You requested a waypoint which is not in the list");
-    ASSERT_TEXT(m_state.state == eGraphState_GS_COMPUTED, "You request a path without having computed it");
+    ASSERT_TEXT(m_state.state != eGraphState_GS_IDLE, "You request a path without having computed it");
     //-1 because data is stocked as a string
     return m_state.way[rank]-1;
 }
