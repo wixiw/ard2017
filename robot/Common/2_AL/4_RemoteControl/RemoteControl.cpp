@@ -309,7 +309,7 @@ void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)
 
 void RemoteControl::setPosition(apb_RemoteControlRequest const & request)
 {
-    robot.nav.setPosition(PointCap::fromProto(request.type.setPosition));
+    robot.nav.setPosition(Pose2D::fromProto(request.type.setPosition));
 }
 
 void RemoteControl::setSpeedAcc(apb_RemoteControlRequest const & request)

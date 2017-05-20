@@ -47,17 +47,17 @@ namespace ard
          * the position may be automatically symetrized depending
          * on the value configured with setColor() and sym parameter
          */
-        void setPosition(PointCap newPose, bool sym = true);
+        void setPosition(Pose2D newPose, bool sym = true);
         void setPosition(float x/*mm*/, float y/*mm*/, float h/*deg*/, bool sym = true)
         {
-            setPosition(PointCap(x, y, h));
+            setPosition(Pose2D(x, y, h));
         }
         ;
 
         /**
          * Get the current robot position
          */
-        PointCap getPosition()
+        Pose2D getPosition()
         {
             return m_pose;
         }
@@ -95,10 +95,10 @@ namespace ard
          heading in degrees
 
          */
-        void goToCap(PointCap target, eDir sens = eDir_FORWARD, bool sym = true);
+        void goToCap(Pose2D target, eDir sens = eDir_FORWARD, bool sym = true);
         void goToCap(float x/*mm*/, float y/*mm*/, float h/*°*/, eDir sens = eDir_FORWARD, bool sym = true)
         {
-            goToCap(PointCap(x, y, h), sens, sym);
+            goToCap(Pose2D(x, y, h), sens, sym);
         }
         ;
 
@@ -153,10 +153,10 @@ namespace ard
         /**
          * Reach a target destination running in the graph
          */
-        void graphTo(PointCap target, eDir sens = eDir_BEST);
+        void graphTo(Pose2D target, eDir sens = eDir_BEST);
         void graphTo(float x/*mm*/, float y/*mm*/, float h, eDir sens = eDir_BEST)
         {
-            graphTo(PointCap(x,y,h), sens);
+            graphTo(Pose2D(x,y,h), sens);
         }
 
         /**
@@ -186,11 +186,11 @@ namespace ard
         void setColor(eColor c);
 
         //Compute the expected duration of a move from start point to target point, going in direction "sens" and turning at target if isGoto is true
-        DelayMs motionDuration(PointCap const& start, PointCap const& end, eDir sens, bool isGotoCap);
+        DelayMs motionDuration(Pose2D const& start, Pose2D const& end, eDir sens, bool isGotoCap);
 
         //Find the best direction (minimizing travel time) from start point to target point, turning at target if isGoto is true
         //duration is an optional output to get the best travel duration
-        eDir findOptimalDir(PointCap const& start, PointCap const& end, bool isGotoCap, DelayMs* duration = NULL);
+        eDir findOptimalDir(Pose2D const& start, Pose2D const& end, bool isGotoCap, DelayMs* duration = NULL);
 
         /**---------------------------------
          * Publish state
@@ -237,8 +237,8 @@ namespace ard
         bool subOrderFinished();
 
         //Compute the point at which the recal shall set the new robot position
-        PointCap getRecalPointFace(eTableBorder border);
-        PointCap getRecalPointRear(eTableBorder border);
+        Pose2D getRecalPointFace(eTableBorder border);
+        Pose2D getRecalPointRear(eTableBorder border);
 
         String
         sensToString(eDir sens);
@@ -248,11 +248,11 @@ namespace ard
         stateToString(eNavState state);
 
         //status
-        PointCap m_pose; //critical section
+        Pose2D m_pose; //critical section
         eNavState m_state;
 
         //target definition
-        PointCap m_target;
+        Pose2D m_target;
         eDir m_targetDir;
         eNavOrder m_order;
 

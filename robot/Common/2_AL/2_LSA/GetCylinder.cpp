@@ -10,7 +10,7 @@ using namespace ard;
 
 
 LSA_GetCylinder_B::LSA_GetCylinder_B(Robot2017& robot, eLSA_GetCylinder_Recal type):
-        LSA2017(robot, "LSAPooMiddle", PointCap(1016,116, 45))
+        LSA2017(robot, "LSAPooMiddle", Pose2D(1016,116, 45))
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);
@@ -44,7 +44,7 @@ void LSA_GetCylinder_B::goToEntryPoint()
  */
 
 LSA_GetCylinder_C::LSA_GetCylinder_C(Robot2017& robot, eLSA_GetCylinder_Recal type):
-        LSA2017(robot, "LSAPooMiddle", PointCap(780, -600, -108))
+        LSA2017(robot, "LSAPooMiddle", Pose2D(780, -600, -108))
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);

@@ -22,12 +22,13 @@
  *
  * This macro is too nice. Batman out! ....  Oh shit, 'forgot to drop the mic...
  */
-    #define DECLARE_FSM_STRATEGY(stratName)\
+    #define DECLARE_FSM_STRATEGY(stratName, startPose)\
     namespace ard{\
     class stratName: public Strategy2017<FSM_##stratName, FSM_##stratName::FSM_##stratName##States>{\
     public:\
         stratName(Robot2017& robot, LSAList const& lsaList) : \
         Strategy2017<FSM_##stratName, FSM_##stratName::FSM_##stratName##States>(robot, #stratName, lsaList){};\
+        virtual Pose2D getStartPosition(){return startPose;};\
     };}
 
 
@@ -66,7 +67,7 @@ namespace ard
         }
 
         //FSM API : LSA
-        void startLSA(sc_integer id)
+        void startLSA(sc_integer id) override
         {
             ASSERT_TEXT(lsaId == eNone, "An LSA is already in progress");
             lsaId = id;
@@ -75,7 +76,7 @@ namespace ard
         }
 
         //FSM API : LSA
-        void stopLSA()
+        void stopLSA() override
         {
             ASSERT_TEXT(lsaId != eNone, "No LSA active");
             ASSERT_TEXT(lsaStatus != None, "No LSA active");
@@ -85,19 +86,19 @@ namespace ard
         }
 
         //FSM API : LSA
-        sc_integer getLSAStatus()
+        sc_integer getLSAStatus() override
         {
             return (sc_integer)(lsaStatus);
         }
 
         //FSM API : LSA
-        void goToLSAEntry(sc_integer id, sc_integer dir)
+        void goToLSAEntry(sc_integer id, sc_integer dir) override
         {
             Action2017<FSM, States_t>::robot.nav.goToCap(getLSA(id).getEntryPoint(), (eDir)(dir));
         }
 
         //FSM API : LSA
-        void graphToLSAEntry(sc_integer id, sc_integer dir)
+        void graphToLSAEntry(sc_integer id, sc_integer dir) override
         {
             Action2017<FSM, States_t>::robot.nav.graphTo(getLSA(id).getEntryPoint(), (eDir)(dir));
         }

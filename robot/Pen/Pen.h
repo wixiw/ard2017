@@ -22,10 +22,10 @@
 #define private public //#porky : workaround to gain introspection, because Yakindu guys thinks they'll anoy me in making data private...
 
     #include "generated/FSM_HomolPen.h"
-    DECLARE_FSM_STRATEGY(HomolPen);
+    DECLARE_FSM_STRATEGY(HomolPen, Pose2D(640,730,0));
 
     #include "generated/FSM_WipPen.h"
-    DECLARE_FSM_STRATEGY(WipPen);
+    DECLARE_FSM_STRATEGY(WipPen, Pose2D());
 
 #undef private
 

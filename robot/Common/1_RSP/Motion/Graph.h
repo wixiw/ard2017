@@ -66,7 +66,7 @@ namespace ard
             //It's advice to call the optimizePath() method after,
             //the both calls are splitted to provide a better integration
             //in real time systems.
-            bool computeShortertPath(const PointCap& source, const PointCap& target, eDir sens);
+            bool computeShortertPath(const Pose2D& source, const Pose2D& target, eDir sens);
 
             //walk throught the path and optimize it :
             // * delete waypoint that are too close from each other
@@ -100,7 +100,7 @@ namespace ard
 
             //return a way point in the computed path, as determined by its rank in the waypoint list.
             //0 being the start point, and n the target point
-            PointCap getWayPoint(uint8_t rank) const;
+            Pose2D getWayPoint(uint8_t rank) const;
 
             //Reset any ongoing computation
             void reset();
@@ -133,8 +133,8 @@ namespace ard
             bool computePathBetweenNodes(NodeId idA, NodeId idB);
 
             //Find the graph node which is the closest from start/target points and update graph
-            NodeId setStartPoint(const PointCap& source);
-            NodeId setTargetPoint(const PointCap& target);
+            NodeId setStartPoint(const Pose2D& source);
+            NodeId setTargetPoint(const Pose2D& target);
     };
 }
 

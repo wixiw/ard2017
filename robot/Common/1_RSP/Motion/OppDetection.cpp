@@ -37,7 +37,7 @@ void OppDetection::setColor(eColor c)
     color = c;
 }
 
-bool OppDetection::isOpponentOnPath(eDir direction, PointCap& robotPose)
+bool OppDetection::isOpponentOnPath(eDir direction, Pose2D& robotPose)
 {
     switch(direction)
     {
@@ -55,7 +55,7 @@ bool OppDetection::isOpponentOnPath(eDir direction, PointCap& robotPose)
     }
 }
 
-bool OppDetection::isOpponentAhead(PointCap robotPose)
+bool OppDetection::isOpponentAhead(Pose2D robotPose)
 {
 	ASSERT_CONFIGURED();
     bool opponentPresent = false;
@@ -75,7 +75,7 @@ bool OppDetection::isOpponentAhead(PointCap robotPose)
     return opponentPresent;
 }
 
-bool OppDetection::isOpponentBehind(PointCap robotPose)
+bool OppDetection::isOpponentBehind(Pose2D robotPose)
 {
 	ASSERT_CONFIGURED();
     bool opponentPresent = false;
@@ -109,7 +109,7 @@ void OppDetection::enableAvoidance(bool on)
     avoidanceActive = on;
 }
 
-bool OppDetection::isDetectionValid(PointCap p)
+bool OppDetection::isDetectionValid(Pose2D p)
 {
     bool isOnTable = true;
 

@@ -32,13 +32,13 @@ namespace ard
         void setColor(eColor c);
 
         //Test if opponent is on robot path, calls isOpponentAhead() or isOpponentBehind()
-        bool isOpponentOnPath(eDir direction, PointCap& robotPose);
+        bool isOpponentOnPath(eDir direction, Pose2D& robotPose);
 
         //Test if opponent is ahead of robot
-        bool isOpponentAhead(PointCap robotPose);
+        bool isOpponentAhead(Pose2D robotPose);
 
         //Test if opponent is behind robot
-        bool isOpponentBehind(PointCap robotPose);
+        bool isOpponentBehind(Pose2D robotPose);
 
         //Active/Deactivate avoidance system
         void enableAvoidance(bool on);
@@ -59,7 +59,7 @@ namespace ard
     private:
         //Return true if the detection point is a valid point, false if it is out of table or
         //in an area considered as always safe.
-        bool isDetectionValid(PointCap p);
+        bool isDetectionValid(Pose2D p);
 
         uint16_t safetyArea;
         bool avoidanceActive; //is true when avoidance system is active

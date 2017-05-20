@@ -34,6 +34,8 @@ class ArdHdlc(QObject):
         self.recvBuffer = bytes()#buffer to catch hdlc frames
         self._connected = False
 
+    def getUnexpectedDisconnect(self):
+        return self._physicalLayer.unexpectedDisconnection
     
     # go throw decorator
     def getAvailablePorts(self):
@@ -58,14 +60,16 @@ class ArdHdlc(QObject):
         
     # to be call after having connect() to close the line
     def disconnect(self): 
-        assert self._connected
-        self._physicalLayer.disconnect()
-        try: #because an assert is generated if disconnect is called with no connection
-            self._newFrame.disconnect() 
-        except:
-            print("Warning : ArdHdlc._newFrame has been disconnected with no existing connection.")
-            pass #so there is no worry
-        self._reset()
+        if self._connected:
+            self._physicalLayer.disconnect()
+            try: #because an assert is generated if disconnect is called with no connection
+                self._newFrame.disconnect() 
+            except TypeError:
+                pass
+            except:
+                print("Warning : ArdHdlc._newFrame has been disconnected with no existing connection.")
+                pass #so there is no worry
+            self._reset()
 
     # @return bool : True if connected
     def isConnected(self):

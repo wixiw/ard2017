@@ -117,32 +117,32 @@ Point Point::fromProto(apb_Point const& p)
  * ----------------------------------------------------------------------------
  */
 
-PointCap::PointCap()
+Pose2D::Pose2D()
         : Point(), h(0)
 {
 }
 ;
 
-PointCap::PointCap(Point p)
+Pose2D::Pose2D(Point p)
         : Point(p.x, p.y), h(0)
 {
 }
 ;
 
-PointCap::PointCap(double x, double y, double h)
+Pose2D::Pose2D(double x, double y, double h)
         : Point(x, y), h(moduloPiPi(h*DEG_TO_RAD))
 {
 }
 ;
 
-double PointCap::angleHeadingTo(Point p) const
+double Pose2D::angleHeadingTo(Point p) const
 {
     return moduloPiPi(angleTo(p) - h);
 }
 
-PointCap PointCap::toAmbiPose(eColor c) const
+Pose2D Pose2D::toAmbiPose(eColor c) const
 {
-    PointCap res = Point::toAmbiPoint(c);
+    Pose2D res = Point::toAmbiPoint(c);
     if (c == eColor_SYM)
         res.h = moduloPiPi(M_PI - h);
     else
@@ -150,12 +150,12 @@ PointCap PointCap::toAmbiPose(eColor c) const
     return res;
 }
 
-String PointCap::toString() const
+String Pose2D::toString() const
 {
     return String("(") + x + "mm, " + y + "mm, " + RAD_TO_DEG*h + "°), h=" + RAD_TO_DEG*h +" rad";
 }
 
-apb_PointCap PointCap::getProto() const
+apb_PointCap Pose2D::getProto() const
 {
     apb_PointCap p = apb_PointCap_init_zero;
     p.x = x;
@@ -164,9 +164,9 @@ apb_PointCap PointCap::getProto() const
     return p;
 }
 
-PointCap PointCap::fromProto(apb_PointCap const& p)
+Pose2D Pose2D::fromProto(apb_PointCap const& p)
 {
-    PointCap res;
+    Pose2D res;
     res.x = p.x;
     res.y = p.y;
     res.h = radians(p.h);

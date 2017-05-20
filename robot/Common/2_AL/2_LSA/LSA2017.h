@@ -26,7 +26,7 @@ namespace ard
     class LSA2017: public Action2017<FSM, States_t>, public LSA
     {
     public:
-        LSA2017(Robot2017& robot, String const& name, PointCap const& entryPoint = PointCap()):
+        LSA2017(Robot2017& robot, String const& name, Pose2D const& entryPoint = Pose2D()):
             Action2017<FSM, States_t>(robot, name),
             entryPoint(entryPoint)
             {};
@@ -34,10 +34,10 @@ namespace ard
         virtual ~LSA2017() = default;
 
         //Implements LSA
-        PointCap const& getEntryPoint() const override { return entryPoint;}
+        Pose2D const& getEntryPoint() const override { return entryPoint;}
 
         //Implements LSA
-        void setEntryPoint(PointCap const& point) override{entryPoint=point;}
+        void setEntryPoint(Pose2D const& point) override{entryPoint=point;}
 
         //Implements LSA
         void updateLSA(DelayMs sinceLastCall){Action2017<FSM, States_t>::update(sinceLastCall);}
@@ -52,7 +52,7 @@ namespace ard
         StrategyResult getStatusLSA(){return Action2017<FSM, States_t>::getStatus();}
 
     protected:
-        PointCap entryPoint;
+        Pose2D entryPoint;
     };
 } /* namespace ard */
 

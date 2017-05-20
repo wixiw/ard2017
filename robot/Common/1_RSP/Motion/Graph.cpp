@@ -436,7 +436,7 @@ void Graph::setAllValid()
     }
 }
 
-NodeId Graph::setStartPoint(const PointCap& source)
+NodeId Graph::setStartPoint(const Pose2D& source)
 {
     //Update graph with source point position
     GraphNode* node = &m_graph.nodes.list[START_POINT_ID];
@@ -458,7 +458,7 @@ NodeId Graph::setStartPoint(const PointCap& source)
 }
 
 
-NodeId Graph::setTargetPoint(const PointCap& target)
+NodeId Graph::setTargetPoint(const Pose2D& target)
 {
     //Update graph with source point position
     GraphNode* node = &m_graph.nodes.list[TARGET_POINT_ID];
@@ -479,7 +479,7 @@ NodeId Graph::setTargetPoint(const PointCap& target)
     return exit;
 }
 
-bool Graph::computeShortertPath(const PointCap& source, const PointCap& target, eDir sens)
+bool Graph::computeShortertPath(const Pose2D& source, const Pose2D& target, eDir sens)
 {
     bool res = true;
     
@@ -703,10 +703,10 @@ void Graph::setWayPoint(uint8_t rank, NodeId newId)
     m_state.way[rank] = newId+1;
 }
 
-PointCap Graph::getWayPoint(uint8_t rank) const
+Pose2D Graph::getWayPoint(uint8_t rank) const
 {
     Point waypoint = getNode(getWayPointId(rank));
-    return PointCap(waypoint.x, waypoint.y, degrees(m_state.headings[rank]));
+    return Pose2D(waypoint.x, waypoint.y, degrees(m_state.headings[rank]));
 }
 
 void Graph::serializeNodes(apb_GraphNodes& nodes) const

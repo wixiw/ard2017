@@ -17,13 +17,13 @@ LSA_PooMiddle::LSA_PooMiddle(Robot2017& robot, eLSA_PooMidArea type):
 
     switch (type) {
         case Opp:
-            setEntryPoint(PointCap(-756, -244,  -45));
+            setEntryPoint(Pose2D(-756, -244,  -45));
             break;
         case Center:
-            setEntryPoint(PointCap(   0,   70,  -90));
+            setEntryPoint(Pose2D(   0,   70,  -90));
             break;
         case Own:
-            setEntryPoint(PointCap( 756, -244, -135));
+            setEntryPoint(Pose2D( 756, -244, -135));
             break;
         default:
             break;
@@ -73,7 +73,7 @@ DelayMs LSA_PooMiddle::getNominalDuration()
  */
 
 LSA_PooBorderOwn::LSA_PooBorderOwn(Robot2017& robot):
-        LSA2017(robot, "LSAPooMiddle", PointCap(0, 0, 0)) //TODO define real point
+        LSA2017(robot, "LSAPooMiddle", Pose2D(0, 0, 0)) //TODO define real point
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);
@@ -104,7 +104,7 @@ DelayMs LSA_PooBorderOwn::getNominalDuration()
  * ------------------------
  */
 LSA_PooBorderOpp::LSA_PooBorderOpp(Robot2017& robot):
-        LSA2017(robot, "LSAPooMiddle", PointCap(0, 0, 0)) //TODO define real point
+        LSA2017(robot, "LSAPooMiddle", Pose2D(0, 0, 0)) //TODO define real point
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);
@@ -136,7 +136,7 @@ DelayMs LSA_PooBorderOpp::getNominalDuration()
  */
 
 LSA_PooStartArea::LSA_PooStartArea(Robot2017& robot):
-        LSA2017(robot, "LSAPooMiddle", PointCap(570, 760, 180))
+        LSA2017(robot, "LSAPooMiddle", Pose2D(570, 760, 180))
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);

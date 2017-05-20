@@ -79,6 +79,9 @@ class RemoteControl(QObject):
         self.com.disconnect()
         self.networkStatus.emit(False)
       
+    def getUnexpectedDisconnect(self):
+        return self.com.getUnexpectedDisconnect()
+    
     # go throught decorator  
     def isConnected(self):
         return self.com.isConnected()

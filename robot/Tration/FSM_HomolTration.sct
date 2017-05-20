@@ -5,7 +5,7 @@
       <vertices xsi:type="sgraph:Entry" xmi:id="_KdS2UCYeEeeh1o2kvtdb7w">
         <outgoingTransitions xmi:id="_KdUrgCYeEeeh1o2kvtdb7w" target="_Fk9akC-DEee1v-eVh51XZQ"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_Fk9akC-DEee1v-eVh51XZQ" specification="entry/ &#xD;&#xA;setPosition(518, 785, -90);&#xD;&#xA;goTo(518, 382, FWD, SYM);&#xD;&#xA;//swallow(true);&#xD;&#xA;logInfo(&quot;Moving away from start area so that Pen begin its match...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Start area is freed for PEN.&quot;);&#xD;&#xA;informTaken_D()" name="Escaping from Start area : Goto Thru D" incomingTransitions="_KdUrgCYeEeeh1o2kvtdb7w _bGGWYDp8EeeEg_kfp8WLCA">
+      <vertices xsi:type="sgraph:State" xmi:id="_Fk9akC-DEee1v-eVh51XZQ" specification="entry/ &#xD;&#xA;goTo(518, 382, FWD, SYM);&#xD;&#xA;//swallow(true);&#xD;&#xA;logInfo(&quot;Moving away from start area so that Pen begin its match...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Start area is freed for PEN.&quot;);&#xD;&#xA;informTaken_D()" name="Escaping from Start area : Goto Thru D" incomingTransitions="_KdUrgCYeEeeh1o2kvtdb7w _bGGWYDp8EeeEg_kfp8WLCA">
         <outgoingTransitions xmi:id="_EXE1sC-EEee1v-eVh51XZQ" specification="[targetReached]" target="_B_NxAC-FEee1v-eVh51XZQ"/>
         <outgoingTransitions xmi:id="_bGGWYDp8EeeEg_kfp8WLCA" specification="after 1s [false]" target="_Fk9akC-DEee1v-eVh51XZQ"/>
       </vertices>

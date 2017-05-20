@@ -386,7 +386,7 @@ void Navigation::updateFromInterrupt()
  * User (= strategy) interface
  ---------------------------------*/
 
-void Navigation::setPosition(PointCap newPose, bool sym)
+void Navigation::setPosition(Pose2D newPose, bool sym)
 {
     //prevent any interrupt from occurring so that position fields are not corrupted
     enterCriticalSection();
@@ -433,7 +433,7 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
     m_mutex.unlock();
 }
 
-void Navigation::goToCap(PointCap target, eDir sens, bool sym)
+void Navigation::goToCap(Pose2D target, eDir sens, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
@@ -471,7 +471,7 @@ void Navigation::goForward(float distanceMm)
     LOG_INFO(String("   new request : goForward(") + distanceMm + "mm).");
 
     m_mutex.lock();
-    PointCap target = m_pose;
+    Pose2D target = m_pose;
     target.translatePolar(m_pose.hDegree(), distanceMm);
     m_mutex.unlock();
 
@@ -514,7 +514,7 @@ void Navigation::turnTo(float angle, bool sym)
     LOG_INFO(String("   new request : turnTo(") + angle + "°).");
 
     m_mutex.lock();
-    PointCap target = m_pose;
+    Pose2D target = m_pose;
     m_mutex.unlock();
     if(sym && m_color == eColor_SYM)
         target.hDegree(-angle);
@@ -529,7 +529,7 @@ void Navigation::faceTo(Point p, bool sym)
     LOG_INFO(String("   new request : faceTo") + p.toString() + ".");
 
     m_mutex.lock();
-    PointCap target = m_pose;
+    Pose2D target = m_pose;
     m_mutex.unlock();
     if( sym )
         target.h = m_pose.angleTo(p.toAmbiPoint(m_color));
@@ -544,7 +544,7 @@ void Navigation::rearTo(Point p, bool sym)
     LOG_INFO(String("   new request : rearTo") + p.toString() + ".");
 
     m_mutex.lock();
-    PointCap target = m_pose;
+    Pose2D target = m_pose;
     m_mutex.unlock();
     if( sym )
         target.h = headingToDir(m_pose.angleTo(p.toAmbiPoint(m_color)), eDir_BACKWARD);
@@ -596,7 +596,7 @@ void Navigation::recalRear(eTableBorder border)
     m_mutex.unlock();
 }
 
-void Navigation::graphTo(PointCap target, eDir sens)
+void Navigation::graphTo(Pose2D target, eDir sens)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
@@ -667,7 +667,7 @@ void Navigation::setColor(eColor c)
     m_color = c;
 }
 
-DelayMs Navigation::motionDuration(PointCap const& start, PointCap const& end, eDir sens, bool isGotoCap)
+DelayMs Navigation::motionDuration(Pose2D const& start, Pose2D const& end, eDir sens, bool isGotoCap)
 {
     double startAngle = 0;
     double endAngle = 0;
@@ -688,7 +688,7 @@ DelayMs Navigation::motionDuration(PointCap const& start, PointCap const& end, e
     return duration;
 }
 
-eDir Navigation::findOptimalDir(PointCap const& start, PointCap const& end, bool isGotoCap, DelayMs* duration)
+eDir Navigation::findOptimalDir(Pose2D const& start, Pose2D const& end, bool isGotoCap, DelayMs* duration)
 {
     DelayMs moveDurFront = motionDuration(start, end, eDir_FORWARD, isGotoCap);
     DelayMs moveDurRear = motionDuration(start, end, eDir_BACKWARD, isGotoCap);
@@ -957,70 +957,70 @@ bool Navigation::subOrderFinished()
     return res;
 }
 
-PointCap Navigation::getRecalPointFace(eTableBorder border)
+Pose2D Navigation::getRecalPointFace(eTableBorder border)
 {
     switch (border) {
         case eTableBorder_TOP_Y:
-            return PointCap(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xav(), 90);
+            return Pose2D(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xav(), 90);
             break;
 
         case eTableBorder_START_WALL_Y:
-            return PointCap(m_pose.toAmbiPose(m_color).x, 618 - conf->xav(), 90);
+            return Pose2D(m_pose.toAmbiPose(m_color).x, 618 - conf->xav(), 90);
             break;
 
         case eTableBorder_BOT_Y:
-            return PointCap(m_pose.toAmbiPose(m_color).x, -TABLE_TOP_Y + conf->xav(), -90);
+            return Pose2D(m_pose.toAmbiPose(m_color).x, -TABLE_TOP_Y + conf->xav(), -90);
             break;
 
         case eTableBorder_OPP_SIDE_X:
-            return PointCap(-TABLE_BORDER_X + conf->xav(), m_pose.toAmbiPose(m_color).y, 180);
+            return Pose2D(-TABLE_BORDER_X + conf->xav(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
         case eTableBorder_OWN_SIDE_X:
-            return PointCap(TABLE_BORDER_X - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
+            return Pose2D(TABLE_BORDER_X - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
         case eTableBorder_FLIP_FLOP_X:
-            return PointCap(790 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
+            return Pose2D(790 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
         default:
             ASSERT(false);
-            return PointCap();
+            return Pose2D();
             break;
     }
 }
 
-PointCap Navigation::getRecalPointRear(eTableBorder border)
+Pose2D Navigation::getRecalPointRear(eTableBorder border)
 {
     switch (border) {
         case eTableBorder_TOP_Y:
-            return PointCap(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xar(), -90);
+            return Pose2D(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xar(), -90);
             break;
 
         case eTableBorder_START_WALL_Y:
-            return PointCap(m_pose.toAmbiPose(m_color).x, 618 - conf->xar(), -90);
+            return Pose2D(m_pose.toAmbiPose(m_color).x, 618 - conf->xar(), -90);
             break;
 
         case eTableBorder_BOT_Y:
-            return PointCap(m_pose.toAmbiPose(m_color).x, -TABLE_TOP_Y + conf->xar(), 90);
+            return Pose2D(m_pose.toAmbiPose(m_color).x, -TABLE_TOP_Y + conf->xar(), 90);
             break;
 
         case eTableBorder_OPP_SIDE_X:
-            return PointCap(-TABLE_BORDER_X + conf->xar(), m_pose.toAmbiPose(m_color).y, 0);
+            return Pose2D(-TABLE_BORDER_X + conf->xar(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
         case eTableBorder_OWN_SIDE_X:
-            return PointCap(TABLE_BORDER_X - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
+            return Pose2D(TABLE_BORDER_X - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
         case eTableBorder_FLIP_FLOP_X:
-            return PointCap(790 - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
+            return Pose2D(790 - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
         default:
             ASSERT(false);
-            return PointCap();
+            return Pose2D();
             break;
     }
 }

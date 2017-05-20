@@ -65,15 +65,15 @@ namespace ard
     };
 
     //Represent a pose in a 2D space : Point + heading
-    class PointCap: public Point
+    class Pose2D: public Point
     {
     public:
-        PointCap();
-        PointCap(Point p);
-        PointCap(double x /*mm*/, double y/*mm*/, double h/*degree*/);
+        Pose2D();
+        Pose2D(Point p);
+        Pose2D(double x /*mm*/, double y/*mm*/, double h/*degree*/);
 
         //return the symetric from the x axis
-        PointCap toAmbiPose(eColor c) const;
+        Pose2D toAmbiPose(eColor c) const;
 
         String toString() const override;
 
@@ -84,7 +84,7 @@ namespace ard
         double angleHeadingTo(Point p) const;
 
         //Build from the associated proto struct
-        static PointCap fromProto(apb_PointCap const& p);
+        static Pose2D fromProto(apb_PointCap const& p);
 
         //accessor
         double hDegree() const {return degrees(h);};

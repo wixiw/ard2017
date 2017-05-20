@@ -30,6 +30,7 @@ namespace ard
         virtual void start() = 0;
         virtual void stop() = 0;
         virtual StrategyResult getStatus(){return status;};
+        virtual Pose2D getStartPosition(){return Pose2D();};
 
     protected:
         StrategyResult status;
@@ -45,10 +46,10 @@ namespace ard
         virtual ~LSA() = default;
 
         //Get the expected position of the robot when the LSA begins
-        virtual PointCap const& getEntryPoint() const = 0;
+        virtual Pose2D const& getEntryPoint() const = 0;
 
         //Set the entry point
-        virtual void setEntryPoint(PointCap const& point) = 0;
+        virtual void setEntryPoint(Pose2D const& point) = 0;
 
         //design issue : users of LSA would like to poll it,
         //it's not possible to share the PolledObject interface

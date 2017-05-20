@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+from PyQt5.Qt import *
 from PyQt5.QtSerialPort import *
 
 #
@@ -8,14 +9,28 @@ from PyQt5.QtSerialPort import *
 # It acts as a decorator of QSerialPort in order to protect and simplify its API
 # When the class is killed, the serial link is automatically closed
 #
-class ArdSerial():
+class ArdSerial(QObject):
+    unexpectedDisconnection = pyqtSignal()
     
     def __init__(self):
+        super().__init__() 
         self._serial = QSerialPort()
         self._serial.setDataBits(8)
         self._serial.setParity(QSerialPort.EvenParity)
         self._serial.setStopBits(QSerialPort.OneStop)
         self._serial.setFlowControl(QSerialPort.NoFlowControl)
+        self._serial.errorOccurred.connect(self._errorHandler)
+        
+    @pyqtSlot(QSerialPort.SerialPortError)
+    def _errorHandler(self, error):
+        if error == 0 :
+            pass
+        elif error == QSerialPort.ResourceError \
+                or error == QSerialPort.DeviceNotFoundError:
+            self.disconnect()
+            self.unexpectedDisconnection.emit()
+        else:
+            print("COM unknown error " +  str(error))
         
     # Get the list of physically connected ports
     # @return list[str]
@@ -44,7 +59,7 @@ class ArdSerial():
     # @param int baudrate : ideally from getAvailableBaudrates()
     # @param void slot(void) : the callback to be called when data are available
     # @return bool : true if the connection succeed, false otherwise
-    def connect(self, port, baudrate, slot = None):            
+    def connect(self, port, baudrate, slot = None):   
         self._serial.setPortName(port)
         self._serial.setBaudRate(baudrate)
         if slot != None:
@@ -54,7 +69,13 @@ class ArdSerial():
     # to be call after having connect() to close the line()
     def disconnect(self): 
         self._serial.close()
-        self._serial.readyRead.disconnect()
+        
+        try:    
+            self._serial.readyRead.disconnect()
+        except TypeError: #QT generates an error if the slot is not connected, ignore this
+            pass
+        except:
+            print("ERROR UNKNOWN")
         
     # Read up to nbBytesToRead bytes on the serial line, all bytes if set to 0
     # @return bytes : the read bytes array

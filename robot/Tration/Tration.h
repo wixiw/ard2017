@@ -22,10 +22,10 @@
 #define private public //#porky : workaround to gain introspection, because Yakindu guys thinks they'll anoy me in making data private...
 
     #include "generated/FSM_HomolTration.h"
-    DECLARE_FSM_STRATEGY(HomolTration);
+    DECLARE_FSM_STRATEGY(HomolTration, Pose2D(518, 785, -90));
 
     #include "generated/FSM_WipTration.h"
-    DECLARE_FSM_STRATEGY(WipTration);
+    DECLARE_FSM_STRATEGY(WipTration, Pose2D());
 
 #undef private
 

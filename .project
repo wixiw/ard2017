@@ -46,8 +46,8 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 		<nature>org.eclipse.cdt.autotools.core.autotoolsNatureV2</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
-		<nature>org.python.pydev.pythonNature</nature>
 		<nature>org.yakindu.sct.builder.SCTNature</nature>
+		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
 	<filteredResources>
 		<filter>

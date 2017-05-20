@@ -162,23 +162,23 @@ namespace ard
         {
             status = (StrategyResult)_status;
         }
-        sc_boolean matchColor()
+        sc_boolean matchColor() override
         {
             return robot.stratInfo.getColor() == eColor_PREF;
         }
-        sc_boolean robotType()
+        sc_boolean robotType() override
         {
             return robot.isPen();
         }
-        sc_boolean isSimu()
+        sc_boolean isSimu() override
         {
             return robot.lifecycle.isSimulated();
         }
-        sc_integer matchDuration()
+        sc_integer matchDuration() override
         {
             return robot.chrono.getTime();
         }
-        sc_integer matchRemaining()
+        sc_integer matchRemaining() override
         {
             return robot.chrono.getStrategyRemainingTime();
         }
@@ -201,13 +201,13 @@ namespace ard
             robot.kinematics.setSpeedAcc((uint16_t)vMax, (uint16_t)vMaxsTurn, (uint16_t)accMax, (uint16_t)accMaxTurn);
         }
 
-        void goTo_ID(sc_real x, sc_real y, sc_integer sens, bool sym) override
+        void goTo_ID(sc_real x, sc_real y, sc_integer sens, sc_boolean sym) override
         {
             ASSERT(sens == -1 || sens == 1);
             robot.nav.goTo(x, y, (eDir)(sens), sym);
         }
 
-        void goToCap(sc_real x, sc_real y, sc_real h, sc_integer sens, bool sym) override
+        void goToCap(sc_real x, sc_real y, sc_real h, sc_integer sens, sc_boolean sym) override
         {
             ASSERT(sens == -1 || sens == 1);
             robot.nav.goToCap(x, y, h, (eDir)(sens), sym);
@@ -218,22 +218,22 @@ namespace ard
             robot.nav.goForward(distanceMm);
         }
 
-        void turnDelta(sc_real angle, bool sym) override
+        void turnDelta(sc_real angle, sc_boolean sym) override
         {
             robot.nav.turnDelta(angle, sym);
         }
 
-        void turnTo(sc_real angle, bool sym) override
+        void turnTo(sc_real angle, sc_boolean sym) override
         {
             robot.nav.turnTo(angle, sym);
         }
 
-        void faceTo(sc_real x, sc_real y, bool sym) override
+        void faceTo(sc_real x, sc_real y, sc_boolean sym) override
         {
             robot.nav.faceTo(x, y, sym);
         }
 
-        void rearTo(sc_real x, sc_real y, bool sym) override
+        void rearTo(sc_real x, sc_real y, sc_boolean sym) override
         {
             robot.nav.rearTo(x, y, sym);
         }
