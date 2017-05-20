@@ -94,7 +94,7 @@ public:
 
     //Convert a [0;1000] command into a micro seconds command
     uint16_t perThousandToUs(uint16_t value);
-
+    uint16_t usToPerThousand(uint16_t value);
 private:
 
 

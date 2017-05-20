@@ -7,27 +7,26 @@
 
 #include "OppDetection.h"
 #include "Log.h"
-#include "RobotParameters.h"
 
 using namespace ard;
+
+//This defines helps to remind that debounce values are retrieved from the configuration
+#define OVERRIDEN_BY_CONFIG 1000
 
 OppDetection::OppDetection(uint16_t safetyArea):
         simulated(true),
         fakeRobot(false),
         color(eColor_PREF),
-        omronFront(OMRON1, 50, 1000),
-        omronRear(OMRON3, 50, 1000),
+        omronFront(OMRON1, 50, OVERRIDEN_BY_CONFIG),
+        omronRear(OMRON3, 50, OVERRIDEN_BY_CONFIG),
         safetyArea(safetyArea),
-        avoidanceActive(false),//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
-        conf(NULL)
+        avoidanceActive(false)//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
 {
 }
 
 void OppDetection::updateConf(RobotParameters* newConf)
 {
-    ASSERT(newConf);
-    conf = newConf;
-
+	RobotParametersListener::updateConf(newConf);
     omronFront.setDebounceLow(newConf->detectionWaitForOppMove());
     omronRear.setDebounceLow(newConf->detectionWaitForOppMove());
 }
@@ -58,12 +57,13 @@ bool OppDetection::isOpponentOnPath(eDir direction, PointCap& robotPose)
 
 bool OppDetection::isOpponentAhead(PointCap robotPose)
 {
+	ASSERT_CONFIGURED();
     bool opponentPresent = false;
 
     if(   (simulated && fakeRobot)
       || (!simulated && omronFront.read()) == GPIO_HIGH)
     {
-        robotPose.translatePolar(robotPose.hDegree(), conf->xav() + conf->deccDist());
+        robotPose.translatePolar(robotPose.hDegree(), conf->xav() + conf->avoidanceDistanceFront());
         opponentPresent |= isDetectionValid(robotPose);
     }
 
@@ -77,12 +77,13 @@ bool OppDetection::isOpponentAhead(PointCap robotPose)
 
 bool OppDetection::isOpponentBehind(PointCap robotPose)
 {
+	ASSERT_CONFIGURED();
     bool opponentPresent = false;
 
     if(   (simulated && fakeRobot)
       || (!simulated && omronRear.read()) == GPIO_HIGH)
     {
-        robotPose.translatePolar(robotPose.hDegree(), - conf->xar() - conf->deccDist());
+        robotPose.translatePolar(robotPose.hDegree(), - conf->xar() - conf->avoidanceDistanceRear());
         opponentPresent |= isDetectionValid(robotPose);
     }
 

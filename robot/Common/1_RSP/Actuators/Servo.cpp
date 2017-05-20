@@ -234,6 +234,11 @@ uint16_t Servo::perThousandToUs(uint16_t value)
     return map(value, 0, 1000, SERVO_MIN(), SERVO_MAX());
 }
 
+uint16_t Servo::usToPerThousand(uint16_t value)
+{
+    return map(value, SERVO_MIN(), SERVO_MAX(), 0, 1000);
+}
+
 void Servo::writeMicroseconds(int value)
 {
     // calculate and store the values for the given channel
@@ -244,9 +249,10 @@ void Servo::writeMicroseconds(int value)
             value = SERVO_MIN();
         else if (value > SERVO_MAX())
             value = SERVO_MAX();
-
+		
+		currentAngleCommand = usToPerThousand(value);
         value = usToTicks(value);  // convert to ticks after compensating for interrupt overhead
-        servos[channel].ticks = value;
+        servos[channel].ticks = value;     
     }
 }
 

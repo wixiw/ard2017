@@ -293,10 +293,10 @@ class RobotWidget():
         #draw avoidance area
         self.p.setPen(markPen)
         self.p.setBrush(redTranslucid)
-        self.p.drawRect(cfg.xav, -cfg.yside, cfg.deccDist, T_OMRON_WIDTH)
-        self.p.drawRect(cfg.xav, cfg.yside-T_OMRON_WIDTH, cfg.deccDist, T_OMRON_WIDTH)
-        self.p.drawRect(-cfg.xar - cfg.deccDist, -cfg.yside, cfg.deccDist, T_OMRON_WIDTH)
-        self.p.drawRect(-cfg.xar - cfg.deccDist, cfg.yside-T_OMRON_WIDTH, cfg.deccDist, T_OMRON_WIDTH)
+        self.p.drawRect(cfg.xav, -cfg.yside, cfg.avoidanceDistFront, T_OMRON_WIDTH)
+        self.p.drawRect(cfg.xav, cfg.yside-T_OMRON_WIDTH, cfg.avoidanceDistFront, T_OMRON_WIDTH)
+        self.p.drawRect(-cfg.xar - cfg.avoidanceDistRear, -cfg.yside, cfg.avoidanceDistRear, T_OMRON_WIDTH)
+        self.p.drawRect(-cfg.xar - cfg.avoidanceDistRear, cfg.yside-T_OMRON_WIDTH, cfg.avoidanceDistRear, T_OMRON_WIDTH)
         
     def drawObjects(self, stratInfo):
         if len(stratInfo.stock):

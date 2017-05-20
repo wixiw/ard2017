@@ -140,6 +140,7 @@ void InstallTration::update(TimeMs sinceLastCall)
             break;
 
         case IT_DONE:
+        	status = Success;
             break;
 
         default:

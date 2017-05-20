@@ -63,7 +63,7 @@ void Selftest::update(TimeMs sinceLastCall)
         case ST_LIFTER_DOWN:
             if(robot.actuators.servoLifter.isTargetReached())
             {
-                state = ST_LIFTER_UP;
+                state = ST_LIFTER_UP2;
                 robot.actuators.lifterCmd(true);
             }
             break;

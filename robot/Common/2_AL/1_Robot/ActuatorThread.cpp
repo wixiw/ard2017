@@ -6,10 +6,11 @@
  */
 
 #include "ActuatorThread.h"
+#include "Motion/KinematicManager.h"
 
 using namespace ard;
 
-ActuatorThread::ActuatorThread():
+ActuatorThread::ActuatorThread(KinematicManager& kinMan):
         PollerThread("Actuator", PRIO_ACTUATORS, STACK_ACTUATORS, PERIOD_ACTUATORS, 6),
         stockColor(),
         switchArmLout(      SWITCH_ARM_L_OUT, 100, 10),
@@ -31,7 +32,7 @@ ActuatorThread::ActuatorThread():
         lifter(*this, fsmTimeWheel),
         arms(*this, fsmTimeWheel),
         faceUp(*this),
-		conf(NULL)
+		kinematics(kinMan)
 {
     state = apb_ActuatorsState_init_default;
 
@@ -46,12 +47,6 @@ ActuatorThread::ActuatorThread():
 
 }
 
-void ActuatorThread::updateConf(RobotParameters* newConf)
-{
-    ASSERT(newConf);
-    conf = newConf;
-}
-
 void ActuatorThread::setColor(eColor color)
 {
     faceUp.setColor(color);
@@ -60,6 +55,7 @@ void ActuatorThread::setColor(eColor color)
 
 void ActuatorThread::init()
 {
+	ASSERT_CONFIGURED();
     arms.setLifter(lifter);
     addPolledObject(stockColor);
     addPolledObject(lifter);
@@ -76,13 +72,15 @@ void ActuatorThread::run()
     fsmTimeWheel.run(getPeriod());
     PollerThread::run();
 
-    if( 350 < servoLeftArm.read() || 350 < servoRightArm.read())
+	uint16_t left = servoLeftArm.read();
+	uint16_t right = servoRightArm.read();
+    if( 400 < left || 400 < right)
     {
-    	conf->frontActuatorsOut(true);
+    	kinematics.frontActuatorsOut(true);
     }
     else
     {
-    	conf->frontActuatorsOut(false);
+    	kinematics.frontActuatorsOut(false);
     }
 }
 

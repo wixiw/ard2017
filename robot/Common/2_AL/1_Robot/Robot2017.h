@@ -149,6 +149,9 @@ namespace ard
         //Graph of common way points
         Graph motionGraph;
 
+        //Manage max speed/max acc
+        KinematicManager kinematics;
+
         //moves the robot
         Navigation nav;
 

@@ -4,12 +4,9 @@
 
 using namespace ard;
 
-Chrono::Chrono()
-        :
+Chrono::Chrono():
         startDate_ms(UINT32_MAX),
-        matchStarted(false),
-        strategyDuration_ms(90000)//,
-//        funnyActionDuration_ms(5000)
+        matchStarted(false)
 {
 }
 
@@ -41,16 +38,17 @@ Chrono::getTime() const
 TimeMs
 Chrono::getStrategyRemainingTime() const
 {
+	ASSERT_CONFIGURED();
     if (matchStarted)
     {
         uint32_t date = millis();
-        if (strategyDuration_ms > (date - startDate_ms))
-            return (strategyDuration_ms - (date - startDate_ms));
+        if (conf->strategyDuration() > (date - startDate_ms))
+            return (conf->strategyDuration() - (date - startDate_ms));
         else
             return 0;
     }
     else
-        return strategyDuration_ms;
+        return conf->strategyDuration();
 }
 
 apb_Chrono
@@ -61,10 +59,4 @@ Chrono::serialize() const
     chrono.chrono_ms = getTime();
     chrono.timeLeft_ms = getStrategyRemainingTime();
     return chrono;
-}
-
-void Chrono::updateConf(RobotParameters* newConf)
-{
-    ASSERT(newConf);
-    strategyDuration_ms = newConf->strategyDuration();
 }

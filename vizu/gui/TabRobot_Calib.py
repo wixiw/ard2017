@@ -144,6 +144,7 @@ class RotationCalibration(RobotConfigWidget):
         self.btn_cmds["compute"].clicked.connect(self._compute) 
         
         self.layout["L1"] = QVBoxLayout(self)
+        self.layout["L1"].addWidget(QLabel("When robot is turning too much => reduce voie."))
         for button in self.btn_cmds:    
             self.layout["L1"].addWidget(self.btn_cmds[button])
         self.layout["L1"].addStretch()

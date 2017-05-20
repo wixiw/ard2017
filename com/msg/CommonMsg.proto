@@ -32,11 +32,12 @@ message NavState {
     eNavState       state                  = 10; //current motion state
     eNavOrder       order                  = 11; //current motion order
     PointCap        pos                    = 12; //robot position
-    uint32            omronFront             = 21; //front avoidance omrons, true = presence
-    uint32            omronRear              = 23; //rear avoidance omrons, true = presence
-    uint32            switchRecalFL          = 30; //front left recal on border switch
-    uint32            switchRecalFR          = 31; //front right recal on border switch
-    uint32            switchRecalRC          = 32; //rear center recal on border switch
+    uint32          omronFront             = 21; //front avoidance omrons, true = presence
+    uint32          omronRear              = 23; //rear avoidance omrons, true = presence
+    uint32          switchRecalFL          = 30; //front left recal on border switch
+    uint32          switchRecalFR          = 31; //front right recal on border switch
+    uint32          switchRecalRC          = 32; //rear center recal on border switch
+    uint32			vmax				   = 40; //current maximal speed
 }
 
 message ColorSensorState {

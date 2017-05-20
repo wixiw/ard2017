@@ -11,12 +11,11 @@
 #include "Types.pb.h"
 #include "BSP.hpp"
 #include "core/ArdMaths.h"
+#include "RobotParameters.h"
 
 namespace ard
 {
-    class RobotParameters;
-
-    class OppDetection
+    class OppDetection: public RobotParametersListener
     {
     public:
         /**
@@ -26,9 +25,8 @@ namespace ard
          */
         OppDetection(uint16_t safetyArea);
 
-        //Reread the configuration and maps default config. Shall be called at least once
-        //before the OS is initialized
-        void updateConf(RobotParameters* newConf);
+        //Overrides RobotParametersListener
+        void updateConf(RobotParameters* newConf) override;
 
         //set match color
         void setColor(eColor c);
@@ -65,7 +63,6 @@ namespace ard
 
         uint16_t safetyArea;
         bool avoidanceActive; //is true when avoidance system is active
-        RobotParameters* conf;
     };
 
 } /* namespace ard */

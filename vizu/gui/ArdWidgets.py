@@ -108,6 +108,23 @@ class DirectionInput(QComboBox):
     def getValue(self):
         return self.currentData()
     
+class WallInput(QComboBox):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.addItem("TOP_Y", Types_pb2.TOP_Y)
+        self.addItem("OWN_SIDE_X", Types_pb2.OWN_SIDE_X)
+        self.addItem("OPP_SIDE_X", Types_pb2.OPP_SIDE_X)
+        self.addItem("START_WALL_Y", Types_pb2.START_WALL_Y)
+        self.addItem("BOT_Y", Types_pb2.BOT_Y)
+        self.addItem("FLIP_FLOP_X", Types_pb2.FLIP_FLOP_X)
+        self.setEditable(True)
+        self.lineEdit().setReadOnly(True)
+        self.lineEdit().setAlignment(Qt.AlignHCenter)
+        
+    #@return int : return the numeric value of the field (or 0==Undefined if not set)
+    def getValue(self):
+        return self.currentData()
+    
 class ToneWidget(QWidget):
     toneRequest = pyqtSignal(Tone, int)
     

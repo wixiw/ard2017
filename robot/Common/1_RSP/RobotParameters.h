@@ -9,7 +9,7 @@
 #define ROBOT_COMMON_1_RSP_ROBOTPARAMETERS_H_
 
 #include <Com.h>
-#include "ArdOs.h"
+#include "ArdFramework.h"
 
 #define GAIN_ANALOG_TENSION_BATTERIE 0.024
 
@@ -24,6 +24,25 @@
 
 namespace ard
 {
+//forward declare
+class RobotParameters;
+
+class RobotParametersListener
+{
+public:
+	RobotParametersListener();
+	virtual ~RobotParametersListener() = default;
+
+	//Reread the configuration and maps default config. Shall be called at least once
+	//before the OS is initialized
+	virtual void updateConf(RobotParameters* newConf);
+
+	//Assert if not configured
+	void ASSERT_CONFIGURED() const;
+
+protected:
+    RobotParameters* conf;
+};
 
 /**
  * This class contains all parameters of the robot model.
@@ -49,61 +68,44 @@ public:
     bool setConfig(apb_Configuration const& newConf);
     apb_Configuration const& getConfig() const {return cfg;};
 
-    uint32_t stepByTurn()           const;
-    int32_t xav()                   const;
-    int32_t xar()                   const;
-    int32_t yside()                 const;
-    int32_t xavExtended()           const;
-    int32_t xarExtended()           const;
-    int32_t xouter()                const;
-    float leftWheelDiameter()    	const;
-    float rightWheelDiameter()  	const;
-    float voie()                 	const;
-    uint32_t maxAcc()               const;
-    uint32_t maxTurnAcc()           const;
-    uint32_t recalSpeed()           const;
-    uint32_t maxTurnSpeed()         const;
-    int32_t deccDist()              const;
-    uint32_t strategyDuration()     const;
-    uint32_t detectionWaitForOppMove()const;
-    bool detectionActive()      	const;
-    uint32_t maxSpeed(eDir sens)    const;
-    char const* const serialNumber() const;
-    bool logDebug()                 const;
-    bool bipAllowed()               const;
+    uint32_t stepByTurn()           	const;
+    Distance xav()                  	const;
+    Distance xar()                  	const;
+    Distance yside()                	const;
+    Distance xavExtended()          	const;
+    Distance xarExtended()          	const;
+    Distance xouter()               	const;
+    float leftWheelDiameter()    		const;
+    float rightWheelDiameter()  		const;
+    float voie()                 		const;
+    LinearAcc maxAccCfg()              	const;
+    LinearSpeed maxSpeedCfg()  			const;
+    LinearSpeed recalSpeed()        	const;
+    RotationAcc maxTurnAccCfg()        	const;
+    RotationSpeed maxTurnSpeedCfg()    	const;
+    Distance avoidanceDistanceFront()   const;
+    Distance avoidanceDistanceRear()    const;
+    DelayMs strategyDuration() 	     	const;
+    DelayMs detectionWaitForOppMove()	const;
+    bool detectionActive()      		const;
 
-    //inform that the front robot actuators are out (or not) => recompute maxSpeed
-    void frontActuatorsOut(bool out);
+    char const* const serialNumber() 	const;
+    bool logDebug()                 	const;
+    bool bipAllowed()               	const;
 
-    //inform that the rear robot actuators are out (or not) => recompute maxSpeed
-    void rearActuatorsOut(bool out);
-
-    //Set a new user speed/acc constraint
-    void setSpeedAcc(uint16_t vMax /*mm/s*/, uint16_t vMaxsTurn /*°/s*/,
-                    uint16_t accMax /*mm/s2*/, uint16_t accMaxTurn /*°/s2*/);
-
-    static const uint32_t MINBOUND_MAXSPEED         = 50;   //mm/s
-    static const uint32_t MAXBOUND_MAXSPEED         = 2000; //mm/s
-    static const uint32_t MINBOUND_MAXACC           = 300;  //mm/s²
-    static const uint32_t MAXBOUND_MAXACC           = 4000; //mm/s²
-    static const uint32_t MINBOUND_MAXTURNSPEED     = 30;   //°/s
-    static const uint32_t MAXBOUND_MAXTURNSPEED     = 800;  //°/s
-    static const uint32_t MINBOUND_MAXTURNACC       = 100;  //°/s²
-    static const uint32_t MAXBOUND_MAXTURNACC       = 2000; //°/s²
+    static const LinearSpeed MINBOUND_SPEED          = 50;   //mm/s
+    static const LinearSpeed MAXBOUND_SPEED          = 2000; //mm/s
+    static const LinearAcc MINBOUND_ACC              = 300;  //mm/s²
+    static const LinearAcc MAXBOUND_ACC              = 4000; //mm/s²
+    static const RotationSpeed MINBOUND_TURN_SPEED   = 30;   //°/s
+    static const RotationSpeed MAXBOUND_TURN_SPEED   = 800;  //°/s
+    static const RotationAcc MINBOUND_TURN_ACC       = 100;  //°/s²
+    static const RotationAcc MAXBOUND_TURN_ACC       = 2000; //°/s²
 
 private:
     apb_Configuration cfg;
 
-    double m_maxSpeedFront;               //in mm/s : maximal speed in front direction so that you match the avoidance distance
-    double m_maxSpeedRear;               //in mm/s : maximal speed in rear direction so that you match the avoidance distance
     bool m_configuredOnce;
-    Mutex m_mutex;
-
-    //move constraints
-    uint16_t userMaxSpeed;      //mm/s
-    uint16_t userMaxTurnSpeed;  //°/s
-    uint16_t userMaxAcc;        //mm/s²
-    uint16_t userMaxTurnAcc;    //°/s²
 
     void setComputedVars();
     bool checkConfig(apb_Configuration const& newConf);

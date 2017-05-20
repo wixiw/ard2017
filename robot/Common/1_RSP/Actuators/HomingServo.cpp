@@ -79,3 +79,11 @@ bool HomingServo::isTargetReached()
 {
     return state == IDLE;
 }
+
+uint16_t HomingServo::read()
+{
+	if(inverted)
+		return 1000-AccelServo::read();
+	else
+		return AccelServo::read();
+}

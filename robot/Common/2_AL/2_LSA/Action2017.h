@@ -198,7 +198,7 @@ namespace ard
 
         void setSpeedAcc(sc_integer vMax, sc_integer vMaxsTurn, sc_integer accMax, sc_integer accMaxTurn) override
         {
-            robot.conf.setSpeedAcc((uint16_t)vMax, (uint16_t)vMaxsTurn, (uint16_t)accMax, (uint16_t)accMaxTurn);
+            robot.kinematics.setSpeedAcc((uint16_t)vMax, (uint16_t)vMaxsTurn, (uint16_t)accMax, (uint16_t)accMaxTurn);
         }
 
         void goTo_ID(sc_real x, sc_real y, sc_integer sens, bool sym) override

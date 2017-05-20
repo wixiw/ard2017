@@ -6,27 +6,25 @@
 #include "core/ArdMaths.h"
 #include "Actuators/AccelStepper.h"
 #include "CommonMsg.pb.h"
+#include "RobotParameters.h"
 
 namespace ard
 {
     class Buzzer;
     class OppDetection;
-    class RobotParameters;
     class Graph;
+    class KinematicManager;
 
     /**
      * This class manage the robot position movements, and avoidance
      * It is isolated from the rest of the code to prevent something
      * to block the avoidance/localisation part.
      */
-    class Navigation: public Thread
+    class Navigation: public Thread, public RobotParametersListener
     {
     public:
-        Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph);
-
-        //Reread the configuration and maps default config. Shall be called at least once
-        //before the OS is initialized
-        void updateConf(RobotParameters* newConf);
+        Navigation(Buzzer& klaxon, OppDetection& detection,
+        		Graph& graph, KinematicManager& kinMan);
 
         /**---------------------------------
          * Thread interface
@@ -277,8 +275,6 @@ namespace ard
         uint8_t currentWayPoint;
         eDir m_graphDir;
 
-        RobotParameters* conf;
-
         //for telemetry
         apb_NavState state;
 
@@ -286,6 +282,7 @@ namespace ard
         Buzzer& klaxon;
         OppDetection& detection;
         Graph& graph;
+        KinematicManager& kinematics;
     };
 }    //end namespace
 

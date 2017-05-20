@@ -117,11 +117,6 @@ void Lifecycle::networkStartRequest()
     fsm.raise_networkStartRequest();
 }
 
-void Lifecycle::enableAvoidance()
-{
-    detection.enableAvoidance(true);
-}
-
 void Lifecycle::beep(sc_integer nb)
 {
     hmi.buzzer.bip(nb);
@@ -342,5 +337,7 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor _matchColor, bool _si
 
     //Simualtion
     if(simulated)
-        LOG_INFO("<<< CAUTION : robot is SIMULATED >>>");
+        LOG_INFO("<<< CAUTION : robot is SIMULATED (avoidance disabled) >>>");
+    else
+    	detection.enableAvoidance(true);
 }

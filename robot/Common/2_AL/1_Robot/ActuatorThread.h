@@ -24,14 +24,13 @@ namespace ard
         WC_WITHDRAW = -1
     } eWheelsCmd;
 
-    class ActuatorThread: public PollerThread
+    //forward declare
+    class KinematicManager;
+
+    class ActuatorThread: public PollerThread, public RobotParametersListener
     {
     public:
-        ActuatorThread();
-
-        //Reread the configuration and maps default config. Shall be called at least once
-        //before the OS is initialized
-        void updateConf(RobotParameters* newConf);
+        ActuatorThread(KinematicManager& kinMan);
 
         /**---------------------------------
          * Strat API
@@ -101,7 +100,7 @@ namespace ard
         Arms          arms;
         FaceUp        faceUp;
 
-        RobotParameters* conf;
+        KinematicManager& kinematics;
     };
 
 } /* namespace ard */

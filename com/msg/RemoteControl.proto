@@ -114,10 +114,12 @@ message Configuration
 
     //Navigation config
     uint32 maxAcc                = 11; //in mm /s² maximal accelaration in linear motion
-    uint32 maxTurnAcc            = 12; //in ° /s² maximal accelaration in rotations
-    uint32 recalSpeed            = 13; //in mm /s
-    uint32 maxTurnSpeed          = 14; //in ° /s
-    uint32 deccDist              = 15; //in mm distance to stop the robot at max speed (vmax is computed from acc/decc and this value)
+    uint32 maxSpeed              = 12; //in mm /s
+    uint32 recalSpeed            = 14; //in mm /s
+    uint32 maxTurnAcc            = 15; //in ° /s² maximal accelaration in rotations
+    uint32 maxTurnSpeed          = 16; //in ° /s
+    uint32 avoidanceDistFront    = 17; //in mm/s : maximal speed to brake within avoidance in front direction
+    uint32 avoidanceDistRear     = 18; //in mm/s : maximal speed to brake within avoidance in rear direction
 
     //Avoidance config
     uint32 detectionWaitForOppMove = 21;  //in ms

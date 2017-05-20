@@ -28,6 +28,7 @@
 #include "Motion/Graph.h"
 #include "Motion/Navigation.h"
 #include "Motion/OppDetection.h"
+#include "Motion/KinematicManager.h"
 #include "Sensors/Adafruit_TCS34725.h"
 #include "Sensors/ColorSensor.h"
 

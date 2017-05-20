@@ -29,10 +29,11 @@ Robot2017::Robot2017():
     hmi(TIMER_BUZZER),
     detection(SAFETY_AREA),
     motionGraph(),
-    nav(hmi.buzzer, detection, motionGraph),
+	kinematics(),
+    nav(hmi.buzzer, detection, motionGraph, kinematics),
     chrono(),
     stratInfo(),
-    actuators(),
+    actuators(kinematics),
     lifecycle(nav, chrono, hmi, detection),
     listener(NULL)
 {
@@ -186,9 +187,11 @@ void Robot2017::setConfig(apb_Configuration const& newConf)
     log.setDebugLevel(newConf.logDebug);
 #endif
     conf.setConfig(newConf);
+    chrono.updateConf(&conf);
+    kinematics.updateConf(&conf);
     detection.updateConf(&conf);
     nav.updateConf(&conf);
-    actuators.updateConf(&conf);
+	actuators.updateConf(&conf);
     hmi.buzzer.bipAllowed = newConf.bipAllowed;
 }
 

@@ -138,11 +138,14 @@ class TabStrat(QWidget):
         self.box_motion = QGroupBox("Motion")
         self.label["state"] = QLabel("?")
         self.label["order"] = QLabel("?")
+        self.label["vmax"] = QLabel("?")
         self.label["state"].setAlignment(Qt.AlignRight)
         self.label["order"].setAlignment(Qt.AlignRight)
+        self.label["vmax"].setAlignment(Qt.AlignRight)
         box_layout = QFormLayout()
         box_layout.addRow("state : ", self.label["state"])
         box_layout.addRow("order : ", self.label["order"])
+        box_layout.addRow("vmax : ", self.label["vmax"])
         self.box_motion.setLayout(box_layout)
         
     def buildStratInfo(self):
@@ -230,6 +233,7 @@ class TabStrat(QWidget):
             self.label["h"].setText("%d" % math.degrees(pose.h))
             self.label["state"].setText(self.getMotionStateStr())
             self.label["order"].setText(self.getMotionOrderStr())
+            self.label["vmax"].setText(str(msg.nav.vmax))
             self.label["score"].setText(str(msg.stratInfo.score))
             self.label["stock"].setText(str(len(msg.stratInfo.stock)))
             stock = "h|"

@@ -18,7 +18,7 @@ namespace ard
      *           ^                              ^             ^
      *           START PULLED                   T+90s         T+95s
      */
-    class Chrono
+    class Chrono : public RobotParametersListener
     {
     public:
         Chrono();
@@ -43,21 +43,11 @@ namespace ard
         //provide telemetry data
         apb_Chrono serialize() const;
 
-        //Reread the configuration and maps default config. Shall be called at least once
-        //before the OS is initialized
-        void updateConf(RobotParameters* newConf);
-
     private:
         // The date in ms when the match starts
         TimeMs startDate_ms;
 
         bool matchStarted;
-
-        // Duration of the match (without funnyAction)
-        DelayMs strategyDuration_ms;
-
-        // Duration of the funnyAction
-        //uint32_t funnyActionDuration_ms;
     };
 }    //end namespace
 

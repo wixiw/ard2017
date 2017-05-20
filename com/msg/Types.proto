@@ -75,7 +75,7 @@ enum eTableBorder {
     OPP_SIDE_X      = 2;
     START_WALL_Y    = 3;
     BOT_Y           = 4;
-    FLIP_FLOP_X    = 5;
+    FLIP_FLOP_X     = 5;
     MAX = 6;
 }
 

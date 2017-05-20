@@ -461,7 +461,7 @@ class RecalFaceForm(QWidget):
                         
     def __init__(self, parent):
         super().__init__(parent)
-        self.wall = IntegerInput(self, 0, 5)
+        self.wall = WallInput(self)
         self.exe = QPushButton('Execute', self)
         self.exe.clicked.connect(self._execute) 
         
@@ -472,8 +472,8 @@ class RecalFaceForm(QWidget):
         layoutForm.addRow("wall ID : ", self.wall)
     
     def reset(self):
-        self.wall.clear()
-        
+        pass
+    
     @pyqtSlot()
     def _execute(self):
         self.execute.emit(self.wall.getValue())
@@ -483,7 +483,7 @@ class RecalRearForm(QWidget):
                         
     def __init__(self, parent):
         super().__init__(parent)
-        self.wall = IntegerInput(self, 0, 5)
+        self.wall = WallInput(self)
         self.exe = QPushButton('Execute', self)
         self.exe.clicked.connect(self._execute) 
         
@@ -494,7 +494,7 @@ class RecalRearForm(QWidget):
         layoutForm.addRow("wall ID : ", self.wall)
     
     def reset(self):
-        self.wall.clear()
+        pass
         
     @pyqtSlot()
     def _execute(self):

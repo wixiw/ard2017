@@ -58,6 +58,11 @@ namespace ard
     typedef uint32_t TimeMs;
     typedef uint32_t DelayMs;
     typedef uint32_t DelayUs;
+	typedef uint16_t LinearSpeed;   //mm/s
+	typedef uint16_t RotationSpeed; //°/s
+	typedef uint16_t LinearAcc;     //mm/s2
+	typedef uint16_t RotationAcc;   //°/s2
+	typedef uint16_t Distance; 	    //mm
 
     /**
      * An ILogger can generate a log and send it the a log stack

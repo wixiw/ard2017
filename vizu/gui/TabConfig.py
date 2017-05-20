@@ -69,9 +69,11 @@ class TabConfig(RobotConfigWidget):
         req.setConfig.voie = self.calibConfig.voie.getValue()
         #Nav
         req.setConfig.maxAcc = self.navConfig.maxAcc.getValue()
+        req.setConfig.maxSpeed = self.navConfig.vmax.getValue()
         req.setConfig.maxTurnAcc = self.navConfig.maxTurnAcc.getValue()
         req.setConfig.maxTurnSpeed = self.navConfig.maxTurnSpeed.getValue()
-        req.setConfig.deccDist = self.navConfig.deccDist.getValue()
+        req.setConfig.avoidanceDistFront = self.navConfig.avoidanceDistFront.getValue()
+        req.setConfig.avoidanceDistRear = self.navConfig.avoidanceDistRear.getValue()
         
         req.setConfig.recalSpeed = self.navConfig.recalSpeed.getValue()
         #Avoidance
@@ -109,12 +111,14 @@ class TabConfig(RobotConfigWidget):
         self.calibConfig.voie.setValue(msg.voie)
         #Nav
         self.navConfig.maxAcc.setValue(msg.maxAcc)
+        self.navConfig.vmax.setValue(msg.maxSpeed)
         self.navConfig.maxTurnAcc.setValue(msg.maxTurnAcc)
         self.navConfig.maxTurnSpeed.setValue(msg.maxTurnSpeed)
         self.navConfig.recalSpeed.setValue(msg.recalSpeed)
-        self.navConfig.deccDist.setValue(msg.deccDist)
-        self.navConfig.vmax.setText(str(math.floor(math.sqrt(2*msg.maxAcc*msg.deccDist))))
-        
+        self.navConfig.avoidanceDistFront.setValue(msg.avoidanceDistFront)
+        self.navConfig.avoidanceDistRear.setValue(msg.avoidanceDistRear)
+        self.navConfig.vmaxAvoidFront.setText(str(math.floor(math.sqrt(2*msg.maxAcc*msg.avoidanceDistFront))))
+        self.navConfig.vmaxAvoidRear.setText(str(math.floor(math.sqrt(2*msg.maxAcc*msg.avoidanceDistRear))))
         #Avoidance
         self.avoidanceConfig.detectionWaitForOppMove.setValue(msg.detectionWaitForOppMove)
         self.avoidanceConfig.detectionActive.setChecked(msg.detectionActive)
@@ -164,14 +168,15 @@ class NavigationConfigWidget(QWidget):
         super().__init__(parent)
         
         self.maxAcc          = IntegerInput(self, 0, 4000)
+        self.vmax            = IntegerInput(self, 50, 2000)
         self.maxTurnAcc      = IntegerInput(self, 0, 2000)
         self.maxTurnSpeed    = IntegerInput(self, 0, 2000)
         self.recalSpeed      = IntegerInput(self, 0, 2000)
-        self.deccDist        = IntegerInput(self, 0, 2000)
-        self.vmax            = QLabel("0")
-        
-        self.vmax.setAlignment(Qt.AlignCenter)
-        
+        self.avoidanceDistFront = IntegerInput(self, 0, 2000)
+        self.vmaxAvoidFront     = QLabel("0")
+        self.avoidanceDistRear = IntegerInput(self, 0, 2000)
+        self.vmaxAvoidRear     = QLabel("0")
+                
         self.layoutH = QHBoxLayout(self)
         self.layoutV = QGroupBox("Navigation")
         self.layoutH.addWidget(self.layoutV)
@@ -179,11 +184,14 @@ class NavigationConfigWidget(QWidget):
         self.layoutV.setLayout(self.form)
         
         self.form.addRow("maxAcc (mm/s²)", self.maxAcc)
+        self.form.addRow("vmax (mm/s)", self.vmax)
         self.form.addRow("maxTurnAcc (°/s²)", self.maxTurnAcc)
         self.form.addRow("maxTurnSpeed (mm/s)", self.maxTurnSpeed)
         self.form.addRow("recalSpeed (mm/s)", self.recalSpeed)
-        self.form.addRow("decc distance (mm)", self.deccDist)
-        self.form.addRow("info : vmax (mm/s)", self.vmax)
+        self.form.addRow("avoidanceDistFront (mm)", self.avoidanceDistFront)
+        self.form.addRow("associated max (mm/s)", self.vmaxAvoidFront)
+        self.form.addRow("avoidanceDistFrRear (mm)", self.avoidanceDistRear)
+        self.form.addRow("associated vmax (mm/s)", self.vmaxAvoidRear)
         
 class AvoidanceConfigWidget(QWidget): 
     

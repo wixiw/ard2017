@@ -116,9 +116,6 @@ namespace ard
         //Manual color and strategy configuration
         void configureColor() override;
 
-        //activates robot avoidance system
-        void enableAvoidance() override;
-
         //FSM callback
         void beep(sc_integer nb) override;
 
