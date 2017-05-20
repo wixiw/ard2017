@@ -337,7 +337,6 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor _matchColor, bool _si
         LOG_ERROR(String("Strategy ") +strategyId_+ " is unknown, using strat 0 instead.");
         strategyId_ = 0;
     }
-
     ASSERT_TEXT(matchs[strategyId].name != "", "Selected strategy is malformed.");
     strategyId = strategyId_;
     LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + matchs[strategyId].name + ".");
@@ -352,6 +351,9 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor _matchColor, bool _si
     matchColor = _matchColor;
     if(listener)
         listener->colorChoosed(matchColor);
+
+    //Start heartbeat display
+    hmi.led2.slowBlink();
 
     //Simualtion
     if(simulated)

@@ -86,7 +86,6 @@ void Robot2017::boot()
 
     //heartbeat pour le debug pour verifier que le thread est vivant
     hmi.ledDue_Tx.slowBlink();
-    hmi.led2.slowBlink();
 
     //Start everything
     TIMER_NAV_STEPPER.start(PERIOD_VERY_FAST_IT_US);
