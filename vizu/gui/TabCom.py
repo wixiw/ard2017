@@ -18,11 +18,18 @@ class TabCom(QWidget):
         defaultPort = settings.value("port", "COM1")
         defaultBaudrate = settings.value("baudrate", "125000")
         defaultSimu = settings.value("simulated", "false")
-        ports, baudrates = self.com.getSerialPortInfo()
+        
+        self.connectedPort = None
+        self.com.getUnexpectedDisconnect().connect(self._unexpectedDisconnect)
           
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self._tick)
+        self.timer.start(200)
+         
+        self.combo_COM = QComboBox()
+        ports, baudrates = self.com.getSerialPortInfo()
         #Serial port configuration
             #COM port selector
-        self.combo_COM = QComboBox(self)
         self.combo_COM.addItems(ports)
         i = self.combo_COM.findText(defaultPort)
         if i != -1 :
@@ -34,6 +41,7 @@ class TabCom(QWidget):
         i = self.combo_Baudrate.findData(defaultBaudrate)
         if i != -1 :
             self.combo_Baudrate.setCurrentIndex(i)
+
             #Simulation check
         self.simulation_label = QLabel("Simul :")
         self.simulation_check = QCheckBox()
@@ -91,6 +99,7 @@ class TabCom(QWidget):
         layoutBtnGroup.addWidget(self.btn_crcErrReq)
         layoutBtnGroup.addWidget(self.btn_tooLittleReq)
         
+        
     @pyqtSlot(bool)
     def _connectFromButton(self, pressed):
         if pressed:
@@ -100,7 +109,6 @@ class TabCom(QWidget):
         
     @pyqtSlot()
     def _connectFromShorcut(self):
-        print("truc")
         self.btn_connect.toggle()            
         
     def _connect(self):
@@ -119,6 +127,7 @@ class TabCom(QWidget):
             settings.setValue("baudrate", baudrate)
             self.buttonsGroup.setEnabled(True)
             self.connectedLed.light(True)
+            self.connectedPort = port
         else:
             print("ERROR : Connection failed, check that the device is connected to the right port, and that nothing is holding the COM PORT (like another vizu instance...)")
             self.btn_connect.setText("Connect")
@@ -130,6 +139,7 @@ class TabCom(QWidget):
             self.connectedLed.light(False)
             
     def _disconnect(self):
+        self.connectedPort = None
         self.com.disconnect()
         self.btn_connect.setText("Connect")
         self.btn_connect.setChecked(False)
@@ -139,13 +149,28 @@ class TabCom(QWidget):
         self._updateComInfo()
         self.connectedLed.light(False)
         print("Disconnected")
+
+    def _unexpectedDisconnect(self):
+        print("BRUTAL disconnection")
+        self._disconnect()
         
     def _updateComInfo(self):
-        ports, baudrates = self.com.getSerialPortInfo()
-        for port in ports:
-            i = self.combo_COM.findText(port)
-            if i == -1 :
-                self.combo_COM.addItem(port)
+        ports = self.com.com.getAvailablePorts()
+        if self.connectedPort == None:
+            for port in ports: 
+                if self.combo_COM.findText(port) == -1 :
+                    self.combo_COM.addItem(port)
+             
+            for i in range(self.combo_COM.count()):
+                port = self.combo_COM.itemText(i) 
+                if not port in ports:
+                    self.combo_COM.removeItem(i)
+             
+            if len(ports) == 0:
+                self.btn_connect.setEnabled(False)
+            else:
+                self.btn_connect.setEnabled(True)   
+
         
     @pyqtSlot()
     def _maxLength(self): 
@@ -191,6 +216,10 @@ class TabCom(QWidget):
         else:
             self.com.setSimulated(False)
             settings.setValue("simulated", False)
+            
+    @pyqtSlot()
+    def _tick(self):
+        self._updateComInfo()
             
 if __name__ == '__main__':
     import sys

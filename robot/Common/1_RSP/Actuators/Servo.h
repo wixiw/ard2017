@@ -95,10 +95,12 @@ public:
     //Convert a [0;1000] command into a micro seconds command
     uint16_t perThousandToUs(uint16_t value);
     uint16_t usToPerThousand(uint16_t value);
+
+    int readMicroseconds();            // returns current pulse width in microseconds for this servo (was read_us() in first release)
 private:
 
 
-    int readMicroseconds();            // returns current pulse width in microseconds for this servo (was read_us() in first release)
+
     uint8_t attach(int pin, int min, int max); // as above but also sets min and max values for writes. //ARD : function made private as min/max management is unclear
     uint8_t servoIndex;               // index into the channel data for this servo
     uint16_t minArduino;                       // minimum is this value times 4 added to MIN_PULSE_WIDTH

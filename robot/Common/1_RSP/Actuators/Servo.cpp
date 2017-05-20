@@ -144,7 +144,6 @@ Servo::Servo(int pin, uint16_t min, uint16_t max):
     if (ServoCount < MAX_SERVOS)
     {
         this->servoIndex = ServoCount++;                    // assign a servo index to this instance
-        writeMicroseconds(currentAngleCommand);
         if( 1000 < angularMin )
             angularMin = 1000;
 
