@@ -116,6 +116,9 @@ namespace ard
         //Manual color and strategy configuration
         void configureColor() override;
 
+        //Display current color switchy position before validation
+        void displayColor() override;
+
         //FSM callback
         void beep(sc_integer nb) override;
 

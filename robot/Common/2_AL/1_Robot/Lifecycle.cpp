@@ -112,6 +112,18 @@ void Lifecycle::configureColor()
     configureMatch(hmi.getStrategyId(), selectedColor, false);
 }
 
+void Lifecycle::displayColor()
+{
+	eRgb selectedColor;
+
+    if ( hmi.isColorSwitchOnPrefered() )
+        selectedColor = YELLOW;
+    else
+        selectedColor = BLUE;
+
+    hmi.ledRGB.set(selectedColor, FAST_BLINK);
+}
+
 void Lifecycle::networkStartRequest()
 {
     fsm.raise_networkStartRequest();
