@@ -51,8 +51,11 @@ class LinearCalibration(RobotConfigWidget):
         self.in_moveDist.setValue(1000)
         self.btn_cmds["move"] = QPushButton('Move !', self)
         self.btn_cmds["move"].clicked.connect(self._moveRequest) 
+        self.btn_cmds["back"] = QPushButton('Back home', self)
+        self.btn_cmds["back"].clicked.connect(self._moveBack) 
         self.layout["L2"].addWidget(self.in_moveDist)
         self.layout["L2"].addWidget(self.btn_cmds["move"])
+        self.layout["L2"].addWidget(self.btn_cmds["back"])
         self.layout["L2"].addStretch(1)
         
         #Second line : measures inputs
@@ -106,6 +109,11 @@ class LinearCalibration(RobotConfigWidget):
        self.move.emit(self.in_moveDist.getValue())
        
     @pyqtSlot()
+    def _moveBack(self): 
+       print("Back home")
+       self.move.emit(-self.in_moveDist.getValue())
+       
+    @pyqtSlot()
     def _compute(self): 
        print("Compute")
        mean = 0
@@ -132,16 +140,20 @@ class LinearCalibration(RobotConfigWidget):
         self.lab_voie.setText(      "Voie                 : " + str(self.config.voie) + "mm")
    
 class RotationCalibration(RobotConfigWidget): 
+    move = pyqtSignal(float)
+    
     def __init__(self, parent):
         super().__init__(parent)
         self.btn_cmds = dict()
         self.layout=dict()
         
-        self.btn_cmds["move"] = QPushButton('Move !', self)
-        self.btn_cmds["move"].clicked.connect(self._moveRequest) 
+        self.btn_cmds["CW"] = QPushButton('One Turn CW', self)
+        self.btn_cmds["CW"].clicked.connect(self._moveCW) 
+        self.btn_cmds["CCW"] = QPushButton('One Turn CCW', self)
+        self.btn_cmds["CCW"].clicked.connect(self._moveCCW) 
         
-        self.btn_cmds["compute"] = QPushButton('Compute', self)
-        self.btn_cmds["compute"].clicked.connect(self._compute) 
+#         self.btn_cmds["compute"] = QPushButton('Compute', self)
+#         self.btn_cmds["compute"].clicked.connect(self._compute) 
         
         self.layout["L1"] = QVBoxLayout(self)
         self.layout["L1"].addWidget(QLabel("When robot is turning too much => reduce voie."))
@@ -157,12 +169,14 @@ class RotationCalibration(RobotConfigWidget):
         self.layout.addStretch()
         
     @pyqtSlot()
-    def _moveRequest(self): 
-       print("Move")
+    def _moveCW(self): 
+       print("Move CW")
+       self.move.emit(-360)
        
     @pyqtSlot()
-    def _compute(self): 
-       print("Compute")
+    def _moveCCW(self): 
+       print("Move CCW")
+       self.move.emit(360)
    
    
    

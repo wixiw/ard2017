@@ -111,6 +111,7 @@ class VizuMainScreen(QWidget):
         for cmd, widget in self.tabContexts["Robot"].tab.tab["Commands"].sections["nav"].navTab.items():
             widget.execute.connect(getattr(self.teleop, cmd))  # getattr is used to get a method reference from name, hence automatically binding signals ;p
         self.tabContexts["Robot"].tab.tab["Calib"].sections["Linear"].move                    .connect(self.teleop.goForward)
+        self.tabContexts["Robot"].tab.tab["Calib"].sections["Rotation"].move                  .connect(self.teleop.turnDelta)
         self.tabContexts["Robot"].tab.tab["Servos"].lifterCmd                                 .connect(self.teleop.requestLifterServo)
         self.tabContexts["Robot"].tab.tab["Servos"].leftArmCmd                                .connect(self.teleop.requestLeftArmServo)
         self.tabContexts["Robot"].tab.tab["Servos"].rightArmCmd                               .connect(self.teleop.requestRightArmServo)
