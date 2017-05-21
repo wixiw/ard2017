@@ -19,11 +19,12 @@ InstallPen::InstallPen(Robot2017& robot)
 
 void InstallPen::start()
 {
-    state = IP_RECAL_FLIP_FLOP;
+    state = IP_RECAL_START_Y;
     status = InProgress;
     timeout.arm(10000);
-    robot.nav.setPosition(555,730,180);
-    robot.nav.recalRear(eTableBorder_FLIP_FLOP_X);
+    robot.nav.setPosition(525,800,90);
+    robot.nav.recalFace(eTableBorder_TOP_Y, NO_ESCAPE);
+    LOG_INFO("Install : Recaling on Referee border");
 }
 
 void InstallPen::stop()
@@ -38,61 +39,55 @@ void InstallPen::update(TimeMs sinceLastCall)
     {
         state = IP_DONE;
         status = Failed;
+        LOG_ERROR("Install : Timeout");
     }
 
     switch (state) {
         case IP_IDLE:
             break;
 
-        case IP_RECAL_FLIP_FLOP:
-            if(robot.nav.targetReached())
-            {
-                state = IP_RECAL_START_Y;
-                robot.nav.recalRear(eTableBorder_TOP_Y);
-            }
-            if(robot.nav.blocked())
-            {
-                state = IP_DONE;
-                status = Failed;
-            }
-            break;
-
         case IP_RECAL_START_Y:
             if(robot.nav.targetReached())
             {
                 state = IP_MOVE_A_BIT;
-                robot.nav.goTo(590, 730, eDir_BACKWARD);
+                robot.nav.goTo(525, 730, eDir_BACKWARD);
+                LOG_INFO("Install : Escaping RefereeBorder");
             }
             if(robot.nav.blocked())
             {
                 state = IP_DONE;
                 status = Failed;
+                LOG_ERROR("Install : Recal failed");
             }
             break;
 
         case IP_MOVE_A_BIT:
             if(robot.nav.targetReached())
             {
-                state = IP_GO_TO_START_POS;
-                robot.nav.goTo(640, 730, eDir_FORWARD);
+                state = IP_RECAL_FLIP_FLOP;
+                robot.nav.recalFace(eTableBorder_FLIP_FLOP_X, NO_ESCAPE);
+                LOG_INFO("Install : Recal on Flip Flop");
             }
             if(robot.nav.blocked())
             {
                 state = IP_DONE;
                 status = Failed;
+                LOG_ERROR("Install : Recal failed");
             }
             break;
 
-        case IP_GO_TO_START_POS:
+        case IP_RECAL_FLIP_FLOP:
             if(robot.nav.targetReached())
             {
-                state = IP_DONE;
-                status = Success;
+            	state = IP_DONE;
+            	status = Success;
+                LOG_INFO("Install : Ready");
             }
             if(robot.nav.blocked())
             {
                 state = IP_DONE;
                 status = Failed;
+                LOG_ERROR("Install : Recal failed");
             }
             break;
 
@@ -114,11 +109,11 @@ InstallTration::InstallTration(Robot2017& robot)
 
 void InstallTration::start()
 {
-    state = IT_DONE;
+    state = IP_RECAL_START_Y;
     status = InProgress;
-    timeout.arm(10000);
-    robot.actuators.servoLeftArm.goTo(1000);
-    robot.actuators.servoRightArm.goTo(1000);
+    robot.nav.setPosition(525,800,90);
+    robot.nav.recalFace(eTableBorder_TOP_Y, NO_ESCAPE);
+    LOG_INFO("Install : Recaling on Referee border");
 }
 
 void InstallTration::stop()
@@ -129,17 +124,87 @@ void InstallTration::stop()
 
 void InstallTration::update(TimeMs sinceLastCall)
 {
-    if(timeout.isFired())
-    {
-        state = IT_DONE;
-        status = Failed;
-    }
-
     switch (state) {
         case IT_IDLE:
             break;
 
-        case IT_DONE:
+        case IP_RECAL_START_Y:
+             if(robot.nav.targetReached())
+             {
+                 state = IT_MOVE_A_BIT;
+                 robot.nav.goTo(525, 730, eDir_BACKWARD);
+                 LOG_INFO("Install : Escaping RefereeBorder");
+             }
+             if(robot.nav.blocked())
+             {
+                 state = IT_DONE;
+                 status = Failed;
+                 LOG_ERROR("Install : Recal failed");
+             }
+             break;
+
+         case IT_MOVE_A_BIT:
+             if(robot.nav.targetReached())
+             {
+                 state = IT_RECAL_FLIP_FLOP;
+                 robot.nav.recalFace(eTableBorder_FLIP_FLOP_X, 645 - TRATION_START_POSE.x);
+                 LOG_INFO("Install : Recal on Flip Flop");
+             }
+             if(robot.nav.blocked())
+             {
+                 state = IT_DONE;
+                 status = Failed;
+                 LOG_ERROR("Install : Recal failed");
+             }
+             break;
+
+         case IT_RECAL_FLIP_FLOP:
+             if(robot.nav.targetReached())
+             {
+             	state = IT_WAIT_START;
+             	robot.nav.goToCap(TRATION_START_POSE.x, TRATION_START_POSE.y - 300, -90, eDir_FORWARD);
+                LOG_INFO("Install : Making room for Pen and wait start...");
+             }
+             if(robot.nav.blocked())
+             {
+                 state = IT_DONE;
+                 status = Failed;
+                 LOG_ERROR("Install : Recal failed");
+             }
+             break;
+
+         case IT_WAIT_START:
+             if(robot.hmi.isStartPlugged())
+             {
+                 state = IT_WAIT_START_WITHDRAW;
+                 LOG_INFO("Install : Waiting Start withdraw");
+             }
+             break;
+
+         case IT_WAIT_START_WITHDRAW:
+             if(!robot.hmi.isStartPlugged())
+             {
+             	robot.nav.goToCap(TRATION_START_POSE, eDir_BACKWARD);
+                 state = IT_GO_TO_START_POS;
+                 LOG_INFO("Install : Positionning to start pose");
+             }
+             break;
+
+         case IT_GO_TO_START_POS:
+             if(robot.nav.targetReached())
+             {
+                 state = IT_DONE;
+                 status = Success;
+                 LOG_INFO("Install : Ready.");
+             }
+             if(robot.nav.blocked())
+             {
+                 state = IT_DONE;
+                 status = Failed;
+             }
+             break;
+
+         case IT_DONE:
         	status = Success;
             break;
 

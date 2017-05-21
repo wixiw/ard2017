@@ -17,8 +17,8 @@ OppDetection::OppDetection(uint16_t safetyArea):
         simulated(true),
         fakeRobot(false),
         color(eColor_PREF),
-        omronFront(OMRON1, 50, OVERRIDEN_BY_CONFIG),
-        omronRear(OMRON3, 50, OVERRIDEN_BY_CONFIG),
+        omronFront(OMRON1, 50, OVERRIDEN_BY_CONFIG, true),
+        omronRear(OMRON3, 50, OVERRIDEN_BY_CONFIG, true),
         safetyArea(safetyArea),
         avoidanceActive(false)//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
 {

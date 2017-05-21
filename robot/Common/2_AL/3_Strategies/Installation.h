@@ -12,18 +12,18 @@
 
 namespace ard
 {
-    typedef enum
-    {
-        IP_IDLE,
-        IP_RECAL_FLIP_FLOP,
-        IP_RECAL_START_Y,
-        IP_MOVE_A_BIT,
-        IP_GO_TO_START_POS,
-        IP_DONE
-    } eIPstate;
-
     class InstallPen: public IStrategy
     {
+        typedef enum
+        {
+            IP_IDLE,
+            IP_RECAL_START_Y,
+            IP_MOVE_A_BIT,
+            IP_RECAL_FLIP_FLOP,
+            IP_GO_TO_START_POS,
+            IP_DONE
+        } eIPstate;
+
     public:
         InstallPen(Robot2017& robot);
 
@@ -36,20 +36,30 @@ namespace ard
         //Implements IStrategy
         void update(TimeMs sinceLastCall) override;
 
+        //Override IStrategy
+        virtual Pose2D getStartPosition(){return PEN_START_POSE;}
+
     private:
         eIPstate state;
         Robot2017& robot;
         SwTimer timeout;
     };
 
-    typedef enum
-    {
-        IT_IDLE,
-        IT_DONE
-    } eITstate;
-
     class InstallTration: public IStrategy
     {
+        typedef enum
+        {
+            IT_IDLE,
+			IP_RECAL_START_Y,
+			IT_MOVE_A_BIT,
+			IT_RECAL_FLIP_FLOP,
+			IT_ESCAPE_FOR_PEN,
+            IT_WAIT_START,
+			IT_WAIT_START_WITHDRAW,
+            IT_GO_TO_START_POS,
+            IT_DONE
+        } eITstate;
+
     public:
         InstallTration(Robot2017& robot);
 
@@ -62,10 +72,12 @@ namespace ard
         //Implements IStrategy
         void update(TimeMs sinceLastCall) override;
 
+        //Override IStrategy
+        virtual Pose2D getStartPosition(){return TRATION_START_POSE;}
+
     private:
         eITstate state;
         Robot2017& robot;
-        SwTimer timeout;
     };
 
 } /* namespace ard */

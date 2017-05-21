@@ -5,7 +5,7 @@
       <vertices xsi:type="sgraph:Entry" xmi:id="_LRVE7CO5EeefRbrwNF-IRQ">
         <outgoingTransitions xmi:id="_LRWTCSO5EeefRbrwNF-IRQ" target="_LRVr9yO5EeefRbrwNF-IRQ"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_LRVr9yO5EeefRbrwNF-IRQ" specification="entry/ setPosition(500,300, 155);&#xD;&#xA;informWithdraw_G(4);&#xD;&#xA;informWithdraw_OppG(2)" name="StateA" incomingTransitions="_LRWTCSO5EeefRbrwNF-IRQ _h_VdICPVEeefRbrwNF-IRQ">
+      <vertices xsi:type="sgraph:State" xmi:id="_LRVr9yO5EeefRbrwNF-IRQ" specification="entry/&#xD;&#xA;informWithdraw_G(4);&#xD;&#xA;informWithdraw_OppG(2)" name="StateA" incomingTransitions="_LRWTCSO5EeefRbrwNF-IRQ _h_VdICPVEeefRbrwNF-IRQ">
         <outgoingTransitions xmi:id="_h_VdICPVEeefRbrwNF-IRQ" specification="after 1s [false]" target="_LRVr9yO5EeefRbrwNF-IRQ"/>
         <outgoingTransitions xmi:id="_lCyCEDGhEeexn7S6mRK2_g" specification="always" target="_jVZTMDGhEeexn7S6mRK2_g"/>
       </vertices>

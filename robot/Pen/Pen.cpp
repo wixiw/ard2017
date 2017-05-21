@@ -31,7 +31,7 @@ void Pen::init(Robot2017Listener* client)
     lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
     lifecycle.registerMatchType("Selftest",       NULL,               &stratSelftest, NULL);
-    lifecycle.registerMatchType("WIP",            NULL,               &stratWIP,      NULL);
+    lifecycle.registerMatchType("WIP",            &stratInstall,      &stratWIP,      NULL);
 //    lifecycle.registerLinearStrat("UT LEDs",      Strategy_LedTest);
 //    lifecycle.registerLinearStrat("UT Button",    Strategy_ButtonTest);
 //    lifecycle.registerLinearStrat("UT Omron",     Strategy_OmronTest);

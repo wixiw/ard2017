@@ -8,6 +8,10 @@
 #include "CommonMsg.pb.h"
 #include "RobotParameters.h"
 
+//used for configuring recal
+#define NO_ESCAPE true
+#define RECAL_ESCAPE_MARGIN 30
+
 namespace ard
 {
     class Buzzer;
@@ -146,9 +150,10 @@ namespace ard
 
         /**
          * The robot will go to the following border and re localize accordingly
+         * @param escapeDir : the distance to escape from the wall
          */
-        void recalFace(eTableBorder border);
-        void recalRear(eTableBorder border);
+        void recalFace(eTableBorder border, Distance escapeDir = RECAL_ESCAPE_MARGIN);
+        void recalRear(eTableBorder border, Distance escapeDir = RECAL_ESCAPE_MARGIN);
 
         /**
          * Reach a target destination running in the graph
@@ -277,6 +282,9 @@ namespace ard
 
         //for telemetry
         apb_NavState state;
+
+        //Recal management
+        Distance escapeDir;
 
         //klaxon to warn for failure and request opponent to move
         Buzzer& klaxon;

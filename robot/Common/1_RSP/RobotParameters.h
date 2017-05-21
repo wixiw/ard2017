@@ -22,6 +22,9 @@
 
 #define LOG_QUEUE_SIZE 20       //number of logs that can be queued before being sent on the network
 
+#define PEN_START_POSE     Pose2D( 645,  730,    0)
+#define TRATION_START_POSE Pose2D( 518,  785,  -90)
+
 namespace ard
 {
 //forward declare

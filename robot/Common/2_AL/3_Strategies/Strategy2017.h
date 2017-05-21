@@ -22,13 +22,12 @@
  *
  * This macro is too nice. Batman out! ....  Oh shit, 'forgot to drop the mic...
  */
-    #define DECLARE_FSM_STRATEGY(stratName, startPose)\
+    #define DECLARE_FSM_STRATEGY(stratName)\
     namespace ard{\
     class stratName: public Strategy2017<FSM_##stratName, FSM_##stratName::FSM_##stratName##States>{\
     public:\
         stratName(Robot2017& robot, LSAList const& lsaList) : \
         Strategy2017<FSM_##stratName, FSM_##stratName::FSM_##stratName##States>(robot, #stratName, lsaList){};\
-        virtual Pose2D getStartPosition(){return startPose;};\
     };}
 
 

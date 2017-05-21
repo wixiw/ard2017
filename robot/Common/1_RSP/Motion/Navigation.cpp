@@ -15,7 +15,6 @@ using namespace ard;
 #define KLAXON_FREQ 1000     //Hz
 #define RECAL_FORCING_SLOW 200     //mm
 #define RECAL_FORCING_FAST 200     //mm
-#define RECAL_ESCAPE_MARGIN 30 //mm
 #define RECAL_TIMEOUT 5000 //ms
 #define GRAPH_TIMEOUT 15000 //ms
 #define OPP_IMPATIENCE_TIMEOUT 5000 //ms
@@ -261,26 +260,34 @@ void Navigation::run()
                 setPosition(m_target, false);//position has already been symetrized
                 exitCriticalSection();
 
-                //Escape from wall
-                double distance = 0;
-                if(m_order == eNavOrder_RECAL_FACE)
+                klaxon.bip(1);
+                if(escapeDir != 0)
                 {
-                    distance = conf->xouter() - conf->xav() + RECAL_ESCAPE_MARGIN;
-                    m_targetDir = eDir_BACKWARD;
-                }
-                else if(m_order == eNavOrder_RECAL_REAR)
-                {
-                    distance = conf->xouter() - conf->xar() + RECAL_ESCAPE_MARGIN;
-                    m_targetDir = eDir_FORWARD;
+                	if(m_order == eNavOrder_RECAL_FACE)
+					{
+						m_targetDir = eDir_BACKWARD;
+					}
+					else if(m_order == eNavOrder_RECAL_REAR)
+					{
+						m_targetDir = eDir_FORWARD;
+					}
+					else
+						ASSERT(false);
+
+					//Escape from wall
+					m_target.translatePolar(m_target.hDegree(), m_targetDir * escapeDir);
+					applyCmdToGoStraight(m_targetDir * escapeDir, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
+					m_state = eNavState_ESCAPING_WALL;
+					orderTimeout.arm(1000+OPP_IMPATIENCE_TIMEOUT);
+					LOG_INFO(String("   escaping of distance=") + escapeDir + " to reach pose=" + m_target.toString()+".");
                 }
                 else
-                    ASSERT(false);
-                m_target.translatePolar(m_target.hDegree(), m_targetDir * distance);
-                applyCmdToGoStraight(m_targetDir * distance, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
-                m_state = eNavState_ESCAPING_WALL;
-                orderTimeout.arm(1000+OPP_IMPATIENCE_TIMEOUT);
-                LOG_INFO(String("   escaping of distance=") + distance + " to reach pose=" + m_target.toString()+".");
-                klaxon.bip(1);
+                {
+                    LOG_INFO(String("   recal finished, exit position : ")+ m_pose.toString());
+                    m_order = eNavOrder_NOTHING;
+                    m_state = eNavState_IDLE;
+                }
+
             }
             break;
         }
@@ -554,9 +561,9 @@ void Navigation::rearTo(Point p, bool sym)
     goToCap(target, eDir_BACKWARD, true);
 }
 
-void Navigation::recalFace(eTableBorder border)
+void Navigation::recalFace(eTableBorder border, Distance _escapeDir)
 {
-    LOG_INFO(String("   new request : recalFace on border=") + border + ".");
+    LOG_INFO(String("   new request : recalFace on border=") + border + " with escape = " + String(escapeDir));
 
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME()
@@ -572,12 +579,14 @@ void Navigation::recalFace(eTableBorder border)
 
     orderTimeout.arm(RECAL_TIMEOUT);
 
+    escapeDir = _escapeDir;
+
     m_mutex.unlock();
 }
 
-void Navigation::recalRear(eTableBorder border)
+void Navigation::recalRear(eTableBorder border, Distance _escapeDir)
 {
-    LOG_INFO(String("   new request : recalRear on border=") + border + ".");
+    LOG_INFO(String("   new request : recalRear on border=") + border + " with escape = " + String(escapeDir));
 
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME()
@@ -592,6 +601,8 @@ void Navigation::recalRear(eTableBorder border)
     m_state = eNavState_FACING_WALL;
 
     orderTimeout.arm(RECAL_TIMEOUT);
+
+    escapeDir = _escapeDir;
 
     m_mutex.unlock();
 }

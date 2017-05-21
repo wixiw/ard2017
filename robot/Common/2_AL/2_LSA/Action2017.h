@@ -241,13 +241,15 @@ namespace ard
         void recalFace(sc_integer border) override
         {
             ASSERT(border < eTableBorder_MAX);
-            robot.nav.recalFace((eTableBorder)(border));
+            Distance distance = robot.conf.xouter() - robot.conf.xav() + RECAL_ESCAPE_MARGIN;
+            robot.nav.recalFace((eTableBorder)(border), distance);
         }
 
         void recalRear(sc_integer border) override
         {
             ASSERT(border < eTableBorder_MAX);
-            robot.nav.recalRear((eTableBorder)(border));
+            Distance distance = robot.conf.xouter() - robot.conf.xar() + RECAL_ESCAPE_MARGIN;
+            robot.nav.recalRear((eTableBorder)(border), distance);
         }
 
         void stopMoving() override
