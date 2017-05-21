@@ -36,12 +36,12 @@ ActuatorThread::ActuatorThread(KinematicManager& kinMan):
 {
     state = apb_ActuatorsState_init_default;
 
-    servoLifter.setAccMax(30);
+    servoLifter.setAccMax(0);
     servoLeftArm.setAccMax(30);
     servoRightArm.setAccMax(30);
 
 
-    servoLifter.setVmax(150);
+    servoLifter.setVmax(60);
     servoLeftArm.setVmax(150);
     servoRightArm.setVmax(150);
 
@@ -105,14 +105,14 @@ apb_ActuatorsState const& ActuatorThread::serealize()
 
     state.colorSensor       = stockColor.getState();
     state.switchArmLout     = switchArmLout.readRaw();
-    state.switchArmLin      = switchArmLout.readRaw();
-    state.switchArmRout     = switchArmLout.readRaw();
-    state.switchArmRin      = switchArmLout.readRaw();
-    state.omronCylinder     = switchArmLout.readRaw();
-    state.switchCylinder    = switchArmLout.readRaw();
-    state.omronSpare        = switchArmLout.readRaw();
-    state.switchLifterUp    = switchArmLout.readRaw();
-    state.switchLifterDown  = switchArmLout.readRaw();
+    state.switchArmLin      = switchArmLin.readRaw();
+    state.switchArmRout     = switchArmRout.readRaw();
+    state.switchArmRin      = switchArmRin.readRaw();
+    state.omronCylinder     = omronCylinder.readRaw();
+    state.switchCylinder    = switchCylinder.readRaw();
+    state.omronSpare        = omronSpare.readRaw();
+    state.switchLifterUp    = switchLifterUp.readRaw();
+    state.switchLifterDown  = switchLifterDown.readRaw();
 
     state.servoLifter       = servoLifter.read();
     state.servoLeftArm      = servoLeftArm.read();
@@ -120,6 +120,8 @@ apb_ActuatorsState const& ActuatorThread::serealize()
     state.servoLeftWheel    = servoLeftWheel.read();
     state.servoRightWheel   = servoRightWheel.read();
     state.servoFunnyAction  = servoFunnyAction.read();
+
+    state.lifterReady		= lifter.isReady();
 
 
     return state;
@@ -132,6 +134,32 @@ void ActuatorThread::disableAll()
     servoRightArm.disable();
     servoLeftWheel.disable();
     servoRightWheel.disable();
+}
+
+void ActuatorThread::actCmd(eActCmd cmd)
+{
+	LOG_INFO("Actuator command received : " + String((int)cmd));
+
+	switch (cmd) {
+		case eActCmd_AC_LIFTER_START:
+			lifter.start();
+			break;
+		case eActCmd_AC_LIFTER_LIFT:
+			lifter.lift();
+			break;
+		case eActCmd_AC_LIFTER_FASTPOO:
+			lifter.fastPoo();
+			break;
+		case eActCmd_AC_LIFTER_POOENDED:
+			lifter.pooEnded();
+			break;
+		case eActCmd_AC_LIFTER_STOP:
+			lifter.stop();
+			break;
+		default:
+			ASSERT(false);
+			break;
+	}
 }
 
 void ActuatorThread::swallow(bool on)

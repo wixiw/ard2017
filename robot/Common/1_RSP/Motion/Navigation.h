@@ -46,6 +46,9 @@ namespace ard
          * User (= strategy) interface
          ---------------------------------*/
 
+        //Activate or disable power on motors.
+        void motorPower(bool on);
+
         /**
          * Force a new robot position
          * the position may be automatically symetrized depending

@@ -321,6 +321,12 @@ class RemoteControl(QObject):
         msg.requestActuators.hasFunnyAction = True
         self._sendMsg(msg)
         
+    @pyqtSlot(int)
+    def requestActuatorsCmd(self, cmd): 
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestActuators.hasHighLevelCmd = True
+        msg.requestActuators.highLevelCmd = cmd
+        self._sendMsg(msg)
 #---------------------------------------------------------------------------------
 # Private/internal API :
 #---------------------------------------------------------------------------------

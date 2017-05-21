@@ -89,8 +89,7 @@ BSP::BSP ()
     digitalWrite(LED_RGB_B, HIGH);
     digitalWrite(LED_DUE_RX, HIGH);
     digitalWrite(LED_DUE_TX, HIGH);
-
-
+    digitalWrite(PAP_ENABLE, HIGH); //HIGH == no power
 }
 
 void * operator new( size_t size )

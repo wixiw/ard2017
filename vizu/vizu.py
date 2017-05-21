@@ -112,6 +112,7 @@ class VizuMainScreen(QWidget):
             widget.execute.connect(getattr(self.teleop, cmd))  # getattr is used to get a method reference from name, hence automatically binding signals ;p
         self.tabContexts["Robot"].tab.tab["Calib"].sections["Linear"].move                    .connect(self.teleop.goForward)
         self.tabContexts["Robot"].tab.tab["Calib"].sections["Rotation"].move                  .connect(self.teleop.turnDelta)
+        self.tabContexts["Robot"].tab.tab["Actuators"].sections["lifter"].actCmd              .connect(self.teleop.requestActuatorsCmd)
         self.tabContexts["Robot"].tab.tab["Servos"].lifterCmd                                 .connect(self.teleop.requestLifterServo)
         self.tabContexts["Robot"].tab.tab["Servos"].leftArmCmd                                .connect(self.teleop.requestLeftArmServo)
         self.tabContexts["Robot"].tab.tab["Servos"].rightArmCmd                               .connect(self.teleop.requestRightArmServo)
@@ -120,7 +121,8 @@ class VizuMainScreen(QWidget):
         self.tabContexts["Robot"].tab.tab["Servos"].funnyCmd                                  .connect(self.teleop.requestFunnyActionServo)
         self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Status"]._telemetryDataCb)
         self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Servos"]._telemetryDataCb)
-         
+        self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Actuators"]._telemetryDataCb)
+        
         # connect Config tab
         self.tabContexts["Config"].tab.getConfig          .connect(self.teleop.getConfig)
         self.tabContexts["Config"].tab.setConfig          .connect(self.teleop.setConfig)

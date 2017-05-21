@@ -26,21 +26,40 @@ void Lifter::init()
 
 void Lifter::start()
 {
-    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
-    fsm.set_start(true);
+    fsm.getSCI_Strategy()->raise_start();
+}
+
+void Lifter::lift()
+{
+    fsm.getSCI_Strategy()->raise_lift();
+}
+
+void Lifter::fastPoo()
+{
+    fsm.getSCI_Strategy()->raise_fastPoo();
+}
+
+void Lifter::pooEnded()
+{
+    fsm.getSCI_Strategy()->raise_pooEnded();
+}
+
+void Lifter::stop()
+{
+    fsm.getSCI_Strategy()->raise_stop();
 }
 
 void Lifter::update(TimeMs sinceLastCall)
 {
     fsm.set_downSwitch(acts.switchLifterDown.read());
     fsm.set_upSwitch(acts.switchLifterUp.read());
+    fsm.set_cylinderPresent(acts.omronCylinder.read());
+    fsm.set_targetReached(acts.servoLifter.isTargetReached());
 
     fsm.runCycle();
 
-    if( fsm.get_start() )
-    {
-        acts.servoLifter.goTo(fsm.get_lifter());
-    }
+    if(fsm.get_started())
+    	acts.servoLifter.goTo(fsm.get_servoCmd());
 }
 
 

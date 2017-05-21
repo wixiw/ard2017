@@ -12,15 +12,17 @@ from TabRobot_Cmds import TabRobot_Cmds
 from TabRobot_Status import TabRobot_Status
 from TabRobot_Servos import TabRobot_Servos
 from TabRobot_Calib import TabRobot_Calib
+from TabRobot_Actuators import TabRobot_Actuators
         
 class TabRobot(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.tab = dict()
         self.tab["Commands"] = TabRobot_Cmds(self)
+        self.tab["Calib"]   = TabRobot_Calib(self)
+        self.tab["Actuators"] = TabRobot_Actuators(self)
         self.tab["Status"]   = TabRobot_Status(self)
         self.tab["Servos"]   = TabRobot_Servos(self)
-        self.tab["Calib"]   = TabRobot_Calib(self)
         
         #retrieve saved tab
         settings = QSettings("config.ini", QSettings.IniFormat)

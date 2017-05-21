@@ -65,6 +65,9 @@ message ActuatorsCmd
     int32 rightWheel   = 5; //angle in per thousand
     uint32 hasFunnyAction         = 16;
     int32 funnyAction  = 6; //angle in per thousand
+    
+    uint32 	hasHighLevelCmd 	= 31;
+    eActCmd highLevelCmd 		= 21;
 }
 
 message SerialNumber

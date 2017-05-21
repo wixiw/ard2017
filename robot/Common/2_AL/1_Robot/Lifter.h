@@ -36,14 +36,23 @@ namespace ard
         //                         it's expected to be called periodically
         void update(TimeMs sinceLastCall) override;
 
-        //Call this to enable the state machine (ex : after start is inside robot)
+        //FSM Callback
         void start();
 
-        //Returns true when the Lifter is ready to lift or poo the next cylinder
-        bool isReadyForNextCylinder() { return fsm.getSCI_Strategy()->get_readyForNext();};
+        //FSM Callback
+        void stop();
 
-        //Returns the number of sotcked cylinders
-        uint8_t getCylinders() { return fsm.getSCI_Strategy()->get_stockCount();};
+        //FSM Callback
+        void lift();
+
+        //FSM Callback
+        void fastPoo();
+
+        //FSM Callback : inform that poo is finished
+        void pooEnded();
+
+        //Returns true when the Lifter is ready to lift or poo the next cylinder
+        bool isReady() { return fsm.getSCI_Strategy()->get_ready();};
 
     private:
         //the yakindu generated code

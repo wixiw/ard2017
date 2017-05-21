@@ -393,6 +393,14 @@ void Navigation::updateFromInterrupt()
  * User (= strategy) interface
  ---------------------------------*/
 
+void Navigation::motorPower(bool on)
+{
+	if(on)
+		digitalWrite(PAP_ENABLE, LOW);
+	else
+		digitalWrite(PAP_ENABLE, HIGH);
+};
+
 void Navigation::setPosition(Pose2D newPose, bool sym)
 {
     //prevent any interrupt from occurring so that position fields are not corrupted

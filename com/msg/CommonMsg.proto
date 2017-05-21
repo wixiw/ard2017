@@ -37,7 +37,7 @@ message NavState {
     uint32          switchRecalFL          = 30; //front left recal on border switch
     uint32          switchRecalFR          = 31; //front right recal on border switch
     uint32          switchRecalRC          = 32; //rear center recal on border switch
-    uint32			vmax				   = 40; //current maximal speed
+    uint32            vmax                   = 40; //current maximal speed
 }
 
 message ColorSensorState {
@@ -50,15 +50,15 @@ message ColorSensorState {
 
 message ActuatorsState {
     ColorSensorState   colorSensor        = 1;
-    uint32               switchArmLout      = 2; //left arm extended (fully outside robot) position end course switch
-    uint32               switchArmLin       = 3; //left arm retracted (fully inside robot) position end course switch
-    uint32               switchArmRout      = 4; //right arm extended (fully outside robot) position end course switch
-    uint32               switchArmRin       = 5; //right arm retracted (fully inside robot) position end course switch
-    uint32               omronCylinder      = 6; //swallow mouth cylinder presence detection (lateral omron)
-    uint32               switchCylinder     = 7; //swallow mouth cylinder ready to lift, switch detection
-    uint32               omronSpare         = 8; //Rear center spare omron, close to the recal switch
-    uint32               switchLifterUp     = 9; //lifter upside end course switch
-    uint32               switchLifterDown   = 10; //lifter upside end course switch
+    uint32             switchArmLout      = 2; //left arm extended (fully outside robot) position end course switch
+    uint32             switchArmLin       = 3; //left arm retracted (fully inside robot) position end course switch
+    uint32             switchArmRout      = 4; //right arm extended (fully outside robot) position end course switch
+    uint32             switchArmRin       = 5; //right arm retracted (fully inside robot) position end course switch
+    uint32             omronCylinder      = 6; //swallow mouth cylinder presence detection (lateral omron)
+    uint32             switchCylinder     = 7; //swallow mouth cylinder ready to lift, switch detection
+    uint32             omronSpare         = 8; //Rear center spare omron, close to the recal switch
+    uint32             switchLifterUp     = 9; //lifter upside end course switch
+    uint32             switchLifterDown   = 10; //lifter upside end course switch
 
     int32              servoLifter        = 30;
     int32              servoLeftArm       = 31;
@@ -66,6 +66,8 @@ message ActuatorsState {
     int32              servoLeftWheel     = 33;
     int32              servoRightWheel    = 34;
     int32              servoFunnyAction   = 35;
+    
+    bool               lifterReady 	      = 41;
 }
 
 message HmiState {

@@ -117,6 +117,7 @@ void Robot2017::dieMotherFucker()
     //Ask the robot to stop moving and wait for it to be at rest
     nav.stopMoving();
     actuators.disableAll();
+    nav.motorPower(false);
 
     //Play with LED for fun
     hmi.setRGBled(PURPLE, FAST_BLINK);
@@ -148,6 +149,7 @@ void Robot2017::colorChoosed(eColor color)
 
     //Start heartbeat display
     hmi.led2.slowBlink();
+    nav.motorPower(true);
 
     if ( color == eColor_PREF )
     {

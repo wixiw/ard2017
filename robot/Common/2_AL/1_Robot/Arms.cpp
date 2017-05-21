@@ -38,7 +38,7 @@ void Arms::update(TimeMs sinceLastCall)
     fsm.set_leftRetractedSwitch(acts.switchArmLin.read());
     fsm.set_rightRetractedSwitch(acts.switchArmRin.read());
 
-    fsm.getSCI_Strategy()->set_lifterReady(lifter->isReadyForNextCylinder());
+    fsm.getSCI_Strategy()->set_lifterReady(lifter->isReady());
 
     fsm.runCycle();
 

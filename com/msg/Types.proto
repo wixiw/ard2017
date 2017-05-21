@@ -86,3 +86,12 @@ enum eCylinderType {
     MONOCOLOR        = 2;
 }
 
+//Specific 2017
+enum eActCmd {
+	AC_UNKNOWN			= 0;
+	AC_LIFTER_START		= 1;
+	AC_LIFTER_LIFT		= 2;
+	AC_LIFTER_FASTPOO	= 3;
+	AC_LIFTER_POOENDED	= 4;
+	AC_LIFTER_STOP		= 5;
+}

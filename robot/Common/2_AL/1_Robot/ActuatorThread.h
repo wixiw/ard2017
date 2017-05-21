@@ -56,6 +56,9 @@ namespace ard
         //disable all actuators except those for used in funny actionn (typically used at end of match)
         void disableAll();
 
+        //Simplified API
+        void actCmd(eActCmd cmd);
+
         /**---------------------------------
          * Container thread interface
          ---------------------------------*/
