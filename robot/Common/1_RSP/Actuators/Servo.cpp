@@ -144,6 +144,7 @@ Servo::Servo(int pin, uint16_t min, uint16_t max):
     if (ServoCount < MAX_SERVOS)
     {
         this->servoIndex = ServoCount++;                    // assign a servo index to this instance
+        writeMicroseconds(1500);		//Do not delete, strange but required 21 may 2017
         if( 1000 < angularMin )
             angularMin = 1000;
 
@@ -216,15 +217,12 @@ void Servo::goTo(uint16_t value)
     else if (value > angularMax)
         value = angularMax;
 
-    currentAngleCommand = value;
-
-    //convert into us command
-    value = perThousandToUs(value);
-
     //if servo is not enabled, enable it
     if( !servos[this->servoIndex].Pin.isActive )
         enable();
 
+    //convert into us command
+    value = perThousandToUs(value);
     writeMicroseconds(value);
 }
 
