@@ -17,9 +17,10 @@ namespace ard
         typedef enum
         {
             IP_IDLE,
-            IP_RECAL_START_Y,
-            IP_MOVE_A_BIT,
+			IP_PREPARE_FLIPFLOP,
             IP_RECAL_FLIP_FLOP,
+            IP_RECAL_REFEREE_Y,
+            IP_ESCAPE_REFEREE,
             IP_GO_TO_START_POS,
             IP_DONE
         } eIPstate;
@@ -53,6 +54,7 @@ namespace ard
 			IP_RECAL_START_Y,
 			IT_MOVE_A_BIT,
 			IT_RECAL_FLIP_FLOP,
+			IT_ESCAPING_FOR_PEN,
 			IT_ESCAPE_FOR_PEN,
             IT_WAIT_START,
 			IT_WAIT_START_WITHDRAW,

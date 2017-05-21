@@ -39,6 +39,9 @@ void OppDetection::setColor(eColor c)
 
 bool OppDetection::isOpponentOnPath(eDir direction, Pose2D& robotPose)
 {
+	if(!avoidanceActive)
+		return false;
+
     switch(direction)
     {
     case eDir_FORWARD:
@@ -58,6 +61,10 @@ bool OppDetection::isOpponentOnPath(eDir direction, Pose2D& robotPose)
 bool OppDetection::isOpponentAhead(Pose2D robotPose)
 {
 	ASSERT_CONFIGURED();
+
+	if(!avoidanceActive)
+		return false;
+
     bool opponentPresent = false;
 
     if(   (simulated && fakeRobot)
@@ -78,6 +85,10 @@ bool OppDetection::isOpponentAhead(Pose2D robotPose)
 bool OppDetection::isOpponentBehind(Pose2D robotPose)
 {
 	ASSERT_CONFIGURED();
+
+	if(!avoidanceActive)
+		return false;
+
     bool opponentPresent = false;
 
     if(   (simulated && fakeRobot)

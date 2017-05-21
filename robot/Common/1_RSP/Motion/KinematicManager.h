@@ -36,6 +36,9 @@ namespace ard
 	    void setSpeedAcc(uint16_t vMax /*mm/s*/, uint16_t vMaxsTurn /*°/s*/,
 	                    uint16_t accMax /*mm/s2*/, uint16_t accMaxTurn /*°/s2*/);
 
+	    //Remove all user constraints
+	    void removeUserConstraints();
+
 	    //Accessors (not const due to the mutex)
 	    LinearSpeed 	maxSpeed(eDir direction);
 	    LinearAcc 		maxAcc();

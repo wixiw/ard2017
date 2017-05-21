@@ -73,6 +73,11 @@ void KinematicManager::rearActuatorsOut(bool out)
 	}
 }
 
+void KinematicManager::removeUserConstraints()
+{
+	setSpeedAcc(0,0,0,0);
+}
+
 void KinematicManager::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t accMax, uint16_t accMaxTurn)
 {
     m_mutex.lock();
@@ -124,7 +129,10 @@ void KinematicManager::setSpeedAcc(uint16_t vMax, uint16_t vMaxTurn, uint16_t ac
 
     m_mutex.unlock();
 
-    LOG_INFO(String("    user kinematic request: (") + userMaxSpeed + "mm/s, " + userMaxTurnSpeed +
+    if( vMax == 0 && vMaxTurn == 0 && accMax == 0 && accMaxTurn == 0)
+    	LOG_INFO("   user kinematic constraints released.");
+    else
+    	LOG_INFO(String("   user kinematic request: (") + userMaxSpeed + "mm/s, " + userMaxTurnSpeed +
             "°/s), acc set to (" + userMaxAcc + "mm/s², " + userMaxTurnAcc + "°/s²)");
 }
 
@@ -140,9 +148,9 @@ void KinematicManager::computeMaxSpeed()
 
 	if(old != maxSpeedFront)
 	{
-		if( maxSpeedFront == userMaxSpeed) LOG_INFO("Speed is limited by USER(strategy) request.");
-		if( maxSpeedFront == brakeMaxSpeedFront) LOG_INFO("Speed is limited by FRONT BRAKE distance.");
-		if( maxSpeedFront == actuatorsMaxSpeedFront) LOG_INFO("Speed is limited by FRONT ACTUATORS.");
+		if( maxSpeedFront == userMaxSpeed) LOG_INFO("Front SPEED is limited by USER(strategy) request.");
+		if( maxSpeedFront == brakeMaxSpeedFront) LOG_INFO("Front SPEED is limited by BRAKE distance.");
+		if( maxSpeedFront == actuatorsMaxSpeedFront) LOG_INFO("Front SPEED is limited by ACTUATORS.");
 	}
 
 	//Find min speed among constraints in REAR direction
@@ -155,22 +163,23 @@ void KinematicManager::computeMaxSpeed()
 
 	if(old != maxSpeedRear)
 	{
-		if( maxSpeedRear == userMaxSpeed) LOG_INFO("Speed is limited by USER(strategy) request.");
-		if( maxSpeedRear == brakeMaxSpeedRear) LOG_INFO("Speed is limited by BREAR RAKE distance.");
-		if( maxSpeedRear == actuatorsMaxSpeedRear) LOG_INFO("Speed is limited by REAR ACTUATORS.");
+		if( maxSpeedRear == userMaxSpeed) LOG_INFO("Rear SPEED is limited by USER(strategy) request.");
+		if( maxSpeedRear == brakeMaxSpeedRear) LOG_INFO("Rear SPEED is limited by BRAKE distance.");
+		if( maxSpeedRear == actuatorsMaxSpeedRear) LOG_INFO("Rear SPEED is limited by ACTUATORS.");
 	}
 }
 
 LinearSpeed KinematicManager::maxSpeed(eDir direction)
 {
+	LinearSpeed res = 0;
 	m_mutex.lock();
 	switch (direction) {
 		case eDir_FORWARD:
-			return maxSpeedFront;
+			res = maxSpeedFront;
 			break;
 
 		case eDir_BACKWARD:
-			return maxSpeedRear;
+			res = maxSpeedRear;
 			break;
 
 		case eDir_BEST:
@@ -179,28 +188,41 @@ LinearSpeed KinematicManager::maxSpeed(eDir direction)
 			break;
 	}
 	m_mutex.unlock();
+	return res;
 }
 
 LinearAcc KinematicManager::maxAcc()
 {
+	LinearAcc res = 0;
+	m_mutex.lock();
 	if(userMaxAcc < conf->maxAccCfg())
-		return userMaxAcc;
+		res = userMaxAcc;
 	else
-		return conf->maxAccCfg();
+		res = conf->maxAccCfg();
+	m_mutex.unlock();
+	return res;
 }
 
 RotationSpeed KinematicManager::maxTurnSpeed()
 {
+	RotationSpeed res = 0;
+	m_mutex.lock();
 	if(userMaxTurnSpeed < conf->maxTurnSpeedCfg())
-		return userMaxTurnSpeed;
+		res = userMaxTurnSpeed;
 	else
-		return conf->maxTurnSpeedCfg();
+		res = conf->maxTurnSpeedCfg();
+	m_mutex.unlock();
+	return res;
 }
 
 RotationAcc KinematicManager::maxTurnAcc()
 {
+	RotationAcc res = 0;
+	m_mutex.lock();
 	if(userMaxTurnAcc < conf->maxTurnAccCfg())
-		return userMaxTurnAcc;
+		res = userMaxTurnAcc;
 	else
-		return conf->maxTurnAccCfg();
+		res = conf->maxTurnAccCfg();
+	m_mutex.unlock();
+	return res;
 }

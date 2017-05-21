@@ -5,7 +5,7 @@
       <vertices xsi:type="sgraph:Entry" xmi:id="_KdS2UCYeEeeh1o2kvtdb7w">
         <outgoingTransitions xmi:id="_KdUrgCYeEeeh1o2kvtdb7w" target="_Fk9akC-DEee1v-eVh51XZQ"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_Fk9akC-DEee1v-eVh51XZQ" specification="entry/ &#xD;&#xA;goTo(518, 382, FWD, SYM);&#xD;&#xA;//swallow(true);&#xD;&#xA;logInfo(&quot;Moving away from start area so that Pen begin its match...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Start area is freed for PEN.&quot;);&#xD;&#xA;informTaken_D()" name="Escaping from Start area : Goto Thru D" incomingTransitions="_KdUrgCYeEeeh1o2kvtdb7w _bGGWYDp8EeeEg_kfp8WLCA">
+      <vertices xsi:type="sgraph:State" xmi:id="_Fk9akC-DEee1v-eVh51XZQ" specification="entry/ &#xD;&#xA;goTo(518, 382, FWD, SYM);&#xD;&#xA;//swallow(true);&#xD;&#xA;logInfo(&quot;Moving away from start area so that Pen begin its match...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Start area is freed for PEN.&quot;);&#xD;&#xA;logInfo(&quot;Avoidance enabled.&quot;);&#xD;&#xA;enableAvoidance(true);&#xD;&#xA;informTaken_D()" name="Escaping from Start area : Goto Thru D" incomingTransitions="_KdUrgCYeEeeh1o2kvtdb7w _bGGWYDp8EeeEg_kfp8WLCA">
         <outgoingTransitions xmi:id="_EXE1sC-EEee1v-eVh51XZQ" specification="[targetReached]" target="_B_NxAC-FEee1v-eVh51XZQ"/>
         <outgoingTransitions xmi:id="_bGGWYDp8EeeEg_kfp8WLCA" specification="after 1s [false]" target="_Fk9akC-DEee1v-eVh51XZQ"/>
       </vertices>
@@ -69,7 +69,7 @@
           </children>
           <styles xsi:type="notation:ShapeStyle" xmi:id="_KdS2UiYeEeeh1o2kvtdb7w" fontName="Verdana" fillColor="0" lineColor="16777215"/>
           <styles xsi:type="notation:NamedStyle" xmi:id="_KdS2UyYeEeeh1o2kvtdb7w" name="allowColors"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_KdTdYCYeEeeh1o2kvtdb7w" x="83" y="-17"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_KdTdYCYeEeeh1o2kvtdb7w" x="84" y="-35"/>
         </children>
         <children xmi:id="_Fk8zgC-DEee1v-eVh51XZQ" type="State" element="_Fk9akC-DEee1v-eVh51XZQ">
           <children xsi:type="notation:DecorationNode" xmi:id="_Fk8zgS-DEee1v-eVh51XZQ" type="StateName">
@@ -85,7 +85,7 @@
           <styles xsi:type="notation:ShapeStyle" xmi:id="_Fk8ziC-DEee1v-eVh51XZQ" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
           <styles xsi:type="notation:FontStyle" xmi:id="_Fk8ziS-DEee1v-eVh51XZQ"/>
           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_Fk8zii-DEee1v-eVh51XZQ" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_Fk8ziy-DEee1v-eVh51XZQ" x="-4" y="28" width="431"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_Fk8ziy-DEee1v-eVh51XZQ" x="-10" y="-3" width="462" height="196"/>
         </children>
         <children xmi:id="_xM-YUS-DEee1v-eVh51XZQ" type="State" element="_xM-YXS-DEee1v-eVh51XZQ">
           <children xsi:type="notation:DecorationNode" xmi:id="_xM-YUi-DEee1v-eVh51XZQ" type="StateName">
@@ -331,7 +331,7 @@
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_EXFcwS-EEee1v-eVh51XZQ" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_EXGD0C-EEee1v-eVh51XZQ" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_EXFcwi-EEee1v-eVh51XZQ" points="[-156, 15, -155, -57]$[-156, 52, -155, -20]"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_EXFcwi-EEee1v-eVh51XZQ" points="[-165, 17, -156, -63]$[-165, 60, -156, -20]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_EXHR8C-EEee1v-eVh51XZQ" id="(0.4593967517401392,0.9147286821705426)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_EXHR8S-EEee1v-eVh51XZQ" id="(0.463302752293578,0.1864406779661017)"/>
     </edges>

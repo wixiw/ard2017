@@ -189,7 +189,7 @@ void Navigation::run()
         {
             if (subOrderFinished())
             {
-                LOG_INFO("    wall faced, contacting...");
+                LOG_INFO("   wall faced, contacting...");
                 switch (m_order) {
                     case eNavOrder_RECAL_FACE:
                         //Request straight line
@@ -213,7 +213,7 @@ void Navigation::run()
         {
             if (subOrderFinished())
             {
-                LOG_INFO("    wall contacted, forcing...");
+                LOG_INFO("   wall contacted, forcing...");
                 switch (m_order) {
                     case eNavOrder_RECAL_FACE:
                         //Request straight line
@@ -283,7 +283,7 @@ void Navigation::run()
                 }
                 else
                 {
-                    LOG_INFO(String("   recal finished, exit position : ")+ m_pose.toString());
+                    LOG_INFO(String("   recal finished (no escape), exit position : ")+ m_pose.toString());
                     m_order = eNavOrder_NOTHING;
                     m_state = eNavState_IDLE;
                 }
@@ -573,7 +573,7 @@ void Navigation::recalFace(eTableBorder border, Distance _escapeDir)
     double angleDelta = moduloPiPi(m_target.h - m_pose.h);
 
     //Request turn
-    LOG_INFO(String("    Facing wall to recal at ") + m_target.toString() + "...");
+    LOG_INFO(String("   Facing wall to recal at ") + m_target.toString() + "...");
     applyCmdToTurn(angleDelta, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc()); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
 
@@ -596,7 +596,7 @@ void Navigation::recalRear(eTableBorder border, Distance _escapeDir)
     double angleDelta = moduloPiPi(m_target.h - m_pose.h);
 
     //Request turn
-    LOG_INFO(String("    Facing table to recal at ") + m_target.toString() + "...");
+    LOG_INFO(String("   Facing table to recal at ") + m_target.toString() + "...");
     applyCmdToTurn(angleDelta, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc()); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
 

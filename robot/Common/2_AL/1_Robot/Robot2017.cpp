@@ -146,6 +146,9 @@ void Robot2017::colorChoosed(eColor color)
 {
     LOG_INFO("User has selected " + color2String(color) + " color.");
 
+    //Start heartbeat display
+    hmi.led2.slowBlink();
+
     if ( color == eColor_PREF )
     {
         hmi.setRGBled(YELLOW, ON);

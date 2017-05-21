@@ -352,12 +352,7 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor _matchColor, bool _si
     if(listener)
         listener->colorChoosed(matchColor);
 
-    //Start heartbeat display
-    hmi.led2.slowBlink();
-
     //Simualtion
     if(simulated)
-        LOG_INFO("<<< CAUTION : robot is SIMULATED (avoidance disabled) >>>");
-    else
-    	detection.enableAvoidance(true);
+        LOG_INFO("<<< CAUTION : robot is SIMULATED >>>");
 }
