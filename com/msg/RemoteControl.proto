@@ -132,7 +132,7 @@ message Configuration
     uint32 strategyDuration      = 31; //in ms
 
     uint32 logDebug              = 32; //set to true to activate debug logs
-    bool   bipAllowed            = 33; //activate buzzer
+    uint32 bipAllowed            = 33; //activate buzzer
 }
 
 //----------------------------------------------------------------------
@@ -148,7 +148,7 @@ message RemoteControlRequest
         //messages from 0 to 99 are general purpose messages
         EmptyMsg             getOsStats         = 1;
         EmptyMsg             getOsStatsLogs     = 2;
-        bool                 getTelemetry       = 3;
+        uint32               getTelemetry       = 3;
         EmptyMsg             reboot             = 4;
         Melody               requestPlaySound   = 5;
         EmptyMsg             getConfig          = 6;

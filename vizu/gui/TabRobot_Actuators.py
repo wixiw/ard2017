@@ -30,6 +30,11 @@ class TabRobot_Actuators(QWidget):
                 self.sections["lifter"].lifterReady.light(True)
             else:
                 self.sections["lifter"].lifterReady.light(False)
+            
+            if( msg.actuators.omronCylinder):
+                self.sections["lifter"].cylinderPresent.light(True)
+            else:
+                self.sections["lifter"].cylinderPresent.light(False)
         
 class LifterCmds(QWidget):   
     actCmd = pyqtSignal(int)
@@ -56,12 +61,17 @@ class LifterCmds(QWidget):
         self.btn_cmds["lifter_stop"].clicked.connect(self._lifter_stop)  
         
         self.lifterReady = LedIndicator(self)
+        self.cylinderPresent = LedIndicator(self)
+        
+        self.states = QFormLayout()
+        self.states.addRow("ready : ", self.lifterReady)
+        self.states.addRow("cylinder : ", self.cylinderPresent)
         
         self.layout["Commands"] = QVBoxLayout(self)
         for button in self.btn_cmds:    
             self.layout["Commands"].addWidget(self.btn_cmds[button])
         self.layout["Commands"].addStretch()
-        self.layout["Commands"].addWidget(self.lifterReady)
+        self.layout["Commands"].addLayout(self.states)
         
         self.box = QGroupBox("Lifter")
         self.box.setLayout(self.layout["Commands"])

@@ -20,7 +20,7 @@ namespace ard
      * @param parent : The parent thread is expected to hold all servo references
      * @param timer : a timer is required to feed yakindu timed machines
      */
-    class Lifter: public PolledObject
+    class Lifter: public PolledObject, public FSM_Lifter::DefaultSCI_OCB
     {
     public:
         Lifter(ActuatorThread& parent, TimerInterface& timer);
@@ -50,6 +50,9 @@ namespace ard
 
         //FSM Callback : inform that poo is finished
         void pooEnded();
+
+        //FSM Callback
+        void blocked() override;
 
         //Returns true when the Lifter is ready to lift or poo the next cylinder
         bool isReady() { return fsm.getSCI_Strategy()->get_ready();};

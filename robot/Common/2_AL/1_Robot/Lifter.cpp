@@ -16,6 +16,7 @@ Lifter::Lifter(ActuatorThread& parent, TimerInterface& timer):
         acts(parent)
 {
     fsm.setTimer(&timer);
+    fsm.setDefaultSCI_OCB(this);
 }
 
 void Lifter::init()
@@ -47,6 +48,14 @@ void Lifter::pooEnded()
 void Lifter::stop()
 {
     fsm.getSCI_Strategy()->raise_stop();
+    acts.servoLifter.disable();
+}
+
+void Lifter::blocked()
+{
+	LOG_INFO("Lifter blocked.");
+	acts.servoLifter.disable();
+	fsm.set_started(false);
 }
 
 void Lifter::update(TimeMs sinceLastCall)
