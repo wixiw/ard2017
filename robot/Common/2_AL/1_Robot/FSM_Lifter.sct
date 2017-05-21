@@ -28,7 +28,7 @@
           <vertices xsi:type="sgraph:State" xmi:id="_7hEuQD49Eee2xNbiZ_Uvvw" name="Waiting arms to work" incomingTransitions="_42WNYD49Eee2xNbiZ_Uvvw">
             <outgoingTransitions xmi:id="_KdGosD4-Eee2xNbiZ_Uvvw" specification="Strategy.pooEnded &#xD;&#xA;/ Strategy.ready = false" target="_HcoMMD48Eee2xNbiZ_Uvvw"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_m6NC0D47Eee2xNbiZ_Uvvw" name="Release all" incomingTransitions="_1vBiAD47Eee2xNbiZ_Uvvw">
+          <vertices xsi:type="sgraph:State" xmi:id="_m6NC0D47Eee2xNbiZ_Uvvw" specification="entry/servoCmd = FULL_DOWN_CMD" name="Release all" incomingTransitions="_1vBiAD47Eee2xNbiZ_Uvvw">
             <outgoingTransitions xmi:id="_42WNYD49Eee2xNbiZ_Uvvw" specification="[targetReached] &#xD;&#xA;/ Strategy.ready = true" target="_7hEuQD49Eee2xNbiZ_Uvvw"/>
           </vertices>
           <vertices xsi:type="sgraph:Entry" xmi:id="_SybB8D5LEee2xNbiZ_Uvvw">
@@ -215,30 +215,6 @@
                   <element xsi:nil="true"/>
                   <layoutConstraint xsi:type="notation:Bounds" xmi:id="_NkTLAj5gEee2xNbiZ_Uvvw" x="500" y="416"/>
                 </children>
-                <children xsi:type="notation:Shape" xmi:id="_NkTLAz5gEee2xNbiZ_Uvvw" type="Note" fontName="Verdana" description="TODO et mettre un timeout" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
-                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_NkTLBD5gEee2xNbiZ_Uvvw" type="DiagramName">
-                    <element xsi:nil="true"/>
-                  </children>
-                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_NkTLBT5gEee2xNbiZ_Uvvw" type="Description">
-                    <element xsi:nil="true"/>
-                  </children>
-                  <styles xsi:type="notation:TextStyle" xmi:id="_NkTLBj5gEee2xNbiZ_Uvvw"/>
-                  <styles xsi:type="notation:LineTypeStyle" xmi:id="_NkTLBz5gEee2xNbiZ_Uvvw"/>
-                  <element xsi:nil="true"/>
-                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_NkTLCD5gEee2xNbiZ_Uvvw" x="856" y="337"/>
-                </children>
-                <children xsi:type="notation:Shape" xmi:id="_NkTLCT5gEee2xNbiZ_Uvvw" type="Note" fontName="Verdana" description="TODO : attendre que la place se libère" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
-                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_NkTLCj5gEee2xNbiZ_Uvvw" type="DiagramName">
-                    <element xsi:nil="true"/>
-                  </children>
-                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_NkTLCz5gEee2xNbiZ_Uvvw" type="Description">
-                    <element xsi:nil="true"/>
-                  </children>
-                  <styles xsi:type="notation:TextStyle" xmi:id="_NkTLDD5gEee2xNbiZ_Uvvw"/>
-                  <styles xsi:type="notation:LineTypeStyle" xmi:id="_NkTLDT5gEee2xNbiZ_Uvvw"/>
-                  <element xsi:nil="true"/>
-                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_NkTLDj5gEee2xNbiZ_Uvvw" x="856" y="182"/>
-                </children>
                 <children xmi:id="_NkTLDz5gEee2xNbiZ_Uvvw" type="Entry" element="_SybB8D5LEee2xNbiZ_Uvvw">
                   <children xmi:id="_NkTLED5gEee2xNbiZ_Uvvw" type="BorderItemLabelContainer">
                     <children xsi:type="notation:DecorationNode" xmi:id="_NkTLET5gEee2xNbiZ_Uvvw" type="BorderItemLabel">
@@ -411,7 +387,7 @@
     <edges xmi:id="_42YpoD49Eee2xNbiZ_Uvvw" type="Transition" element="_42WNYD49Eee2xNbiZ_Uvvw" source="_NkTK8T5gEee2xNbiZ_Uvvw" target="_NkTK5T5gEee2xNbiZ_Uvvw">
       <children xsi:type="notation:DecorationNode" xmi:id="_42YppD49Eee2xNbiZ_Uvvw" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_42YppT49Eee2xNbiZ_Uvvw"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_42Yppj49Eee2xNbiZ_Uvvw" x="127" y="2"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_42Yppj49Eee2xNbiZ_Uvvw" x="-80" y="-6"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_42YpoT49Eee2xNbiZ_Uvvw" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_42Ypoz49Eee2xNbiZ_Uvvw" fontName="Verdana"/>
