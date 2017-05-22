@@ -353,16 +353,16 @@ void Lifecycle::configureMatch(uint8_t strategyId_, eColor _matchColor, bool _si
     strategyId = strategyId_;
     LOG_INFO(String("User has selected strategy [") + strategyId_ + "] " + matchs[strategyId].name + ".");
 
+    //Configure color
+    matchColor = _matchColor;
+    if(listener)
+        listener->colorChoosed(matchColor);
+
     //Set position
     if(matchs[strategyId].install)
     {
     	nav.setPosition(matchs[strategyId].install->getStartPosition());
     }
-
-    //Configure color
-    matchColor = _matchColor;
-    if(listener)
-        listener->colorChoosed(matchColor);
 
     //Simualtion
     if(simulated)
