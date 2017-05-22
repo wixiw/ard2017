@@ -40,7 +40,7 @@
           <vertices xsi:type="sgraph:State" xmi:id="_OANCkDSnEeeAruf_Oz5lkQ" specification="" name="Waiting swallow ended" incomingTransitions="_OADRqjSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_OANCkzSnEeeAruf_Oz5lkQ" specification="after 500ms" target="_OANpoDSnEeeAruf_Oz5lkQ"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_OANpoDSnEeeAruf_Oz5lkQ" specification="entry/ arms(300, 285)" name="Retracting arms at maximum to let lifter rising" incomingTransitions="_OANCkzSnEeeAruf_Oz5lkQ">
+          <vertices xsi:type="sgraph:State" xmi:id="_OANpoDSnEeeAruf_Oz5lkQ" specification="entry/ arms(300, 300)" name="Retracting arms at maximum to let lifter rising" incomingTransitions="_OANCkzSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_OANptTSnEeeAruf_Oz5lkQ" specification="[armsAtTarget]" target="_OAFGwDSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAPe0DSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;informWithdraw_generic();&#xD;&#xA;cylinderToTake -= 1" name="Validating extraction" incomingTransitions="_OAKmXjSnEeeAruf_Oz5lkQ">
