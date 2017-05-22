@@ -420,6 +420,7 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
+    motorPower(true);
 
     m_order = eNavOrder_GOTO;
 
@@ -453,6 +454,7 @@ void Navigation::goToCap(Pose2D target, eDir sens, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
+    motorPower(true);
 
     m_order = eNavOrder_GOTO_CAP;
 
@@ -485,6 +487,7 @@ void Navigation::goToCap(Pose2D target, eDir sens, bool sym)
 void Navigation::goForward(float distanceMm)
 {
     LOG_INFO(String("   new request : goForward(") + distanceMm + "mm).");
+    motorPower(true);
 
     m_mutex.lock();
     Pose2D target = m_pose;
@@ -505,6 +508,7 @@ void Navigation::turnDelta(float angle, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
+    motorPower(true);
 
     LOG_INFO(String("   new request : turnDelta(") + angle + "°).");
     float target = angle;
@@ -532,6 +536,8 @@ void Navigation::turnTo(float angle, bool sym)
     m_mutex.lock();
     Pose2D target = m_pose;
     m_mutex.unlock();
+    motorPower(true);
+
     if(sym && m_color == eColor_SYM)
         target.hDegree(-angle);
     else
@@ -547,6 +553,8 @@ void Navigation::faceTo(Point p, bool sym)
     m_mutex.lock();
     Pose2D target = m_pose;
     m_mutex.unlock();
+    motorPower(true);
+
     if( sym )
         target.h = m_pose.angleTo(p.toAmbiPoint(m_color));
     else
@@ -562,6 +570,8 @@ void Navigation::rearTo(Point p, bool sym)
     m_mutex.lock();
     Pose2D target = m_pose;
     m_mutex.unlock();
+    motorPower(true);
+
     if( sym )
         target.h = headingToDir(m_pose.angleTo(p.toAmbiPoint(m_color)), eDir_BACKWARD);
     else
@@ -576,6 +586,7 @@ void Navigation::recalFace(eTableBorder border, Distance _escapeDir)
 
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME()
+    motorPower(true);
     m_order = eNavOrder_RECAL_FACE;
     m_targetDir = eDir_FORWARD;
     m_target = getRecalPointFace(border).toAmbiPose(m_color);
@@ -599,6 +610,7 @@ void Navigation::recalRear(eTableBorder border, Distance _escapeDir)
 
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME()
+    motorPower(true);
     m_order = eNavOrder_RECAL_REAR;
     m_targetDir = eDir_BACKWARD;
     m_target = getRecalPointRear(border).toAmbiPose(m_color);;
@@ -620,6 +632,7 @@ void Navigation::graphTo(Pose2D target, eDir sens)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
+    motorPower(true);
 
     LOG_INFO(String("   new request :  graphTo ") + target.toString() + ", computation in progress...");
 
