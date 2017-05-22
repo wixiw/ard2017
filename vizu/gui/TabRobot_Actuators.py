@@ -18,6 +18,7 @@ class TabRobot_Actuators(QWidget):
         #Create sections   
         self.sections["lifter"] = LifterCmds(self)
         self.sections["arms"]   = ArmsCmds(self)
+        self.sections["funny"]   = FunnyCmds(self)
         
         #create layouts objects
         self.layout = QHBoxLayout(self)
@@ -34,7 +35,8 @@ class TabRobot_Actuators(QWidget):
         self.columns[0].addStretch(1)
         self.columns[1].addWidget(self.sections["arms"])
         self.columns[1].addStretch(1)
-        
+        self.columns[2].addWidget(self.sections["funny"])
+        self.columns[2].addStretch(1)
         
     @pyqtSlot(RemoteControl_pb2.Telemetry)     
     def _telemetryDataCb(self, msg):
@@ -65,24 +67,24 @@ class LifterCmds(QWidget):
         self.btn_cmds = dict()
         self.layout=dict()
         
-        self.btn_cmds["start"] = QPushButton('Lifter start', self)
+        self.btn_cmds["start"] = QPushButton('start', self)
         self.btn_cmds["start"].clicked.connect(self._start) 
         
-        self.btn_cmds["lift"] = QPushButton('Lifter lift', self)
+        self.btn_cmds["stop"] = QPushButton('stop', self)
+        self.btn_cmds["stop"].clicked.connect(self._stop)  
+        
+        self.btn_cmds["lift"] = QPushButton('lift', self)
         self.btn_cmds["lift"].clicked.connect(self._lift) 
         
-        self.btn_cmds["fastPoo"] = QPushButton('Lifter fastPoo', self)
+        self.btn_cmds["fastPoo"] = QPushButton('fastPoo', self)
         self.btn_cmds["fastPoo"].clicked.connect(self._fastPoo) 
         
-        self.btn_cmds["poo"] = QPushButton('Lifter poo', self)
+        self.btn_cmds["poo"] = QPushButton('poo', self)
         self.btn_cmds["poo"].clicked.connect(self._poo)
         self.btn_cmds["poo"].setEnabled(False)
         
-        self.btn_cmds["pooEnded"] = QPushButton('Lifter pooEnded', self)
+        self.btn_cmds["pooEnded"] = QPushButton('pooEnded', self)
         self.btn_cmds["pooEnded"].clicked.connect(self._pooEnded)
-        
-        self.btn_cmds["stop"] = QPushButton('Lifter stop', self)
-        self.btn_cmds["stop"].clicked.connect(self._stop)  
         
         self.lifterReady = LedIndicator(self)
         self.cylinderPresent = LedIndicator(self)
@@ -140,24 +142,30 @@ class ArmsCmds(QWidget):
         self.btn_cmds = dict()
         self.layout=dict()
         
-        self.btn_cmds["start"] = QPushButton('Arms start', self)
+        self.btn_cmds["start"] = QPushButton('start', self)
         self.btn_cmds["start"].clicked.connect(self._start) 
         
-        self.btn_cmds["swallow"] = QPushButton('Arms swallow', self)
+        self.btn_cmds["stop"] = QPushButton('stop', self)
+        self.btn_cmds["stop"].clicked.connect(self._stop)  
+                
+        self.btn_cmds["swallow"] = QPushButton('swallow', self)
         self.btn_cmds["swallow"].clicked.connect(self._swallow) 
         
-        self.btn_cmds["fastPoo"] = QPushButton('Arms fastPoo', self)
+        self.btn_cmds["fastPoo"] = QPushButton('fastPoo', self)
         self.btn_cmds["fastPoo"].clicked.connect(self._fastPoo) 
         
-        self.btn_cmds["poo"] = QPushButton('Arms poo', self)
+        self.btn_cmds["poo"] = QPushButton('poo', self)
         self.btn_cmds["poo"].clicked.connect(self._poo)
         self.btn_cmds["poo"].setEnabled(False)
         
-        self.btn_cmds["retract"] = QPushButton('Arms retract', self)
+        self.btn_cmds["retract"] = QPushButton('retract', self)
         self.btn_cmds["retract"].clicked.connect(self._retract)
         
-        self.btn_cmds["stop"] = QPushButton('Arms stop', self)
-        self.btn_cmds["stop"].clicked.connect(self._stop)  
+        self.btn_cmds["rot_engage"] = QPushButton('engage rotator', self)
+        self.btn_cmds["rot_engage"].clicked.connect(self._rot_engage) 
+        
+        self.btn_cmds["rot_retract"] = QPushButton('retract rotator', self)
+        self.btn_cmds["rot_retract"].clicked.connect(self._rot_retract)
         
         self.armsReady = LedIndicator(self)
         self.cylinderPresent = LedIndicator(self)
@@ -180,7 +188,7 @@ class ArmsCmds(QWidget):
         self.layout.addStretch()
         
     def _start(self):
-        print("Arms : start")
+        print(": start")
         self.actCmd.emit(Types_pb2.AC_ARMS_START)
 
     def _swallow(self):
@@ -200,7 +208,58 @@ class ArmsCmds(QWidget):
         print("Arms : retract")
         self.actCmd.emit(Types_pb2.AC_ARMS_RETRACT)
         
+    def _rot_engage(self):
+        print("Arms : rotator engage")
+        self.actCmd.emit(Types_pb2.AC_ARMS_ROT_ENGAGE)
+        
+    def _rot_retract(self):
+        print("Arms : rotator retract")
+        self.actCmd.emit(Types_pb2.AC_ARMS_ROT_RETRACT)
+        
     def _stop(self):
         print("Arms : stop")
-        self.actCmd.emit(Types_pb2.AC_ARMS_STOP)             
+        self.actCmd.emit(Types_pb2.AC_ARMS_STOP)
+        
+        
+class FunnyCmds(QWidget):   
+    actCmd = pyqtSignal(int)
+     
+    def __init__(self, parent):
+        super().__init__(parent)       
+        
+        self.btn_cmds = dict()
+        self.layout=dict()
+        
+        self.btn_cmds["start"] = QPushButton('start', self)
+        self.btn_cmds["start"].clicked.connect(self._start) 
+        
+        self.btn_cmds["stop"] = QPushButton('stop', self)
+        self.btn_cmds["stop"].clicked.connect(self._stop)  
+        
+        self.btn_cmds["launch"] = QPushButton('launch', self)
+        self.btn_cmds["launch"].clicked.connect(self._launch)  
+        
+        self.layout["Commands"] = QVBoxLayout(self)
+        for button in self.btn_cmds:    
+            self.layout["Commands"].addWidget(self.btn_cmds[button])
+        self.layout["Commands"].addStretch()
+        
+        self.box = QGroupBox("Funny action")
+        self.box.setLayout(self.layout["Commands"])
+        
+        self.layout = QHBoxLayout(self)
+        self.layout.addWidget(self.box)
+        self.layout.addStretch()
+        
+    def _start(self):
+        print("Funny : start")
+        self.actCmd.emit(Types_pb2.AC_FUNNY_START)
+
+    def _stop(self):
+        print("Funny : stop")
+        self.actCmd.emit(Types_pb2.AC_FUNNY_STOP)
+        
+    def _launch(self):
+        print("Funny : launch")
+        self.actCmd.emit(Types_pb2.AC_FUNNY_LAUNCH)
                 

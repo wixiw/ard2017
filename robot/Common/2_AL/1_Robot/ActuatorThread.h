@@ -14,6 +14,11 @@
 #include "FaceUp.h"
 #include "Lifter.h"
 
+//#porky but efficient as remote control cmd and a strategy needs this
+//the other solution would be to create a real state machine but we are
+//running out of space
+#define FUNNY_REST 500
+#define FUNNY_PUSH 500
 
 namespace ard
 {
@@ -83,17 +88,17 @@ namespace ard
         FilteredInput switchArmRout;
         FilteredInput switchArmRin;
         FilteredInput omronCylinder;
-        FilteredInput switchCylinder;
-        FilteredInput omronSpare;
         FilteredInput switchLifterUp;
         FilteredInput switchLifterDown;
 
         HomingServo   servoLifter;
         HomingServo   servoLeftArm;
         HomingServo   servoRightArm;
-        Servo         servoLeftWheel;
-        Servo         servoRightWheel;
-        Servo         servoFunnyAction;
+        AccelServo    servoLeftWheel;
+        AccelServo    servoRightWheel;
+        AccelServo    servoFunnyAction;
+        AccelServo    servoRotator;
+        AccelServo    servo8;
 
     private:
         apb_ActuatorsState state; //cache to hold telemetry data

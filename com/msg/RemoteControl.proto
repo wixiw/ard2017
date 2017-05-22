@@ -54,18 +54,21 @@ message Telemetry
 message ActuatorsCmd
 {
     uint32 hasLifter              = 11;
-    int32 lifter       = 1; //angle in per thousand
+    int32 lifter       			  = 1; //angle in per thousand
     uint32 hasLeftArm             = 12;
-    int32 leftArm      = 2; //angle in per thousand
+    int32 leftArm      		 	  = 2; //angle in per thousand
     uint32 hasRightArm            = 13;
-    int32 rightArm     = 3; //angle in per thousand
+    int32 rightArm                = 3; //angle in per thousand
     uint32 hasLeftWheel           = 14;
-    int32 leftWheel    = 4; //angle in per thousand
+    int32 leftWheel               = 4; //angle in per thousand
     uint32 hasRightWheel          = 15;
-    int32 rightWheel   = 5; //angle in per thousand
+    int32 rightWheel              = 5; //angle in per thousand
     uint32 hasFunnyAction         = 16;
-    int32 funnyAction  = 6; //angle in per thousand
-    
+    int32 funnyAction             = 6; //angle in per thousand
+    uint32 hasRotator             = 17;
+    int32 rotator	              = 7; //angle in per thousand
+    uint32 hasServo8              = 18;
+    int32 servo8                  = 8; //angle in per thousand
     uint32 	hasHighLevelCmd 	= 31;
     eActCmd highLevelCmd 		= 21;
 }

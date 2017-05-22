@@ -378,12 +378,12 @@ namespace ard
 
         sc_boolean omronCylinder() override
         {
-            return robot.actuators.omronCylinder.read();
+            NOT_IMPLEMENTED();
         }
 
         sc_boolean switchCylinder() override
         {
-            return robot.actuators.switchCylinder.read();
+            NOT_IMPLEMENTED();
         }
 
         sc_boolean switchLifterUp() override

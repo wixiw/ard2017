@@ -55,8 +55,8 @@ class TabRobot_Status(QWidget):
         
         self.addSensorXor("switchRecalRC", 3)
         self.addSensorXor("omronCylinder", 3)
-        self.addSensorXor("switchCylinder", 3)
-        self.addSensorXor("omronSpare", 3)
+#         self.addSensorXor("switchCylinder", 3)
+#         self.addSensorXor("omronSpare", 3)
         self.addSensorXor("switchLifterUp", 3)
         self.addSensorXor("switchLifterDown", 3)
         
@@ -118,8 +118,8 @@ class TabRobot_Status(QWidget):
             self.switchArmRout.light(msg.actuators.switchArmRout)
             self.switchArmRin.light(msg.actuators.switchArmRin)
             self.omronCylinder.light(msg.actuators.omronCylinder)
-            self.switchCylinder.light(msg.actuators.switchCylinder)
-            self.omronSpare.light(msg.actuators.omronSpare)
+#             self.switchCylinder.light(msg.actuators.switchCylinder)
+#             self.omronSpare.light(msg.actuators.omronSpare)
             self.switchLifterUp.light(msg.actuators.switchLifterUp)
             self.switchLifterDown.light(msg.actuators.switchLifterDown)
             

@@ -55,8 +55,6 @@ message ActuatorsState {
     uint32             switchArmRout      = 4; //right arm extended (fully outside robot) position end course switch
     uint32             switchArmRin       = 5; //right arm retracted (fully inside robot) position end course switch
     uint32             omronCylinder      = 6; //swallow mouth cylinder presence detection (lateral omron)
-    uint32             switchCylinder     = 7; //swallow mouth cylinder ready to lift, switch detection
-    uint32             omronSpare         = 8; //Rear center spare omron, close to the recal switch
     uint32             switchLifterUp     = 9; //lifter upside end course switch
     uint32             switchLifterDown   = 10; //lifter upside end course switch
 
@@ -66,6 +64,8 @@ message ActuatorsState {
     int32              servoLeftWheel     = 33;
     int32              servoRightWheel    = 34;
     int32              servoFunnyAction   = 35;
+    int32              servoRotator		  = 36;
+    int32              servo8			  = 37;
     
     uint32             lifterReady 	      = 41;
     uint32             armsReady 	      = 42;

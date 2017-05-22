@@ -48,7 +48,8 @@ class TabRobot_Servos(QWidget):
         self.addServo("left wheel",     0, self.leftWheelCmd)
         self.addServo("right arm",      1, self.rightArmCmd)
         self.addServo("right wheel",    1, self.rightWheelCmd)
-            
+        self.addServo("rotator",        0, self.rightArmCmd)
+        self.addServo("servo8",         1, self.rightWheelCmd)
       
     def addServo(self, name, column, signal):
         self.servos[name] = ServoWidget(self, name, signal)
@@ -69,6 +70,8 @@ class TabRobot_Servos(QWidget):
             self.servos["left wheel"].setValue(msg.actuators.servoLeftWheel)
             self.servos["right arm"].setValue(msg.actuators.servoRightArm)
             self.servos["right wheel"].setValue(msg.actuators.servoRightWheel)
+            self.servos["rotator"].setValue(msg.actuators.servoRotator)
+            self.servos["servo8"].setValue(msg.actuators.servo8)
    
 class ServoWidget(QWidget): 
     move = pyqtSignal(int)

@@ -25,8 +25,8 @@
 #define SERVO4              7 //Left arm wheel
 #define SERVO5              8 //Right arm wheel
 #define SERVO6              9 //Funny action
-//#define SERVO7            10
-//#define SERVO8            11
+#define SERVO7	            10 //Rotateur
+#define SERVO8              11 //Spare
 #define BUZZER              12
 #define LED_DUE_L           13 //used by ArdOs to signal OS errors
 //14/15 : TX/RX 3 RESERVED FOR HOKUYO

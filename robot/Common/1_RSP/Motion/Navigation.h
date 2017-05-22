@@ -287,7 +287,7 @@ namespace ard
         apb_NavState state;
 
         //Recal management
-        Distance escapeDir;
+        Distance escapeDist;
 
         //klaxon to warn for failure and request opponent to move
         Buzzer& klaxon;

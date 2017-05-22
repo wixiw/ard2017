@@ -41,6 +41,7 @@ Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph, Ki
                 currentWayPoint(0),
                 m_graphDir(eDir_BEST),
                 state(),
+				escapeDist(0),
                 klaxon(klaxon),
                 detection(detection),
                 graph(graph),
@@ -261,7 +262,7 @@ void Navigation::run()
                 exitCriticalSection();
 
                 klaxon.bip(1);
-                if(escapeDir != 0)
+                if(escapeDist != 0)
                 {
                 	if(m_order == eNavOrder_RECAL_FACE)
 					{
@@ -275,11 +276,11 @@ void Navigation::run()
 						ASSERT(false);
 
 					//Escape from wall
-					m_target.translatePolar(m_target.hDegree(), m_targetDir * escapeDir);
-					applyCmdToGoStraight(m_targetDir * escapeDir, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
+					m_target.translatePolar(m_target.hDegree(), m_targetDir * escapeDist);
+					applyCmdToGoStraight(m_targetDir * escapeDist, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
 					m_state = eNavState_ESCAPING_WALL;
 					orderTimeout.arm(1000+OPP_IMPATIENCE_TIMEOUT);
-					LOG_INFO(String("   escaping of distance=") + escapeDir + " to reach pose=" + m_target.toString()+".");
+					LOG_INFO(String("   escaping of distance=") + escapeDist + " to reach pose=" + m_target.toString()+".");
                 }
                 else
                 {
@@ -571,7 +572,7 @@ void Navigation::rearTo(Point p, bool sym)
 
 void Navigation::recalFace(eTableBorder border, Distance _escapeDir)
 {
-    LOG_INFO(String("   new request : recalFace on border=") + border + " with escape = " + String(escapeDir));
+    LOG_INFO(String("   new request : recalFace on border=") + border + " with escape = " + String(escapeDist));
 
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME()
@@ -587,14 +588,14 @@ void Navigation::recalFace(eTableBorder border, Distance _escapeDir)
 
     orderTimeout.arm(RECAL_TIMEOUT);
 
-    escapeDir = _escapeDir;
+    escapeDist = _escapeDir;
 
     m_mutex.unlock();
 }
 
 void Navigation::recalRear(eTableBorder border, Distance _escapeDir)
 {
-    LOG_INFO(String("   new request : recalRear on border=") + border + " with escape = " + String(escapeDir));
+    LOG_INFO(String("   new request : recalRear on border=") + border + " with escape = " + String(escapeDist));
 
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME()
@@ -610,7 +611,7 @@ void Navigation::recalRear(eTableBorder border, Distance _escapeDir)
 
     orderTimeout.arm(RECAL_TIMEOUT);
 
-    escapeDir = _escapeDir;
+    escapeDist = _escapeDir;
 
     m_mutex.unlock();
 }
