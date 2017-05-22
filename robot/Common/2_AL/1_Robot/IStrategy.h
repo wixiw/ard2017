@@ -59,7 +59,7 @@ namespace ard
         //class has to do the wrapping. Any idea welcome.
         virtual void updateLSA(DelayMs sinceLastCall) = 0;
         //Same remarks here
-        virtual void startLSA() = 0;
+        virtual void startLSA(int32_t param) = 0;
         //Same remarks here
         virtual void stopLSA() = 0;
         //Same remarks here

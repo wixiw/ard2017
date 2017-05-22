@@ -66,12 +66,12 @@ namespace ard
         }
 
         //FSM API : LSA
-        void startLSA(sc_integer id) override
+        void startLSA(sc_integer id, int32_t param) override
         {
             ASSERT_TEXT(lsaId == eNone, "An LSA is already in progress");
             lsaId = id;
             lsaStatus = InProgress;
-            getLSA(id).startLSA();
+            getLSA(id).startLSA(param);
         }
 
         //FSM API : LSA

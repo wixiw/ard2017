@@ -203,7 +203,7 @@ HmiThread::HmiThread(DueTimer& timer):
     ledDue_Rx(LED_DUE_RX, INVERTED),
     ledDue_Tx(LED_DUE_TX, INVERTED),
     ledDue_L(LED_DUE_L),
-    tirette(BUTTON_START, HMI_DEBOUNCE, HMI_DEBOUNCE,true),
+    tirette(BUTTON_START, HMI_DEBOUNCE, HMI_DEBOUNCE, true),
     matchColor(BUTTON_COLOR, HMI_DEBOUNCE, HMI_DEBOUNCE),
     user1(BUTTON_USER1, HMI_DEBOUNCE, HMI_DEBOUNCE),
     user2(BUTTON_USER2, HMI_DEBOUNCE, HMI_DEBOUNCE),
@@ -226,7 +226,8 @@ void HmiThread::run()
 
 bool HmiThread::isStartPlugged() const
 {
-    return tirette.read();
+	volatile bool test = tirette.read();
+    return test;
 }
 
 bool HmiThread::isColorSwitchOnPrefered() const

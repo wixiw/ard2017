@@ -40,11 +40,13 @@ namespace ard
         //FSM API : Use this hide in the FSM which dispenser is used
         void informWithdraw_generic() override;
 
-        //FSM API : Use this hide in the FSM which dispenser is used
-        sc_integer dispenserCount() override;
+        //FSM API : Use this to compute the number of cylinders to withdraw
+        sc_integer howManyToTake() override;
 
     protected:
         eLSA_DispType type;
+        //Use this hide in the FSM which dispenser is used
+        sc_integer dispenserCount();
     };
 
 } /* namespace ard */

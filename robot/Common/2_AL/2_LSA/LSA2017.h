@@ -28,7 +28,8 @@ namespace ard
     public:
         LSA2017(Robot2017& robot, String const& name, Pose2D const& entryPoint = Pose2D()):
             Action2017<FSM, States_t>(robot, name),
-            entryPoint(entryPoint)
+            entryPoint(entryPoint),
+			param(0)
             {};
 
         virtual ~LSA2017() = default;
@@ -43,7 +44,11 @@ namespace ard
         void updateLSA(DelayMs sinceLastCall){Action2017<FSM, States_t>::update(sinceLastCall);}
 
         //Implements LSA : starts a SW timer to monitor a timeout
-        void startLSA(){Action2017<FSM, States_t>::start();}
+        void startLSA(int32_t _param)
+        {
+        	param = _param;
+        	Action2017<FSM, States_t>::start();
+        }
 
         //Implements LSA : stops a SW timer
         void stopLSA(){Action2017<FSM, States_t>::stop();}
@@ -53,6 +58,7 @@ namespace ard
 
     protected:
         Pose2D entryPoint;
+        int32_t param;
     };
 } /* namespace ard */
 

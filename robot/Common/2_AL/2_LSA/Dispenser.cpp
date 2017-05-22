@@ -68,6 +68,15 @@ void LSA_Dispenser::informWithdraw_generic()
     }
 }
 
+sc_integer LSA_Dispenser::howManyToTake()
+{
+	//Cylinders to take is the min between :
+	//the number of space available in the robot
+	//the number of cylinder in the dispenser
+	//the number of cylinder withdraw requested by the strategy
+	return min(robot.stratInfo.getFreeStockRoom(), min(param, dispenserCount()));
+}
+
 sc_integer LSA_Dispenser::dispenserCount()
 {
     sc_integer count;

@@ -53,10 +53,7 @@ void FilteredInput::reset()
 {
     debounceHighCount = 0;
     debounceLowCount = 0;
-    if(invert)
-        filteredLevel = GPIO_HIGH;
-    else
-        filteredLevel = GPIO_LOW;
+    filteredLevel = GPIO_LOW;
 }
 
 void FilteredInput::update(DelayUs sinceLastCall)

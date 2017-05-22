@@ -28,10 +28,11 @@ ActuatorThread::ActuatorThread(KinematicManager& kinMan):
         servoFunnyAction("Funny", 		SERVO6, 0, 1000),
 		servoRotator("Rotateur", 		SERVO7, 0, 1000),
 		servo8("Servo8", 				SERVO8, 0, 1000),
-        fsmTimeWheel(),
         lifter(*this, fsmTimeWheel),
         arms(*this, fsmTimeWheel),
         faceUp(*this),
+		state(),
+		fsmTimeWheel(),
 		kinematics(kinMan)
 {
     state = apb_ActuatorsState_init_default;

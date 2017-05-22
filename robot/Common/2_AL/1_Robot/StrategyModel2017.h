@@ -27,7 +27,8 @@ namespace ard
         //cache to hold telemetry data
         apb_StratInfo2017 data;
 
-        //Get the number of cylinders
+        //Get the number of cylinders in robot
+        uint8_t getFreeStockRoom(){return 6 - data.stock_count;};
 
         //Inform strategy that a cylinder has been withdrawn from our mono-color dispenser (A), 0 means all available
         void informWithdraw_A(uint8_t nb = 0);
