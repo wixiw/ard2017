@@ -12,6 +12,10 @@ def normalizeAngle(angle):
         angle=angle+2*pi 
     return angle
     
+#Transfer a variable x from on range to another
+def map(x, in_min, in_max, out_min, out_max):
+    return out_min + (x - in_min)*(out_max - out_min)/(in_max - in_min)
+    
 def intersectCircle(x0,y0,r0,x1,y1,r1):
     #see http://paulbourke.net/geometry/2circle/ for justif
     

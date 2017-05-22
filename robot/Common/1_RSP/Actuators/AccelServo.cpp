@@ -164,6 +164,8 @@ void AccelServo::computeStartDecc()
         if( delta < 2*startDeccDelta)
         {
             startDeccDelta = delta/2;
+			if( startDeccDelta == 0 )
+				startDeccDelta = 1;
         }
     }
     else

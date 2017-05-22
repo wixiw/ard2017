@@ -22,15 +22,15 @@ void FunnyAction::start()
 void FunnyAction::update(TimeMs sinceLastCall)
 {
     if( 1000 < duration && duration <= 1500 )
-        robot.actuators.servoFunnyAction.goTo(FUNNY_PUSH);
+        robot.actuators.servoFunnyAction.goTo(FUNNY_LAUNCH);
     if( 1500 < duration && duration <= 2000 )
         robot.actuators.servoFunnyAction.goTo(FUNNY_REST);
     if( 2000 < duration && duration <= 2500 )
-        robot.actuators.servoFunnyAction.goTo(FUNNY_PUSH);
+        robot.actuators.servoFunnyAction.goTo(FUNNY_LAUNCH);
     if( 2500 < duration && duration <= 3000 )
         robot.actuators.servoFunnyAction.goTo(FUNNY_REST);
     if( 3000 < duration && duration <= 3500 )
-        robot.actuators.servoFunnyAction.goTo(FUNNY_PUSH);
+        robot.actuators.servoFunnyAction.goTo(FUNNY_LAUNCH);
     if( 3500 < duration && duration <= 4000 )
         robot.actuators.servoFunnyAction.goTo(FUNNY_REST);
 

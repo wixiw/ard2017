@@ -15,14 +15,16 @@ namespace ard
     typedef enum
     {
         ST_IDLE,
-        ST_OPEN_ARMS,
+		ST_OPEN_ARMS,
         ST_LIFTER_UP,
         ST_LIFTER_DOWN,
         ST_LIFTER_UP2,
         ST_TURN_WHEELS,
         ST_STOP_WHEELS,
         ST_RETRACT,
-        ST_DONE
+		ST_FUNNY_LAUNCH,
+		ST_FUNNY_REST,
+		ST_DONE,
     } eSTstate;
 
     class Selftest: public IStrategy

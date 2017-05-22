@@ -18,7 +18,7 @@
 //the other solution would be to create a real state machine but we are
 //running out of space
 #define FUNNY_REST 500
-#define FUNNY_PUSH 500
+#define FUNNY_LAUNCH 1000
 
 namespace ard
 {

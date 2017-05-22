@@ -21,8 +21,9 @@ void Selftest::start()
     state = ST_OPEN_ARMS;
     status = InProgress;
     timeout.arm(10000);
-    robot.actuators.servoLeftArm.goTo(1000);
-    robot.actuators.servoRightArm.goTo(1000);
+    robot.actuators.servoLeftArm.goTo(750);
+    robot.actuators.servoRightArm.goTo(750);
+    robot.actuators.servoFunnyAction.goTo(FUNNY_REST);
 }
 
 void Selftest::stop()
@@ -90,14 +91,32 @@ void Selftest::update(TimeMs sinceLastCall)
             if(chrono.isFired())
             {
                 state = ST_RETRACT;
-                robot.actuators.servoLeftArm.goTo(0);
-                robot.actuators.servoRightArm.goTo(0);
+                robot.actuators.servoLeftArm.goTo(260);
+                robot.actuators.servoRightArm.goTo(260);
             }
             break;
 
         case ST_RETRACT:
             if(robot.actuators.servoLeftArm.isTargetReached()
                     &&robot.actuators.servoRightArm.isTargetReached())
+            {
+                state = ST_FUNNY_LAUNCH;
+                robot.actuators.servoFunnyAction.goTo(FUNNY_LAUNCH);
+                chrono.arm(500);
+            }
+            break;
+
+        case ST_FUNNY_LAUNCH:
+            if(chrono.isFired())
+            {
+            	robot.actuators.servoFunnyAction.goTo(FUNNY_REST);
+            	chrono.arm(500);
+                state = ST_FUNNY_REST;
+            }
+            break;
+
+        case ST_FUNNY_REST:
+            if(chrono.isFired())
             {
                 state = ST_DONE;
                 status = Success;

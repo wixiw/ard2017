@@ -225,6 +225,8 @@ class TabStrat(QWidget):
             colorStr = self.getObjectColorStr()
             chrono = self.robotState.chrono.chrono_ms/1000.
             self.overview.robotPose = pose
+            self.overview.leftArm = msg.actuators.servoLeftArm
+            self.overview.rightArm = msg.actuators.servoRightArm
             self.label["bootTime"].setText("%0.1f" % (self.robotState.date/1000.))
             self.label["chronoMatch"].setText("%0.1f" % (chrono))
             self.label["timeLeft"].setText("%0.1f" % (self.robotState.chrono.timeLeft_ms/1000.))

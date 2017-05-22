@@ -219,7 +219,7 @@ void ActuatorThread::actCmd(eActCmd cmd)
 			servoFunnyAction.disable();
 			break;
 		case eActCmd_AC_FUNNY_LAUNCH:
-			servoFunnyAction.goTo(FUNNY_PUSH);
+			servoFunnyAction.goTo(FUNNY_LAUNCH);
 			break;
 
 	/**

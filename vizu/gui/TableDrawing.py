@@ -106,7 +106,7 @@ class TableOverview(QWidget):
             self._drawGraph()
         if self.robot != None and self.parent().robotConfig != None:
             self._drawTrajectory()
-            self.robot.draw(drawingPose, self.parent().robotConfig, self.parent().robotState.stratInfo)
+            self.robot.draw(drawingPose, self.parent().robotConfig, self.parent().robotState.stratInfo, self.leftArm, self.rightArm)
             self.ghost.draw(self.ghost.pose, self.parent().robotConfig, self.parent().robotState.stratInfo)
         self.p.end()
     
@@ -251,14 +251,14 @@ class RobotWidget():
         self.actuatorsOut = False
         self.displayMire = False
                 
-    def draw(self, pose, cfg, stratInfo):
+    def draw(self, pose, cfg, stratInfo, leftArm, rightArm):
         self.p.save()
         self.p.setRenderHint(QPainter.Antialiasing)
         self.p.translate(pose.x, pose.y)
         self.p.rotate(pose.h)
         if self.displayMire:
             self.drawMarks(cfg)
-        self.drawCarriage(cfg)
+        self.drawCarriage(cfg, leftArm, rightArm)
         self.drawWheels(cfg)
         self.drawObjects(stratInfo)
         self.p.restore()
@@ -312,7 +312,7 @@ class RobotWidget():
             else:
                 drawVBicolorCylinder(self.p, 180, 0, 0)
         
-    def drawCarriage(self, cfg):
+    def drawCarriage(self, cfg, leftArm, rightArm):
         self.p.setPen(markPen)
         self.p.setBrush(self.color)
         carriage = QPainterPath()
@@ -356,28 +356,41 @@ class RobotWidget():
 #         carriage.moveTo(cfg.xavExtended, cfg.yside)
 #         carriage.lineTo(cfg.xavExtended, -cfg.yside)
 #         self.p.drawPath(carriage)
-        
+
         if self.actuatorsOut:
-            #draw actuators
+            self.drawLeftArm(cfg, 1000)
+            self.drawRightArm(cfg, 1000)
+        
+        self.drawLeftArm(cfg, leftArm)
+        self.drawRightArm(cfg, rightArm)
+      
+    def drawRightArm(self, cfg, position):
+            delta = map(position, 0., 1000., 123., 185.)
             self.p.setPen(markPen)
             self.p.setBrush(jetBlack)
-            drawCircle(self.p, 185,  60, 22)
-            drawCircle(self.p, 185, -60, 22)
+            drawCircle(self.p, delta,  60, 22)
             self.p.setBrush(Qt.gray)
-            drawCircle(self.p, 185,  60, 15)
-            drawCircle(self.p, 185, -60, 15)
+            drawCircle(self.p, delta,  60, 15)
             arm = QPainterPath()
-            arm.moveTo(cfg.xav + 40, 50)
-            arm.lineTo(cfg.xav - 30, 50)
-            arm.lineTo(cfg.xav - 30, 70)
-            arm.lineTo(cfg.xav + 40, 70)
+            arm.moveTo(delta - 40 + 40, 50)
+            arm.lineTo(delta - 40 - 30, 50)
+            arm.lineTo(delta - 40 - 30, 70)
+            arm.lineTo(delta - 40 + 40, 70)
             arm.closeSubpath()
             self.p.drawPath(arm)
+            
+    def drawLeftArm(self, cfg, position):    
+            delta = map(position, 0., 1000., 123., 185.)
+            self.p.setPen(markPen)
+            self.p.setBrush(jetBlack)
+            drawCircle(self.p, delta,  -60, 22)
+            self.p.setBrush(Qt.gray)
+            drawCircle(self.p, delta,  -60, 15)
             arm = QPainterPath()
-            arm.moveTo(cfg.xav + 40, -50)
-            arm.lineTo(cfg.xav - 30, -50)
-            arm.lineTo(cfg.xav - 30, -70)
-            arm.lineTo(cfg.xav + 40, -70)
+            arm.moveTo(delta - 40 + 40, -50)
+            arm.lineTo(delta - 40 - 30, -50)
+            arm.lineTo(delta - 40 - 30, -70)
+            arm.lineTo(delta - 40 + 40, -70)
             arm.closeSubpath()
             self.p.drawPath(arm)
         
@@ -483,7 +496,7 @@ class GhostWidget(RobotWidget):
         self.p.rotate(-math.degrees(pose.h))
         if self.displayMire:
             self.drawMarks(self.cfg)
-        self.drawCarriage(self.cfg)
+        self.drawCarriage(self.cfg, 0, 0)
         self.drawWheels(self.cfg)
         self.p.restore()
         
