@@ -16,6 +16,7 @@ Arms::Arms(ActuatorThread& parent, TimerInterface& timer):
     lifter(NULL)
 {
     fsm.setTimer(&timer);
+    fsm.setDefaultSCI_OCB(this);
 }
 
 void Arms::init()
@@ -27,8 +28,47 @@ void Arms::init()
 
 void Arms::start()
 {
-    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
-    fsm.set_start(true);
+    fsm.getSCI_Strategy()->raise_start();
+}
+
+void Arms::swallow(uint8_t nbCylinders)
+{
+    fsm.getSCI_Strategy()->raise_swallow(nbCylinders);
+}
+
+void Arms::retractArms()
+{
+    fsm.getSCI_Strategy()->raise_retractArms();
+}
+
+void Arms::fastPoo(uint8_t nbCylinders)
+{
+    fsm.getSCI_Strategy()->raise_fastPoo(nbCylinders);
+}
+
+void Arms::stop()
+{
+    fsm.getSCI_Strategy()->raise_stop();
+    acts.servoLeftArm.disable();
+    acts.servoRightArm.disable();
+    acts.servoLeftWheel.disable();
+    acts.servoRightWheel.disable();
+    fsm.set_started(false);
+}
+
+void Arms::blocked()
+{
+	LOG_INFO("Arms blocked.");
+    acts.servoLeftArm.disable();
+    acts.servoRightArm.disable();
+    acts.servoLeftWheel.disable();
+    acts.servoRightWheel.disable();
+	fsm.set_started(false);
+}
+
+void Arms::lift()
+{
+	acts.actCmd(eActCmd_AC_LIFTER_LIFT);
 }
 
 void Arms::update(TimeMs sinceLastCall)
@@ -37,12 +77,13 @@ void Arms::update(TimeMs sinceLastCall)
     fsm.set_rightExtendedSwitch(acts.switchArmRout.read());
     fsm.set_leftRetractedSwitch(acts.switchArmLin.read());
     fsm.set_rightRetractedSwitch(acts.switchArmRin.read());
-
-    fsm.getSCI_Strategy()->set_lifterReady(lifter->isReady());
+    fsm.set_cylinderPresent(acts.omronCylinder.read());
+    fsm.set_lifterReady(lifter->isReady());
+    fsm.set_armsInPosition(acts.servoLeftArm.isTargetReached()&&acts.servoRightArm.isTargetReached());
 
     fsm.runCycle();
 
-    if( fsm.get_start() )
+    if( fsm.get_started() )
     {
         acts.servoLeftArm.      goTo(fsm.get_leftArm());
         acts.servoRightArm.     goTo(fsm.get_rightArm());
@@ -50,24 +91,3 @@ void Arms::update(TimeMs sinceLastCall)
         acts.servoRightWheel.   goTo(fsm.get_rightWheel());
     }
 }
-
-void ard::Arms::swallow(uint8_t nbCylinders)
-{
-    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
-}
-
-void ard::Arms::retractArms()
-{
-    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
-}
-
-void ard::Arms::withdraw(uint8_t nbCylinders)
-{
-    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
-}
-
-void ard::Arms::poo(uint8_t nbCylinders)
-{
-    NOT_IMPLEMENTED(); //TODO : corriger les valeurs des servos avant d'utiliser
-}
-

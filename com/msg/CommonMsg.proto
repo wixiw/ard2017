@@ -68,6 +68,7 @@ message ActuatorsState {
     int32              servoFunnyAction   = 35;
     
     uint32             lifterReady 	      = 41;
+    uint32             armsReady 	      = 42;
 }
 
 message HmiState {

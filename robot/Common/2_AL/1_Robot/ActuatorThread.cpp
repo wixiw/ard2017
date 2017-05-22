@@ -42,8 +42,8 @@ ActuatorThread::ActuatorThread(KinematicManager& kinMan):
 
 
     servoLifter.setVmax(60);
-    servoLeftArm.setVmax(150);
-    servoRightArm.setVmax(150);
+    servoLeftArm.setVmax(120);
+    servoRightArm.setVmax(120);
 
 }
 
@@ -122,6 +122,7 @@ apb_ActuatorsState const& ActuatorThread::serealize()
     state.servoFunnyAction  = servoFunnyAction.read();
 
     state.lifterReady		= lifter.isReady();
+    state.armsReady			= arms.isReady();
 
 
     return state;
@@ -141,8 +142,14 @@ void ActuatorThread::actCmd(eActCmd cmd)
 	LOG_INFO("Actuator command received : " + String((int)cmd));
 
 	switch (cmd) {
+	/**
+	 * LIFTER
+	 */
 		case eActCmd_AC_LIFTER_START:
 			lifter.start();
+			break;
+		case eActCmd_AC_LIFTER_STOP:
+			lifter.stop();
 			break;
 		case eActCmd_AC_LIFTER_LIFT:
 			lifter.lift();
@@ -150,11 +157,34 @@ void ActuatorThread::actCmd(eActCmd cmd)
 		case eActCmd_AC_LIFTER_FASTPOO:
 			lifter.fastPoo();
 			break;
+		case eActCmd_AC_LIFTER_POO:
+			NOT_IMPLEMENTED(); //TODO
+			//lifter.poo();
+			break;
 		case eActCmd_AC_LIFTER_POOENDED:
 			lifter.pooEnded();
 			break;
-		case eActCmd_AC_LIFTER_STOP:
-			lifter.stop();
+	/**
+	 * ARMS
+	 */
+		case eActCmd_AC_ARMS_START:
+			arms.start();
+			break;
+		case eActCmd_AC_ARMS_STOP:
+			arms.stop();
+			break;
+		case eActCmd_AC_ARMS_SWALLOW:
+			arms.swallow(0);
+			break;
+		case eActCmd_AC_ARMS_FASTPOO:
+			arms.fastPoo(0);
+			break;
+		case eActCmd_AC_ARMS_POO:
+			NOT_IMPLEMENTED(); //TODO
+			//arms.poo();
+			break;
+		case eActCmd_AC_ARMS_RETRACT:
+			arms.retractArms();
 			break;
 		default:
 			ASSERT(false);

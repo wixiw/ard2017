@@ -49,6 +49,7 @@ void Lifter::stop()
 {
     fsm.getSCI_Strategy()->raise_stop();
     acts.servoLifter.disable();
+    fsm.set_started(false);
 }
 
 void Lifter::blocked()

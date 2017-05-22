@@ -113,6 +113,7 @@ class VizuMainScreen(QWidget):
         self.tabContexts["Robot"].tab.tab["Calib"].sections["Linear"].move                    .connect(self.teleop.goForward)
         self.tabContexts["Robot"].tab.tab["Calib"].sections["Rotation"].move                  .connect(self.teleop.turnDelta)
         self.tabContexts["Robot"].tab.tab["Actuators"].sections["lifter"].actCmd              .connect(self.teleop.requestActuatorsCmd)
+        self.tabContexts["Robot"].tab.tab["Actuators"].sections["arms"].actCmd              .connect(self.teleop.requestActuatorsCmd)
         self.tabContexts["Robot"].tab.tab["Servos"].lifterCmd                                 .connect(self.teleop.requestLifterServo)
         self.tabContexts["Robot"].tab.tab["Servos"].leftArmCmd                                .connect(self.teleop.requestLeftArmServo)
         self.tabContexts["Robot"].tab.tab["Servos"].rightArmCmd                               .connect(self.teleop.requestRightArmServo)

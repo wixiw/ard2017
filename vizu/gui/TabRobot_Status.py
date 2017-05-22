@@ -20,7 +20,6 @@ class TabRobot_Status(QWidget):
         self.Hlayout    = QHBoxLayout()
         self.layout.addLayout(self.Hlayout)
         self.columns = dict()
-        
         self.columns[0] = QFormLayout()
         self.columns[1] = QFormLayout()
         self.columns[2] = QFormLayout()

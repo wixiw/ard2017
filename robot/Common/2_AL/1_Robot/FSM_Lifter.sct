@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_om_nECOoEee69bN6ehHnlw" specification="interface Strategy:&#xA;&#x9;in event start&#xA;&#x9;in event stop&#xA;&#x9;in event lift &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the lifter to lift a new element&#xA;&#x9;in event fastPoo &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;    //request the lifter to release all cylinders for a fast withdrawing without cylinder orientation&#xA;&#x9;in event pooEnded&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//arms inform us that poo is finished&#xA;&#x9;var ready: boolean  &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//the current action is finished&#xA;&#xA;&#xA;interface:&#xA;&#x9;//Servo commands (from 0 to 1000%)&#xA;&#x9;var servoCmd : integer&#xA;&#x9;var targetReached : boolean&#xA;&#x9;&#xA;&#x9;//Micro switch contact when value is True&#xA;&#x9;var upSwitch : boolean&#xA;&#x9;var downSwitch : boolean&#xA;&#x9;var cylinderPresent : boolean&#xA;&#x9;var started : boolean&#xA;&#x9;var retryCount : integer&#xA;&#x9;&#xA;&#x9;operation blocked()&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform that the Lifter is out of order&#xA;&#x9;&#xA;&#x9;const UP_CMD : integer = 360 &#xA;&#x9;const DOWN_CMD : integer = 655&#xA;&#x9;const FULL_DOWN_CMD : integer&#x9; = 790&#xA;&#x9;" name="FSM_Lifter" documentation="The arm FSM has to synchronize with the lifter FSM">
+  <sgraph:Statechart xmi:id="_om_nECOoEee69bN6ehHnlw" specification="interface Strategy:&#xA;&#x9;in event start&#xA;&#x9;in event stop&#xA;&#x9;in event lift &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//request the lifter to lift a new element&#xA;&#x9;in event fastPoo &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;    //request the lifter to release all cylinders for a fast withdrawing without cylinder orientation&#xA;&#x9;in event pooEnded&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//arms inform us that poo is finished&#xA;&#x9;var ready: boolean  &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//the current action is finished&#xA;&#xA;&#xA;interface:&#xA;&#x9;//Servo commands (from 0 to 1000%)&#xA;&#x9;var servoCmd : integer&#xA;&#x9;var targetReached : boolean&#xA;&#x9;&#xA;&#x9;//Micro switch contact when value is True&#xA;&#x9;var upSwitch : boolean&#xA;&#x9;var downSwitch : boolean&#xA;&#x9;var cylinderPresent : boolean&#xA;&#x9;var started : boolean&#xA;&#x9;&#xA;&#x9;operation blocked()&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform that the Lifter is out of order&#xA;&#x9;&#xA;&#x9;const UP_CMD : integer = 360 &#xA;&#x9;const DOWN_CMD : integer = 655&#xA;&#x9;const FULL_DOWN_CMD : integer&#x9; = 790&#xA;&#x9;&#xA;internal:&#xA;&#x9;var retryCount : integer&#xA;&#x9;" name="FSM_Lifter" documentation="The arm FSM has to synchronize with the lifter FSM">
     <regions xmi:id="_onAOJCOoEee69bN6ehHnlw" name="main region">
       <vertices xsi:type="sgraph:Entry" xmi:id="_onA1NiOoEee69bN6ehHnlw">
         <outgoingTransitions xmi:id="_onCDWSOoEee69bN6ehHnlw" target="_onBcRyOoEee69bN6ehHnlw"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_onBcRyOoEee69bN6ehHnlw" specification="entry/ Strategy.ready = false" name="Shutdown" incomingTransitions="_onCDWSOoEee69bN6ehHnlw _ByEgUD5AEee2xNbiZ_Uvvw _VCzJID5LEee2xNbiZ_Uvvw">
+      <vertices xsi:type="sgraph:State" xmi:id="_onBcRyOoEee69bN6ehHnlw" specification="entry/ Strategy.ready = false" name="Shutdown" incomingTransitions="_onCDWSOoEee69bN6ehHnlw _VCzJID5LEee2xNbiZ_Uvvw">
         <outgoingTransitions xmi:id="_qezncD46Eee2xNbiZ_Uvvw" specification="Strategy.start" target="_IIG0UD5LEee2xNbiZ_Uvvw"/>
-        <outgoingTransitions xmi:id="_ByEgUD5AEee2xNbiZ_Uvvw" specification="after 6666s [false]" target="_onBcRyOoEee69bN6ehHnlw"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_IIG0UD5LEee2xNbiZ_Uvvw" specification="entry/ started = true&#xD;&#xA;exit/ started = false" name="Composite_Idle_Take next cylinder_Lifting cylinder_Going back to high position_Waiting arms to work_Release all" incomingTransitions="_qezncD46Eee2xNbiZ_Uvvw">
+      <vertices xsi:type="sgraph:State" xmi:id="_IIG0UD5LEee2xNbiZ_Uvvw" specification="entry/ started = true&#xD;&#xA;exit/ started = false" name="Started" incomingTransitions="_qezncD46Eee2xNbiZ_Uvvw">
         <outgoingTransitions xmi:id="_VCzJID5LEee2xNbiZ_Uvvw" specification="Strategy.stop" target="_onBcRyOoEee69bN6ehHnlw"/>
         <regions xmi:id="_IIHbYj5LEee2xNbiZ_Uvvw" name="inner region">
           <vertices xsi:type="sgraph:State" xmi:id="_mcSNMD46Eee2xNbiZ_Uvvw" specification="entry/&#xD;&#xA;Strategy.ready = true;&#xD;&#xA;servoCmd = UP_CMD&#xD;&#xA;&#xD;&#xA;exit/&#xD;&#xA;retryCount = 3" name="Idle" incomingTransitions="_C8f-AD4-Eee2xNbiZ_Uvvw _UVSi4D5LEee2xNbiZ_Uvvw _pn3y4D5PEee2xNbiZ_Uvvw _Aut00D5fEee2xNbiZ_Uvvw">
@@ -415,17 +414,6 @@
       <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_KdId4j4-Eee2xNbiZ_Uvvw" points="[-100, 16, -13, -67]$[-100, 44, -13, -39]$[-76, 44, 11, -39]$[-76, 73, 11, -10]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_KdLhMD4-Eee2xNbiZ_Uvvw" id="(1.0,0.6792452830188679)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_KdLhMT4-Eee2xNbiZ_Uvvw" id="(0.35233160621761656,0.22641509433962265)"/>
-    </edges>
-    <edges xmi:id="_ByLOAD5AEee2xNbiZ_Uvvw" type="Transition" element="_ByEgUD5AEee2xNbiZ_Uvvw" source="_onBcSiOoEee69bN6ehHnlw" target="_onBcSiOoEee69bN6ehHnlw">
-      <children xsi:type="notation:DecorationNode" xmi:id="_ByMcID5AEee2xNbiZ_Uvvw" type="TransitionExpression">
-        <styles xsi:type="notation:ShapeStyle" xmi:id="_ByMcIT5AEee2xNbiZ_Uvvw"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_ByMcIj5AEee2xNbiZ_Uvvw" x="29" y="17"/>
-      </children>
-      <styles xsi:type="notation:ConnectorStyle" xmi:id="_ByLOAT5AEee2xNbiZ_Uvvw" routing="Rectilinear" lineColor="4210752"/>
-      <styles xsi:type="notation:FontStyle" xmi:id="_ByL1ED5AEee2xNbiZ_Uvvw" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_ByLOAj5AEee2xNbiZ_Uvvw" points="[0, 10, 32, 30]$[25, 10, 57, 30]$[25, -59, 57, -39]$[-26, -59, 6, -39]$[-26, -29, 6, -9]"/>
-      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_ByPfcD5AEee2xNbiZ_Uvvw" id="(1.0,0.6226415094339622)"/>
-      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_ByPfcT5AEee2xNbiZ_Uvvw" id="(0.7401574803149606,0.20754716981132076)"/>
     </edges>
     <edges xmi:id="_UVTxAD5LEee2xNbiZ_Uvvw" type="Transition" element="_UVSi4D5LEee2xNbiZ_Uvvw" source="_NkTLDz5gEee2xNbiZ_Uvvw" target="_NkTKtT5gEee2xNbiZ_Uvvw">
       <children xsi:type="notation:DecorationNode" xmi:id="_UVTxBD5LEee2xNbiZ_Uvvw" type="TransitionExpression">
