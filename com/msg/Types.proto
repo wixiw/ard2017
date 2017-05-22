@@ -27,6 +27,7 @@ enum eNavState {
     CONTACTING_WALL   		=  7;
     PUSHING_WALL   			=  8;
     ESCAPING_WALL     		=  9;
+    ESCAPE_WALL_FAILED		=  91;
     WAIT_OPP_ESCAPE_RECALL 	= 10;
     BLOCKED           		= 11;
     STOPPING_IN_BLOCKED 	= 12;
@@ -70,12 +71,17 @@ enum eObjectColor {
 
 // Specific 2017
 enum eTableBorder {
-    TOP_Y           = 0;
-    OWN_SIDE_X      = 1;
-    OPP_SIDE_X      = 2;
-    START_WALL_Y    = 3;
-    BOT_Y           = 4;
-    FLIP_FLOP_X     = 5;
+	eTB_UNDEF		= 0;
+    REFEREE_Y       = 1;
+    B_CORNER_Y    	= 2;
+    BOT_Y           = 3;
+    OWN_B_CORNER_X  = 11;
+    OPP_B_CORNER_X  = 12;
+    FLIP_FLOP_X     = 14;
+    OWN_BORDER_3_X  = 15;
+    OPP_BORDER_3_X  = 16;
+    OWN_BORDER_5_X  = 17;
+    OPP_BORDER_1_X  = 18;
     MAX = 6;
 }
 

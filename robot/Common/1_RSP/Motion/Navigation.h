@@ -203,6 +203,9 @@ namespace ard
         //duration is an optional output to get the best travel duration
         eDir findOptimalDir(Pose2D const& start, Pose2D const& end, bool isGotoCap, DelayMs* duration = NULL);
 
+        //Find the escape dir distance depending on recel direction
+        eDir computeRecalEscapdeDir();
+
         /**---------------------------------
          * Publish state
          ---------------------------------*/
@@ -291,6 +294,7 @@ namespace ard
 
         //Recal management
         Distance escapeDist;
+        uint8_t triedCount;
 
         //klaxon to warn for failure and request opponent to move
         Buzzer& klaxon;

@@ -128,7 +128,7 @@ bool OppDetection::isDetectionValid(Pose2D p)
 
     IS_OUT_RANGE(-TABLE_BORDER_X + SAFETY_AREA, p.x, TABLE_BORDER_X - SAFETY_AREA)
         isOnTable = false;
-    IS_OUT_RANGE(-TABLE_TOP_Y + SAFETY_AREA, p.y, TABLE_TOP_Y - SAFETY_AREA)
+    IS_OUT_RANGE(-TABLE_REFEREE_Y + SAFETY_AREA, p.y, TABLE_REFEREE_Y - SAFETY_AREA)
         isOnTable = false;
 
     //If detected point is in Yellow start area, behind the wall : ignore it.

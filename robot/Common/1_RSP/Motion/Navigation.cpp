@@ -14,38 +14,39 @@ using namespace ard;
 #define NO_MOVE_DELTA 1      //mm
 #define KLAXON_FREQ 1000     //Hz
 #define RECAL_FORCING_SLOW 200     //mm
-#define RECAL_FORCING_FAST 200     //mm
+#define RECAL_FORCING_FAST 200     //mm/s
 #define RECAL_TIMEOUT 5000 //ms
+#define RECAL_RETRY_ESCAPE_DIST 50 //mm
 #define GRAPH_TIMEOUT 15000 //ms
 #define OPP_IMPATIENCE_TIMEOUT 5000 //ms
 #define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT((m_state == eNavState_IDLE || m_state == eNavState_BLOCKED) && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
 
-Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph, KinematicManager& kinMan)
-        :
-                Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
-                switchRecalFL(BORDURE_AVG, 1000, 10, true),
-                switchRecalFR(BORDURE_AVD, 1000, 10, true),
-                switchRecalRC(BORDURE_ARC, 1000, 10),
-                simulated(true),
-                m_pose(),
-                m_state(eNavState_IDLE),
-                m_target(),
-                m_targetDir(eDir_BEST),
-                m_order(eNavOrder_NOTHING),
-                stepperL(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
-                stepperR(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
-                m_color(eColor_PREF),
-                m_mutex(),
-                oldStepL(0),
-                oldStepR(0),
-                currentWayPoint(0),
-                m_graphDir(eDir_BEST),
-                state(),
-				escapeDist(0),
-                klaxon(klaxon),
-                detection(detection),
-                graph(graph),
-				kinematics(kinMan)
+Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph, KinematicManager& kinMan):
+	Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
+	switchRecalFL(BORDURE_AVG, 500, 50, true),
+	switchRecalFR(BORDURE_AVD, 500, 50, true),
+	switchRecalRC(BORDURE_ARC, 500, 50),
+	simulated(true),
+	m_pose(),
+	m_state(eNavState_IDLE),
+	m_target(),
+	m_targetDir(eDir_BEST),
+	m_order(eNavOrder_NOTHING),
+	stepperL(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
+	stepperR(AccelStepper::DRIVER, PAPD_STEP, PAPD_DIR),
+	m_color(eColor_PREF),
+	m_mutex(),
+	oldStepL(0),
+	oldStepR(0),
+	currentWayPoint(0),
+	m_graphDir(eDir_BEST),
+	state(),
+	escapeDist(0),
+	triedCount(0),
+	klaxon(klaxon),
+	detection(detection),
+	graph(graph),
+	kinematics(kinMan)
 {
     state = apb_NavState_init_default;
 }
@@ -228,7 +229,6 @@ void Navigation::run()
                         ASSERT(false); //should not be reached, dev bug
                         break;
                 }
-
                 m_state = eNavState_PUSHING_WALL;
             }
         	break;
@@ -236,46 +236,23 @@ void Navigation::run()
 
         case eNavState_PUSHING_WALL:
         {
-            //If target is reached (in switch mode) then the recal failed
-            if(!simulated && subOrderFinished() && false) //TODO en attendant d'avoir teste les switch
-            {
-                LOG_ERROR("Failed to recal on border.");
-                klaxon.bip(5);
-                m_order = eNavOrder_NOTHING;
-                m_state = eNavState_IDLE;
-            }
             //If both switch are contacted (or target reached in no switch mode)
-            else if( (simulated  && subOrderFinished())
+            if( (simulated  && subOrderFinished())
                   || (!simulated && m_order == eNavOrder_RECAL_FACE && switchRecalFL.read() && switchRecalFR.read())
-                  || (!simulated && m_order == eNavOrder_RECAL_REAR && switchRecalRC.read()))
+                  || (!simulated && m_order == eNavOrder_RECAL_REAR && (subOrderFinished() /* TODO a virer quand switch AR remis || switchRecalRC.read()*/)))
             {
-                LOG_INFO(String("   wall touched"));
+            	if( !subOrderFinished() )
+            		LOG_INFO(String("   wall touched with switches"));
+            	else
+            		LOG_INFO(String("   wall touched (target reached)"));
 
-                enterCriticalSection();
-                stepperL.setCurrentPosition(0);
-                oldStepL = 0;
-                stepperL.move(0); //move(0) is equivalent to stay on current position
-                stepperR.setCurrentPosition(0);
-                oldStepR = 0;
-                stepperR.move(0);
                 setPosition(m_target, false);//position has already been symetrized
-                exitCriticalSection();
 
                 klaxon.bip(1);
                 if(escapeDist != 0)
                 {
-                	if(m_order == eNavOrder_RECAL_FACE)
-					{
-						m_targetDir = eDir_BACKWARD;
-					}
-					else if(m_order == eNavOrder_RECAL_REAR)
-					{
-						m_targetDir = eDir_FORWARD;
-					}
-					else
-						ASSERT(false);
-
 					//Escape from wall
+                	m_targetDir = computeRecalEscapdeDir();
 					m_target.translatePolar(m_target.hDegree(), m_targetDir * escapeDist);
 					applyCmdToGoStraight(m_targetDir * escapeDist, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
 					m_state = eNavState_ESCAPING_WALL;
@@ -288,9 +265,40 @@ void Navigation::run()
                     m_order = eNavOrder_NOTHING;
                     m_state = eNavState_IDLE;
                 }
-
+            }
+            //If target is reached (in switch mode) then the recal failed
+            else if(!simulated && m_order == eNavOrder_RECAL_FACE //TODO a virer quand switch AR remis
+            		&& subOrderFinished() )
+            {
+            	if(triedCount < 1)
+            	{
+					triedCount++;
+					m_targetDir = computeRecalEscapdeDir();
+					applyCmdToGoStraight(m_targetDir * RECAL_RETRY_ESCAPE_DIST, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
+					LOG_ERROR("Failed to recal on border, escaped of " + String(m_targetDir * RECAL_RETRY_ESCAPE_DIST));
+					m_state = eNavState_ESCAPE_WALL_FAILED;
+					orderTimeout.arm(RECAL_TIMEOUT);
+				}
+				else
+            	{
+                	LOG_ERROR("Failed to recal on border, but still set position as it's would be worse not to do so.");
+                	setPosition(m_target, false);//position has already been symetrized
+                	klaxon.bip(5);
+                	m_order = eNavOrder_NOTHING;
+                	m_state = eNavState_IDLE;
+            	}
             }
             break;
+        }
+
+        case eNavState_ESCAPE_WALL_FAILED:
+        {
+        	if(subOrderFinished())
+        	{
+        		LOG_INFO("   retry position reached, do it again...");
+        		m_state = eNavState_FACING_WALL;
+        	}
+        	break;
         }
 
         case eNavState_ESCAPING_WALL:
@@ -406,6 +414,14 @@ void Navigation::setPosition(Pose2D newPose, bool sym)
 {
     //prevent any interrupt from occurring so that position fields are not corrupted
     enterCriticalSection();
+
+    stepperL.setCurrentPosition(0);
+    oldStepL = 0;
+    stepperL.move(0); //move(0) is equivalent to stay on current position
+    stepperR.setCurrentPosition(0);
+    oldStepR = 0;
+    stepperR.move(0);
+
     if(sym)
         m_pose = newPose.toAmbiPose(m_color);
     else
@@ -420,7 +436,7 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
-
+    triedCount = 0;
     m_order = eNavOrder_GOTO;
 
     //Symetrize target
@@ -453,7 +469,7 @@ void Navigation::goToCap(Pose2D target, eDir sens, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
-
+    triedCount = 0;
     m_order = eNavOrder_GOTO_CAP;
 
     //Symetrize target
@@ -505,7 +521,7 @@ void Navigation::turnDelta(float angle, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
-
+    triedCount = 0;
     LOG_INFO(String("   new request : turnDelta(") + angle + "°).");
     float target = angle;
 
@@ -578,6 +594,7 @@ void Navigation::recalFace(eTableBorder border, Distance _escapeDir)
     CHECK_ONE_ORDER_AT_A_TIME()
     m_order = eNavOrder_RECAL_FACE;
     m_targetDir = eDir_FORWARD;
+    triedCount = 0;
     m_target = getRecalPointFace(border).toAmbiPose(m_color);
     double angleDelta = moduloPiPi(m_target.h - m_pose.h);
 
@@ -601,6 +618,7 @@ void Navigation::recalRear(eTableBorder border, Distance _escapeDir)
     CHECK_ONE_ORDER_AT_A_TIME()
     m_order = eNavOrder_RECAL_REAR;
     m_targetDir = eDir_BACKWARD;
+    triedCount = 0;
     m_target = getRecalPointRear(border).toAmbiPose(m_color);;
     double angleDelta = moduloPiPi(m_target.h - m_pose.h);
 
@@ -620,7 +638,7 @@ void Navigation::graphTo(Pose2D target, eDir sens)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
-
+    triedCount = 0;
     LOG_INFO(String("   new request :  graphTo ") + target.toString() + ", computation in progress...");
 
     //Computation is delayed for a further time to prevent the caller from making the graph search
@@ -724,6 +742,23 @@ eDir Navigation::findOptimalDir(Pose2D const& start, Pose2D const& end, bool isG
             *duration = moveDurRear;
         return eDir_BACKWARD;
     }
+}
+
+eDir Navigation::computeRecalEscapdeDir()
+{
+	if(m_order == eNavOrder_RECAL_FACE)
+	{
+		return eDir_BACKWARD;
+	}
+	else if(m_order == eNavOrder_RECAL_REAR)
+	{
+		return eDir_FORWARD;
+	}
+	else
+	{
+		ASSERT(false);
+		return eDir_BACKWARD;
+	}
 }
 
 /**---------------------------------
@@ -980,29 +1015,45 @@ bool Navigation::subOrderFinished()
 Pose2D Navigation::getRecalPointFace(eTableBorder border)
 {
     switch (border) {
-        case eTableBorder_TOP_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xav(), 90);
+        case eTableBorder_REFEREE_Y:
+            return Pose2D(m_pose.toAmbiPose(m_color).x, TABLE_REFEREE_Y - conf->xav(), 90);
             break;
 
-        case eTableBorder_START_WALL_Y:
+        case eTableBorder_B_CORNER_Y:
             return Pose2D(m_pose.toAmbiPose(m_color).x, 618 - conf->xav(), 90);
             break;
 
         case eTableBorder_BOT_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, -TABLE_TOP_Y + conf->xav(), -90);
+            return Pose2D(m_pose.toAmbiPose(m_color).x, -TABLE_REFEREE_Y + conf->xav(), -90);
             break;
 
-        case eTableBorder_OPP_SIDE_X:
+        case eTableBorder_OPP_B_CORNER_X:
             return Pose2D(-TABLE_BORDER_X + conf->xav(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
-        case eTableBorder_OWN_SIDE_X:
+        case eTableBorder_OWN_B_CORNER_X:
             return Pose2D(TABLE_BORDER_X - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
         case eTableBorder_FLIP_FLOP_X:
             return Pose2D(790 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
             break;
+
+        case eTableBorder_OWN_BORDER_3_X:
+        	return Pose2D(68 + conf->xav(), m_pose.toAmbiPose(m_color).y, 180);
+        	break;
+
+        case eTableBorder_OPP_BORDER_3_X:
+        	return Pose2D(-68 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
+        	break;
+
+        case eTableBorder_OWN_BORDER_5_X:
+        	return Pose2D(TABLE_BORDER_X - 108 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
+        	break;
+
+        case eTableBorder_OPP_BORDER_1_X:
+        	return Pose2D(-TABLE_BORDER_X + 108 + conf->xav(), m_pose.toAmbiPose(m_color).y, 180);
+        	break;
 
         default:
             ASSERT(false);
@@ -1014,29 +1065,45 @@ Pose2D Navigation::getRecalPointFace(eTableBorder border)
 Pose2D Navigation::getRecalPointRear(eTableBorder border)
 {
     switch (border) {
-        case eTableBorder_TOP_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, TABLE_TOP_Y - conf->xar(), -90);
+        case eTableBorder_REFEREE_Y:
+            return Pose2D(m_pose.toAmbiPose(m_color).x, TABLE_REFEREE_Y - conf->xar(), -90);
             break;
 
-        case eTableBorder_START_WALL_Y:
+        case eTableBorder_B_CORNER_Y:
             return Pose2D(m_pose.toAmbiPose(m_color).x, 618 - conf->xar(), -90);
             break;
 
         case eTableBorder_BOT_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, -TABLE_TOP_Y + conf->xar(), 90);
+            return Pose2D(m_pose.toAmbiPose(m_color).x, -TABLE_REFEREE_Y + conf->xar(), 90);
             break;
 
-        case eTableBorder_OPP_SIDE_X:
+        case eTableBorder_OPP_B_CORNER_X:
             return Pose2D(-TABLE_BORDER_X + conf->xar(), m_pose.toAmbiPose(m_color).y, 0);
             break;
 
-        case eTableBorder_OWN_SIDE_X:
+        case eTableBorder_OWN_B_CORNER_X:
             return Pose2D(TABLE_BORDER_X - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
             break;
 
         case eTableBorder_FLIP_FLOP_X:
             return Pose2D(790 - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
             break;
+
+        case eTableBorder_OWN_BORDER_3_X:
+        	return Pose2D(-68 - conf->xar(), m_pose.toAmbiPose(m_color).y, 0);
+        	break;
+
+        case eTableBorder_OPP_BORDER_3_X:
+        	return Pose2D(68 + conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
+        	break;
+
+        case eTableBorder_OWN_BORDER_5_X:
+        	return Pose2D(TABLE_BORDER_X - 108 - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
+        	break;
+
+        case eTableBorder_OPP_BORDER_1_X:
+        	return Pose2D(-TABLE_BORDER_X + 108 + conf->xar(), m_pose.toAmbiPose(m_color).y, 0);
+        	break;
 
         default:
             ASSERT(false);
@@ -1095,6 +1162,7 @@ String Navigation::stateToString(eNavState state)
         ENUM2STR(eNavState_CONTACTING_WALL);
 		ENUM2STR(eNavState_PUSHING_WALL);
         ENUM2STR(eNavState_ESCAPING_WALL);
+        ENUM2STR(eNavState_ESCAPE_WALL_FAILED);
         ENUM2STR(eNavState_WAIT_OPP_ESCAPE_RECALL);
         ENUM2STR(eNavState_BLOCKED);
         ENUM2STR(eNavState_STOPPING_IN_BLOCKED);

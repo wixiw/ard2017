@@ -226,8 +226,7 @@ void HmiThread::run()
 
 bool HmiThread::isStartPlugged() const
 {
-	volatile bool test = tirette.read();
-    return test;
+    return tirette.read();
 }
 
 bool HmiThread::isColorSwitchOnPrefered() const

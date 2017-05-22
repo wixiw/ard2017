@@ -70,7 +70,7 @@ void InstallPen::update(TimeMs sinceLastCall)
             if(robot.nav.targetReached())
             {
             	state = IP_RECAL_REFEREE_Y;
-                robot.nav.recalFace(eTableBorder_TOP_Y, NO_ESCAPE);
+                robot.nav.recalFace(eTableBorder_REFEREE_Y, NO_ESCAPE);
                 LOG_INFO("Install : Recaling on Referee border");
             }
             if(robot.nav.blocked())
@@ -152,7 +152,7 @@ void InstallTration::start()
     status = InProgress;
     robot.nav.setPosition(TRATION_INSTALL_POSE);
     robot.kinematics.setSpeedAcc(INSTALL_VMAX , INSTALL_TURN_VMAX, INSTALL_AMAX, INSTALL_TURN_AMAX);
-    robot.nav.recalFace(eTableBorder_TOP_Y, NO_ESCAPE);
+    robot.nav.recalFace(eTableBorder_REFEREE_Y, NO_ESCAPE);
     LOG_INFO("Install : Recaling on Referee border");
 }
 

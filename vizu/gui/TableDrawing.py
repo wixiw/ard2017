@@ -419,16 +419,28 @@ class RobotWidget():
                 yf = -1000 + cfg.xav
         #Robot is facing left
         if 178 < fabs(h):
+            #Robot is recaling against our 3 border
+            if y < -200  and -200 < x and x - cfg.xav < 68:
+                xf = 68 + cfg.xav
+            #Robot is recaling against opponent 1 border
+            if -172 < y  and y < 322 and x - cfg.xav < -1500 + 108:
+                xf = -1500 + 108 + cfg.xav
             #Robot is recal'ing against left table border 
-            if y < 618 and x - cfg.xav < -1500 :
+            if 322 < y and y < 618 and x - cfg.xav < -1500 :
                 xf = -1500 + cfg.xav
             #Robot is recal'ing against start bascule
             if 618 < y  and x - cfg.xav < -790 :
                 xf = -790 + cfg.xav
         #Robot is facing right
         if fabs(h) < 2 :
+            #Robot is recaling against opp 3 border
+            if y < -200  and -68 < x + cfg.xav and x < 200:
+                xf = -68 - cfg.xav
+            #Robot is recaling against our 5 border
+            if -172 < y  and y < 322 and 1500 - 108 < x + cfg.xav:
+                xf = 1500 - 108 - cfg.xav
             #Robot is recal'ing against right table border 
-            if y < 618 and 1500 < x + cfg.xav :
+            if 322 < y and y < 618 and 1500 < x + cfg.xav :
                 xf = 1500 - cfg.xav
             #Robot is recal'ing against start bascule
             if 618 < y  and 790 < x + cfg.xav :
@@ -452,16 +464,28 @@ class RobotWidget():
                 yf = 618 - cfg.xar
         #Robot is facing left
         if 178 < fabs(h):
-            #Robot is recal'ing against right table border 
-            if y < 618 and 1500 < x + cfg.xar :
+            #Robot is recaling against opp 3 border
+            if y < -200  and -68 < x + cfg.xar and x < 200:
+                xf = -68 - cfg.xar
+            #Robot is recaling against our 5 border
+            if -172 < y  and y < 322 and 1500 - 108 < x + cfg.xar:
+                xf = 1500 - 108 - cfg.xar
+            #Robot is recal'ing against left table border 
+            if 322 < y and y < 618 and 1500 < x + cfg.xar :
                 xf = 1500 - cfg.xar
             #Robot is recal'ing against start bascule
             if 618 < y  and 790 < x + cfg.xar :
                 xf = 790 - cfg.xar  
         #Robot is facing right
         if fabs(h) < 2 :
-            #Robot is recal'ing against left table border 
-            if y < 618 and x - cfg.xar < -1500 :
+            #Robot is recaling against our 3 border
+            if y < -200  and -200 < x and x - cfg.xar < 68:
+                xf = 68 + cfg.xar
+            #Robot is recaling against opponent 1 border
+            if -172 < y  and y < 322 and x - cfg.xar < -1500 + 108:
+                xf = -1500 + 108 + cfg.xar
+            #Robot is recal'ing against right table border 
+            if 322 < y and y < 618 and x - cfg.xar < -1500 :
                 xf = -1500 + cfg.xar
             #Robot is recal'ing against start bascule
             if 618 < y  and x - cfg.xar < -790 :

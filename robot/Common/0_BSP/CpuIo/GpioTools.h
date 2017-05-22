@@ -123,6 +123,45 @@ namespace ard
     };
 
     /**
+     * Fake class to be a placeholder for missing electronic
+     */
+    class FakeInput
+    {
+    public:
+        /**
+         * Simulates an input which is always at "value" level
+         */
+    	FakeInput(eGpioLevel value){level = value;};
+        void setDebounceHigh(uint32_t debounce){};
+        void setDebounceLow(uint32_t debounce){};
+        void reset(){};
+
+        eGpioLevel read() const
+        {
+            return level;
+        }
+
+        eGpioLevel readRaw() const
+        {
+        	return level;
+        }
+
+        bool isRising() const
+        {
+            return false;
+        }
+
+        bool isFalling() const
+        {
+            return false;
+        }
+
+
+    private:
+        eGpioLevel level;
+    };
+
+    /**
      * This class is used to create a pwm on a normal gpio
      * Typical use for leds
      */
