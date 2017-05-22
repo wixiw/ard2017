@@ -142,6 +142,12 @@ apb_ActuatorsState const& ActuatorThread::serealize()
     return state;
 }
 
+void ActuatorThread::startAll()
+{
+	lifter.start();
+	arms.start();
+}
+
 void ActuatorThread::disableAll()
 {
     servoLifter.disable();
@@ -190,7 +196,7 @@ void ActuatorThread::actCmd(eActCmd cmd)
 			arms.stop();
 			break;
 		case eActCmd_AC_ARMS_SWALLOW:
-			arms.swallow(0);
+			arms.swallow();
 			break;
 		case eActCmd_AC_ARMS_FASTPOO:
 			arms.fastPoo(0);
@@ -200,7 +206,7 @@ void ActuatorThread::actCmd(eActCmd cmd)
 			//arms.poo();
 			break;
 		case eActCmd_AC_ARMS_RETRACT:
-			arms.retractArms();
+			arms.retract();
 			break;
 		case eActCmd_AC_ARMS_ROT_ENGAGE:
 			NOT_IMPLEMENTED(); //TODO
@@ -230,11 +236,6 @@ void ActuatorThread::actCmd(eActCmd cmd)
 			break;
 
 	}
-}
-
-void ActuatorThread::swallow(bool on)
-{
-    NOT_IMPLEMENTED();
 }
 
 void ActuatorThread::turnWheels(eWheelsCmd on)

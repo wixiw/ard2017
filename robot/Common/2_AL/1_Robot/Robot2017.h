@@ -91,6 +91,15 @@ namespace ard
         //Cut any moving actuator/navigation
         void funnyActionEnded() override;
 
+        //Disable actuators power when waiting match start
+    	virtual void disableActuatorsPower() override;
+
+        //Send the initial commands to all actuators
+        virtual void actuatorsInitialCmd() override;
+
+        //Inform robot components that they are simulated
+        virtual void setSimulated(bool simulated) override;
+
         //-------------------------------------------------------------------
         // start of Strategy API
         //-------------------------------------------------------------------

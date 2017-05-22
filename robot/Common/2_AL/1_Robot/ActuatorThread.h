@@ -40,9 +40,6 @@ namespace ard
         /**---------------------------------
          * Strat API
          ---------------------------------*/
-        //Open arm and make wheel turn to swallow several cylinder on table
-        void swallow(bool on);
-
         //1 : swallow, -1 : expusle, 0 : stops
         void turnWheels(eWheelsCmd on);
 
@@ -57,6 +54,9 @@ namespace ard
 
         //Return the state of faceUpCylinderCmd()
         eFaceUpStatus getFaceUpStatus();
+
+        //Initiate all actuators systems
+        void startAll();
 
         //disable all actuators except those for used in funny actionn (typically used at end of match)
         void disableAll();
@@ -100,13 +100,14 @@ namespace ard
         AccelServo    servoRotator;
         AccelServo    servo8;
 
+        Lifter        lifter;
+        Arms          arms;
+        FaceUp        faceUp;
+
     private:
         apb_ActuatorsState state; //cache to hold telemetry data
 
         YakardTimer   fsmTimeWheel;
-        Lifter        lifter;
-        Arms          arms;
-        FaceUp        faceUp;
 
         KinematicManager& kinematics;
     };

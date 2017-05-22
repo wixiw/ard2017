@@ -185,6 +185,24 @@ void Robot2017::funnyActionEnded()
     actuators.servoFunnyAction.disable();
 }
 
+void Robot2017::disableActuatorsPower()
+{
+	actuators.disableAll();
+}
+
+void Robot2017::actuatorsInitialCmd()
+{
+	actuators.startAll();
+}
+
+void Robot2017::setSimulated(bool simulated)
+{
+    detection.simulated = simulated;
+    nav.simulated = simulated;
+    actuators.arms.setSimulation(simulated);
+    actuators.lifter.setSimulation(simulated);
+}
+
 void Robot2017::setConfig(apb_Configuration const& newConf)
 {
 #ifdef BUILD_LOG

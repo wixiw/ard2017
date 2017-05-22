@@ -64,9 +64,12 @@ namespace ard
         /**
          * Get the current robot position
          */
-        Pose2D getPosition()
+        Pose2D getPosition(bool sym = true) const
         {
-            return m_pose;
+        	if(sym)
+        		return m_pose.toAmbiPose(m_color);
+        	else
+        		return m_pose;
         }
 
         /**

@@ -37,7 +37,7 @@ void OppDetection::setColor(eColor c)
     color = c;
 }
 
-bool OppDetection::isOpponentOnPath(eDir direction, Pose2D& robotPose)
+bool OppDetection::isOpponentOnPath(eDir direction, Pose2D const& robotPose)
 {
 	if(!avoidanceActive)
 		return false;
@@ -58,9 +58,10 @@ bool OppDetection::isOpponentOnPath(eDir direction, Pose2D& robotPose)
     }
 }
 
-bool OppDetection::isOpponentAhead(Pose2D robotPose)
+bool OppDetection::isOpponentAhead(Pose2D const& robotPose)
 {
 	ASSERT_CONFIGURED();
+	Pose2D pose = robotPose;
 
 	if(!avoidanceActive)
 		return false;
@@ -70,7 +71,7 @@ bool OppDetection::isOpponentAhead(Pose2D robotPose)
     if(   (simulated && fakeRobot)
       || (!simulated && omronFront.read()) == GPIO_HIGH)
     {
-        robotPose.translatePolar(robotPose.hDegree(), conf->xav() + conf->avoidanceDistanceFront());
+    	pose.translatePolar(robotPose.hDegree(), conf->xav() + conf->avoidanceDistanceFront());
         opponentPresent |= isDetectionValid(robotPose);
     }
 
@@ -82,9 +83,10 @@ bool OppDetection::isOpponentAhead(Pose2D robotPose)
     return opponentPresent;
 }
 
-bool OppDetection::isOpponentBehind(Pose2D robotPose)
+bool OppDetection::isOpponentBehind(Pose2D const& robotPose)
 {
 	ASSERT_CONFIGURED();
+	Pose2D pose = robotPose;
 
 	if(!avoidanceActive)
 		return false;
@@ -94,7 +96,7 @@ bool OppDetection::isOpponentBehind(Pose2D robotPose)
     if(   (simulated && fakeRobot)
       || (!simulated && omronRear.read()) == GPIO_HIGH)
     {
-        robotPose.translatePolar(robotPose.hDegree(), - conf->xar() - conf->avoidanceDistanceRear());
+        pose.translatePolar(robotPose.hDegree(), - conf->xar() - conf->avoidanceDistanceRear());
         opponentPresent |= isDetectionValid(robotPose);
     }
 

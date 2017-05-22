@@ -96,7 +96,6 @@ void Lifecycle::networkConfigRequest(uint8_t strategyId_, eColor matchColor, boo
 {
     configureMatch(strategyId_, matchColor, _simulated);
     fsm.raise_networkConfigRequest();
-    nav.simulated = _simulated;
 }
 
 void Lifecycle::configureColor()
@@ -167,6 +166,17 @@ void Lifecycle::displayMatchRGB(sc_integer blink)
 
 }
 
+void Lifecycle::actuatorsInitialCmd()
+{
+	if(listener)
+		listener->actuatorsInitialCmd();
+}
+
+void Lifecycle::disableActuatorsPower()
+{
+	if(listener)
+		listener->disableActuatorsPower();
+}
 
 void Lifecycle::readInputs()
 {
@@ -328,8 +338,10 @@ void Lifecycle::stopMode()
 
 void Lifecycle::configureMatch(uint8_t strategyId_, eColor _matchColor, bool _simulated)
 {
+	//Configure simulation mode
     simulated = _simulated;
-    detection.simulated = _simulated;
+    if(listener)
+    	listener->setSimulated(_simulated);
 
     //Check selected strategy
     if( nbRegisteredStrats <= strategyId_)

@@ -171,7 +171,7 @@ void Navigation::run()
         case eNavState_WAIT_OPP_MOVE:
         {
             //Check if opponent has left
-            if( !detection.isOpponentOnPath(m_targetDir, m_pose) )
+            if( !detection.isOpponentOnPath(m_targetDir, getPosition(true)) )
             {
                 LOG_INFO("Opponent has moved away, continuing order.");
                 action_goingToTarget();
@@ -296,8 +296,8 @@ void Navigation::run()
         case eNavState_ESCAPING_WALL:
         {
             //check for opponent presence (if avoidance system is active)
-            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(m_pose))
-            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(m_pose)) )
+            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(getPosition(true)))
+            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(getPosition(true))) )
             {
                 //Stops as an opponent is detected
                 enterCriticalSection();
@@ -321,8 +321,8 @@ void Navigation::run()
         case eNavState_WAIT_OPP_ESCAPE_RECALL:
         {
             //check for opponent presence (if avoidance system is active)
-            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(m_pose))
-            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(m_pose)) )
+            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(getPosition(true)))
+            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(getPosition(true))) )
             {
                 klaxon.playTone(KLAXON_FREQ, PERIOD_NAVIGATION);
             }

@@ -313,6 +313,14 @@ class RobotWidget():
                 drawVBicolorCylinder(self.p, 180, 0, 0)
         
     def drawCarriage(self, cfg, leftArm, rightArm):
+        
+        if self.actuatorsOut:
+            self.drawLeftArm(cfg, 1000)
+            self.drawRightArm(cfg, 1000)
+        
+        self.drawLeftArm(cfg, leftArm)
+        self.drawRightArm(cfg, rightArm)
+        
         self.p.setPen(markPen)
         self.p.setBrush(self.color)
         carriage = QPainterPath()
@@ -357,15 +365,10 @@ class RobotWidget():
 #         carriage.lineTo(cfg.xavExtended, -cfg.yside)
 #         self.p.drawPath(carriage)
 
-        if self.actuatorsOut:
-            self.drawLeftArm(cfg, 1000)
-            self.drawRightArm(cfg, 1000)
-        
-        self.drawLeftArm(cfg, leftArm)
-        self.drawRightArm(cfg, rightArm)
+
       
     def drawRightArm(self, cfg, position):
-            delta = map(position, 0., 1000., 123., 185.)
+            delta = map(position, 230., 750., 110., 185.)
             self.p.setPen(markPen)
             self.p.setBrush(jetBlack)
             drawCircle(self.p, delta,  60, 22)
@@ -380,7 +383,7 @@ class RobotWidget():
             self.p.drawPath(arm)
             
     def drawLeftArm(self, cfg, position):    
-            delta = map(position, 0., 1000., 123., 185.)
+            delta = map(position, 230., 750., 110., 185.)
             self.p.setPen(markPen)
             self.p.setBrush(jetBlack)
             drawCircle(self.p, delta,  -60, 22)

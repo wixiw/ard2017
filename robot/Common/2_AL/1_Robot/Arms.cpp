@@ -31,12 +31,12 @@ void Arms::start()
     fsm.getSCI_Strategy()->raise_start();
 }
 
-void Arms::swallow(uint8_t nbCylinders)
+void Arms::swallow()
 {
-    fsm.getSCI_Strategy()->raise_swallow(nbCylinders);
+    fsm.getSCI_Strategy()->raise_swallow();
 }
 
-void Arms::retractArms()
+void Arms::retract()
 {
     fsm.getSCI_Strategy()->raise_retractArms();
 }
@@ -71,6 +71,16 @@ void Arms::lift()
 	acts.actCmd(eActCmd_AC_LIFTER_LIFT);
 }
 
+void Arms::logInfo(sc_string msg)
+{
+	LOG_INFO(String("[Arms] ") + msg);
+}
+
+void Arms::logError(sc_string msg)
+{
+	LOG_ERROR(String("[Arms] ") + msg);
+}
+
 void Arms::update(TimeMs sinceLastCall)
 {
     fsm.set_leftExtendedSwitch(acts.switchArmLout.read());
@@ -90,4 +100,10 @@ void Arms::update(TimeMs sinceLastCall)
         acts.servoLeftWheel.    goTo(fsm.get_leftWheel());
         acts.servoRightWheel.   goTo(fsm.get_rightWheel());
     }
+}
+
+//configure if component is simulated or not
+void Arms::setSimulation(bool simulated)
+{
+	fsm.set_simulation(simulated);
 }

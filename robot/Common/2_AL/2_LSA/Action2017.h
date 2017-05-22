@@ -91,26 +91,6 @@ namespace ard
             robot.hmi.ledRGB.set((eRgb)(color), eLedState(blink));
         }
 
-        bool isStartPlugged() override
-        {
-            return robot.hmi.isStartPlugged();
-        }
-
-        bool isColorSwitchOnPrefered() override
-        {
-            return robot.hmi.isColorSwitchOnPrefered();
-        }
-
-        bool isUser1SwitchOn() override
-        {
-            return robot.hmi.user1.read();
-        }
-
-        bool isUser2SwitchOn() override
-        {
-            return robot.hmi.user2.read();
-        }
-
         void logDebug(sc_string msg) override
         {
             LOG_DEBUG(String(msg));
@@ -150,13 +130,13 @@ namespace ard
         {
             return robot.getConfig().xavExtended;
         }
+        sc_integer xarExtended() override
+        {
+            return robot.getConfig().xarExtended;
+        }
         sc_integer xouter() override
         {
             return robot.getConfig().xouter;
-        }
-        sc_integer getRemainingTime() override
-        {
-            return robot.chrono.getStrategyRemainingTime();
         }
         void setStatus(sc_integer _status) override
         {
@@ -178,7 +158,7 @@ namespace ard
         {
             return robot.chrono.getTime();
         }
-        sc_integer matchRemaining() override
+        sc_integer matchRemainingTime() override
         {
             return robot.chrono.getStrategyRemainingTime();
         }
@@ -186,6 +166,20 @@ namespace ard
         /**
          * Navigation
          */
+        sc_integer x(sc_boolean sym) override
+		{
+        	return robot.nav.getPosition(sym).x;
+		}
+
+        sc_integer y(sc_boolean sym) override
+		{
+        	return robot.nav.getPosition(sym).y;
+		}
+        sc_integer h(sc_boolean sym) override
+		{
+        	return robot.nav.getPosition(sym).h;
+		}
+
         void enableAvoidance(sc_boolean on) override
         {
             robot.detection.enableAvoidance(on);
@@ -309,7 +303,10 @@ namespace ard
          */
         void swallow(sc_boolean on) override
         {
-            robot.actuators.swallow(on);
+        	if(on)
+        		robot.actuators.arms.swallow();
+        	else
+        		robot.actuators.arms.retract();
         }
 
         void turnWheels(sc_integer on) override
@@ -341,6 +338,16 @@ namespace ard
                     &&robot.actuators.servoRightArm.isTargetReached();
         }
 
+        sc_boolean armsReady() override
+        {
+            return robot.actuators.arms.isReady();
+        }
+
+        sc_boolean lifterReady() override
+        {
+            return robot.actuators.lifter.isReady();
+        }
+
         void turnCylinder(sc_boolean on) override
         {
             return robot.actuators.turnCylinder(on);
@@ -354,6 +361,11 @@ namespace ard
         sc_integer getFaceUpStatus() override
         {
             return robot.actuators.getFaceUpStatus();
+        }
+
+        void actCmd(sc_integer cmdId) override
+        {
+            return robot.actuators.actCmd((eActCmd)(cmdId));
         }
 
         sc_boolean switchArmLout() override
@@ -378,14 +390,9 @@ namespace ard
 
         sc_boolean omronCylinder() override
         {
-            NOT_IMPLEMENTED();
+            return robot.actuators.omronCylinder.read();
         }
-
-        sc_boolean switchCylinder() override
-        {
-            NOT_IMPLEMENTED();
-        }
-
+        
         sc_boolean switchLifterUp() override
         {
             return robot.actuators.switchLifterUp.read();

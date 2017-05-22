@@ -36,6 +36,13 @@ namespace ard
         //                         it's expected to be called periodically
         void update(TimeMs sinceLastCall) override;
 
+        //configure if component is simulated or not
+        void setSimulation(bool simulated);
+
+        /**
+         * Strategy API
+         */
+
         //FSM Callback
         void start();
 
@@ -51,11 +58,21 @@ namespace ard
         //FSM Callback : inform that poo is finished
         void pooEnded();
 
+        //Returns true when the Lifter is ready to lift or poo the next cylinder
+        bool isReady() { return fsm.getSCI_Strategy()->get_ready();};
+
+        /**
+         * FSM operation implementation
+         */
+
         //FSM Callback
         void blocked() override;
 
-        //Returns true when the Lifter is ready to lift or poo the next cylinder
-        bool isReady() { return fsm.getSCI_Strategy()->get_ready();};
+        //FSM Callback
+        void logInfo(sc_string msg) override;
+
+        //FSM Callback
+        void logError(sc_string msg) override;
 
     private:
         //the yakindu generated code
@@ -63,6 +80,7 @@ namespace ard
 
         //Actuators list
         ActuatorThread& acts;
+
     };
 
 } /* namespace ard */

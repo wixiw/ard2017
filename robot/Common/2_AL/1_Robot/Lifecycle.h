@@ -60,6 +60,15 @@ namespace ard
 
         //The funny action is finished, robot shall stop doing anything
         virtual void funnyActionEnded() = 0;
+
+        //Disable actuators power when waiting match start
+    	virtual void disableActuatorsPower() = 0;
+
+        //Send the initial commands to all actuators
+        virtual void actuatorsInitialCmd() = 0;
+
+        //Inform the robot that it is in a simulated mode
+        virtual void setSimulated(bool simulated) = 0;
     };
 
     /**
@@ -132,6 +141,12 @@ namespace ard
 
         //FSM callback
         void displayMatchRGB(sc_integer blink);
+
+        //FSM callback
+        void actuatorsInitialCmd();
+
+        //FSM callback
+        void disableActuatorsPower();
 
         void logDebug(sc_string msg) override
         {

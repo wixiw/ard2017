@@ -35,17 +35,21 @@ namespace ard
         void stop();
 
         //Open arm and make wheel turn to swallow several cylinder on table
-        void swallow(uint8_t nbCylinders);
+        void swallow();
 
         //Stop turning wheels and retract arms to be able to move safely on table
-        void retractArms();
+        void retract();
 
         //Poo a certain number of cylinder (it doesn't matter if it's on table or in a container)
         void fastPoo(uint8_t nbCylinders);
-
-        /**---------------------------------
-         * Container thread interface
-         ---------------------------------*/
+	
+		//Returns true when the Lifter is ready to lift or poo the next cylinder
+		bool isReady() { return fsm.getSCI_Strategy()->get_ready();};
+				
+				
+        /**
+         * FSM operation implementation
+         */
 
         //FSM Callback
         void blocked() override;
@@ -53,7 +57,15 @@ namespace ard
         //FSM Callback
         void lift() override;
 
-        void setLifter(Lifter& _lifter){lifter = &_lifter;};
+        //FSM Callback
+        void logInfo(sc_string msg) override;
+
+        //FSM Callback
+        void logError(sc_string msg) override;
+
+        /**---------------------------------
+         * Container thread interface
+         ---------------------------------*/
 
         //Implements IMiniThread: init the state machine
         void init() override;
@@ -62,8 +74,10 @@ namespace ard
         //                         it's expected to be called periodically
         void update(TimeMs sinceLastCall) override;
 
-        //Returns true when the Lifter is ready to lift or poo the next cylinder
-        bool isReady() { return fsm.getSCI_Strategy()->get_ready();};
+        void setLifter(Lifter& _lifter) {lifter = &_lifter;};
+
+        //configure if component is simulated or not
+        void setSimulation(bool simulated);
 
     private:
         //the yakindu generated code

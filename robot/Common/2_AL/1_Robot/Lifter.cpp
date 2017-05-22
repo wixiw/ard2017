@@ -59,6 +59,16 @@ void Lifter::blocked()
 	fsm.set_started(false);
 }
 
+void Lifter::logInfo(sc_string msg)
+{
+	LOG_INFO(String("[Lifter] ") + msg);
+}
+
+void Lifter::logError(sc_string msg)
+{
+	LOG_ERROR(String("[Lifter] ") + msg);
+}
+
 void Lifter::update(TimeMs sinceLastCall)
 {
     fsm.set_downSwitch(acts.switchLifterDown.read());
@@ -72,4 +82,9 @@ void Lifter::update(TimeMs sinceLastCall)
     	acts.servoLifter.goTo(fsm.get_servoCmd());
 }
 
+//configure if component is simulated or not
+void Lifter::setSimulation(bool simulated)
+{
+	fsm.set_simulation(simulated);
+}
 

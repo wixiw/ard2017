@@ -32,13 +32,13 @@ namespace ard
         void setColor(eColor c);
 
         //Test if opponent is on robot path, calls isOpponentAhead() or isOpponentBehind()
-        bool isOpponentOnPath(eDir direction, Pose2D& robotPose);
+        bool isOpponentOnPath(eDir direction, Pose2D const& robotPose);
 
         //Test if opponent is ahead of robot
-        bool isOpponentAhead(Pose2D robotPose);
+        bool isOpponentAhead(Pose2D const& robotPose);
 
         //Test if opponent is behind robot
-        bool isOpponentBehind(Pose2D robotPose);
+        bool isOpponentBehind(Pose2D const& robotPose);
 
         //Active/Deactivate avoidance system
         void enableAvoidance(bool on);
