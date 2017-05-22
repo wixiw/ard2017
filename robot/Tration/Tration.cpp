@@ -39,9 +39,9 @@ void Tration::init(Robot2017Listener* client)
     //Retrieve and modify config
     apb_Configuration cfg = getConfig();
     strcpy(cfg.serialNumber,    "Tration");
-    cfg.leftWheelDiameter       = 59.340; //copied from PEN 19/may
-    cfg.rightWheelDiameter      = 59.340; //copied from PEN 19/may
-    cfg.voie                    = 160;    //copied from PEN 19/may
+    cfg.leftWheelDiameter       = 59.466; //calibrated 23 may
+    cfg.rightWheelDiameter      = 59.466; //calibrated 23 may
+    cfg.voie                    = 160.1;  //calibrated 23 may
     setConfig(cfg);
 }
 
