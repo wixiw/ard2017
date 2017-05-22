@@ -237,7 +237,7 @@ void Navigation::run()
         case eNavState_PUSHING_WALL:
         {
             //If target is reached (in switch mode) then the recal failed
-            if(!simulated && subOrderFinished())
+            if(!simulated && subOrderFinished() && false) //TODO en attendant d'avoir teste les switch
             {
                 LOG_ERROR("Failed to recal on border.");
                 klaxon.bip(5);
