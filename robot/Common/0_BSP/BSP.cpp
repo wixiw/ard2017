@@ -44,7 +44,7 @@ BSP::BSP ()
     pinMode (LED_DUE_L, 		    OUTPUT);
     pinMode (BORDURE_ARC,           INPUT);
     pinMode (DEBUG_1,               OUTPUT);
-    pinMode (BUTTON_START, 	        INPUT);
+    pinMode (BUTTON_START, 	        INPUT_PULLUP);
     pinMode (BUTTON_COLOR, 	        INPUT);
     pinMode (BUTTON_USER1, 	        INPUT);
     pinMode (BUTTON_USER2, 	        INPUT);
