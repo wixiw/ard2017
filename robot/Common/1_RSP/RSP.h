@@ -24,7 +24,7 @@
 #include "Actuators/AccelStepper.h"
 #include "Actuators/Buzzer.h"
 #include "Actuators/HomingServo.h"
-#include "Actuators/Servo.h.old"
+#include "Actuators/Servo.h"
 #include "Motion/Graph.h"
 #include "Motion/Navigation.h"
 #include "Motion/OppDetection.h"

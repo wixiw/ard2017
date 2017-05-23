@@ -9,7 +9,7 @@
 #define ROBOT_COMMON_1_RSP_ACTUATORS_ACCELSERVO_H_
 
 #include "ArdOs.h"
-#include "Servo.h.old"
+#include "Servo.h"
 
 namespace ard
 {
