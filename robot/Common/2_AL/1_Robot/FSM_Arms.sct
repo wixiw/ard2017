@@ -34,7 +34,7 @@
                 <outgoingTransitions xmi:id="_vVP_oD8DEee8xeItEO-Xbg" specification="after 300ms [simulation]" target="_lIHesD5-Eee2xNbiZ_Uvvw"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_dZwosD56Eee2xNbiZ_Uvvw" specification="entry/&#xD;&#xA;lift()" name="Lifting" incomingTransitions="_pARcAD5-Eee2xNbiZ_Uvvw _wvX0QD8DEee8xeItEO-Xbg">
-                <outgoingTransitions xmi:id="_WPP_wD-sEeez7OOREN4duQ" specification="[lifterReady()]" target="_Ynp-4D5qEee2xNbiZ_Uvvw"/>
+                <outgoingTransitions xmi:id="_WPP_wD-sEeez7OOREN4duQ" specification="[lifterReady]" target="_Ynp-4D5qEee2xNbiZ_Uvvw"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_lIHesD5-Eee2xNbiZ_Uvvw" specification="entry/&#xD;&#xA;leftArm = ARM_MID_CMD;&#xD;&#xA;rightArm = ARM_MID_CMD" name="Reopen arms to let lifter work" incomingTransitions="_pWCNcD56Eee2xNbiZ_Uvvw _vVP_oD8DEee8xeItEO-Xbg">
                 <outgoingTransitions xmi:id="_pARcAD5-Eee2xNbiZ_Uvvw" specification="[armsInPosition]" target="_dZwosD56Eee2xNbiZ_Uvvw"/>
@@ -52,7 +52,7 @@
             <outgoingTransitions xmi:id="_ohBr0D-dEeez7OOREN4duQ" specification="Strategy.retractArms" target="_oxVMID-yEeez7OOREN4duQ"/>
             <regions xmi:id="_oOn_ID-bEeez7OOREN4duQ">
               <vertices xsi:type="sgraph:State" xmi:id="_y-EkYD-bEeez7OOREN4duQ" specification="entry/&#xD;&#xA;Strategy.ready = false;&#xD;&#xA;leftArm = ARM_OUT_CMD;&#xD;&#xA;rightArm = ARM_OUT_CMD;&#xD;&#xA;leftWheel = WHEEL_L_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_R_SWALLOW_CMD" name="Opening arms fully" incomingTransitions="_nAtagD-bEeez7OOREN4duQ _7w6qXD-sEeez7OOREN4duQ">
-                <outgoingTransitions xmi:id="_mfQy8D-eEeez7OOREN4duQ" specification="[armsInPosition()]" target="_mfLTYD-eEeez7OOREN4duQ"/>
+                <outgoingTransitions xmi:id="_mfQy8D-eEeez7OOREN4duQ" specification="[armsInPosition]" target="_mfLTYD-eEeez7OOREN4duQ"/>
                 <outgoingTransitions xmi:id="_tKmswD-iEeez7OOREN4duQ" specification="after 500ms [simulation]" target="_mfLTYD-eEeez7OOREN4duQ"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_mfLTYD-eEeez7OOREN4duQ" specification="entry/&#xD;&#xA;Strategy.ready = true" name="Arms in position" incomingTransitions="_mfQy8D-eEeez7OOREN4duQ _tKmswD-iEeez7OOREN4duQ">
@@ -70,7 +70,7 @@
                 <outgoingTransitions xmi:id="_7w1K7D-sEeez7OOREN4duQ" specification="after 300ms" target="__VFiYD-xEeez7OOREN4duQ"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_7w6DQD-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;Strategy.ready = true;&#xD;&#xA;lift()" name="Lifting" incomingTransitions="_7w9Gmz-sEeez7OOREN4duQ _7w9Gnz-sEeez7OOREN4duQ">
-                <outgoingTransitions xmi:id="_7w6qXD-sEeez7OOREN4duQ" specification="[lifterReady()]" target="_y-EkYD-bEeez7OOREN4duQ"/>
+                <outgoingTransitions xmi:id="_7w6qXD-sEeez7OOREN4duQ" specification="[lifterReady]" target="_y-EkYD-bEeez7OOREN4duQ"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_7w8fgD-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;leftArm = ARM_MID_CMD;&#xD;&#xA;rightArm = ARM_MID_CMD;&#xD;&#xA;leftWheel = WHEEL_L_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_R_SWALLOW_CMD" name="Reopen arms to let lifter work" incomingTransitions="_Rkdc4D-yEeez7OOREN4duQ _VDwOQD-yEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_7w9Gmz-sEeez7OOREN4duQ" specification="[armsInPosition]" target="_7w6DQD-sEeez7OOREN4duQ"/>
@@ -80,13 +80,13 @@
                 <outgoingTransitions xmi:id="_7w-70D-sEeez7OOREN4duQ" specification="after 1s" target="_7w0jsD-sEeez7OOREN4duQ"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="__VFiYD-xEeez7OOREN4duQ" specification="entry/&#xD;&#xA;leftArm = ARM_IN_CMD;&#xD;&#xA;rightArm = ARM_IN_CMD" name="Force swallow" incomingTransitions="_7w1K7D-sEeez7OOREN4duQ">
-                <outgoingTransitions xmi:id="_Rkdc4D-yEeez7OOREN4duQ" specification="[armsInPosition()]" target="_7w8fgD-sEeez7OOREN4duQ"/>
+                <outgoingTransitions xmi:id="_Rkdc4D-yEeez7OOREN4duQ" specification="[armsInPosition]" target="_7w8fgD-sEeez7OOREN4duQ"/>
                 <outgoingTransitions xmi:id="_VDwOQD-yEeez7OOREN4duQ" specification="after 300ms [simulation]" target="_7w8fgD-sEeez7OOREN4duQ"/>
               </vertices>
             </regions>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_oxVMID-yEeez7OOREN4duQ" name="waiting for lifter" incomingTransitions="_knaVcD5qEee2xNbiZ_Uvvw _ohBr0D-dEeez7OOREN4duQ">
-            <outgoingTransitions xmi:id="_tzNxoD-yEeez7OOREN4duQ" specification="[lifterReady()]" target="__kiesD50Eee2xNbiZ_Uvvw"/>
+            <outgoingTransitions xmi:id="_tzNxoD-yEeez7OOREN4duQ" specification="[lifterReady]" target="__kiesD50Eee2xNbiZ_Uvvw"/>
           </vertices>
         </regions>
       </vertices>
@@ -815,7 +815,7 @@
     <edges xmi:id="_7xGQjj-sEeez7OOREN4duQ" type="Transition" element="_7w6qXD-sEeez7OOREN4duQ" source="_8jxcrD-yEeez7OOREN4duQ" target="_8jxccD-yEeez7OOREN4duQ">
       <children xsi:type="notation:DecorationNode" xmi:id="_7xG3kD-sEeez7OOREN4duQ" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_7xG3kT-sEeez7OOREN4duQ"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_7xG3kj-sEeez7OOREN4duQ" x="38" y="-51"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_7xG3kj-sEeez7OOREN4duQ" x="-13" y="-11"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_7xGQjz-sEeez7OOREN4duQ" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_7xGQkT-sEeez7OOREN4duQ" fontName="Verdana"/>

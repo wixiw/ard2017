@@ -30,7 +30,7 @@
 //Actuators config
 #define FUNNY_REST 			500
 #define FUNNY_LAUNCH 		1000
-#define ARM_MIN 			300 //Keep in sync with FSM_Arms.sct
+#define ARM_MIN 			285 //Keep in sync with FSM_Arms.sct
 #define ARM_MAX 			768 //Keep in sync with FSM_Arms.sct
 #define LIFTER_MIN 			360 //Keep in sync with FSM_Lifter.sct
 #define LIFTER_MAX 			790 //Keep in sync with FSM_Lifter.sct
