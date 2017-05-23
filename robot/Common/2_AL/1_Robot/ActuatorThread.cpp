@@ -10,16 +10,17 @@
 
 using namespace ard;
 
-ActuatorThread::ActuatorThread(KinematicManager& kinMan):
+ActuatorThread::ActuatorThread(KinematicManager& kinMan, HmiThread& hmi):
         PollerThread("Actuator", PRIO_ACTUATORS, STACK_ACTUATORS, PERIOD_ACTUATORS, 11),
         stockColor(),
-        switchArmLout(      SWITCH_ARM_L_OUT, 100, 10),
-        switchArmLin(       SWITCH_ARM_L_IN, 100, 10),
-        switchArmRout(      SWITCH_ARM_R_OUT, 100, 10),
-        switchArmRin(       SWITCH_ARM_R_IN, 100, 10),
-        omronCylinder(      OMRON2, 200, 50, true), //TODO remettre OMRON_CYLINDER
-        switchLifterUp(     SWITCH_LIFTER_UP, 100, 10),
-        switchLifterDown(   SWITCH_LIFTER_DOWN, 100, 10),
+        switchArmLout(      SWITCH_ARM_L_OUT, 100, 10, true),
+        switchArmLin(       SWITCH_ARM_L_IN, 100, 10, true),
+        switchArmRout(      SWITCH_ARM_R_OUT, 100, 10, true),
+        switchArmRin(       SWITCH_ARM_R_IN, 100, 10, true),
+        omronCylinder(      OMRON2, 200, 50, true),
+        switchLifterUp(     SWITCH_LIFTER_UP, 100, 10, true),
+		switchLifterDown(GPIO_LOW),
+        //TODO switchLifterDown(   SWITCH_LIFTER_DOWN, 100, 10, true),
         servoLifter("Lifter", 			SERVO1, LIFTER_MIN, LIFTER_MAX),
         servoLeftArm("LeftArm", 		SERVO2, ARM_MIN, ARM_MAX),
         servoRightArm("RightArm", 		SERVO3, ARM_MIN, ARM_MAX, true),
@@ -33,7 +34,8 @@ ActuatorThread::ActuatorThread(KinematicManager& kinMan):
         faceUp(*this),
 		state(),
 		fsmTimeWheel(),
-		kinematics(kinMan)
+		kinematics(kinMan),
+		hmi(hmi)
 {
     state = apb_ActuatorsState_init_default;
 
@@ -97,6 +99,15 @@ void ActuatorThread::run()
     {
     	kinematics.frontActuatorsOut(false);
     }
+
+    if( arms.isReady() )
+    	hmi.led3.set(ON);
+    else
+    	hmi.led3.set(OFF);
+    if( lifter.isReady() )
+    	hmi.led4.set(ON);
+    else
+    	hmi.led4.set(OFF);
 }
 
 apb_ActuatorsState const& ActuatorThread::serealize()

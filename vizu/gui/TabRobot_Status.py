@@ -29,7 +29,7 @@ class TabRobot_Status(QWidget):
             column.setLabelAlignment(Qt.AlignRight)
         self.Hlayout.addStretch()
         
-        #self.addSensorXor("led1", 0) #LED1 is currently driven as ledDue_Rx
+        self.addSensorXor("led1", 0) #LED1 is currently driven as ledDue_Rx
         self.addSensorXor("led2", 0)
         self.addSensorXor("led3", 0)
         self.addSensorXor("led4", 0)
@@ -42,23 +42,25 @@ class TabRobot_Status(QWidget):
         self.addSensorXor("switchArmLin", 1)
         self.addSensorXor("switchRecalFL", 1)
         self.addSensorXor("omronFront", 1)
+        self.addSensorXor("omronLatLeft", 1)
         self.addSensorXor("start", 1)
-        self.addSensorXor("colorSwitch", 1)
+        
 
         
         self.addSensorXor("switchArmRout", 2)
         self.addSensorXor("switchArmRin", 2)
         self.addSensorXor("switchRecalFR", 2)
         self.addSensorXor("omronRear", 2)
-        self.addSensorXor("user1", 2)
-        self.addSensorXor("user2", 2)
+        self.addSensorXor("omronLatRight", 2)
+        self.addSensorXor("colorSwitch", 2)
         
         self.addSensorXor("switchRecalRC", 3)
         self.addSensorXor("omronCylinder", 3)
-#         self.addSensorXor("switchCylinder", 3)
-#         self.addSensorXor("omronSpare", 3)
+        self.addSensorXor("omronScan", 3)
         self.addSensorXor("switchLifterUp", 3)
         self.addSensorXor("switchLifterDown", 3)
+        self.addSensorXor("user1", 3)
+        self.addSensorXor("user2", 3)
         
         self.buildSensorsInfo()
         
@@ -93,7 +95,7 @@ class TabRobot_Status(QWidget):
             #--- DEBUG --- print(str(msg))
             self.robotState = msg
             
-            #self.led1.light(msg.hmi.led1) #LED1 is currently driven as ledDue_Rx
+            self.led1.light(msg.hmi.led1) #LED1 is currently driven as ledDue_Rx
             self.led2.light(msg.hmi.led2)
             self.led3.light(msg.hmi.led3)
             self.led4.light(msg.hmi.led4)
@@ -109,6 +111,8 @@ class TabRobot_Status(QWidget):
             
             self.omronFront.light(msg.nav.omronFront)
             self.omronRear.light(msg.nav.omronRear)
+            self.omronLatLeft.light(msg.nav.omronLatLeft)
+            self.omronLatRight.light(msg.nav.omronLatRight)
             self.switchRecalFL.light(msg.nav.switchRecalFL)
             self.switchRecalFR.light(msg.nav.switchRecalFR)
             self.switchRecalRC.light(msg.nav.switchRecalRC)
@@ -118,8 +122,7 @@ class TabRobot_Status(QWidget):
             self.switchArmRout.light(msg.actuators.switchArmRout)
             self.switchArmRin.light(msg.actuators.switchArmRin)
             self.omronCylinder.light(msg.actuators.omronCylinder)
-#             self.switchCylinder.light(msg.actuators.switchCylinder)
-#             self.omronSpare.light(msg.actuators.omronSpare)
+            self.omronScan.light(msg.nav.omronScan)
             self.switchLifterUp.light(msg.actuators.switchLifterUp)
             self.switchLifterDown.light(msg.actuators.switchLifterDown)
             

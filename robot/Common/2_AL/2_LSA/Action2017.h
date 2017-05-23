@@ -275,24 +275,14 @@ namespace ard
         /**
          * Detection
          */
-        sc_boolean omronFrontLeft() override
+        sc_boolean omronFront() override
         {
-            return robot.detection.omronFrontLeft.read();
+            return robot.detection.omronFront.read();
         }
 
-        sc_boolean omronFrontRight() override
+        sc_boolean omronRear() override
         {
-            return robot.detection.omronFrontRight.read();
-        }
-
-        sc_boolean omronRearLeft() override
-        {
-            return robot.detection.omronRearLeft.read();
-        }
-
-        sc_boolean omronRearRight() override
-        {
-            return robot.detection.omronRearRight.read();
+            return robot.detection.omronRear.read();
         }
 
         sc_boolean omronLatLeft() override

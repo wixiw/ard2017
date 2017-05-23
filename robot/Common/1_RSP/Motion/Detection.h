@@ -61,10 +61,8 @@ namespace ard
         bool fakeRobot;
 
         //Avoidance sensors
-        FilteredInput omronFrontLeft;
-        FilteredInput omronFrontRight;
-        FilteredInput omronRearLeft;
-        FilteredInput omronRearRight;
+        FilteredInput omronFront;
+        FilteredInput omronRear;
         FilteredInput omronLatLeft;
         FilteredInput omronLatRight;
         FilteredInput omronScan;

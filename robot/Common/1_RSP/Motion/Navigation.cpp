@@ -27,7 +27,7 @@ Navigation::Navigation(Buzzer& klaxon, Detection& detection, Graph& graph, Kinem
 	Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
 	switchRecalFL(BORDURE_AVG, 500, 50, true),
 	switchRecalFR(BORDURE_AVD, 500, 50, true),
-	switchRecalRC(BORDURE_ARC, 500, 50),
+	switchRecalRC(BORDURE_ARC, 500, 50, true),
 	simulated(true),
 	m_pose(),
 	m_state(eNavState_IDLE),
@@ -209,7 +209,7 @@ void Navigation::run()
 			else
 			{
 				/*TODO gere sens*/
-				if(detection.omronFrontLeft.read() ==  GPIO_LOW && detection.omronFrontRight.read() ==  GPIO_LOW)
+				if(detection.omronFront.read() ==  GPIO_LOW)
 				{
 					LOG_INFO("Scan finished, stop turning, we find a hole.");
 					applyCmdStop();
@@ -823,10 +823,8 @@ apb_NavState const& Navigation::serealize()
     state.state = m_state;
     state.order = m_order;
     state.pos = getPosition(NO_SYM_POS).getProto();
-    state.omronFrontLeft 	= detection.omronFrontLeft.readRaw();
-    state.omronFrontRight 	= detection.omronFrontRight.readRaw();
-    state.omronRearLeft 	= detection.omronRearLeft.readRaw();
-    state.omronRearRight 	= detection.omronRearRight.readRaw();
+    state.omronFront 		= detection.omronFront.readRaw();
+    state.omronRear 		= detection.omronRear.readRaw();
 	state.omronLatLeft 		= detection.omronLatLeft.readRaw();
 	state.omronLatRight 	= detection.omronLatRight.readRaw();
 	state.omronScan 		= detection.omronScan.readRaw();

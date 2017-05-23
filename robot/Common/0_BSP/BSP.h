@@ -32,7 +32,11 @@
 //14/15 : TX/RX 3 RESERVED FOR HOKUYO
 //16/17 : TX/RX 2 RESERVED FOR WIFI
 //18/19 : was TX/RX 1
-#define BORDURE_ARC         18
+#define BORDURE_ARC         14
+#define SWITCH_LIFTER_UP    15
+#define LOOK_LEFT			16
+#define LOOK_RIGHT			17
+//18 :  not used
 #define DEBUG_1             19  //pin reserved for oscilloscope analysis
 //20/21 : SDA/SCL I2C0 : color sensor
 #define BUTTON_START        22
@@ -53,13 +57,14 @@
 #define PAPD_STEP           37
 #define OMRON_CYLINDER      38
 #define OMRON_SPARE         39
-#define SWITCH_ARM_L_IN     40
-#define SWITCH_ARM_L_OUT    41
-#define SWITCH_ARM_R_IN     42
-#define SWITCH_ARM_R_OUT    43
+#define SWITCH_ARM_L_OUT    40
+#define SWITCH_ARM_L_IN     41
+#define SWITCH_ARM_R_OUT    42
+#define SWITCH_ARM_R_IN     43
+
 #define PAP_ENABLE          44
 #define SWITCH_LIFTER_DOWN  45
-#define SWITCH_LIFTER_UP    46
+//46 : not used
 #define LED1                47
 #define LED2                48
 #define LED3                49

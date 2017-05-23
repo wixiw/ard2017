@@ -25,11 +25,12 @@ namespace ard
 
     //forward declare
     class KinematicManager;
+    class HmiThread;
 
     class ActuatorThread: public PollerThread, public RobotParametersListener
     {
     public:
-        ActuatorThread(KinematicManager& kinMan);
+        ActuatorThread(KinematicManager& kinMan, HmiThread& hmi);
 
         /**---------------------------------
          * Strat API
@@ -72,7 +73,8 @@ namespace ard
         FilteredInput switchArmRin;
         FilteredInput omronCylinder;
         FilteredInput switchLifterUp;
-        FilteredInput switchLifterDown;
+        FakeInput switchLifterDown;
+        //TODO FilteredInput switchLifterDown;
 
         AccelServo    servoLifter;
         AccelServo    servoLeftArm;
@@ -89,10 +91,10 @@ namespace ard
 
     private:
         apb_ActuatorsState state; //cache to hold telemetry data
-
         YakardTimer   fsmTimeWheel;
 
         KinematicManager& kinematics;
+        HmiThread& hmi;
     };
 
 } /* namespace ard */

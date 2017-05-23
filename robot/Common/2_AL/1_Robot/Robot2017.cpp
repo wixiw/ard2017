@@ -33,7 +33,7 @@ Robot2017::Robot2017():
     nav(hmi.buzzer, detection, motionGraph, kinematics),
     chrono(),
     stratInfo(),
-    actuators(kinematics),
+    actuators(kinematics, hmi),
     lifecycle(nav, chrono, hmi, detection),
     listener(NULL)
 {

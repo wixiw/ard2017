@@ -42,7 +42,11 @@ BSP::BSP ()
     //pinMode (SERVO8, 		        OUTPUT);
     pinMode (BUZZER, 		        OUTPUT);
     pinMode (LED_DUE_L, 		    OUTPUT);
-    pinMode (BORDURE_ARC,           INPUT);
+    pinMode (BORDURE_ARC,           INPUT_PULLUP);
+    pinMode (SWITCH_LIFTER_UP,      INPUT_PULLUP);
+    pinMode (LOOK_LEFT,             INPUT_PULLUP);
+    pinMode (LOOK_RIGHT,            INPUT_PULLUP);
+    //18 reserved
     pinMode (DEBUG_1,               OUTPUT);
     pinMode (BUTTON_START, 	        INPUT_PULLUP);
     pinMode (BUTTON_COLOR, 	        INPUT);

@@ -17,13 +17,11 @@ using namespace ard;
 Detection::Detection():
         simulated(true),
         fakeRobot(false),
-        omronFrontLeft(OMRON1, 50, OVERRIDEN_BY_CONFIG, true),
-		omronFrontRight(OMRON2, 50, OVERRIDEN_BY_CONFIG, true),
-		omronRearLeft(OMRON3, 50, OVERRIDEN_BY_CONFIG, true),
-		omronRearRight(OMRON4, 50, OVERRIDEN_BY_CONFIG, true),
-		omronLatLeft(OMRON1 /*TODO*/, 50, OVERRIDEN_BY_CONFIG, true),
-		omronLatRight(OMRON1 /*TODO*/, 50, OVERRIDEN_BY_CONFIG, true),
-		omronScan(OMRON3, 20, 20, true),
+        omronFront(OMRON1, 50, OVERRIDEN_BY_CONFIG, true),
+		omronRear(OMRON3, 50, OVERRIDEN_BY_CONFIG, true),
+		omronLatLeft(LOOK_LEFT, 50, OVERRIDEN_BY_CONFIG, true),
+		omronLatRight(LOOK_RIGHT, 50, OVERRIDEN_BY_CONFIG, true),
+		omronScan(OMRON4, 20, 20, true),
         avoidanceActive(false)//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
 {
 }
@@ -31,10 +29,8 @@ Detection::Detection():
 void Detection::updateConf(RobotParameters* newConf)
 {
 	RobotParametersListener::updateConf(newConf);
-    omronFrontLeft.setDebounceLow(newConf->detectionWaitForOppMove());
-    omronFrontRight.setDebounceLow(newConf->detectionWaitForOppMove());
-    omronRearLeft.setDebounceLow(newConf->detectionWaitForOppMove());
-	omronRearRight.setDebounceLow(newConf->detectionWaitForOppMove());
+    omronFront.setDebounceLow(newConf->detectionWaitForOppMove());
+    omronRear.setDebounceLow(newConf->detectionWaitForOppMove());
 	omronLatLeft.setDebounceLow(newConf->detectionWaitForOppMove());
 	omronLatRight.setDebounceLow(newConf->detectionWaitForOppMove());
 }
@@ -69,7 +65,7 @@ bool Detection::isOpponentAhead(Pose2D const& robotPose)
 		return false;
 
     if(   (simulated && fakeRobot)
-      || (!simulated && omronFrontLeft.read() == GPIO_HIGH && omronFrontRight.read() == GPIO_HIGH) )
+      || (!simulated && omronFront.read() == GPIO_HIGH ) )
     {
     	pose.translatePolar(robotPose.hDegree(), conf->xav() + conf->avoidanceDistanceFront());
         return isDetectionValid(robotPose, SAFETY_AREA);
@@ -95,7 +91,7 @@ bool Detection::isOpponentBehind(Pose2D const& robotPose)
 		return false;
 
     if(   (simulated && fakeRobot)
-      || (!simulated && omronRearLeft.read() == GPIO_HIGH && omronRearRight.read() == GPIO_HIGH))
+      || (!simulated && omronRear.read() == GPIO_HIGH ))
     {
         pose.translatePolar(robotPose.hDegree(), - conf->xar() - conf->avoidanceDistanceRear());
         return isDetectionValid(robotPose, SAFETY_AREA);
@@ -129,10 +125,8 @@ void Detection::enableAvoidance(bool on)
     if( on && !avoidanceActive )
     {
         LOG_INFO("[Detection] Avoidance system activated.");
-        omronFrontLeft.reset();
-        omronFrontRight.reset();
-        omronRearLeft.reset();
-        omronRearRight.reset();
+        omronFront.reset();
+        omronRear.reset();
         omronLatLeft.reset();
         omronLatRight.reset();
     }
