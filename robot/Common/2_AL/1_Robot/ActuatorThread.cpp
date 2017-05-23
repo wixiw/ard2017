@@ -197,7 +197,7 @@ void ActuatorThread::actCmd(eActCmd cmd)
 			arms.stop();
 			break;
 		case eActCmd_AC_ARMS_SWALLOW:
-			arms.swallow();
+			arms.swallowNormal();
 			break;
 		case eActCmd_AC_ARMS_FASTPOO:
 			arms.fastPoo(0);

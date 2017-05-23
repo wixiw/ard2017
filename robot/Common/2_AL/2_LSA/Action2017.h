@@ -299,12 +299,20 @@ namespace ard
         /**
          * Actionneurs
          */
-        void swallow(sc_boolean on) override
+        void swallow(sc_integer on) override
         {
-        	if(on)
-        		robot.actuators.arms.swallow();
-        	else
-        		robot.actuators.arms.retract();
+        	switch ((eArmsCmd) on){
+        		case AC_RETRACT :
+        			robot.actuators.arms.retract();
+        			break;
+        		case AC_SWALLOW_NORMAL :
+        			robot.actuators.arms.swallowNormal();
+        			break;
+        		case AC_SWALLOW_DISPENSER :
+        			robot.actuators.arms.swallowDispenser();
+        			break;
+        		default:;
+        	}
         }
 
         void turnWheels(sc_integer on) override

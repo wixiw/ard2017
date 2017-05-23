@@ -40,9 +40,14 @@ void Arms::start()
     fsm.getSCI_Strategy()->raise_start();
 }
 
-void Arms::swallow()
+void Arms::swallowNormal()
 {
-    fsm.getSCI_Strategy()->raise_swallow();
+    fsm.getSCI_Strategy()->raise_swallowNormal();
+}
+
+void Arms::swallowDispenser()
+{
+    fsm.getSCI_Strategy()->raise_swallowDispenser();
 }
 
 void Arms::retract()

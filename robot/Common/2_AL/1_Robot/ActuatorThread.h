@@ -23,6 +23,13 @@ namespace ard
         WC_WITHDRAW = -1
     } eWheelsCmd;
 
+    typedef enum
+    {
+        AC_RETRACT = 0,
+        AC_SWALLOW_NORMAL = 1,
+        AC_SWALLOW_DISPENSER = 2
+    } eArmsCmd;
+
     //forward declare
     class KinematicManager;
 

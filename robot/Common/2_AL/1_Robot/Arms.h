@@ -35,7 +35,10 @@ namespace ard
         void stop();
 
         //Open arm and make wheel turn to swallow several cylinder on table
-        void swallow();
+        void swallowNormal();
+
+        //Open arms full to swallow a cylinder from the dispenser
+        void swallowDispenser();
 
         //Stop turning wheels and retract arms to be able to move safely on table
         void retract();
