@@ -121,6 +121,8 @@ class VizuMainScreen(QWidget):
         self.tabContexts["Robot"].tab.tab["Servos"].leftWheelCmd                              .connect(self.teleop.requestLeftWheelServo)
         self.tabContexts["Robot"].tab.tab["Servos"].rightWheelCmd                             .connect(self.teleop.requestRightWheelServo)
         self.tabContexts["Robot"].tab.tab["Servos"].funnyCmd                                  .connect(self.teleop.requestFunnyActionServo)
+        self.tabContexts["Robot"].tab.tab["Servos"].rotatorCmd                                .connect(self.teleop.requestRotatorServo)
+        self.tabContexts["Robot"].tab.tab["Servos"].servo8Cmd                                 .connect(self.teleop.requestServo8Servo)
         self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Status"]._telemetryDataCb)
         self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Servos"]._telemetryDataCb)
         self.teleop.telemetry.connect(self.tabContexts["Robot"].tab.tab["Actuators"]._telemetryDataCb)
