@@ -21,7 +21,7 @@
       <vertices xsi:type="sgraph:State" xmi:id="_P5do7S-GEee1v-eVh51XZQ" specification="entry/&#xD;&#xA;logInfo(&quot;Waiting for Pen to arrive...&quot;)" name="Wait for Pen to finish his move" incomingTransitions="_xivA0DGPEee8x-mo8uJzlg">
         <outgoingTransitions xmi:id="_qFWMwDGQEee8x-mo8uJzlg" specification="[31 &lt; matchDuration()]" target="_6eMf8DGPEee8x-mo8uJzlg"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_DtdhUDGPEee8x-mo8uJzlg" specification="entry/&#xD;&#xA;logInfo(&quot;Waiting on waypoint 7 for Pen to move...&quot;);&#xD;&#xA;graphToLSAEntry(7, BEST)" name="Escape and avoid Pen" incomingTransitions="_SZLMkC-GEee1v-eVh51XZQ">
+      <vertices xsi:type="sgraph:State" xmi:id="_DtdhUDGPEee8x-mo8uJzlg" specification="entry/&#xD;&#xA;logInfo(&quot;Waiting on waypoint 7 for Pen to move...&quot;);&#xD;&#xA;graphToID(7, 90, BEST)" name="Escape and avoid Pen" incomingTransitions="_SZLMkC-GEee1v-eVh51XZQ">
         <outgoingTransitions xmi:id="_xivA0DGPEee8x-mo8uJzlg" specification="[targetReached]" target="_P5do7S-GEee1v-eVh51XZQ"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_6eMf8DGPEee8x-mo8uJzlg" specification="entry /&#xD;&#xA;logInfo(&quot;Going to poo in start area...&quot;);&#xD;&#xA;graphToLSAEntry(LSA_6, BWD)" name="Go to Start Poo entry point" incomingTransitions="_qFWMwDGQEee8x-mo8uJzlg">

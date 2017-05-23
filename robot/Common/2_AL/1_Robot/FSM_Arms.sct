@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:sgraph="http://www.yakindu.org/sct/sgraph/2.0.0">
-  <sgraph:Statechart xmi:id="_ZHi2gCOoEee69bN6ehHnlw" specification="interface Strategy:&#x9;&#xA;&#x9;in event start&#xA;&#x9;in event stop&#xA;&#x9;&#xA;&#x9;in event swallowNormal&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//swallow several elements from table, 0 means no limit&#xA;&#x9;in event swallowDispenser&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//swallow from dispenser&#xA;&#x9;in event fastPoo: integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//swallow several elements from table, 0 means no limit&#xA;&#x9;in event retractArms&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//interrupts on-going actions and retract arms inside robot for safe moves&#xA;&#xA;&#x9;&#xA;//&#x9;out event swallowed: integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//finished to swallow/withdraw required elements&#xA;&#x9;var ready: boolean  &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//the current action is finished&#xA;&#xA;interface:&#xA;&#x9;var cylinderPresent : boolean&#xA;&#x9;var started : boolean&#xA;&#x9;var simulation : boolean&#xA;&#x9;&#xA;&#x9;operation blocked()&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform that the Lifter is out of order&#xA;&#x9;operation lift()&#xA;&#x9;&#xA;&#x9;operation logInfo(msg : string)&#xA;&#x9;operation logError(msg : string)&#xA;&#x9;&#xA;&#x9;//Servo commands (from 0 to 1000%)&#xA;&#x9;var leftArm : integer&#xA;&#x9;var rightArm : integer&#xA;&#x9;var leftWheel : integer&#xA;&#x9;var rightWheel : integer&#xA;&#x9;&#xA;&#x9;//Micro switch contact when value is True&#xA;&#x9;var leftExtendedSwitch : boolean&#xA;&#x9;var rightExtendedSwitch : boolean&#x9;&#xA;&#x9;var leftRetractedSwitch : boolean&#xA;&#x9;var rightRetractedSwitch : boolean&#xA;&#x9;&#xA;&#x9;var armsInPosition : boolean&#xA;&#x9;&#xA;&#x9;//from Lifter&#xA;&#x9;var lifterReady:boolean&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//IN : is True when we can swallow an element, False otherwise&#xA;&#x9;&#xA;&#x9;const ARM_IN_CMD &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;: integer = 450      //start position&#xA;&#x9;const ARM_FULL_IN_CMD&#x9;&#x9;&#x9;&#x9;: integer = 285 //arms retracted and opened so that lifter can work&#xA;&#x9;const ARM_MID_CMD &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;: integer = 610&#xA;&#x9;const ARM_OUT_CMD &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;: integer = 768&#xA;&#x9;const WHEEL_IDLE_CMD &#x9;&#x9;&#x9;&#x9;: integer  = 500&#xA;&#x9;const WHEEL_L_SWALLOW_CMD &#x9;: integer  = 0&#xA; &#x9;const WHEEL_L_POO_CMD &#x9;&#x9;&#x9;&#x9;: integer  = 1000&#xA;&#x9;const WHEEL_R_SWALLOW_CMD &#x9;: integer  = 1000&#xA; &#x9;const WHEEL_R_POO_CMD &#x9;&#x9;&#x9;: integer  = 0&#xA;&#xA;internal:&#xA;&#x9;var retryCount : integer" name="FSM_Arms">
+  <sgraph:Statechart xmi:id="_ZHi2gCOoEee69bN6ehHnlw" specification="interface Strategy:&#x9;&#xA;&#x9;in event start&#xA;&#x9;in event stop&#xA;&#x9;&#xA;&#x9;in event swallowNormal&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//swallow several elements from table, 0 means no limit&#xA;&#x9;in event swallowDispenser&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//swallow from dispenser&#xA;&#x9;in event fastPoo: integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//swallow several elements from table, 0 means no limit&#xA;&#x9;in event retractArms&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//interrupts on-going actions and retract arms inside robot for safe moves&#xA;&#xA;&#x9;&#xA;//&#x9;out event swallowed: integer&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//finished to swallow/withdraw required elements&#xA;&#x9;var ready: boolean  &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//the current action is finished&#xA;&#xA;interface:&#xA;&#x9;var cylinderPresent : boolean&#xA;&#x9;var started : boolean&#xA;&#x9;var simulation : boolean&#xA;&#x9;&#xA;&#x9;operation blocked()&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//inform that the Lifter is out of order&#xA;&#x9;operation lift()&#xA;&#x9;&#xA;&#x9;operation logInfo(msg : string)&#xA;&#x9;operation logError(msg : string)&#xA;&#x9;&#xA;&#x9;//Servo commands (from 0 to 1000%)&#xA;&#x9;var leftArm : integer&#xA;&#x9;var rightArm : integer&#xA;&#x9;var leftWheel : integer&#xA;&#x9;var rightWheel : integer&#xA;&#x9;&#xA;&#x9;//Micro switch contact when value is True&#xA;&#x9;var leftExtendedSwitch : boolean&#xA;&#x9;var rightExtendedSwitch : boolean&#x9;&#xA;&#x9;var leftRetractedSwitch : boolean&#xA;&#x9;var rightRetractedSwitch : boolean&#xA;&#x9;&#xA;&#x9;var armsInPosition : boolean&#xA;&#x9;&#xA;&#x9;//from Lifter&#xA;&#x9;var lifterReady:boolean&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//IN : is True when we can swallow an element, False otherwise&#xA;&#x9;&#xA;&#x9;const ARM_IN_CMD &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;: integer = 450      //start position&#xA;&#x9;const ARM_FULL_IN_CMD&#x9;&#x9;&#x9;&#x9;: integer = 285 //arms retracted and opened so that lifter can work&#xA;&#x9;const ARM_MID_CMD &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;: integer = 610&#xA;&#x9;const ARM_OUT_CMD &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;: integer = 768&#xA;&#x9;const WHEEL_IDLE_CMD &#x9;&#x9;&#x9;&#x9;: integer  = 500&#xA;&#x9;const WHEEL_SWALLOW_CMD &#x9;&#x9;: integer  = 0&#xA;&#x9;const WHEEL_POO_CMD &#x9;&#x9;&#x9;&#x9;: integer  = 1000&#xA;&#xA;&#xA;internal:&#xA;&#x9;var retryCount : integer" name="FSM_Arms">
     <regions xmi:id="_ZHjdkSOoEee69bN6ehHnlw" name="main region">
       <vertices xsi:type="sgraph:Entry" xmi:id="_ZHjdmyOoEee69bN6ehHnlw">
         <outgoingTransitions xmi:id="_ZHkrvSOoEee69bN6ehHnlw" specification="" target="_VHe3YCPJEeefRbrwNF-IRQ"/>
@@ -25,11 +25,11 @@
                 <outgoingTransitions xmi:id="_TBWqcD56Eee2xNbiZ_Uvvw" specification="[cylinderPresent]" target="_sXGN4D5-Eee2xNbiZ_Uvvw"/>
                 <outgoingTransitions xmi:id="_syFfUD8DEee8xeItEO-Xbg" specification="after 300ms [simulation]" target="_sXGN4D5-Eee2xNbiZ_Uvvw"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_Ynp-4D5qEee2xNbiZ_Uvvw" specification="entry/&#xD;&#xA;Strategy.ready = false;&#xD;&#xA;leftArm = ARM_MID_CMD;&#xD;&#xA;rightArm = ARM_MID_CMD;&#xD;&#xA;leftWheel = WHEEL_L_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_R_SWALLOW_CMD" name="Opening arms" incomingTransitions="_bAqdoD5qEee2xNbiZ_Uvvw _WPP_wD-sEeez7OOREN4duQ">
+              <vertices xsi:type="sgraph:State" xmi:id="_Ynp-4D5qEee2xNbiZ_Uvvw" specification="entry/&#xD;&#xA;Strategy.ready = false;&#xD;&#xA;leftArm = ARM_MID_CMD;&#xD;&#xA;rightArm = ARM_MID_CMD;&#xD;&#xA;leftWheel = WHEEL_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_SWALLOW_CMD" name="Opening arms" incomingTransitions="_bAqdoD5qEee2xNbiZ_Uvvw _WPP_wD-sEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_Or3EID5qEee2xNbiZ_Uvvw" specification="[armsInPosition]" target="_HY5ZkD56Eee2xNbiZ_Uvvw"/>
                 <outgoingTransitions xmi:id="_n1lwID8DEee8xeItEO-Xbg" specification="after 300ms [simulation]" target="_HY5ZkD56Eee2xNbiZ_Uvvw"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_Qp31sD56Eee2xNbiZ_Uvvw" specification="entry/&#xD;&#xA;Strategy.ready = false;&#xD;&#xA;leftArm = ARM_IN_CMD;&#xD;&#xA;rightArm = ARM_IN_CMD;&#xD;&#xA;leftWheel = WHEEL_IDLE_CMD;&#xD;&#xA;rightWheel = WHEEL_IDLE_CMD" name="Force swallow" incomingTransitions="_x98hoD5-Eee2xNbiZ_Uvvw">
+              <vertices xsi:type="sgraph:State" xmi:id="_Qp31sD56Eee2xNbiZ_Uvvw" specification="entry/&#xD;&#xA;leftArm = ARM_IN_CMD;&#xD;&#xA;rightArm = ARM_IN_CMD;&#xD;&#xA;leftWheel = WHEEL_IDLE_CMD;&#xD;&#xA;rightWheel = WHEEL_IDLE_CMD" name="Force swallow" incomingTransitions="_x98hoD5-Eee2xNbiZ_Uvvw">
                 <outgoingTransitions xmi:id="_pWCNcD56Eee2xNbiZ_Uvvw" specification="[armsInPosition]" target="_lIHesD5-Eee2xNbiZ_Uvvw"/>
                 <outgoingTransitions xmi:id="_vVP_oD8DEee8xeItEO-Xbg" specification="after 300ms [simulation]" target="_lIHesD5-Eee2xNbiZ_Uvvw"/>
               </vertices>
@@ -40,8 +40,8 @@
                 <outgoingTransitions xmi:id="_pARcAD5-Eee2xNbiZ_Uvvw" specification="[armsInPosition]" target="_dZwosD56Eee2xNbiZ_Uvvw"/>
                 <outgoingTransitions xmi:id="_wvX0QD8DEee8xeItEO-Xbg" specification="after 300ms [simulation]" target="_dZwosD56Eee2xNbiZ_Uvvw"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_sXGN4D5-Eee2xNbiZ_Uvvw" specification="entry/ logInfo(&quot;Cylinder Present&quot;)" name="Wait a bit" incomingTransitions="_TBWqcD56Eee2xNbiZ_Uvvw _syFfUD8DEee8xeItEO-Xbg">
-                <outgoingTransitions xmi:id="_x98hoD5-Eee2xNbiZ_Uvvw" specification="after 1s" target="_Qp31sD56Eee2xNbiZ_Uvvw"/>
+              <vertices xsi:type="sgraph:State" xmi:id="_sXGN4D5-Eee2xNbiZ_Uvvw" specification="entry/ &#xD;&#xA;Strategy.ready = false;&#xD;&#xA;logInfo(&quot;Cylinder Present&quot;)" name="Wait a bit" incomingTransitions="_TBWqcD56Eee2xNbiZ_Uvvw _syFfUD8DEee8xeItEO-Xbg">
+                <outgoingTransitions xmi:id="_x98hoD5-Eee2xNbiZ_Uvvw" specification="after 500ms" target="_Qp31sD56Eee2xNbiZ_Uvvw"/>
               </vertices>
             </regions>
           </vertices>
@@ -50,33 +50,33 @@
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_nAexAD-bEeez7OOREN4duQ" specification="entry/&#xD;&#xA;logInfo(&quot;Swallowing from dispenser&quot;)" name="Swallow Dispenser">
             <outgoingTransitions xmi:id="_ohBr0D-dEeez7OOREN4duQ" specification="Strategy.retractArms" target="_oxVMID-yEeez7OOREN4duQ"/>
-            <regions xmi:id="_oOn_ID-bEeez7OOREN4duQ">
-              <vertices xsi:type="sgraph:State" xmi:id="_y-EkYD-bEeez7OOREN4duQ" specification="entry/&#xD;&#xA;Strategy.ready = false;&#xD;&#xA;leftArm = ARM_OUT_CMD;&#xD;&#xA;rightArm = ARM_OUT_CMD;&#xD;&#xA;leftWheel = WHEEL_L_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_R_SWALLOW_CMD" name="Opening arms fully" incomingTransitions="_nAtagD-bEeez7OOREN4duQ _7w6qXD-sEeez7OOREN4duQ">
+            <regions xmi:id="_oOn_ID-bEeez7OOREN4duQ" name="inner region">
+              <vertices xsi:type="sgraph:State" xmi:id="_y-EkYD-bEeez7OOREN4duQ" specification="entry/&#xD;&#xA;Strategy.ready = false;&#xD;&#xA;leftArm = ARM_OUT_CMD;&#xD;&#xA;rightArm = ARM_OUT_CMD;&#xD;&#xA;leftWheel = WHEEL_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_SWALLOW_CMD" name="Opening arms fully" incomingTransitions="_nAtagD-bEeez7OOREN4duQ _7w6qXD-sEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_mfQy8D-eEeez7OOREN4duQ" specification="[armsInPosition]" target="_mfLTYD-eEeez7OOREN4duQ"/>
                 <outgoingTransitions xmi:id="_tKmswD-iEeez7OOREN4duQ" specification="after 500ms [simulation]" target="_mfLTYD-eEeez7OOREN4duQ"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_mfLTYD-eEeez7OOREN4duQ" specification="entry/&#xD;&#xA;Strategy.ready = true" name="Arms in position" incomingTransitions="_mfQy8D-eEeez7OOREN4duQ _tKmswD-iEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_9j2AgD-sEeez7OOREN4duQ" specification="Strategy.swallowNormal" target="_7wvrMD-sEeez7OOREN4duQ"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_7wqy4D-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;&#xD;&#xA;logInfo(&quot;Looking for cylinder in mouth&quot;)" name="Looking for cylinder in mouth" incomingTransitions="_7ww5Zj-sEeez7OOREN4duQ _7ww5aj-sEeez7OOREN4duQ">
+              <vertices xsi:type="sgraph:State" xmi:id="_7wqy4D-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;logInfo(&quot;Looking for cylinder in mouth&quot;)" name="Looking for cylinder in mouth" incomingTransitions="_7ww5Zj-sEeez7OOREN4duQ _7ww5aj-sEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_7wsA3T-sEeez7OOREN4duQ" specification="[cylinderPresent]" target="_7w-UsD-sEeez7OOREN4duQ"/>
                 <outgoingTransitions xmi:id="_7wsA4T-sEeez7OOREN4duQ" specification="after 300ms [simulation]" target="_7w-UsD-sEeez7OOREN4duQ"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_7wvrMD-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;Strategy.ready = false;&#xD;&#xA;leftArm = ARM_MID_CMD;&#xD;&#xA;rightArm = ARM_MID_CMD;&#xD;&#xA;leftWheel = WHEEL_L_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_R_SWALLOW_CMD" name="getting cylinder in &quot;swallow&quot; mode" incomingTransitions="_9j2AgD-sEeez7OOREN4duQ">
+              <vertices xsi:type="sgraph:State" xmi:id="_7wvrMD-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;Strategy.ready = false;&#xD;&#xA;leftArm = ARM_MID_CMD;&#xD;&#xA;rightArm = ARM_MID_CMD;&#xD;&#xA;leftWheel = WHEEL_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_SWALLOW_CMD" name="getting cylinder in &quot;swallow&quot; mode" incomingTransitions="_9j2AgD-sEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_7ww5Zj-sEeez7OOREN4duQ" specification="[armsInPosition]" target="_7wqy4D-sEeez7OOREN4duQ"/>
                 <outgoingTransitions xmi:id="_7ww5aj-sEeez7OOREN4duQ" specification="after 300ms [simulation]" target="_7wqy4D-sEeez7OOREN4duQ"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_7w0jsD-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;leftWheel = WHEEL_IDLE_CMD;&#xD;&#xA;rightWheel = WHEEL_IDLE_CMD" name="Stopping wheels" incomingTransitions="_7w-70D-sEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_7w1K7D-sEeez7OOREN4duQ" specification="after 300ms" target="__VFiYD-xEeez7OOREN4duQ"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_7w6DQD-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;Strategy.ready = true;&#xD;&#xA;lift()" name="Lifting" incomingTransitions="_7w9Gmz-sEeez7OOREN4duQ _7w9Gnz-sEeez7OOREN4duQ">
+              <vertices xsi:type="sgraph:State" xmi:id="_7w6DQD-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;//commente le temps d'avoir les infos pour parraleliser Strategy.ready = true;&#xD;&#xA;lift()" name="Lifting" incomingTransitions="_7w9Gmz-sEeez7OOREN4duQ _7w9Gnz-sEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_7w6qXD-sEeez7OOREN4duQ" specification="[lifterReady]" target="_y-EkYD-bEeez7OOREN4duQ"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_7w8fgD-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;leftArm = ARM_MID_CMD;&#xD;&#xA;rightArm = ARM_MID_CMD;&#xD;&#xA;leftWheel = WHEEL_L_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_R_SWALLOW_CMD" name="Reopen arms to let lifter work" incomingTransitions="_Rkdc4D-yEeez7OOREN4duQ _VDwOQD-yEeez7OOREN4duQ">
+              <vertices xsi:type="sgraph:State" xmi:id="_7w8fgD-sEeez7OOREN4duQ" specification="entry/&#xD;&#xA;leftArm = ARM_MID_CMD;&#xD;&#xA;rightArm = ARM_MID_CMD;&#xD;&#xA;leftWheel = WHEEL_SWALLOW_CMD;&#xD;&#xA;rightWheel = WHEEL_SWALLOW_CMD" name="Reopen arms to let lifter work" incomingTransitions="_Rkdc4D-yEeez7OOREN4duQ _VDwOQD-yEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_7w9Gmz-sEeez7OOREN4duQ" specification="[armsInPosition]" target="_7w6DQD-sEeez7OOREN4duQ"/>
                 <outgoingTransitions xmi:id="_7w9Gnz-sEeez7OOREN4duQ" specification="after 300ms [simulation]" target="_7w6DQD-sEeez7OOREN4duQ"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_7w-UsD-sEeez7OOREN4duQ" specification="entry/ &#xD;&#xA;logInfo(&quot;Cylinder Present&quot;);&#xD;&#xA;Strategy.ready = false" name="Wait a bit" incomingTransitions="_7wsA3T-sEeez7OOREN4duQ _7wsA4T-sEeez7OOREN4duQ">
+              <vertices xsi:type="sgraph:State" xmi:id="_7w-UsD-sEeez7OOREN4duQ" specification="entry/ &#xD;&#xA;logInfo(&quot;Cylinder Present&quot;)" name="Wait a bit" incomingTransitions="_7wsA3T-sEeez7OOREN4duQ _7wsA4T-sEeez7OOREN4duQ">
                 <outgoingTransitions xmi:id="_7w-70D-sEeez7OOREN4duQ" specification="after 1s" target="_7w0jsD-sEeez7OOREN4duQ"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="__VFiYD-xEeez7OOREN4duQ" specification="entry/&#xD;&#xA;leftArm = ARM_IN_CMD;&#xD;&#xA;rightArm = ARM_IN_CMD" name="Force swallow" incomingTransitions="_7w1K7D-sEeez7OOREN4duQ">
@@ -285,7 +285,7 @@
                           <styles xsi:type="notation:ShapeStyle" xmi:id="_8jxcTD-yEeez7OOREN4duQ" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
                           <styles xsi:type="notation:FontStyle" xmi:id="_8jxcTT-yEeez7OOREN4duQ"/>
                           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_8jxcTj-yEeez7OOREN4duQ" name="isHorizontal" booleanValue="true"/>
-                          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_8jxcTz-yEeez7OOREN4duQ" x="40" y="310" width="312"/>
+                          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_8jxcTz-yEeez7OOREN4duQ" x="40" y="297" width="312"/>
                         </children>
                         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_8jxcUD-yEeez7OOREN4duQ"/>
                       </children>
@@ -475,6 +475,42 @@
                           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_8jxc2j-yEeez7OOREN4duQ" name="isHorizontal" booleanValue="true"/>
                           <layoutConstraint xsi:type="notation:Bounds" xmi:id="_8jxc2z-yEeez7OOREN4duQ" x="19" y="796" width="312" height="81"/>
                         </children>
+                        <children xsi:type="notation:Shape" xmi:id="_v-HNAD_gEee235Xs-OCvvw" type="Note" fontName="Verdana" description="Si on ne voit pas le cylindre, au bout d'un moment il faut faire quelque chose/ Ex : tac-tact in/out avec les bras" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
+                          <children xsi:type="notation:BasicDecorationNode" xmi:id="_v-JpQD_gEee235Xs-OCvvw" type="DiagramName">
+                            <element xsi:nil="true"/>
+                          </children>
+                          <children xsi:type="notation:BasicDecorationNode" xmi:id="_v-JpQT_gEee235Xs-OCvvw" type="Description">
+                            <element xsi:nil="true"/>
+                          </children>
+                          <styles xsi:type="notation:TextStyle" xmi:id="_v-HNAT_gEee235Xs-OCvvw"/>
+                          <styles xsi:type="notation:LineTypeStyle" xmi:id="_v-HNAj_gEee235Xs-OCvvw"/>
+                          <element xsi:nil="true"/>
+                          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_v-HNAz_gEee235Xs-OCvvw" x="-175" y="447" width="342" height="146"/>
+                        </children>
+                        <children xsi:type="notation:Shape" xmi:id="__TA6cD_gEee235Xs-OCvvw" type="Note" fontName="Verdana" description="Il te manque une info si tu veux parralléliser l'ascenseur et la prise du prochain cylindre, sinon si le lifter rate, tu ne sait pas quoi faire." fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
+                          <children xsi:type="notation:BasicDecorationNode" xmi:id="__TBhgD_gEee235Xs-OCvvw" type="DiagramName">
+                            <element xsi:nil="true"/>
+                          </children>
+                          <children xsi:type="notation:BasicDecorationNode" xmi:id="__TBhgT_gEee235Xs-OCvvw" type="Description">
+                            <element xsi:nil="true"/>
+                          </children>
+                          <styles xsi:type="notation:TextStyle" xmi:id="__TA6cT_gEee235Xs-OCvvw"/>
+                          <styles xsi:type="notation:LineTypeStyle" xmi:id="__TA6cj_gEee235Xs-OCvvw"/>
+                          <element xsi:nil="true"/>
+                          <layoutConstraint xsi:type="notation:Bounds" xmi:id="__TA6cz_gEee235Xs-OCvvw" x="-145" y="1172" width="356" height="112"/>
+                        </children>
+                        <children xsi:type="notation:Shape" xmi:id="_J79PED_hEee235Xs-OCvvw" type="Note" fontName="Verdana" description="Et puis si pas ready ?" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
+                          <children xsi:type="notation:BasicDecorationNode" xmi:id="_J792ID_hEee235Xs-OCvvw" type="DiagramName">
+                            <element xsi:nil="true"/>
+                          </children>
+                          <children xsi:type="notation:BasicDecorationNode" xmi:id="_J792IT_hEee235Xs-OCvvw" type="Description">
+                            <element xsi:nil="true"/>
+                          </children>
+                          <styles xsi:type="notation:TextStyle" xmi:id="_J79PET_hEee235Xs-OCvvw"/>
+                          <styles xsi:type="notation:LineTypeStyle" xmi:id="_J79PEj_hEee235Xs-OCvvw"/>
+                          <element xsi:nil="true"/>
+                          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_J79PEz_hEee235Xs-OCvvw" x="398" y="1098"/>
+                        </children>
                         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_8jxc3D-yEeez7OOREN4duQ"/>
                       </children>
                       <styles xsi:type="notation:ShapeStyle" xmi:id="_8jxc3T-yEeez7OOREN4duQ" fontName="Verdana" fillColor="15790320" lineColor="12632256"/>
@@ -484,7 +520,7 @@
                   <styles xsi:type="notation:ShapeStyle" xmi:id="_8jxc3z-yEeez7OOREN4duQ" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
                   <styles xsi:type="notation:FontStyle" xmi:id="_8jxc4D-yEeez7OOREN4duQ"/>
                   <styles xsi:type="notation:BooleanValueStyle" xmi:id="_8jxc4T-yEeez7OOREN4duQ" name="isHorizontal" booleanValue="true"/>
-                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_8jxc4j-yEeez7OOREN4duQ" x="1102" y="378" width="540" height="1288"/>
+                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_8jxc4j-yEeez7OOREN4duQ" x="1102" y="378" width="791" height="1423"/>
                 </children>
                 <children xmi:id="_8jxc4z-yEeez7OOREN4duQ" type="State" element="_oxVMID-yEeez7OOREN4duQ">
                   <children xsi:type="notation:DecorationNode" xmi:id="_8jxc5D-yEeez7OOREN4duQ" type="StateName">
@@ -523,12 +559,12 @@
           <styles xsi:type="notation:ShapeStyle" xmi:id="_uzCjUT5nEee2xNbiZ_Uvvw" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
           <styles xsi:type="notation:FontStyle" xmi:id="_uzCjUj5nEee2xNbiZ_Uvvw"/>
           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_uzDxcD5nEee2xNbiZ_Uvvw" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_uzCjUz5nEee2xNbiZ_Uvvw" x="37" y="204" width="1831" height="1848"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_uzCjUz5nEee2xNbiZ_Uvvw" x="37" y="204" width="1933" height="1975"/>
         </children>
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ZHjdmSOoEee69bN6ehHnlw"/>
       </children>
       <styles xsi:type="notation:ShapeStyle" xmi:id="_ZHjdkyOoEee69bN6ehHnlw" fontName="Verdana" fillColor="15790320" lineColor="12632256"/>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ZHjdmiOoEee69bN6ehHnlw" y="145" width="1912" height="2115"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ZHjdmiOoEee69bN6ehHnlw" y="145" width="2006" height="2232"/>
     </children>
     <children xsi:type="notation:Shape" xmi:id="_ZHlSxyOoEee69bN6ehHnlw" type="StatechartText" fontName="Verdana" lineColor="4210752">
       <children xsi:type="notation:DecorationNode" xmi:id="_ZHlSySOoEee69bN6ehHnlw" type="StatechartName">
@@ -538,7 +574,7 @@
       <children xsi:type="notation:Shape" xmi:id="_ZHl50COoEee69bN6ehHnlw" type="StatechartTextExpression" fontName="Verdana" lineColor="4210752">
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ZHl50SOoEee69bN6ehHnlw"/>
       </children>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ZHl50iOoEee69bN6ehHnlw" x="65" y="2297" width="1252" height="661"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_ZHl50iOoEee69bN6ehHnlw" x="65" y="2414" width="1252" height="805"/>
     </children>
     <styles xsi:type="notation:DiagramStyle" xmi:id="_ZHjdkCOoEee69bN6ehHnlw"/>
     <edges xmi:id="_ZHlSwCOoEee69bN6ehHnlw" type="Transition" element="_ZHkrvSOoEee69bN6ehHnlw" source="_ZHjdnCOoEee69bN6ehHnlw" target="_VHfecCPJEeefRbrwNF-IRQ">
@@ -662,7 +698,7 @@
     <edges xmi:id="_x99vwD5-Eee2xNbiZ_Uvvw" type="Transition" element="_x98hoD5-Eee2xNbiZ_Uvvw" source="_8jxcRD-yEeez7OOREN4duQ" target="_8jxcID-yEeez7OOREN4duQ">
       <children xsi:type="notation:DecorationNode" xmi:id="_x9-W0D5-Eee2xNbiZ_Uvvw" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_x9-W0T5-Eee2xNbiZ_Uvvw"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_x9-W0j5-Eee2xNbiZ_Uvvw" x="-1" y="-35"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_x9-W0j5-Eee2xNbiZ_Uvvw" x="1" y="-46"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_x99vwT5-Eee2xNbiZ_Uvvw" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_x99vwz5-Eee2xNbiZ_Uvvw" fontName="Verdana"/>

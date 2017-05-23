@@ -49,7 +49,7 @@ void Selftest::update(TimeMs sinceLastCall)
                     &&robot.actuators.servoRightArm.isTargetReached())
             {
                 state = ST_LIFTER_UP;
-                robot.actuators.lifterCmd(true);
+                robot.actuators.servoLifter.goTo(LIFTER_MIN);
             }
             break;
 
@@ -57,7 +57,7 @@ void Selftest::update(TimeMs sinceLastCall)
             if(robot.actuators.servoLifter.isTargetReached())
             {
                 state = ST_LIFTER_DOWN;
-                robot.actuators.lifterCmd(false);
+                robot.actuators.servoLifter.goTo(LIFTER_MAX);
             }
             break;
 
@@ -65,7 +65,7 @@ void Selftest::update(TimeMs sinceLastCall)
             if(robot.actuators.servoLifter.isTargetReached())
             {
                 state = ST_LIFTER_UP2;
-                robot.actuators.lifterCmd(true);
+                robot.actuators.servoLifter.goTo(LIFTER_MIN);
             }
             break;
 
@@ -73,8 +73,9 @@ void Selftest::update(TimeMs sinceLastCall)
             if(robot.actuators.servoLifter.isTargetReached())
             {
                 state = ST_TURN_WHEELS;
-                robot.actuators.turnWheels(WC_SWALLOW);
-                chrono.arm(2000);
+                robot.actuators.servoLeftWheel.goTo(1000);
+                robot.actuators.servoRightWheel.goTo(1000);
+                chrono.arm(1000);
             }
             break;
 
@@ -82,7 +83,8 @@ void Selftest::update(TimeMs sinceLastCall)
             if(chrono.isFired())
             {
                 state = ST_STOP_WHEELS;
-                robot.actuators.turnWheels(WC_IDLE);
+                robot.actuators.servoLeftWheel.goTo(500);
+                robot.actuators.servoRightWheel.goTo(500);
                 chrono.arm(500);
             }
             break;
@@ -91,8 +93,8 @@ void Selftest::update(TimeMs sinceLastCall)
             if(chrono.isFired())
             {
                 state = ST_RETRACT;
-                robot.actuators.servoLeftArm.goTo(260);
-                robot.actuators.servoRightArm.goTo(260);
+                robot.actuators.servoLeftArm.goTo(ARM_MIN);
+                robot.actuators.servoRightArm.goTo(ARM_MIN);
             }
             break;
 

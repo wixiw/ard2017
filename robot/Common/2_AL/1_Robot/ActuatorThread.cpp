@@ -24,7 +24,7 @@ ActuatorThread::ActuatorThread(KinematicManager& kinMan):
         servoLeftArm("LeftArm", 		SERVO2, ARM_MIN, ARM_MAX),
         servoRightArm("RightArm", 		SERVO3, ARM_MIN, ARM_MAX, true),
         servoLeftWheel("LeftWheel",     SERVO4, 0, 1000),
-        servoRightWheel("RightWheel",   SERVO5, 0, 1000),
+        servoRightWheel("RightWheel",   SERVO5, 0, 1000, true),
         servoFunnyAction("Funny", 		SERVO6, 0, 1000),
 		servoRotator("Rotateur", 		SERVO7, 0, 1000),
 		servo8("Servo8", 				SERVO8, 0, 1000),
@@ -99,21 +99,6 @@ void ActuatorThread::run()
     }
 }
 
-void ard::ActuatorThread::turnCylinder(bool turn)
-{
-    digitalWrite(MOSFET1, turn);
-}
-
-void ard::ActuatorThread::faceUpCylinder()
-{
-    faceUp.faceUpCylinder();
-}
-
-eFaceUpStatus ard::ActuatorThread::getFaceUpStatus()
-{
-    return faceUp.getFaceUpStatus();
-}
-
 apb_ActuatorsState const& ActuatorThread::serealize()
 {
     state = apb_ActuatorsState_init_default;
@@ -169,7 +154,7 @@ void ActuatorThread::disableAll()
 
 void ActuatorThread::actCmd(eActCmd cmd)
 {
-	LOG_INFO("Actuator command received : " + String((int)cmd));
+	LOG_DEBUG("Actuator command received : " + String((int)cmd));
 
 	switch (cmd) {
 	/**
@@ -223,6 +208,10 @@ void ActuatorThread::actCmd(eActCmd cmd)
 			NOT_IMPLEMENTED(); //TODO
 			break;
 
+		case eActCmd_AC_ARMS_DISPENSER:
+			arms.swallowDispenser();
+			break;
+
 	/**
 	 * FUNNY
 	 */
@@ -245,39 +234,5 @@ void ActuatorThread::actCmd(eActCmd cmd)
 
 	}
 }
-
-void ActuatorThread::turnWheels(eWheelsCmd on)
-{
-    switch(on)
-    {
-    case WC_IDLE:
-        servoLeftWheel.goTo(480);
-        servoRightWheel.goTo(480);
-        break;
-
-    case WC_SWALLOW:
-        servoLeftWheel.goTo(0);
-        servoRightWheel.goTo(1000);
-        break;
-
-    case WC_WITHDRAW:
-        servoLeftWheel.goTo(1000);
-        servoRightWheel.goTo(0);
-        break;
-    }
-}
-
-void ActuatorThread::lifterCmd(bool up)
-{
-    if(up)
-    {
-        servoLifter.goTo(360);
-    }
-    else
-    {
-        servoLifter.goTo(790);
-    }
-}
-
 
 
