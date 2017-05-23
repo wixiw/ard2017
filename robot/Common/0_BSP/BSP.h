@@ -32,8 +32,8 @@
 //14/15 : TX/RX 3 RESERVED FOR HOKUYO
 //16/17 : TX/RX 2 RESERVED FOR WIFI
 //18/19 : was TX/RX 1
-#define BORDURE_ARC         14
-#define SWITCH_LIFTER_UP    15
+#define SWITCH_LIFTER_UP    14
+#define BORDURE_ARC         15
 #define LOOK_LEFT			16
 #define LOOK_RIGHT			17
 //18 :  not used

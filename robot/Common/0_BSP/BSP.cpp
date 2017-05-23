@@ -66,10 +66,10 @@ BSP::BSP ()
     pinMode (PAPD_STEP,             OUTPUT);
     pinMode (OMRON_CYLINDER,        INPUT_PULLUP);
     pinMode (OMRON_SPARE,           INPUT_PULLUP);
-    pinMode (SWITCH_ARM_L_IN,       INPUT);
-    pinMode (SWITCH_ARM_L_OUT,      INPUT);
-    pinMode (SWITCH_ARM_R_IN,       INPUT);
-    pinMode (SWITCH_ARM_R_OUT,      INPUT);
+    pinMode (SWITCH_ARM_L_IN,       INPUT_PULLUP);
+    pinMode (SWITCH_ARM_L_OUT,      INPUT_PULLUP);
+    pinMode (SWITCH_ARM_R_IN,       INPUT_PULLUP);
+    pinMode (SWITCH_ARM_R_OUT,      INPUT_PULLUP);
     pinMode (PAP_ENABLE,            OUTPUT);
     pinMode (SWITCH_LIFTER_DOWN,    INPUT);
     pinMode (SWITCH_LIFTER_UP,      INPUT);
