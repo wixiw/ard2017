@@ -12,6 +12,9 @@
 #define NO_ESCAPE true
 #define RECAL_ESCAPE_MARGIN 30
 
+#define SYM_POS true
+#define NO_SYM_POS false
+
 namespace ard
 {
     class Buzzer;
@@ -66,10 +69,14 @@ namespace ard
          */
         Pose2D getPosition(bool sym = true) const
         {
+        	Pose2D pose;
+        	enterCriticalSection();
         	if(sym)
-        		return m_pose.toAmbiPose(m_color);
+        		pose = m_pose.toAmbiPose(m_color);
         	else
-        		return m_pose;
+        		pose = m_pose;
+        	exitCriticalSection();
+        	return pose;
         }
 
         /**
@@ -237,6 +244,7 @@ namespace ard
         void action_gotoNextWaypoint();
         void action_finishOrder();
         void action_waitOppMove();
+        void action_avoidScan(bool left);
 
         //used to send a straight line trajectory to the motors, it's a relative order
         void applyCmdToGoStraight(double distInMm, double maxSpeed, double maxAcc);
@@ -267,6 +275,7 @@ namespace ard
 
         //target definition
         Pose2D m_target;
+        Pose2D m_startPoint;
         eDir m_targetDir;
         eNavOrder m_order;
 

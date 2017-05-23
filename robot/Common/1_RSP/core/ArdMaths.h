@@ -26,6 +26,9 @@ namespace ard
     //Eventually add 180° to an angle representing the fact that you are facing rear
     /*rad*/ double headingToDir(double h /*rad*/, eDir sens);
 
+    //Test if point (x,y) is in circle of center (xc, yc) and radius.
+    bool isInCircle(float x, float y, float xc, float yc, float radius);
+
     //Represent a geometric point in a 2D space
     class Point
     {

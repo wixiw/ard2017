@@ -293,7 +293,7 @@ namespace ard
 
         sc_boolean isOpponentBehind() override
         {
-            return robot.detection.isOpponentBehind(robot.nav.getPosition());
+            return robot.detection.isOpponentBehind(robot.nav.getPosition(SYM_POS));
         }
 
         /**

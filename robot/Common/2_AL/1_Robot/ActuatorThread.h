@@ -59,6 +59,9 @@ namespace ard
         //Initiate all actuators systems
         void startAll();
 
+        //Prevent all actuators from functionning
+        void stopAll();
+
         //disable all actuators except those for used in funny actionn (typically used at end of match)
         void disableAll();
 

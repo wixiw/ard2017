@@ -149,6 +149,13 @@ void ActuatorThread::startAll()
 	arms.start();
 }
 
+void ActuatorThread::stopAll()
+{
+	lifter.stop();
+	arms.stop();
+	disableAll();
+}
+
 void ActuatorThread::disableAll()
 {
     servoLifter.disable();

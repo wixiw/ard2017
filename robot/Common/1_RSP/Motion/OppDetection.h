@@ -23,13 +23,10 @@ namespace ard
          *                  The higher the less we risk to detect the crocodile dancer, but it's impossible to see an opponent
          *                  which stick to the wall with a width of less than the safetyArea.
          */
-        OppDetection(uint16_t safetyArea);
+        OppDetection();
 
         //Overrides RobotParametersListener
         void updateConf(RobotParameters* newConf) override;
-
-        //set match color
-        void setColor(eColor c);
 
         //Test if opponent is on robot path, calls isOpponentAhead() or isOpponentBehind()
         bool isOpponentOnPath(eDir direction, Pose2D const& robotPose);
@@ -40,6 +37,11 @@ namespace ard
         //Test if opponent is behind robot
         bool isOpponentBehind(Pose2D const& robotPose);
 
+        //Test if a waypoint is accessible.
+        //The robot is considered as being a circle of radius robotSize in mm
+        //Works only on prefered color
+        bool isWaypointValid(Pose2D p, Distance robotSize);
+
         //Active/Deactivate avoidance system
         void enableAvoidance(bool on);
 
@@ -49,19 +51,16 @@ namespace ard
         //is true when a fake robot is simulated
         bool fakeRobot;
 
-        //match color
-        eColor color;
-
         //Avoidance sensors
         FilteredInput omronFront;
         FilteredInput omronRear;
 
     private:
-        //Return true if the detection point is a valid point, false if it is out of table or
+    	//Return true if the detection point is a valid point, false if it is out of table or
         //in an area considered as always safe.
-        bool isDetectionValid(Pose2D p);
-
-        uint16_t safetyArea;
+        //Works only on prefered color
+        bool isDetectionValid(Pose2D p, Distance wallExtension);
+        
         bool avoidanceActive; //is true when avoidance system is active
     };
 

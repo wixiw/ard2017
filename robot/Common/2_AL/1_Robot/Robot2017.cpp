@@ -27,7 +27,7 @@ Robot2017::Robot2017():
     buildDate("unknown"),
     conf(),
     hmi(TIMER_BUZZER),
-    detection(SAFETY_AREA),
+    detection(),
     motionGraph(),
 	kinematics(),
     nav(hmi.buzzer, detection, motionGraph, kinematics),
@@ -116,7 +116,7 @@ void Robot2017::dieMotherFucker()
 
     //Ask the robot to stop moving and wait for it to be at rest
     nav.stopMoving();
-    actuators.disableAll();
+    actuators.stopAll();
     nav.motorPower(false);
 
     //Play with LED for fun
@@ -157,7 +157,6 @@ void Robot2017::colorChoosed(eColor color)
         nav.setColor (eColor_PREF);
         stratInfo.setColor(eColor_PREF);
         actuators.setColor(eColor_PREF);
-        detection.setColor(eColor_PREF);
 
     }
     else if ( color == eColor_SYM )
@@ -166,7 +165,6 @@ void Robot2017::colorChoosed(eColor color)
         nav.setColor (eColor_SYM);
         stratInfo.setColor(eColor_SYM);
         actuators.setColor(eColor_SYM);
-        detection.setColor(eColor_SYM);
     }
     else
     {

@@ -13,7 +13,7 @@
 
 #define GAIN_ANALOG_TENSION_BATTERIE 0.024
 
-#define TABLE_REFEREE_Y         1000
+#define TABLE_BORDER_Y     1000
 #define TABLE_BORDER_X      1500
 
 #define SAFETY_AREA 150 //distance in mm from border where we ignore opponents

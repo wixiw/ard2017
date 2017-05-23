@@ -41,6 +41,11 @@ double ard::headingToDir(double h, eDir sens)
     }
 }
 
+bool ard::isInCircle(float x, float y, float xc, float yc, float radius)
+{
+	return (x - xc)*(x - xc) + (y - yc)*(y - yc) < radius*radius ? true : false;
+}
+
 Point::Point()
         : x(0), y(0)
 {

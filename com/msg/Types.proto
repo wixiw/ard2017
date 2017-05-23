@@ -34,6 +34,10 @@ enum eNavState {
     STOPPING_IN_WALL 	 	= 14;
     COMPUTING_GRAPH   		= 15;
     OPTIMIZING_GRAPH  		= 16;
+    AVOID_GO_BACKWARD  		= 17;
+    AVOID_SCAN  			= 18;
+    AVOID_SCAN_STOP			= 19;
+    AVOID_CONTOURNING		= 20;
 }
 
 enum eNavOrder {

@@ -20,6 +20,8 @@ using namespace ard;
 #define GRAPH_TIMEOUT 15000 //ms
 #define OPP_IMPATIENCE_TIMEOUT 5000 //ms
 #define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT((m_state == eNavState_IDLE || m_state == eNavState_BLOCKED) && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
+#define AVOID_MARGIN 50 //mm distance added to robot outer circle to consider an escape point as being on table
+#define AVOID_BACK_DISTANCE 100 //mm distance used to go backward and let some space between robots.
 
 Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph, KinematicManager& kinMan):
 	Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
@@ -30,6 +32,7 @@ Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph, Ki
 	m_pose(),
 	m_state(eNavState_IDLE),
 	m_target(),
+	m_startPoint(),
 	m_targetDir(eDir_BEST),
 	m_order(eNavOrder_NOTHING),
 	stepperL(AccelStepper::DRIVER, PAPG_STEP, PAPG_DIR),
@@ -118,7 +121,7 @@ void Navigation::run()
             else
             {
                 //check for opponent presence (if avoidance system is active)
-                if( detection.isOpponentOnPath(m_targetDir, m_pose) )
+                if( detection.isOpponentOnPath(m_targetDir, getPosition(SYM_POS)) )
                 {
                     action_waitOppMove();
                 }
@@ -172,7 +175,7 @@ void Navigation::run()
         case eNavState_WAIT_OPP_MOVE:
         {
             //Check if opponent has left
-            if( !detection.isOpponentOnPath(m_targetDir, getPosition(true)) )
+            if( !detection.isOpponentOnPath(m_targetDir, getPosition(SYM_POS)) )
             {
                 LOG_INFO("Opponent has moved away, continuing order.");
                 action_goingToTarget();
@@ -182,6 +185,48 @@ void Navigation::run()
             //    LOG_DEBUG("Opponent is still present, continuing to wait.");
             break;
         }
+
+        case eNavState_AVOID_GO_BACKWARD:
+		{
+			if( subOrderFinished() )
+			{
+//TODO test in progress
+//				LOG_INFO("Room made for opponent.");
+//				m_state = eNavState_WAIT_OPP_MOVE;
+				action_avoidScan(true);
+			}
+			break;
+		}
+
+        case eNavState_AVOID_SCAN:
+		{
+			if( subOrderFinished() )
+			{
+				LOG_INFO("Scan finished, opponent is every where !."); //TODO : tester de l'autre côté
+				m_state = eNavState_WAIT_OPP_MOVE;
+			}
+			else
+			{
+				if(!detection.omronFront.read())
+				{
+					LOG_INFO("Scan finished, we find a hole.");
+					m_state = eNavState_WAIT_OPP_MOVE;
+				}
+			}
+			break;
+		}
+
+        case eNavState_AVOID_SCAN_STOP:
+		{
+			if( subOrderFinished() )
+			{
+				LOG_INFO("Contourning opponent");
+				m_state = eNavState_WAIT_OPP_MOVE;
+			}
+			break;
+		}
+
+
 
 /** -----------------------------------------------------------------------------------
  * Recal on Border
@@ -261,7 +306,7 @@ void Navigation::run()
                 }
                 else
                 {
-                    LOG_INFO(String("   recal finished (no escape), exit position : ")+ m_pose.toString());
+                    LOG_INFO(String("   recal finished (no escape), exit position : ")+ getPosition(NO_SYM_POS).toString());
                     m_order = eNavOrder_NOTHING;
                     m_state = eNavState_IDLE;
                 }
@@ -304,8 +349,8 @@ void Navigation::run()
         case eNavState_ESCAPING_WALL:
         {
             //check for opponent presence (if avoidance system is active)
-            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(getPosition(true)))
-            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(getPosition(true))) )
+            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(getPosition(SYM_POS)))
+            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(getPosition(SYM_POS))) )
             {
                 //Stops as an opponent is detected
                 enterCriticalSection();
@@ -318,7 +363,7 @@ void Navigation::run()
             }
             else if(subOrderFinished())
             {
-                LOG_INFO(String("   recal finished, exit position : ")+ m_pose.toString());
+                LOG_INFO(String("   recal finished, exit position : ")+ getPosition(NO_SYM_POS).toString());
                 m_order = eNavOrder_NOTHING;
                 m_state = eNavState_IDLE;
             }
@@ -329,8 +374,8 @@ void Navigation::run()
         case eNavState_WAIT_OPP_ESCAPE_RECALL:
         {
             //check for opponent presence (if avoidance system is active)
-            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(getPosition(true)))
-            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(getPosition(true))) )
+            if( (m_order == eNavOrder_RECAL_REAR && detection.isOpponentAhead(getPosition(SYM_POS)))
+            || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(getPosition(SYM_POS))) )
             {
                 klaxon.playTone(KLAXON_FREQ, PERIOD_NAVIGATION);
             }
@@ -341,7 +386,7 @@ void Navigation::run()
 
                 //Reset order
                 ASSERT(m_targetDir);
-                applyCmdToGoStraight(m_targetDir * m_pose.distanceTo(m_target), kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
+                applyCmdToGoStraight(m_targetDir * getPosition(NO_SYM_POS).distanceTo(m_target), kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
             }
             break;
         }
@@ -351,7 +396,7 @@ void Navigation::run()
          --------------------------------------------------------------------------------------*/
         case eNavState_COMPUTING_GRAPH:
         {
-            if(!graph.computeShortertPath(m_pose.toAmbiPose(m_color), m_target, m_graphDir))
+            if(!graph.computeShortertPath(getPosition(SYM_POS), m_target, m_graphDir))
             {
                 LOG_ERROR("No path found in graph !");
                 m_order = eNavOrder_NOTHING;
@@ -445,16 +490,17 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
         m_target = target.toAmbiPoint(m_color);
     else
         m_target = target;
+    m_startPoint = getPosition(NO_SYM_POS);
 
     //Choose direction
     DelayMs moveDur = 0;
     if(sens == eDir_BEST)
     {
-        m_targetDir = findOptimalDir(m_pose, m_target, false, &moveDur);
+        m_targetDir = findOptimalDir(getPosition(NO_SYM_POS), m_target, false, &moveDur);
     }
     else
     {
-        moveDur = motionDuration(m_pose, m_target, sens, false);
+        moveDur = motionDuration(getPosition(NO_SYM_POS), m_target, sens, false);
         m_targetDir = sens;
     }
 
@@ -479,16 +525,17 @@ void Navigation::goToCap(Pose2D target, eDir sens, bool sym)
         m_target = target.toAmbiPose(m_color);
     else
         m_target = target;
+    m_startPoint = getPosition(NO_SYM_POS);
 
     //Choose direction
     DelayMs moveDur = 0;
     if(sens == eDir_BEST)
     {
-        m_targetDir = findOptimalDir(m_pose, m_target, true, &moveDur);
+        m_targetDir = findOptimalDir(getPosition(NO_SYM_POS), m_target, true, &moveDur);
     }
     else
     {
-        moveDur = motionDuration(m_pose, m_target, sens, true);
+        moveDur = motionDuration(getPosition(NO_SYM_POS), m_target, sens, true);
         m_targetDir = sens;
     }
 
@@ -505,7 +552,7 @@ void Navigation::goForward(float distanceMm)
     LOG_INFO(String("   new request : goForward(") + distanceMm + "mm).");
 
     m_mutex.lock();
-    Pose2D target = m_pose;
+    Pose2D target = getPosition(NO_SYM_POS);
     target.translatePolar(m_pose.hDegree(), distanceMm);
     m_mutex.unlock();
 
@@ -525,6 +572,7 @@ void Navigation::turnDelta(float angle, bool sym)
     CHECK_ONE_ORDER_AT_A_TIME();
     triedCount = 0;
     motorPower(true);
+    m_startPoint = getPosition(NO_SYM_POS);
 
     LOG_INFO(String("   new request : turnDelta(") + angle + "°).");
     float target = angle;
@@ -548,10 +596,8 @@ void Navigation::turnDelta(float angle, bool sym)
 void Navigation::turnTo(float angle, bool sym)
 {
     LOG_INFO(String("   new request : turnTo(") + angle + "°).");
-
-    m_mutex.lock();
-    Pose2D target = m_pose;
-    m_mutex.unlock();
+    Pose2D target = getPosition(NO_SYM_POS);
+    m_startPoint = getPosition(NO_SYM_POS);
 
     if(sym && m_color == eColor_SYM)
         target.hDegree(-angle);
@@ -564,15 +610,13 @@ void Navigation::turnTo(float angle, bool sym)
 void Navigation::faceTo(Point p, bool sym)
 {
     LOG_INFO(String("   new request : faceTo") + p.toString() + ".");
-
-    m_mutex.lock();
-    Pose2D target = m_pose;
-    m_mutex.unlock();
+    m_startPoint = getPosition(NO_SYM_POS);
+    Pose2D target = m_startPoint;
 
     if( sym )
-        target.h = m_pose.angleTo(p.toAmbiPoint(m_color));
+        target.h = m_startPoint.angleTo(p.toAmbiPoint(m_color));
     else
-        target.h = m_pose.angleTo(p);
+        target.h = m_startPoint.angleTo(p);
 
     goToCap(target, eDir_FORWARD, true);
 }
@@ -580,15 +624,13 @@ void Navigation::faceTo(Point p, bool sym)
 void Navigation::rearTo(Point p, bool sym)
 {
     LOG_INFO(String("   new request : rearTo") + p.toString() + ".");
-
-    m_mutex.lock();
-    Pose2D target = m_pose;
-    m_mutex.unlock();
+    m_startPoint = getPosition(NO_SYM_POS);
+    Pose2D target = m_startPoint;
 
     if( sym )
-        target.h = headingToDir(m_pose.angleTo(p.toAmbiPoint(m_color)), eDir_BACKWARD);
+        target.h = headingToDir(m_startPoint.angleTo(p.toAmbiPoint(m_color)), eDir_BACKWARD);
     else
-        target.h =headingToDir(m_pose.angleTo(p), eDir_BACKWARD);
+        target.h =headingToDir(m_startPoint.angleTo(p), eDir_BACKWARD);
 
     goToCap(target, eDir_BACKWARD, true);
 }
@@ -604,7 +646,7 @@ void Navigation::recalFace(eTableBorder border, Distance _escapeDir)
     m_targetDir = eDir_FORWARD;
     triedCount = 0;
     m_target = getRecalPointFace(border).toAmbiPose(m_color);
-    double angleDelta = moduloPiPi(m_target.h - m_pose.h);
+    double angleDelta = moduloPiPi(m_target.h - getPosition(NO_SYM_POS).h);
 
     //Request turn
     LOG_INFO(String("   Facing wall to recal at ") + m_target.toString() + "...");
@@ -629,7 +671,7 @@ void Navigation::recalRear(eTableBorder border, Distance _escapeDir)
     m_targetDir = eDir_BACKWARD;
     triedCount = 0;
     m_target = getRecalPointRear(border).toAmbiPose(m_color);;
-    double angleDelta = moduloPiPi(m_target.h - m_pose.h);
+    double angleDelta = moduloPiPi(m_target.h - getPosition(NO_SYM_POS).h);
 
     //Request turn
     LOG_INFO(String("   Facing table to recal at ") + m_target.toString() + "...");
@@ -658,7 +700,7 @@ void Navigation::graphTo(Pose2D target, eDir sens)
     m_graphDir = sens;
     m_order = eNavOrder_GRAPH_TO;
     orderTimeout.arm(GRAPH_TIMEOUT);
-
+    m_startPoint = getPosition(NO_SYM_POS);
     m_mutex.unlock();
 }
 
@@ -779,7 +821,7 @@ apb_NavState const& Navigation::serealize()
     //DO NOT use mutex here, for some resons RemoteControl creates a deadlock
     state.state = m_state;
     state.order = m_order;
-    state.pos = m_pose.getProto();
+    state.pos = getPosition(NO_SYM_POS).getProto();
     state.omronFront = detection.omronFront.readRaw();
     state.omronRear = detection.omronRear.readRaw();
 
@@ -822,12 +864,12 @@ void Navigation::compute_odom()
     m_mutex.unlock();
 }
 
-
 void Navigation::action_startOrder()
 {
     LOG_DEBUG("   new order " + orderToString(m_order) + "(" + m_target.x + ", " + m_target.y + ", " + m_target.h + ") " + sensToString(m_targetDir) + ".");
     ASSERT(m_targetDir);
-    double distDelta = m_targetDir * m_pose.distanceTo(m_target);
+    Pose2D currentPose = getPosition(NO_SYM_POS);
+    double distDelta = m_targetDir * currentPose.distanceTo(m_target);
     //Do no move if already on target
     if (fabs(distDelta) <= NO_MOVE_DELTA)
     {
@@ -835,7 +877,7 @@ void Navigation::action_startOrder()
     }
     else
     {
-        double angleDelta = headingToDir(m_pose.angleHeadingTo(m_target), m_targetDir);
+        double angleDelta = headingToDir(currentPose.angleHeadingTo(m_target), m_targetDir);
 
         //Do not turn if already facing right direction
         if (fabs(angleDelta) <= NO_TURN_DELTA)
@@ -857,7 +899,7 @@ void Navigation::action_goingToTarget()
 {
     //Request straight line
     ASSERT(m_targetDir);
-    applyCmdToGoStraight(m_targetDir * m_pose.distanceTo(m_target), kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
+    applyCmdToGoStraight(m_targetDir * getPosition(NO_SYM_POS).distanceTo(m_target), kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
     //Change state
     m_state = eNavState_GOING_TO_TARGET;
 }
@@ -867,7 +909,7 @@ void Navigation::action_turningAtTarget()
     //Request rotation to final heading
     if( m_order == eNavOrder_GOTO_CAP || m_order == eNavOrder_GRAPH_TO )
     {
-        double angleDelta = moduloPiPi(m_target.h - m_pose.h);
+        double angleDelta = moduloPiPi(m_target.h - getPosition(NO_SYM_POS).h);
         //Do not turn if already facing right direction
         if (fabs(angleDelta) <= NO_TURN_DELTA)
         {
@@ -898,7 +940,7 @@ void Navigation::action_gotoNextWaypoint()
     currentWayPoint++;
     m_target = graph.getWayPoint(currentWayPoint).toAmbiPose(m_color);
     if(m_graphDir == eDir_BEST)
-        m_targetDir = findOptimalDir(m_pose, m_target, eNavOrder_GOTO_CAP);
+        m_targetDir = findOptimalDir(getPosition(NO_SYM_POS), m_target, eNavOrder_GOTO_CAP);
     else
         m_targetDir = m_graphDir;
     LOG_INFO(String("   going to next waypoint ") + m_target.toString() + " "  + sensToString(m_targetDir) + ".");
@@ -943,17 +985,68 @@ void Navigation::action_finishOrder()
 
 void Navigation::action_waitOppMove()
 {
+	Pose2D currentPose = getPosition(NO_SYM_POS);
+
+    //Check if we can replay
+    Distance distanceRun = m_startPoint.distanceTo(currentPose);
+    if( AVOID_BACK_DISTANCE < distanceRun )
+    {
+    	LOG_INFO(String("Replaying  ") + (int)(AVOID_BACK_DISTANCE) + "mm (run distance=" + distanceRun + ")");
+		m_state = eNavState_AVOID_GO_BACKWARD;
+		applyCmdToGoStraight(- m_targetDir * AVOID_BACK_DISTANCE, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
+    	return;
+    }
+
+	//If trajectory was not on path, try to go back ahead of start pos
+	Pose2D backPose = currentPose;
+	backPose.translatePolar(currentPose.hDegree(), - m_targetDir * AVOID_BACK_DISTANCE);
+	if( detection.isWaypointValid(backPose.toAmbiPose(m_color), conf->xouter() + AVOID_MARGIN))
+	{
+		LOG_INFO("Backing a bit to let some room to the opponent : " + backPose.toString());
+		m_state = eNavState_AVOID_GO_BACKWARD;
+		applyCmdToGoStraight(- m_targetDir * AVOID_BACK_DISTANCE, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
+		return;
+	}
+
+	if( 0 < distanceRun )
+	{
+    	LOG_INFO(String("Half replay : ") + distanceRun + "mm.");
+		m_state = eNavState_AVOID_GO_BACKWARD;
+		applyCmdToGoStraight(- m_targetDir * distanceRun, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
+    	return;
+	}
+
+	//If no solution is found : wait
+	LOG_INFO("No backing solution : stops and wait that opponent moves away... (blocked at position = " + currentPose.toString()+")");
     enterCriticalSection();
     stepperL.stop();
     stepperR.stop();
     exitCriticalSection();
-
-    m_state = eNavState_WAIT_OPP_MOVE;
-
-    //Inform user
-    LOG_INFO("Waiting that opponent moves away... (blocked at position = " + m_pose.toString()+")");
-    klaxon.playTone(KLAXON_FREQ, conf->detectionWaitForOppMove());
+	m_state = eNavState_WAIT_OPP_MOVE;
+	klaxon.playTone(KLAXON_FREQ, conf->detectionWaitForOppMove()); //Detection wait is managed by omron filters
 }
+
+void Navigation::action_avoidScan(bool left)
+{
+	double angleDelta = 0;
+
+	if(left)
+	{
+		LOG_INFO("Scanning left direction...");
+		angleDelta = M_PI_2;
+	}
+	else
+	{
+		LOG_INFO("Scanning right direction..");
+		angleDelta = -M_PI_2;
+	}
+
+	m_state = eNavState_AVOID_SCAN;
+	applyCmdToTurn(angleDelta, kinematics.maxTurnSpeed(), kinematics.maxTurnAcc());
+	klaxon.bip(2);
+}
+
+
 
 void Navigation::applyCmdToGoStraight(double mm, double maxSpeed, double maxAcc)
 {
@@ -1026,43 +1119,43 @@ Pose2D Navigation::getRecalPointFace(eTableBorder border)
 {
     switch (border) {
         case eTableBorder_REFEREE_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, TABLE_REFEREE_Y - conf->xav(), 90);
+            return Pose2D(getPosition(SYM_POS).x, TABLE_BORDER_Y - conf->xav(), 90);
             break;
 
         case eTableBorder_B_CORNER_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, 618 - conf->xav(), 90);
+            return Pose2D(getPosition(SYM_POS).x, 618 - conf->xav(), 90);
             break;
 
         case eTableBorder_BOT_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, -TABLE_REFEREE_Y + conf->xav(), -90);
+            return Pose2D(getPosition(SYM_POS).x, -TABLE_BORDER_Y + conf->xav(), -90);
             break;
 
         case eTableBorder_OPP_B_CORNER_X:
-            return Pose2D(-TABLE_BORDER_X + conf->xav(), m_pose.toAmbiPose(m_color).y, 180);
+            return Pose2D(-TABLE_BORDER_X + conf->xav(), getPosition(SYM_POS).y, 180);
             break;
 
         case eTableBorder_OWN_B_CORNER_X:
-            return Pose2D(TABLE_BORDER_X - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
+            return Pose2D(TABLE_BORDER_X - conf->xav(), getPosition(SYM_POS).y, 0);
             break;
 
         case eTableBorder_FLIP_FLOP_X:
-            return Pose2D(790 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
+            return Pose2D(790 - conf->xav(), getPosition(SYM_POS).y, 0);
             break;
 
         case eTableBorder_OWN_BORDER_3_X:
-        	return Pose2D(68 + conf->xav(), m_pose.toAmbiPose(m_color).y, 180);
+        	return Pose2D(68 + conf->xav(), getPosition(SYM_POS).y, 180);
         	break;
 
         case eTableBorder_OPP_BORDER_3_X:
-        	return Pose2D(-68 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
+        	return Pose2D(-68 - conf->xav(), getPosition(SYM_POS).y, 0);
         	break;
 
         case eTableBorder_OWN_BORDER_5_X:
-        	return Pose2D(TABLE_BORDER_X - 108 - conf->xav(), m_pose.toAmbiPose(m_color).y, 0);
+        	return Pose2D(TABLE_BORDER_X - 108 - conf->xav(), getPosition(SYM_POS).y, 0);
         	break;
 
         case eTableBorder_OPP_BORDER_1_X:
-        	return Pose2D(-TABLE_BORDER_X + 108 + conf->xav(), m_pose.toAmbiPose(m_color).y, 180);
+        	return Pose2D(-TABLE_BORDER_X + 108 + conf->xav(), getPosition(SYM_POS).y, 180);
         	break;
 
         default:
@@ -1076,43 +1169,43 @@ Pose2D Navigation::getRecalPointRear(eTableBorder border)
 {
     switch (border) {
         case eTableBorder_REFEREE_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, TABLE_REFEREE_Y - conf->xar(), -90);
+            return Pose2D(getPosition(SYM_POS).x, TABLE_BORDER_Y - conf->xar(), -90);
             break;
 
         case eTableBorder_B_CORNER_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, 618 - conf->xar(), -90);
+            return Pose2D(getPosition(SYM_POS).x, 618 - conf->xar(), -90);
             break;
 
         case eTableBorder_BOT_Y:
-            return Pose2D(m_pose.toAmbiPose(m_color).x, -TABLE_REFEREE_Y + conf->xar(), 90);
+            return Pose2D(getPosition(SYM_POS).x, -TABLE_BORDER_Y + conf->xar(), 90);
             break;
 
         case eTableBorder_OPP_B_CORNER_X:
-            return Pose2D(-TABLE_BORDER_X + conf->xar(), m_pose.toAmbiPose(m_color).y, 0);
+            return Pose2D(-TABLE_BORDER_X + conf->xar(), getPosition(SYM_POS).y, 0);
             break;
 
         case eTableBorder_OWN_B_CORNER_X:
-            return Pose2D(TABLE_BORDER_X - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
+            return Pose2D(TABLE_BORDER_X - conf->xar(), getPosition(SYM_POS).y, 180);
             break;
 
         case eTableBorder_FLIP_FLOP_X:
-            return Pose2D(790 - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
+            return Pose2D(790 - conf->xar(), getPosition(SYM_POS).y, 180);
             break;
 
         case eTableBorder_OWN_BORDER_3_X:
-        	return Pose2D(-68 - conf->xar(), m_pose.toAmbiPose(m_color).y, 0);
+        	return Pose2D(-68 - conf->xar(), getPosition(SYM_POS).y, 0);
         	break;
 
         case eTableBorder_OPP_BORDER_3_X:
-        	return Pose2D(68 + conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
+        	return Pose2D(68 + conf->xar(), getPosition(SYM_POS).y, 180);
         	break;
 
         case eTableBorder_OWN_BORDER_5_X:
-        	return Pose2D(TABLE_BORDER_X - 108 - conf->xar(), m_pose.toAmbiPose(m_color).y, 180);
+        	return Pose2D(TABLE_BORDER_X - 108 - conf->xar(), getPosition(SYM_POS).y, 180);
         	break;
 
         case eTableBorder_OPP_BORDER_1_X:
-        	return Pose2D(-TABLE_BORDER_X + 108 + conf->xar(), m_pose.toAmbiPose(m_color).y, 0);
+        	return Pose2D(-TABLE_BORDER_X + 108 + conf->xar(), getPosition(SYM_POS).y, 0);
         	break;
 
         default:
@@ -1179,6 +1272,9 @@ String Navigation::stateToString(eNavState state)
         ENUM2STR(eNavState_STOPPING_IN_WALL);
         ENUM2STR(eNavState_COMPUTING_GRAPH);
         ENUM2STR(eNavState_OPTIMIZING_GRAPH);
+        ENUM2STR(eNavState_AVOID_GO_BACKWARD);
+        ENUM2STR(eNavState_AVOID_SCAN);
+        ENUM2STR(eNavState_AVOID_SCAN_STOP);
     }
 }
 
