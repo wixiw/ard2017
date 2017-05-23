@@ -244,6 +244,19 @@ namespace ard
             robot.nav.recalRear((eTableBorder)(border), distance);
         }
 
+		void graphTo(sc_real x, sc_real y, sc_real h, sc_integer dir) override
+		{
+			Pose2D target = Pose2D(x, y, h);
+			robot.nav.graphTo(target, (eDir)(dir));
+		}
+
+		void graphToID(sc_integer id, sc_real h, sc_integer dir) override
+		{
+			Pose2D target = robot.motionGraph.getNode(id);
+			target.hDegree(h);
+			robot.nav.graphTo(target, (eDir)(dir));
+		}
+
         void stopMoving() override
         {
             robot.nav.stopMoving();
@@ -259,36 +272,47 @@ namespace ard
             return robot.nav.blocked();
         }
 
-        sc_boolean switchRecalFL() override
-        {
-            return robot.nav.switchRecalFL.read();
-        }
-
-        sc_boolean switchRecalFR() override
-        {
-            return robot.nav.switchRecalFR.read();
-        }
-
-        sc_boolean switchRecalRC() override
-        {
-            return robot.nav.switchRecalRC.read();
-        }
-
         /**
          * Detection
          */
-        sc_boolean omronFront() override
+        sc_boolean omronFrontLeft() override
         {
-            return robot.detection.omronFront.read();
+            return robot.detection.omronFrontLeft.read();
         }
 
-        sc_boolean omronRear() override
+        sc_boolean omronFrontRight() override
         {
-            return robot.detection.omronRear.read();
+            return robot.detection.omronFrontRight.read();
         }
+
+        sc_boolean omronRearLeft() override
+        {
+            return robot.detection.omronRearLeft.read();
+        }
+
+        sc_boolean omronRearRight() override
+        {
+            return robot.detection.omronRearRight.read();
+        }
+
+        sc_boolean omronLatLeft() override
+        {
+            return robot.detection.omronLatLeft.read();
+        }
+
+        sc_boolean omronLatRight() override
+        {
+            return robot.detection.omronLatRight.read();
+        }
+
+        sc_boolean omronScan() override
+        {
+            return robot.detection.omronScan.read();
+        }
+
         sc_boolean isOpponentAhead() override
         {
-            return robot.detection.isOpponentAhead(robot.nav.getPosition());
+            return robot.detection.isOpponentAhead(robot.nav.getPosition(SYM_POS));
         }
 
         sc_boolean isOpponentBehind() override
@@ -296,54 +320,19 @@ namespace ard
             return robot.detection.isOpponentBehind(robot.nav.getPosition(SYM_POS));
         }
 
+        sc_boolean isOpponentOnLeft() override
+        {
+            return robot.detection.isOpponentOnLeft(robot.nav.getPosition(SYM_POS));
+        }
+
+        sc_boolean isOpponentOnRight() override
+        {
+            return robot.detection.isOpponentOnRight(robot.nav.getPosition(SYM_POS));
+        }
+
         /**
          * Actionneurs
          */
-        void swallow(sc_integer on) override
-        {
-        	switch ((eArmsCmd) on){
-        		case AC_RETRACT :
-        			robot.actuators.arms.retract();
-        			break;
-        		case AC_SWALLOW_NORMAL :
-        			robot.actuators.arms.swallowNormal();
-        			break;
-        		case AC_SWALLOW_DISPENSER :
-        			robot.actuators.arms.swallowDispenser();
-        			break;
-        		default:;
-        	}
-        }
-
-        void turnWheels(sc_integer on) override
-        {
-            robot.actuators.turnWheels((eWheelsCmd)on);
-        }
-
-        void lifter(sc_boolean up) override
-        {
-            robot.actuators.lifterCmd(up);
-        }
-
-        sc_boolean lifterAtTarget() override
-        {
-            return robot.actuators.servoLifter.isTargetReached();
-        }
-
-        void arms(sc_integer left, sc_integer right) override
-        {
-            ASSERT(left <= 1000);
-            ASSERT(right <= 1000);
-            robot.actuators.servoLeftArm.goTo((uint16_t)left);
-            robot.actuators.servoRightArm.goTo((uint16_t)right);
-        }
-
-        sc_boolean armsAtTarget() override
-        {
-            return robot.actuators.servoLeftArm.isTargetReached()
-                    &&robot.actuators.servoRightArm.isTargetReached();
-        }
-
         sc_boolean armsReady() override
         {
             return robot.actuators.arms.isReady();
@@ -354,44 +343,9 @@ namespace ard
             return robot.actuators.lifter.isReady();
         }
 
-        void turnCylinder(sc_boolean on) override
-        {
-            return robot.actuators.turnCylinder(on);
-        }
-
-        void faceUpCylinder() override
-        {
-            robot.actuators.faceUpCylinder();
-        }
-
-        sc_integer getFaceUpStatus() override
-        {
-            return robot.actuators.getFaceUpStatus();
-        }
-
         void actCmd(sc_integer cmdId) override
         {
             return robot.actuators.actCmd((eActCmd)(cmdId));
-        }
-
-        sc_boolean switchArmLout() override
-        {
-            return robot.actuators.switchArmLout.read();
-        }
-
-        sc_boolean switchArmLin() override
-        {
-            return robot.actuators.switchArmLin.read();
-        }
-
-        sc_boolean switchArmRout() override
-        {
-            return robot.actuators.switchArmRout.read();
-        }
-
-        sc_boolean switchArmRin() override
-        {
-            return robot.actuators.switchArmRin.read();
         }
 
         sc_boolean omronCylinder() override
@@ -399,16 +353,6 @@ namespace ard
             return robot.actuators.omronCylinder.read();
         }
         
-        sc_boolean switchLifterUp() override
-        {
-            return robot.actuators.switchLifterUp.read();
-        }
-
-        sc_boolean switchLifterDown() override
-        {
-            return robot.actuators.switchLifterDown.read();
-        }
-
         sc_integer stockColor() override
         {
             return robot.actuators.stockColor.getColor();

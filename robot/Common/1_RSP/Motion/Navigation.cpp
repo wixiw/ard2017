@@ -3,7 +3,7 @@
 #include "Log.h"
 #include "Navigation.h"
 #include "Actuators/Buzzer.h"
-#include "OppDetection.h"
+#include "Detection.h"
 #include "Graph.h"
 #include "KinematicManager.h"
 
@@ -19,11 +19,11 @@ using namespace ard;
 #define RECAL_RETRY_ESCAPE_DIST 50 //mm
 #define GRAPH_TIMEOUT 15000 //ms
 #define OPP_IMPATIENCE_TIMEOUT 5000 //ms
-#define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT((m_state == eNavState_IDLE || m_state == eNavState_BLOCKED) && m_order == eNavOrder_NOTHING, "Nav cannot do 2 orders at a time");
+#define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT(!orderOngoing(), "Nav cannot do 2 orders at a time");
 #define AVOID_MARGIN 50 //mm distance added to robot outer circle to consider an escape point as being on table
 #define AVOID_BACK_DISTANCE 100 //mm distance used to go backward and let some space between robots.
 
-Navigation::Navigation(Buzzer& klaxon, OppDetection& detection, Graph& graph, KinematicManager& kinMan):
+Navigation::Navigation(Buzzer& klaxon, Detection& detection, Graph& graph, KinematicManager& kinMan):
 	Thread("Nav", PRIO_NAVIGATION, STACK_NAVIGATION, PERIOD_NAVIGATION),
 	switchRecalFL(BORDURE_AVG, 500, 50, true),
 	switchRecalFR(BORDURE_AVD, 500, 50, true),
@@ -77,7 +77,8 @@ void Navigation::run()
         orderTimeout.cancel();
         LOG_ERROR("Order timeout, interrupt order=" + orderToString(m_order) + " in state=" + stateToString(m_state) + " and go to error.");
         m_mutex.unlock();
-        stopMoving(eNavState_STOPPING_IN_BLOCKED);
+        applyCmdStop();
+		m_state = eNavState_STOPPING_IN_BLOCKED;
         m_mutex.lock();
     }
 
@@ -207,10 +208,12 @@ void Navigation::run()
 			}
 			else
 			{
-				if(!detection.omronFront.read())
+				/*TODO gere sens*/
+				if(detection.omronFrontLeft.read() ==  GPIO_LOW && detection.omronFrontRight.read() ==  GPIO_LOW)
 				{
-					LOG_INFO("Scan finished, we find a hole.");
-					m_state = eNavState_WAIT_OPP_MOVE;
+					LOG_INFO("Scan finished, stop turning, we find a hole.");
+					applyCmdStop();
+					m_state = eNavState_AVOID_SCAN_STOP;
 				}
 			}
 			break;
@@ -353,10 +356,7 @@ void Navigation::run()
             || (m_order == eNavOrder_RECAL_FACE && detection.isOpponentBehind(getPosition(SYM_POS))) )
             {
                 //Stops as an opponent is detected
-                enterCriticalSection();
-                stepperL.stop();
-                stepperR.stop();
-                exitCriticalSection();
+            	applyCmdStop();
 
                 m_state = eNavState_WAIT_OPP_ESCAPE_RECALL;
                 LOG_INFO("       Opponent is blocking recal escape");
@@ -704,22 +704,23 @@ void Navigation::graphTo(Pose2D target, eDir sens)
     m_mutex.unlock();
 }
 
-void Navigation::stopMoving(eNavState targetState)
+void Navigation::stopMoving()
 {
-    LOG_INFO("stop requested");
+	if(orderOngoing())
+		LOG_INFO("Strategy requested to interrupt the current order.");
+	else
+		LOG_INFO("Strategy requested a stop, but no move is ongoing : ignored.");
+
     m_mutex.lock();
-
-    //prevent any interrupt from occurring between any configuration of a left/right motor
-    enterCriticalSection();
-    stepperL.stop();
-    stepperR.stop();
-    exitCriticalSection();
-
-    //The state is directly changed to interrupting
-    m_state = targetState;
+    applyCmdStop();
     m_order = eNavOrder_NOTHING;
-
+	m_state = eNavState_STOPPING;
     m_mutex.unlock();
+}
+
+bool Navigation::orderOngoing()
+{
+	return !((m_state == eNavState_IDLE || m_state == eNavState_BLOCKED) && m_order == eNavOrder_NOTHING);
 }
 
 void Navigation::wait()
@@ -822,12 +823,16 @@ apb_NavState const& Navigation::serealize()
     state.state = m_state;
     state.order = m_order;
     state.pos = getPosition(NO_SYM_POS).getProto();
-    state.omronFront = detection.omronFront.readRaw();
-    state.omronRear = detection.omronRear.readRaw();
-
-    state.switchRecalFL = switchRecalFL.readRaw();
-    state.switchRecalFR = switchRecalFR.readRaw();
-    state.switchRecalRC = switchRecalRC.readRaw();
+    state.omronFrontLeft 	= detection.omronFrontLeft.readRaw();
+    state.omronFrontRight 	= detection.omronFrontRight.readRaw();
+    state.omronRearLeft 	= detection.omronRearLeft.readRaw();
+    state.omronRearRight 	= detection.omronRearRight.readRaw();
+	state.omronLatLeft 		= detection.omronLatLeft.readRaw();
+	state.omronLatRight 	= detection.omronLatRight.readRaw();
+	state.omronScan 		= detection.omronScan.readRaw();
+    state.switchRecalFL 	= switchRecalFL.readRaw();
+    state.switchRecalFR 	= switchRecalFR.readRaw();
+    state.switchRecalRC 	= switchRecalRC.readRaw();
 
     state.vmax = kinematics.maxSpeed(m_targetDir);
 
@@ -1018,10 +1023,7 @@ void Navigation::action_waitOppMove()
 
 	//If no solution is found : wait
 	LOG_INFO("No backing solution : stops and wait that opponent moves away... (blocked at position = " + currentPose.toString()+")");
-    enterCriticalSection();
-    stepperL.stop();
-    stepperR.stop();
-    exitCriticalSection();
+	applyCmdStop();
 	m_state = eNavState_WAIT_OPP_MOVE;
 	klaxon.playTone(KLAXON_FREQ, conf->detectionWaitForOppMove()); //Detection wait is managed by omron filters
 }
@@ -1092,10 +1094,10 @@ void Navigation::applyCmdToTurn(double angleInRad, double maxSpeed, double maxAc
     exitCriticalSection();
 }
 
-void Navigation::interruptCurrentMove()
+void Navigation::applyCmdStop()
 {
-    LOG_INFO("current order is interrupted.");
-    m_state = eNavState_STOPPING;
+    LOG_INFO("applyCmdStop.");
+
     //prevent any interrupt from occurring between any configuration of a left/right motor
     enterCriticalSection();
     stepperL.stop();

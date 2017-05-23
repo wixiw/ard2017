@@ -91,15 +91,17 @@ void ard::Strategy_OmronTest(Robot2017& robot)
     {
         nav = robot.nav.serealize();
 
-        if (nav.omronFront)
+/*
+        if (nav.omronFrontLeft)
         robot.hmi.setLed(LED1, eLedState::ON);
         else
         robot.hmi.setLed(LED1, eLedState::OFF);
 
-        if (nav.omronRear)
+        if (nav.omronRearLeft)
         robot.hmi.setLed(LED2, eLedState::ON);
         else
         robot.hmi.setLed(LED2, eLedState::OFF);
+		*/
 
 //        if (nav.omronRL)
 //        robot.hmi.setLed(LED3, eLedState::ON);

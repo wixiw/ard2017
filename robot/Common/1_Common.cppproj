@@ -1062,6 +1062,12 @@
     <Compile Include="1_RSP\Log.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\Motion\Detection.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Motion\Detection.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\Motion\Graph.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -1078,12 +1084,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\Motion\Navigation.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\Motion\OppDetection.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="1_RSP\Motion\OppDetection.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="1_RSP\RobotParameters.cpp">

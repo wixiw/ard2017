@@ -18,7 +18,7 @@
 namespace ard
 {
     class Buzzer;
-    class OppDetection;
+    class Detection;
     class Graph;
     class KinematicManager;
 
@@ -30,7 +30,7 @@ namespace ard
     class Navigation: public Thread, public RobotParametersListener
     {
     public:
-        Navigation(Buzzer& klaxon, OppDetection& detection,
+        Navigation(Buzzer& klaxon, Detection& detection,
         		Graph& graph, KinematicManager& kinMan);
 
         /**---------------------------------
@@ -180,7 +180,12 @@ namespace ard
         /**
          * Stops the robot. It interrupts current order.
          */
-        void stopMoving(eNavState targetState = eNavState_STOPPING);
+        void stopMoving();
+
+        /**
+         * Returns true is Navigation is processing actively an order
+         */
+        bool orderOngoing();
 
         /**
          * This is a blocking call until the current order is finished
@@ -253,7 +258,7 @@ namespace ard
         void applyCmdToTurn(double angleInRad, double maxSpeed, double maxAcc);
 
         //interrupt the current movement
-        void interruptCurrentMove();
+        void applyCmdStop();
 
         //used internally after a straight/turn/face order to check completeness
         bool subOrderFinished();
@@ -307,7 +312,7 @@ namespace ard
 
         //klaxon to warn for failure and request opponent to move
         Buzzer& klaxon;
-        OppDetection& detection;
+        Detection& detection;
         Graph& graph;
         KinematicManager& kinematics;
     };

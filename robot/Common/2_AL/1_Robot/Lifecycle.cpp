@@ -10,7 +10,7 @@
 
 using namespace ard;
 
-Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi, OppDetection& detection):
+Lifecycle::Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi, Detection& detection):
         Thread("Strategy", PRIO_STRATEGY, STACK_STRATEGY, PERIOD_STRATEGY),
         strategyId(0),
         nbRegisteredStrats(0),

@@ -5,7 +5,8 @@
  *      Author: wix
  */
 
-#include "OppDetection.h"
+#include "Detection.h"
+
 #include "Log.h"
 
 using namespace ard;
@@ -13,23 +14,32 @@ using namespace ard;
 //This defines helps to remind that debounce values are retrieved from the configuration
 #define OVERRIDEN_BY_CONFIG 1000
 
-OppDetection::OppDetection():
+Detection::Detection():
         simulated(true),
         fakeRobot(false),
-        omronFront(OMRON1, 50, OVERRIDEN_BY_CONFIG, true),
-        omronRear(OMRON3, 50, OVERRIDEN_BY_CONFIG, true),
+        omronFrontLeft(OMRON1, 50, OVERRIDEN_BY_CONFIG, true),
+		omronFrontRight(OMRON2, 50, OVERRIDEN_BY_CONFIG, true),
+		omronRearLeft(OMRON3, 50, OVERRIDEN_BY_CONFIG, true),
+		omronRearRight(OMRON4, 50, OVERRIDEN_BY_CONFIG, true),
+		omronLatLeft(OMRON1 /*TODO*/, 50, OVERRIDEN_BY_CONFIG, true),
+		omronLatRight(OMRON1 /*TODO*/, 50, OVERRIDEN_BY_CONFIG, true),
+		omronScan(OMRON3, 20, 20, true),
         avoidanceActive(false)//start desactivated, so that activation is done with start, ensuring avoidance is unactivated in simulation
 {
 }
 
-void OppDetection::updateConf(RobotParameters* newConf)
+void Detection::updateConf(RobotParameters* newConf)
 {
 	RobotParametersListener::updateConf(newConf);
-    omronFront.setDebounceLow(newConf->detectionWaitForOppMove());
-    omronRear.setDebounceLow(newConf->detectionWaitForOppMove());
+    omronFrontLeft.setDebounceLow(newConf->detectionWaitForOppMove());
+    omronFrontRight.setDebounceLow(newConf->detectionWaitForOppMove());
+    omronRearLeft.setDebounceLow(newConf->detectionWaitForOppMove());
+	omronRearRight.setDebounceLow(newConf->detectionWaitForOppMove());
+	omronLatLeft.setDebounceLow(newConf->detectionWaitForOppMove());
+	omronLatRight.setDebounceLow(newConf->detectionWaitForOppMove());
 }
 
-bool OppDetection::isOpponentOnPath(eDir direction, Pose2D const& robotPose)
+bool Detection::isOpponentOnPath(eDir direction, Pose2D const& robotPose)
 {
 	if(!avoidanceActive)
 		return false;
@@ -50,7 +60,7 @@ bool OppDetection::isOpponentOnPath(eDir direction, Pose2D const& robotPose)
     }
 }
 
-bool OppDetection::isOpponentAhead(Pose2D const& robotPose)
+bool Detection::isOpponentAhead(Pose2D const& robotPose)
 {
 	ASSERT_CONFIGURED();
 	Pose2D pose = robotPose;
@@ -58,24 +68,25 @@ bool OppDetection::isOpponentAhead(Pose2D const& robotPose)
 	if(!avoidanceActive)
 		return false;
 
-    bool opponentPresent = false;
-
     if(   (simulated && fakeRobot)
-      || (!simulated && omronFront.read()) == GPIO_HIGH)
+      || (!simulated && omronFrontLeft.read() == GPIO_HIGH && omronFrontRight.read() == GPIO_HIGH) )
     {
     	pose.translatePolar(robotPose.hDegree(), conf->xav() + conf->avoidanceDistanceFront());
-        opponentPresent |= isDetectionValid(robotPose, SAFETY_AREA);
+        return isDetectionValid(robotPose, SAFETY_AREA);
+    }
+    else
+    {
+    	//opponent
+    	return false;
     }
 
 //    if( opponentPresent )
 //        LOG_DEBUG(String("Opponent ahead : read=") + omronFront.read() + " raw=" + omronFront.readRaw() + " pose=" + detectedPose.toString() + " simu="+simulated+ " fake=" + fakeRobot);
 //    else
 //        LOG_DEBUG("No opponent ahead.");
-
-    return opponentPresent;
 }
 
-bool OppDetection::isOpponentBehind(Pose2D const& robotPose)
+bool Detection::isOpponentBehind(Pose2D const& robotPose)
 {
 	ASSERT_CONFIGURED();
 	Pose2D pose = robotPose;
@@ -83,30 +94,47 @@ bool OppDetection::isOpponentBehind(Pose2D const& robotPose)
 	if(!avoidanceActive)
 		return false;
 
-    bool opponentPresent = false;
-
     if(   (simulated && fakeRobot)
-      || (!simulated && omronRear.read()) == GPIO_HIGH)
+      || (!simulated && omronRearLeft.read() == GPIO_HIGH && omronRearRight.read() == GPIO_HIGH))
     {
         pose.translatePolar(robotPose.hDegree(), - conf->xar() - conf->avoidanceDistanceRear());
-        opponentPresent |= isDetectionValid(robotPose, SAFETY_AREA);
+        return isDetectionValid(robotPose, SAFETY_AREA);
+    }
+    else
+    {
+    	//opponent
+    	return false;
     }
 
 //    if( opponentPresent )
 //        LOG_DEBUG(String("Opponent behind : read=") + omronRear.read() + " raw=" + omronRear.readRaw() + " pose=" + detectedPose.toString() + " simu="+simulated+ " fake=" + fakeRobot);
 //    else
 //        LOG_DEBUG("No opponent ahead.");
-
-    return opponentPresent;
 }
 
-void OppDetection::enableAvoidance(bool on)
+bool Detection::isOpponentOnLeft(Pose2D const& robotPose)
+{
+	NOT_IMPLEMENTED();
+	return false;
+}
+
+bool Detection::isOpponentOnRight(Pose2D const& robotPose)
+{
+	NOT_IMPLEMENTED();
+	return false;
+}
+
+void Detection::enableAvoidance(bool on)
 {
     if( on && !avoidanceActive )
     {
         LOG_INFO("[Detection] Avoidance system activated.");
-        omronFront.reset();
-        omronRear.reset();
+        omronFrontLeft.reset();
+        omronFrontRight.reset();
+        omronRearLeft.reset();
+        omronRearRight.reset();
+        omronLatLeft.reset();
+        omronLatRight.reset();
     }
     if( !on && avoidanceActive )
         LOG_INFO("[Detection] Avoidance system deactivated.");
@@ -114,7 +142,7 @@ void OppDetection::enableAvoidance(bool on)
     avoidanceActive = on;
 }
 
-bool OppDetection::isWaypointValid(Pose2D p, Distance robotSize)
+bool Detection::isWaypointValid(Pose2D p, Distance robotSize)
 {
 	//Test if point is on table (border 1 and 5 excluded, hence bicolor dispenser are excluded too)
     IS_OUT_RANGE(-1420 + robotSize, p.x, 1420 - robotSize)
@@ -234,7 +262,7 @@ bool OppDetection::isWaypointValid(Pose2D p, Distance robotSize)
 }
 
 
-bool OppDetection::isDetectionValid(Pose2D p, Distance wallExtension)
+bool Detection::isDetectionValid(Pose2D p, Distance wallExtension)
 {
     IS_OUT_RANGE(-TABLE_BORDER_X + wallExtension, p.x, TABLE_BORDER_X - wallExtension)
         return false;

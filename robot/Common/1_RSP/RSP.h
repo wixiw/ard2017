@@ -27,7 +27,6 @@
 #include "Actuators/Servo.h"
 #include "Motion/Graph.h"
 #include "Motion/Navigation.h"
-#include "Motion/OppDetection.h"
 #include "Motion/KinematicManager.h"
 #include "Sensors/Adafruit_TCS34725.h"
 #include "Sensors/ColorSensor.h"
@@ -36,5 +35,6 @@
 #include "Chrono.h"
 #include "Log.h"
 #include "Hmi.h"
+#include "Motion/Detection.h"
 
 #endif /* ROBOTS_RSP_H_ */

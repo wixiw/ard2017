@@ -78,7 +78,7 @@ namespace ard
     class Lifecycle: public Thread, public FSM_Lifecycle::DefaultSCI_OCB
     {
     public:
-        Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi, OppDetection& detection);
+        Lifecycle(Navigation& nav, Chrono& chrono, HmiThread& hmi, Detection& detection);
 
         /**
          * -----------------------------
@@ -207,7 +207,7 @@ namespace ard
         Navigation& nav;
         Chrono& chrono;
         HmiThread& hmi;
-        OppDetection& detection;
+        Detection& detection;
 
         uint8_t currentMode;
         uint8_t currentModeStatus;

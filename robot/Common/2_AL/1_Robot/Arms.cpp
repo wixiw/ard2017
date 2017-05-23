@@ -37,31 +37,37 @@ void Arms::init()
 
 void Arms::start()
 {
+	LOG_INFO("[Arms] start request");
     fsm.getSCI_Strategy()->raise_start();
 }
 
 void Arms::swallowNormal()
 {
+	LOG_INFO("[Arms] swallowNormal request");
     fsm.getSCI_Strategy()->raise_swallowNormal();
 }
 
 void Arms::swallowDispenser()
 {
+	LOG_INFO("[Arms] swallowDispenser request");
     fsm.getSCI_Strategy()->raise_swallowDispenser();
 }
 
 void Arms::retract()
 {
+	LOG_INFO("[Arms] retract request");
     fsm.getSCI_Strategy()->raise_retractArms();
 }
 
 void Arms::fastPoo(uint8_t nbCylinders)
 {
+	LOG_INFO("[Arms] fastPoo request");
     fsm.getSCI_Strategy()->raise_fastPoo(nbCylinders);
 }
 
 void Arms::stop()
 {
+	LOG_INFO("[Arms] stop request");
     fsm.getSCI_Strategy()->raise_stop();
     acts.servoLeftArm.disable();
     acts.servoRightArm.disable();

@@ -153,7 +153,7 @@ namespace ard
         HmiThread hmi;
 
         //keep tracks of opponent presense
-        OppDetection detection;
+        Detection detection;
 
         //Graph of common way points
         Graph motionGraph;

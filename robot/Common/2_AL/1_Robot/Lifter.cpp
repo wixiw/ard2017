@@ -33,26 +33,31 @@ void Lifter::init()
 
 void Lifter::start()
 {
+	LOG_INFO("[Lifter] start request");
     fsm.getSCI_Strategy()->raise_start();
 }
 
 void Lifter::lift()
 {
+	LOG_INFO("[Lifter] lift request");
     fsm.getSCI_Strategy()->raise_lift();
 }
 
 void Lifter::fastPoo()
 {
+	LOG_INFO("[Lifter] fast poo request");
     fsm.getSCI_Strategy()->raise_fastPoo();
 }
 
 void Lifter::pooEnded()
 {
+	LOG_INFO("[Lifter] poo ended request");
     fsm.getSCI_Strategy()->raise_pooEnded();
 }
 
 void Lifter::stop()
 {
+	LOG_INFO("[Lifter] stop request");
     fsm.getSCI_Strategy()->raise_stop();
     acts.servoLifter.disable();
     fsm.set_started(false);

@@ -23,13 +23,6 @@ namespace ard
         WC_WITHDRAW = -1
     } eWheelsCmd;
 
-    typedef enum
-    {
-        AC_RETRACT = 0,
-        AC_SWALLOW_NORMAL = 1,
-        AC_SWALLOW_DISPENSER = 2
-    } eArmsCmd;
-
     //forward declare
     class KinematicManager;
 
@@ -41,20 +34,6 @@ namespace ard
         /**---------------------------------
          * Strat API
          ---------------------------------*/
-        //1 : swallow, -1 : expusle, 0 : stops
-        void turnWheels(eWheelsCmd on);
-
-        //Rise lifter when true, lower if false
-        void lifterCmd(bool up);
-
-        //Cylinder rotation cmd
-        void turnCylinder(bool turn);
-
-        //Turn the cylinder
-        void faceUpCylinder();
-
-        //Return the state of faceUpCylinderCmd()
-        eFaceUpStatus getFaceUpStatus();
 
         //Initiate all actuators systems
         void startAll();
