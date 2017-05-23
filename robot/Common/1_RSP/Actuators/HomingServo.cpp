@@ -15,7 +15,6 @@ HomingServo::HomingServo(String const& name, int servoOutPin, FilteredInput* pin
         AccelServo(name, servoOutPin, 0, 1000),
         pinMin(pinMin),
         pinMax(pinMax),
-        inverted(inverted),
         state(IDLE)
 {
     //At least one pin shall be non null
@@ -69,10 +68,7 @@ void HomingServo::goTo(uint16_t value)
         break;
     }
 
-    if(inverted)
-        AccelServo::goTo(1000-value);
-    else
-        AccelServo::goTo(value);
+	AccelServo::goTo(value);
 }
 
 bool HomingServo::isTargetReached()
@@ -80,10 +76,3 @@ bool HomingServo::isTargetReached()
     return state == IDLE;
 }
 
-uint16_t HomingServo::read()
-{
-	if(inverted)
-		return 1000-AccelServo::read();
-	else
-		return AccelServo::read();
-}

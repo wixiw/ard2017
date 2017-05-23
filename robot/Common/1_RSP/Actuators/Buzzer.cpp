@@ -26,8 +26,6 @@
 
 using namespace ard;
 
-//The default freq is adjusted to be the louder freq in Hz
-#define DEFAULT_FREQ 3000U
 //The default tone duration in ms
 #define DEFAULT_DURATION 100U
 //The default duration between two bips in ms
@@ -46,12 +44,14 @@ void Buzzer_Handler(void)
     //DEBUG_SET_LOW(); //uncomment to check period and delay with oscilloscope : default empty duration (2 io write + 1 function call) is 750ns
 }
 
-Buzzer::Buzzer(DueTimer& timer, uint8_t pin, uint16_t queueSize)
-        : pin(pin),
-          timer(timer),
-          queue(queueSize, sizeof(Tone)),
-          currentToneCpt(0),
-          m_soundPlayed(true)
+Buzzer::Buzzer(DueTimer& timer, uint8_t pin, uint16_t queueSize):
+		bipAllowed(true),
+		pin(pin),
+        timer(timer),
+        queue(queueSize, sizeof(Tone)),
+        currentToneCpt(0),
+        m_soundPlayed(true),
+		defaultFreq(3000)
 {
     ASSERT(buzInst == NULL);
     buzInst = this;
@@ -62,12 +62,12 @@ void Buzzer::bip(uint8_t nb)
 {
     for(int i = 0 ; i < nb ; i++)
     {
-        playTone(DEFAULT_FREQ, DEFAULT_DURATION);
+        playTone(defaultFreq, DEFAULT_DURATION);
         playTone(ToneSilence(DEFAULT_INTERTONE));
     }
 }
 
-void Buzzer::playTone(uint16_t frequency, uint16_t lengthMs)
+void Buzzer::playTone(Frequency frequency, DelayMs lengthMs)
 {
     Tone newTone;
     newTone.frequency = frequency;
@@ -85,7 +85,7 @@ void Buzzer::playTone(Tone const& tone)
     }
 }
 
-void Buzzer::silence(uint16_t lengthMs)
+void Buzzer::silence(DelayMs lengthMs)
 {
     playTone(ToneSilence(lengthMs));
 }
@@ -103,7 +103,7 @@ void Buzzer::wait()
     empty.wait();
 }
 
-bool Buzzer::soundPlayed()
+bool Buzzer::soundPlayed() const
 {
     return m_soundPlayed;
 }
@@ -165,7 +165,7 @@ void Buzzer::naderBell()
     }
 }
 
-void ard::Buzzer::playSharp(uint16_t frequency, uint16_t lengthMs)
+void ard::Buzzer::playSharp(Frequency frequency, DelayMs lengthMs)
 {
     playTone(frequency, lengthMs - 50);
     silence(50); //to separate notes

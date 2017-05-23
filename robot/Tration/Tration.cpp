@@ -42,6 +42,7 @@ void Tration::init(Robot2017Listener* client)
     cfg.leftWheelDiameter       = 59.466; //calibrated 23 may
     cfg.rightWheelDiameter      = 59.466; //calibrated 23 may
     cfg.voie                    = 160.1;  //calibrated 23 may
+    cfg.bipFreq					= 2500;
     setConfig(cfg);
 }
 

@@ -136,6 +136,7 @@ message Configuration
 
     uint32 logDebug              = 32; //set to true to activate debug logs
     uint32 bipAllowed            = 33; //activate buzzer
+    uint32 bipFreq			     = 34; //Buzzer frequency
 }
 
 //----------------------------------------------------------------------

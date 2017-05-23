@@ -24,6 +24,15 @@ void Arms::init()
     ASSERT(lifter!=NULL);
     fsm.init();
     fsm.enter();
+
+    //TODO better : replace constant in FSM by variables set here
+    ASSERT_TEXT(ARM_MIN == fsm.get_aRM_FULL_IN_CMD(), "RobotParameters and FSM_Arms.sct have diverged");
+    ASSERT_TEXT(ARM_MAX == fsm.get_aRM_OUT_CMD(), "RobotParameters and FSM_Arms.sct have diverged");
+	
+	fsm.set_leftArm(fsm.get_aRM_MID_CMD());
+	fsm.set_rightArm(fsm.get_aRM_MID_CMD());
+	fsm.set_rightWheel(fsm.get_wHEEL_IDLE_CMD());
+	fsm.set_leftWheel(fsm.get_wHEEL_IDLE_CMD());	
 }
 
 void Arms::start()

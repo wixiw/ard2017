@@ -14,12 +14,6 @@
 #include "FaceUp.h"
 #include "Lifter.h"
 
-//#porky but efficient as remote control cmd and a strategy needs this
-//the other solution would be to create a real state machine but we are
-//running out of space
-#define FUNNY_REST 500
-#define FUNNY_LAUNCH 1000
-
 namespace ard
 {
     typedef enum
@@ -91,9 +85,9 @@ namespace ard
         FilteredInput switchLifterUp;
         FilteredInput switchLifterDown;
 
-        HomingServo   servoLifter;
-        HomingServo   servoLeftArm;
-        HomingServo   servoRightArm;
+        AccelServo    servoLifter;
+        AccelServo    servoLeftArm;
+        AccelServo    servoRightArm;
         AccelServo    servoLeftWheel;
         AccelServo    servoRightWheel;
         AccelServo    servoFunnyAction;

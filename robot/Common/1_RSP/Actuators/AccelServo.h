@@ -8,8 +8,8 @@
 #ifndef ROBOT_COMMON_1_RSP_ACTUATORS_ACCELSERVO_H_
 #define ROBOT_COMMON_1_RSP_ACTUATORS_ACCELSERVO_H_
 
-#include "Servo.h"
 #include "ArdOs.h"
+#include "Servo.h.old"
 
 namespace ard
 {
@@ -23,7 +23,11 @@ namespace ard
         /**
          * Attach min and max pins
          */
-        AccelServo(String const& name, int servoOutPin, uint16_t _min = 0U, uint16_t _max = 1000U);
+        AccelServo(String const& name,
+        		int servoOutPin,
+				uint16_t _min = 0U,
+				uint16_t _max = 1000U,
+				bool inverted = false);
 
         //Implements PolledObject
         void update(DelayMs sinceLastCall) override;
@@ -32,7 +36,7 @@ namespace ard
         void disable() override;
 
         //Implements IServo
-        uint16_t read() override{return servo.read();};
+        uint16_t read() override;
 
         /**
          * The length of a PWM increment during a vmax period, typically 150us for standard servos
@@ -79,6 +83,7 @@ namespace ard
         bool enabled;
         uint16_t m_min;
         uint16_t m_max;
+        bool inverted;
 
         void computeStartDecc();
     };

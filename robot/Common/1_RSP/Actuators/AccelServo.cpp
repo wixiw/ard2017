@@ -8,7 +8,11 @@
 #include "AccelServo.h"
 using namespace ard;
 
-AccelServo::AccelServo(String const& name, int servoOutPin, uint16_t _min, uint16_t _max):
+AccelServo::AccelServo(String const& name,
+	int servoOutPin,
+	uint16_t _min,
+	uint16_t _max,
+	bool inverted):
         PolledObject(name),
         servo(servoOutPin),
         cmdVmaxInc(150),
@@ -21,7 +25,8 @@ AccelServo::AccelServo(String const& name, int servoOutPin, uint16_t _min, uint1
         mutex(),
         enabled(false),
         m_min(_min),
-        m_max(_max)
+        m_max(_max),
+		inverted(inverted)
 {
     ASSERT_TEXT(PERIOD_ACTUATORS==20,"AccelServo acc/vmax configs depends on period, if you change the period, check the configs");
 }
@@ -126,6 +131,9 @@ void AccelServo::goTo(uint16_t _target)
     else if (_target > m_max)
         _target = m_max;
 
+    if(inverted)
+    	_target = 1000-_target;
+
     mutex.lock();
     target = servo.perThousandToUs(_target);
 
@@ -172,4 +180,12 @@ void AccelServo::computeStartDecc()
     {
         startDeccDelta = 0;
     }
+}
+
+uint16_t AccelServo::read()
+{
+	if(inverted)
+		return 1000-servo.read();
+	else
+		return servo.read();
 }

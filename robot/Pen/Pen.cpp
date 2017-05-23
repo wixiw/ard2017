@@ -43,23 +43,8 @@ void Pen::init(Robot2017Listener* client)
     cfg.leftWheelDiameter       = 59.340; //Calib 19/may and 23/may
     cfg.rightWheelDiameter      = 59.340; //Calib 19/may and 23/may
     cfg.voie                    = 160;    //Calib 19/may and 23/may
+    cfg.bipFreq					= 3000;
     setConfig(cfg);
-
-//    //PMI 2016 config
-//    apb_Configuration cfg = getConfig();
-//    strcpy(cfg.serialNumber,    "Pen");
-//    cfg.leftWheelDiameter       = 60.66;
-//    cfg.rightWheelDiameter      = 60.66;
-//    cfg.voie                    = 104.9;//when robot doesn't turn enougth, increase value
-//    cfg.maxAcc                  = 700;
-//    cfg.maxTurnAcc              = 300;
-//    cfg.maxTurnSpeed            = 125.0;
-//    cfg.deccDist                = 150.0;
-//    cfg.strategyDuration        = 89500;
-//    cfg.detectionWaitForOppMove = 1000;
-//    setConfig(cfg);
-
-
 }
 
 String const& Pen::getExeVersion()

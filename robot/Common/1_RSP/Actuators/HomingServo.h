@@ -47,13 +47,9 @@ namespace ard
         //Override AccelServo
         virtual bool isTargetReached() override;
 
-        //Override AccelServo : manage inversion
-        uint16_t read() override;
-
     protected:
         FilteredInput* pinMin;
         FilteredInput* pinMax;
-        bool inverted;
         eHSState state;
     };
 

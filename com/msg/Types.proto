@@ -82,7 +82,6 @@ enum eTableBorder {
     OPP_BORDER_3_X  = 16;
     OWN_BORDER_5_X  = 17;
     OPP_BORDER_1_X  = 18;
-    MAX = 6;
 }
 
 //Specific 2017

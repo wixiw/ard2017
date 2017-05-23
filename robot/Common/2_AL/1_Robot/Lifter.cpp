@@ -23,6 +23,12 @@ void Lifter::init()
 {
     fsm.init();
     fsm.enter();
+
+    //TODO better : replace constants in FSM by variables set here
+    ASSERT_TEXT(LIFTER_MIN == fsm.get_uP_CMD(), "RobotParameters and FSM_Lifter.sct have diverged");
+    ASSERT_TEXT(LIFTER_MAX == fsm.get_fULL_DOWN_CMD(), "RobotParameters and FSM_Lifter.sct have diverged");
+	
+	fsm.set_servoCmd(500);
 }
 
 void Lifter::start()

@@ -8,6 +8,7 @@ https://github.com/ivanseidel/DueTimer.git
 Servo:
 https://github.com/arduino/Arduino.git
 31a9029c1d89e394f4f8d6948504127120177756
+(mais maintenant c'est https://github.com/arduino-libraries/Servo/tree/master/src)
 
 SD:
 https://github.com/arduino/Arduino.git

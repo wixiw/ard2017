@@ -27,6 +27,14 @@
 #define TRATION_INSTALL_POSE 	PEN_INSTALL_POSE
 #define TRATION_START_POSE 		Pose2D(518-2,  785+20,  -90) //-2 to ensure room between 2 robots, +20 to leave room ahead in start area
 
+//Actuators config
+#define FUNNY_REST 			500
+#define FUNNY_LAUNCH 		1000
+#define ARM_MIN 			260 //Keep in sync with FSM_Arms.sct
+#define ARM_MAX 			768 //Keep in sync with FSM_Arms.sct
+#define LIFTER_MIN 			360 //Keep in sync with FSM_Lifter.sct
+#define LIFTER_MAX 			790 //Keep in sync with FSM_Lifter.sct
+
 namespace ard
 {
 //forward declare

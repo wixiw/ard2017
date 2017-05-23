@@ -13,12 +13,14 @@
 
 namespace ard
 {
+	typedef uint16_t Frequency; // in Hz
+
     struct Tone
     {
-        uint16_t frequency; //Hz
-        uint16_t lengthMs; //Ms
+		Frequency frequency; //Hz
+        DelayMs lengthMs; //Ms
 
-        Tone(uint16_t frequency, uint16_t lengthMs):
+        Tone(Frequency frequency, DelayMs lengthMs):
             frequency(frequency),
             lengthMs(lengthMs)
         {};
@@ -26,12 +28,12 @@ namespace ard
         Tone():Tone(0,0){};
     };
 
+	typedef Tone* Melody;
+
     struct ToneSilence : public Tone
     {
-        ToneSilence(uint16_t lengthMs): Tone(0,lengthMs){};
+        ToneSilence(DelayMs lengthMs): Tone(0,lengthMs){};
     };
-
-    typedef Tone* Melody;
 
     class Buzzer
     {       
@@ -46,17 +48,17 @@ namespace ard
         void bip(uint8_t nb);
 
         //Send a tone to the buzzer
-        void playTone(uint16_t frequency, uint16_t lengthMs);
+        void playTone(Frequency frequency, DelayMs lengthMs);
         void playTone(Tone const& tone);
 
         //insert a silence of lenghMs milliseconds duration
-        void silence(uint16_t lengthMs);
+        void silence(DelayMs lengthMs);
 
         //Play a series a notes
         void playMelody(Melody melody, uint16_t nbTones);
 
         //Play sharp is quite similar to playTone but will introduce a little silence between notes
-        void playSharp(uint16_t frequency, uint16_t lengthMs);
+        void playSharp(Frequency frequency, DelayMs lengthMs);
 
         //DAT truck rear move warning
         void naderBell();
@@ -68,9 +70,11 @@ namespace ard
         void wait();
 
         //test if sounds has been processed
-        bool soundPlayed();
+        bool soundPlayed() const;
 
         void interrupt();
+
+        void setDefaultTone(Frequency f){defaultFreq = f;};
 
         //Configure if bip is activated
         bool bipAllowed;
@@ -82,6 +86,7 @@ namespace ard
         Signal empty;
         uint32_t currentToneCpt;
         bool m_soundPlayed;
+        Frequency defaultFreq;
     };
 
 } /* namespace ard */

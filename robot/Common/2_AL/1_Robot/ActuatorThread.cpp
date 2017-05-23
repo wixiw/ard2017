@@ -20,9 +20,9 @@ ActuatorThread::ActuatorThread(KinematicManager& kinMan):
         omronCylinder(      OMRON2, 200, 50, true), //TODO remettre OMRON_CYLINDER
         switchLifterUp(     SWITCH_LIFTER_UP, 100, 10),
         switchLifterDown(   SWITCH_LIFTER_DOWN, 100, 10),
-        servoLifter("Lifter", 			SERVO1, &switchLifterDown, &switchLifterUp),
-        servoLeftArm("LeftArm", 		SERVO2,  &switchArmLin, &switchArmLout),
-        servoRightArm("RightArm", 		SERVO3, &switchArmRin, &switchArmRout, true),
+        servoLifter("Lifter", 			SERVO1, LIFTER_MIN, LIFTER_MAX),
+        servoLeftArm("LeftArm", 		SERVO2, ARM_MIN, ARM_MAX),
+        servoRightArm("RightArm", 		SERVO3, ARM_MIN, ARM_MAX, true),
         servoLeftWheel("LeftWheel",     SERVO4, 0, 1000),
         servoRightWheel("RightWheel",   SERVO5, 0, 1000),
         servoFunnyAction("Funny", 		SERVO6, 0, 1000),

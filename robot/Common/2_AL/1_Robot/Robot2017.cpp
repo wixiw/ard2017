@@ -187,11 +187,13 @@ void Robot2017::funnyActionEnded()
 
 void Robot2017::disableActuatorsPower()
 {
+	LOG_INFO("[Robot2017] Disable all actuators");
 	actuators.disableAll();
 }
 
 void Robot2017::actuatorsInitialCmd()
 {
+	LOG_INFO("[Robot2017] Send initial actuators cmd");
 	actuators.startAll();
 }
 
@@ -215,6 +217,7 @@ void Robot2017::setConfig(apb_Configuration const& newConf)
     nav.updateConf(&conf);
 	actuators.updateConf(&conf);
     hmi.buzzer.bipAllowed = newConf.bipAllowed;
+    hmi.buzzer.setDefaultTone(newConf.bipFreq);
 }
 
 char const * const Robot2017::getSerialNumber() const
