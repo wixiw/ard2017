@@ -122,6 +122,10 @@ class LinearCalibration(RobotConfigWidget):
            if input.getValue() != 0:
                mean += float(input.getValue())
                nbMeasure += 1
+       if nbMeasure == 0 :
+           print("No measure entered")
+           return
+       
        mean = mean / nbMeasure
        print("Mean measure : " + str(mean) + " (from a panel of " + str(nbMeasure) + " measures)")
        newleftW = mean*self.config.leftWheelDiameter/self.in_moveDist.getValue()

@@ -309,6 +309,8 @@ void RemoteControl::requestActuators(apb_RemoteControlRequest const & request)
         robot.actuators.servoRotator.goTo(request.type.requestActuators.rotator);
     if( request.type.requestActuators.hasServo8 )
         robot.actuators.servo8.goTo(request.type.requestActuators.servo8);
+    if( request.type.requestActuators.hasRotatorTurn )
+        robot.actuators.rotatorMotor.turn(request.type.requestActuators.rotatorTurn);
     if( request.type.requestActuators.hasHighLevelCmd )
     	robot.actuators.actCmd(request.type.requestActuators.highLevelCmd);
 }

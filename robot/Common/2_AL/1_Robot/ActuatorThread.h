@@ -85,6 +85,8 @@ namespace ard
         AccelServo    servoRotator;
         AccelServo    servo8;
 
+        MoffsetMotor  rotatorMotor;
+
         Lifter        lifter;
         Arms          arms;
         FaceUp        faceUp;

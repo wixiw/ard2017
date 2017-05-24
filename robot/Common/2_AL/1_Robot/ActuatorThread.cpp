@@ -29,6 +29,7 @@ ActuatorThread::ActuatorThread(KinematicManager& kinMan, HmiThread& hmi):
         servoFunnyAction("Funny", 		SERVO6, 0, 1000),
 		servoRotator("Rotateur", 		SERVO7, 0, 1000),
 		servo8("Servo8", 				SERVO8, 0, 1000),
+		rotatorMotor(MOSFET1),
         lifter(*this, fsmTimeWheel),
         arms(*this, fsmTimeWheel),
         faceUp(*this),

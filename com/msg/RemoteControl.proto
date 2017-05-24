@@ -69,8 +69,10 @@ message ActuatorsCmd
     int32 rotator	              = 7; //angle in per thousand
     uint32 hasServo8              = 18;
     int32 servo8                  = 8; //angle in per thousand
-    uint32 	hasHighLevelCmd 	= 31;
-    eActCmd highLevelCmd 		= 21;
+    uint32 hasRotatorTurn         = 19;
+    int32 rotatorTurn             = 9; //angle in per thousand
+    uint32 	hasHighLevelCmd 	  = 31;
+    eActCmd highLevelCmd 		  = 21;
 }
 
 message SerialNumber

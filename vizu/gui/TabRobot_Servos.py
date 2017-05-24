@@ -15,14 +15,15 @@ import time
 #
 class TabRobot_Servos(QWidget):
     
-    lifterCmd       = pyqtSignal(int)
-    leftArmCmd      = pyqtSignal(int)
-    rightArmCmd     = pyqtSignal(int)
-    leftWheelCmd    = pyqtSignal(int)
-    rightWheelCmd   = pyqtSignal(int)
-    funnyCmd        = pyqtSignal(int)
-    rotatorCmd      = pyqtSignal(int)
-    servo8Cmd       = pyqtSignal(int)
+    lifterCmd           = pyqtSignal(int)
+    leftArmCmd          = pyqtSignal(int)
+    rightArmCmd         = pyqtSignal(int)
+    leftWheelCmd        = pyqtSignal(int)
+    rightWheelCmd       = pyqtSignal(int)
+    funnyCmd            = pyqtSignal(int)
+    rotatorCmd          = pyqtSignal(int)
+    servo8Cmd           = pyqtSignal(int)
+    requestRotatorTurn  = pyqtSignal(int)
     
     def __init__(self, parent):
         super().__init__(parent)
@@ -38,8 +39,10 @@ class TabRobot_Servos(QWidget):
         self.layout = QHBoxLayout(self)
         self.columns[0] = QVBoxLayout()
         self.columns[1] = QVBoxLayout()
+        self.columns[2] = QVBoxLayout()
         self.layout.addLayout(self.columns[0])
         self.layout.addLayout(self.columns[1])
+        self.layout.addLayout(self.columns[2])
         self.layout.addStretch(1)
         
         #create servos
@@ -52,6 +55,11 @@ class TabRobot_Servos(QWidget):
         self.addServo("right wheel",    1, self.rightWheelCmd)
         self.addServo("rotator",        0, self.rotatorCmd)
         self.addServo("servo8",         1, self.servo8Cmd)
+      
+        self.btn_rotatorTurn = QPushButton("RotTurn : idle")
+        self.btn_rotatorTurn.setCheckable(True)
+        self.btn_rotatorTurn.toggled[bool].connect(self._rotatorTurn)
+        self.columns[2].addWidget(self.btn_rotatorTurn)
       
     def addServo(self, name, column, signal):
         self.servos[name] = ServoWidget(self, name, signal)
@@ -75,9 +83,19 @@ class TabRobot_Servos(QWidget):
             self.servos["rotator"].setValue(msg.actuators.servoRotator)
             self.servos["servo8"].setValue(msg.actuators.servo8)
    
+    @pyqtSlot(bool)
+    def _rotatorTurn(self, pressed): 
+        if pressed:
+            print("Rotator turn : Turning") 
+            self.btn_rotatorTurn.setText("RotTurn : turning")
+        else:
+            print("Rotator turn : Idle") 
+            self.btn_rotatorTurn.setText("RotTurn : idle")
+        self.requestRotatorTurn.emit(pressed)
+   
 class ServoWidget(QWidget): 
     move = pyqtSignal(int)
-    
+
     def __init__(self, parent, name, signal):
         super().__init__(parent)
         self.name = name
@@ -121,3 +139,4 @@ class ServoWidget(QWidget):
     def setValue(self, value):
         self.label.setText(str(value)+"/1000")
         self.slider.setValue(value)
+        

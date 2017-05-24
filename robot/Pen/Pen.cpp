@@ -40,10 +40,11 @@ void Pen::init(Robot2017Listener* client)
     //Retrieve and modify config
     apb_Configuration cfg = getConfig();
     strcpy(cfg.serialNumber,    "Pen");
-    cfg.leftWheelDiameter       = 59.340; //Calib 19/may and 23/may
-    cfg.rightWheelDiameter      = 59.340; //Calib 19/may and 23/may
-    cfg.voie                    = 160;    //Calib 19/may and 23/may
-    cfg.bipFreq					= 3000;
+    cfg.leftWheelDiameter       = 59.466; //calibrated 23 may
+    cfg.rightWheelDiameter      = 59.466; //calibrated 23 may
+    cfg.voie                    = 160.1;  //calibrated 23 may
+    cfg.bipFreq					= 2500;
+    cfg.bipAllowed				= false; //TODO pour la nuit
     setConfig(cfg);
 }
 

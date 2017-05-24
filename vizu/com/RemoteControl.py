@@ -336,6 +336,13 @@ class RemoteControl(QObject):
         self._sendMsg(msg)
         
     @pyqtSlot(int)
+    def requestRotatorTurn(self, turn): 
+        msg = RemoteControl_pb2.RemoteControlRequest()
+        msg.requestActuators.hasRotatorTurn = turn
+        msg.requestActuators.rotatorTurn = True
+        self._sendMsg(msg)
+        
+    @pyqtSlot(int)
     def requestActuatorsCmd(self, cmd): 
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.requestActuators.hasHighLevelCmd = True

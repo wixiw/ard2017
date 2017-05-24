@@ -981,6 +981,12 @@
     <Compile Include="1_RSP\Actuators\HomingServo.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="1_RSP\Actuators\MoffsetMotor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="1_RSP\Actuators\MoffsetMotor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="1_RSP\Actuators\MultiStepper.cpp">
       <SubType>compile</SubType>
     </Compile>
