@@ -24,11 +24,10 @@ void Lifter::init()
     fsm.init();
     fsm.enter();
 
-    //TODO better : replace constants in FSM by variables set here
-    ASSERT_TEXT(LIFTER_MIN == fsm.get_uP_CMD(), "RobotParameters and FSM_Lifter.sct have diverged");
-    ASSERT_TEXT(LIFTER_MAX == fsm.get_fULL_DOWN_CMD(), "RobotParameters and FSM_Lifter.sct have diverged");
-	
+    //Put an initial value for outputs which are not stupid
 	fsm.set_servoCmd(500);
+
+	ASSERT_TEXT(UP_CMD() < DOWN_CMD() && DOWN_CMD() < FULL_DOWN_CMD(), "Servo commands value are not correct");
 }
 
 void Lifter::start()
@@ -43,16 +42,10 @@ void Lifter::lift()
     fsm.getSCI_Strategy()->raise_lift();
 }
 
-void Lifter::fastPoo()
+void Lifter::prepareNextToPoo()
 {
-	LOG_INFO("[Lifter] fast poo request");
-    fsm.getSCI_Strategy()->raise_fastPoo();
-}
-
-void Lifter::pooEnded()
-{
-	LOG_INFO("[Lifter] poo ended request");
-    fsm.getSCI_Strategy()->raise_pooEnded();
+	LOG_INFO("[Lifter] prepareNextToPoo request");
+    fsm.getSCI_Strategy()->raise_prepareNextToPoo();
 }
 
 void Lifter::stop()
@@ -61,13 +54,6 @@ void Lifter::stop()
     fsm.getSCI_Strategy()->raise_stop();
     acts.servoLifter.disable();
     fsm.set_started(false);
-}
-
-void Lifter::blocked()
-{
-	LOG_INFO("Lifter blocked.");
-	acts.servoLifter.disable();
-	fsm.set_started(false);
 }
 
 void Lifter::logInfo(sc_string msg)
@@ -91,6 +77,9 @@ void Lifter::update(TimeMs sinceLastCall)
 
     if(fsm.get_started())
     	acts.servoLifter.goTo(fsm.get_servoCmd());
+
+    if(fsm.getSCI_Strategy()->get_blocked())
+    	acts.servoLifter.disable();
 }
 
 //configure if component is simulated or not

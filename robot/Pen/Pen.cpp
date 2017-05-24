@@ -44,7 +44,7 @@ void Pen::init(Robot2017Listener* client)
     cfg.rightWheelDiameter      = 59.466; //calibrated 23 may
     cfg.voie                    = 160.1;  //calibrated 23 may
     cfg.bipFreq					= 2500;
-    cfg.bipAllowed				= false; //TODO pour la nuit
+    cfg.bipAllowed				= true; //pour la nuit
     setConfig(cfg);
 }
 

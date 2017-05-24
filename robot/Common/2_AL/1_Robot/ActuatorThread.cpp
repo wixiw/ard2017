@@ -134,8 +134,12 @@ apb_ActuatorsState const& ActuatorThread::serealize()
     state.servo8  			= servo8.read();
 
     state.lifterReady		= lifter.isReady();
-    state.armsReady			= arms.isReady();
+    state.lifterTimeout		= lifter.isInTimeout();
+    state.lifterError		= lifter.isBlocked();
 
+    state.armsReady			= arms.isReady();
+    state.armsTimeout 		= arms.isInTimeout();
+    state.armsError			= arms.isBlocked();
 
     return state;
 }
@@ -181,15 +185,8 @@ void ActuatorThread::actCmd(eActCmd cmd)
 		case eActCmd_AC_LIFTER_LIFT:
 			lifter.lift();
 			break;
-		case eActCmd_AC_LIFTER_FASTPOO:
-			lifter.fastPoo();
-			break;
-		case eActCmd_AC_LIFTER_POO:
-			NOT_IMPLEMENTED(); //TODO
-			//lifter.poo();
-			break;
-		case eActCmd_AC_LIFTER_POOENDED:
-			lifter.pooEnded();
+		case eActCmd_AC_LIFTER_PREPARE_NEXT_TO_POO:
+			lifter.prepareNextToPoo();
 			break;
 	/**
 	 * ARMS
@@ -204,7 +201,7 @@ void ActuatorThread::actCmd(eActCmd cmd)
 			arms.swallowNormal();
 			break;
 		case eActCmd_AC_ARMS_FASTPOO:
-			arms.fastPoo(0);
+			arms.fastPoo();
 			break;
 		case eActCmd_AC_ARMS_POO:
 			NOT_IMPLEMENTED(); //TODO

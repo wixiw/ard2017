@@ -49,8 +49,8 @@ extern "C"
     void extern ardAssertImpl(bool condition, char const* file, unsigned int line, char const* text);
 }
 
-#define ASSERT(x)              ardAssertImpl(x, __FILE__, __LINE__, "Undocumented assert")
-#define ASSERT_TEXT(x, text)   ardAssertImpl(x, __FILE__, __LINE__, text)
+#define ASSERT(x)              ardAssertImpl((x), __FILE__, __LINE__, "Undocumented assert")
+#define ASSERT_TEXT(x, text)   ardAssertImpl((x), __FILE__, __LINE__, (text))
 #define NOT_IMPLEMENTED()      ASSERT_TEXT(false, "Not implemented")
 
 namespace ard

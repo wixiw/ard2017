@@ -71,7 +71,11 @@ message ActuatorsState {
     int32              servo8			  = 37;
     
     uint32             lifterReady 	      = 41;
-    uint32             armsReady 	      = 42;
+    uint32             lifterTimeout      = 42;
+    uint32             lifterError 	      = 43;
+    uint32             armsReady 	      = 44;
+    uint32             armsTimeout 	      = 45;
+    uint32             armsError 	      = 46;
 }
 
 message HmiState {

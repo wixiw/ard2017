@@ -43,7 +43,7 @@ void Tration::init(Robot2017Listener* client)
     cfg.rightWheelDiameter      = 59.340; //Calib 19/may and 23/may
     cfg.voie                    = 160;    //Calib 19/may and 23/may
     cfg.bipFreq					= 3000;
-    cfg.bipAllowed				= false; //TODO pour la nuit
+    cfg.bipAllowed				= true; //pour la nuit
     setConfig(cfg);
 }
 

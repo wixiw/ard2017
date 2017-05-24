@@ -191,10 +191,9 @@ void Navigation::run()
 		{
 			if( subOrderFinished() )
 			{
-//TODO test in progress
-//				LOG_INFO("Room made for opponent.");
-//				m_state = eNavState_WAIT_OPP_MOVE;
-				action_avoidScan(true);
+				LOG_INFO("Room made for opponent.");
+				m_state = eNavState_WAIT_OPP_MOVE;
+				//TODO a poursuivre : action_avoidScan(true);
 			}
 			break;
 		}

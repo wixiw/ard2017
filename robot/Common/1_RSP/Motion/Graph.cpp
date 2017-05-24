@@ -524,7 +524,7 @@ bool Graph::computeShortertPath(const Pose2D& source, const Pose2D& target, eDir
 bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
 {
     ASSERT(idSource != idTarget);
-    ASSERT_TEXT(m_state.state = eGraphState_GS_IDLE, "You have to reset the path before computing a new one.");
+    ASSERT_TEXT(m_state.state == eGraphState_GS_IDLE, "You have to reset the path before computing a new one.");
     m_state.state = eGraphState_GS_COMPUTING;
     uint32_t i;
     uint32_t j;
@@ -613,7 +613,7 @@ bool Graph::computePathBetweenNodes(uint8_t idSource, uint8_t idTarget)
 
 void Graph::optimizePath(eDir sens)
 {
-	ASSERT_TEXT(m_state.state = eGraphState_GS_COMPUTED, "You have to compute the path before optimizing it.");
+	ASSERT_TEXT(m_state.state == eGraphState_GS_COMPUTED, "You have to compute the path before optimizing it.");
 	DelayMs startCompute = millis();
 
 	//At this time there is at least 3 points in path (start - one point in graph - target)

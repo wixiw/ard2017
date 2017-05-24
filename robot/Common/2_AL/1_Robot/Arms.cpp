@@ -25,14 +25,11 @@ void Arms::init()
     fsm.init();
     fsm.enter();
 
-    //TODO better : replace constant in FSM by variables set here
-    ASSERT_TEXT(ARM_MIN == fsm.get_aRM_FULL_IN_CMD(), "RobotParameters and FSM_Arms.sct have diverged");
-    ASSERT_TEXT(ARM_MAX == fsm.get_aRM_OUT_CMD(), "RobotParameters and FSM_Arms.sct have diverged");
-	
-	fsm.set_leftArm(fsm.get_aRM_MID_CMD());
-	fsm.set_rightArm(fsm.get_aRM_MID_CMD());
-	fsm.set_rightWheel(fsm.get_wHEEL_IDLE_CMD());
-	fsm.set_leftWheel(fsm.get_wHEEL_IDLE_CMD());	
+    ASSERT_TEXT(ARM_FULL_IN() < ARM_MID() && ARM_MID() < ARM_OUT(), "Servo commands value are not correct");
+
+    //Put an initial value for outputs which are not stupid
+    armsCmd(ARM_MID(), WHEEL_IDLE());
+    rotatorCmd(ROT_RETRACTED(), false);
 }
 
 void Arms::start()
@@ -59,36 +56,33 @@ void Arms::retract()
     fsm.getSCI_Strategy()->raise_retractArms();
 }
 
-void Arms::fastPoo(uint8_t nbCylinders)
+void Arms::fastPoo()
 {
 	LOG_INFO("[Arms] fastPoo request");
-    fsm.getSCI_Strategy()->raise_fastPoo(nbCylinders);
+    fsm.getSCI_Strategy()->raise_fastPoo();
 }
 
 void Arms::stop()
 {
 	LOG_INFO("[Arms] stop request");
     fsm.getSCI_Strategy()->raise_stop();
-    acts.servoLeftArm.disable();
-    acts.servoRightArm.disable();
-    acts.servoLeftWheel.disable();
-    acts.servoRightWheel.disable();
+    disableAll();
     fsm.set_started(false);
-}
-
-void Arms::blocked()
-{
-	LOG_INFO("Arms blocked.");
-    acts.servoLeftArm.disable();
-    acts.servoRightArm.disable();
-    acts.servoLeftWheel.disable();
-    acts.servoRightWheel.disable();
-	fsm.set_started(false);
 }
 
 void Arms::lift()
 {
 	acts.actCmd(eActCmd_AC_LIFTER_LIFT);
+}
+
+void Arms::prepareNextToPoo()
+{
+	acts.actCmd(eActCmd_AC_LIFTER_PREPARE_NEXT_TO_POO);
+}
+
+void Arms::lifterRearm()
+{
+	acts.actCmd(eActCmd_AC_LIFTER_START);
 }
 
 void Arms::logInfo(sc_string msg)
@@ -101,29 +95,51 @@ void Arms::logError(sc_string msg)
 	LOG_ERROR(String("[Arms] ") + msg);
 }
 
+void Arms::armsCmd(sc_integer arms, sc_integer wheels)
+{
+    acts.servoLeftArm.      goTo(arms);
+    acts.servoRightArm.     goTo(arms);
+    acts.servoLeftWheel.    goTo(wheels);
+    acts.servoRightWheel.   goTo(wheels);
+}
+
+void Arms::rotatorCmd(sc_integer servo, bool turn)
+{
+	acts.servoRotator.goTo(servo);
+	acts.rotatorMotor.turn(turn);
+}
+
 void Arms::update(TimeMs sinceLastCall)
 {
+	//read inputs
+	fsm.set_cylinderPresent(acts.omronCylinder.read());
     fsm.set_leftExtendedSwitch(acts.switchArmLout.read());
     fsm.set_rightExtendedSwitch(acts.switchArmRout.read());
     fsm.set_leftRetractedSwitch(acts.switchArmLin.read());
     fsm.set_rightRetractedSwitch(acts.switchArmRin.read());
-    fsm.set_cylinderPresent(acts.omronCylinder.read());
-    fsm.set_lifterReady(lifter->isReady());
     fsm.set_armsInPosition(acts.servoLeftArm.isTargetReached()&&acts.servoRightArm.isTargetReached());
+    fsm.set_rotatorInPosition(acts.servoRotator.isTargetReached());
 
+    //run
     fsm.runCycle();
 
-    if( fsm.get_started() )
-    {
-        acts.servoLeftArm.      goTo(fsm.get_leftArm());
-        acts.servoRightArm.     goTo(fsm.get_rightArm());
-        acts.servoLeftWheel.    goTo(fsm.get_leftWheel());
-        acts.servoRightWheel.   goTo(fsm.get_rightWheel());
-    }
+    //publish/manage outputs
+    if(fsm.getSCI_Strategy()->get_blocked())
+    	disableAll();
 }
 
 //configure if component is simulated or not
 void Arms::setSimulation(bool simulated)
 {
 	fsm.set_simulation(simulated);
+}
+
+void Arms::disableAll()
+{
+    acts.servoLeftArm.disable();
+    acts.servoRightArm.disable();
+    acts.servoLeftWheel.disable();
+    acts.servoRightWheel.disable();
+    acts.servoRotator.disable();
+    acts.rotatorMotor.turn(false);
 }

@@ -40,12 +40,21 @@ class TabRobot_Actuators(QWidget):
         
     @pyqtSlot(RemoteControl_pb2.Telemetry)     
     def _telemetryDataCb(self, msg):
-        if self.isVisible():     
+        if self.isVisible():
+            #Lifter status     
             if( msg.actuators.lifterReady):
                 self.sections["lifter"].lifterReady.light(True)
             else:
                 self.sections["lifter"].lifterReady.light(False)
-            
+            if( msg.actuators.lifterTimeout):
+                self.sections["lifter"].lifterTimeout.light(True)
+            else:
+                self.sections["lifter"].lifterTimeout.light(False)
+            if( msg.actuators.lifterError):
+                self.sections["lifter"].lifterError.light(True)
+            else:
+                self.sections["lifter"].lifterError.light(False)
+                
             if( msg.actuators.omronCylinder):
                 self.sections["lifter"].cylinderPresent.light(True)
                 self.sections["arms"].cylinderPresent.light(True)
@@ -57,6 +66,14 @@ class TabRobot_Actuators(QWidget):
                 self.sections["arms"].armsReady.light(True)
             else:
                 self.sections["arms"].armsReady.light(False)
+            if( msg.actuators.armsTimeout):
+                self.sections["arms"].armsTimeout.light(True)
+            else:
+                self.sections["arms"].armsTimeout.light(False)
+            if( msg.actuators.armsError):
+                self.sections["arms"].armsError.light(True)
+            else:
+                self.sections["arms"].armsError.light(False)
         
 class LifterCmds(QWidget):   
     actCmd = pyqtSignal(int)
@@ -76,21 +93,21 @@ class LifterCmds(QWidget):
         self.btn_cmds["lift"] = QPushButton('lift', self)
         self.btn_cmds["lift"].clicked.connect(self._lift) 
         
-        self.btn_cmds["fastPoo"] = QPushButton('fastPoo', self)
-        self.btn_cmds["fastPoo"].clicked.connect(self._fastPoo) 
-        
-        self.btn_cmds["poo"] = QPushButton('poo', self)
-        self.btn_cmds["poo"].clicked.connect(self._poo)
-        self.btn_cmds["poo"].setEnabled(False)
+        self.btn_cmds["prepareNextToPoo"] = QPushButton('prepareNextToPoo', self)
+        self.btn_cmds["prepareNextToPoo"].clicked.connect(self._prepareNextToPoo) 
         
         self.btn_cmds["pooEnded"] = QPushButton('pooEnded', self)
         self.btn_cmds["pooEnded"].clicked.connect(self._pooEnded)
         
         self.lifterReady = LedIndicator(self)
+        self.lifterTimeout = LedIndicator(self)
+        self.lifterError = LedIndicator(self)
         self.cylinderPresent = LedIndicator(self)
         
         self.states = QFormLayout()
         self.states.addRow("ready : ", self.lifterReady)
+        self.states.addRow("timeout : ", self.lifterTimeout)
+        self.states.addRow("error : ", self.lifterError)
         self.states.addRow("cylinder : ", self.cylinderPresent)
         
         self.layout["Commands"] = QVBoxLayout(self)
@@ -114,9 +131,9 @@ class LifterCmds(QWidget):
         print("Lifter : lift")
         self.actCmd.emit(Types_pb2.AC_LIFTER_LIFT)
         
-    def _fastPoo(self):
-        print("Lifter : poo")
-        self.actCmd.emit(Types_pb2.AC_LIFTER_FASTPOO)
+    def _prepareNextToPoo(self):
+        print("Lifter : prepareNextToPoo")
+        self.actCmd.emit(Types_pb2.AC_LIFTER_PREPARE_NEXT_TO_POO)
         
     def _poo(self):
         print("NOT IMPLEMENTED")
@@ -168,10 +185,14 @@ class ArmsCmds(QWidget):
         self.btn_cmds["rot_retract"].clicked.connect(self._rot_retract)
         
         self.armsReady = LedIndicator(self)
+        self.armsTimeout = LedIndicator(self)
+        self.armsError = LedIndicator(self)
         self.cylinderPresent = LedIndicator(self)
         
         self.states = QFormLayout()
         self.states.addRow("ready : ", self.armsReady)
+        self.states.addRow("timeout : ", self.armsTimeout)
+        self.states.addRow("error : ", self.armsError)
         self.states.addRow("cylinder : ", self.cylinderPresent)
         
         self.layout["Commands"] = QVBoxLayout(self)

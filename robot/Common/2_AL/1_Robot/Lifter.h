@@ -53,26 +53,35 @@ namespace ard
         void lift();
 
         //FSM Callback
-        void fastPoo();
-
-        //FSM Callback : inform that poo is finished
-        void pooEnded();
+        void prepareNextToPoo();
 
         //Returns true when the Lifter is ready to lift or poo the next cylinder
         bool isReady() { return fsm.getSCI_Strategy()->get_ready();};
+
+        //Returns true if the Lifter is in timeout, a call to start will recover from error
+        bool isInTimeout() { return fsm.getSCI_Strategy()->get_timeout();};
+
+        //Returns true if the Lifter is in error (can not do anything else until stop, then start is called)
+        bool isBlocked() { return fsm.getSCI_Strategy()->get_blocked();};
 
         /**
          * FSM operation implementation
          */
 
         //FSM Callback
-        void blocked() override;
-
-        //FSM Callback
         void logInfo(sc_string msg) override;
 
         //FSM Callback
         void logError(sc_string msg) override;
+
+        //FSM Callback
+        sc_integer UP_CMD() override {return LIFTER_MIN;};
+
+        //FSM Callback
+        sc_integer DOWN_CMD() override {return 655;};
+
+        //FSM Callback
+        sc_integer FULL_DOWN_CMD() override {return LIFTER_MAX;};
 
     private:
         //the yakindu generated code
