@@ -19,7 +19,7 @@
       </vertices>
       <vertices xsi:type="sgraph:FinalState" xmi:id="_Kzhp0y-GEee1v-eVh51XZQ" incomingTransitions="_lR6KcDzqEeegZPL8DTuhXw"/>
       <vertices xsi:type="sgraph:State" xmi:id="_P5do7S-GEee1v-eVh51XZQ" specification="entry/&#xD;&#xA;logInfo(&quot;Waiting for Pen to arrive...&quot;)" name="Wait for Pen to finish his move" incomingTransitions="_xivA0DGPEee8x-mo8uJzlg">
-        <outgoingTransitions xmi:id="_qFWMwDGQEee8x-mo8uJzlg" specification="[33 &lt; matchDuration()]" target="_6eMf8DGPEee8x-mo8uJzlg"/>
+        <outgoingTransitions xmi:id="_qFWMwDGQEee8x-mo8uJzlg" specification="[38 &lt; matchDuration()]" target="_6eMf8DGPEee8x-mo8uJzlg"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_DtdhUDGPEee8x-mo8uJzlg" specification="entry/&#xD;&#xA;logInfo(&quot;Waiting on waypoint 7 for Pen to move...&quot;);&#xD;&#xA;graphToID(7, 90, FWD)" name="Escape and avoid Pen" incomingTransitions="_SZLMkC-GEee1v-eVh51XZQ">
         <outgoingTransitions xmi:id="_xivA0DGPEee8x-mo8uJzlg" specification="[targetReached]" target="_P5do7S-GEee1v-eVh51XZQ"/>
