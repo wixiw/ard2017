@@ -328,10 +328,20 @@ namespace ard
             return robot.actuators.arms.isReady();
         }
 
-        sc_boolean lifterReady() override
+        sc_boolean armsTimeout() override
         {
-            return robot.actuators.lifter.isReady();
+            return robot.actuators.arms.isInTimeout();
         }
+
+        sc_boolean armsBlocked() override
+        {
+            return robot.actuators.arms.isBlocked();
+        }
+
+        sc_boolean armCylinderTaken() override
+		{
+        	return robot.actuators.arms.isCylinderTaken();
+		}
 
         void actCmd(sc_integer cmdId) override
         {

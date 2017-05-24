@@ -55,6 +55,9 @@ namespace ard
         //Returns true if the Lifter is in error (can not do anything else until stop, then start is called)
         bool isBlocked() { return fsm.getSCI_Strategy()->get_blocked();};
 				
+        //inform if a cylinder has been swallowed
+        bool isCylinderTaken() { return fsm.getSCI_Strategy()->get_cylinderTaken();};
+
         /**
          * FSM operation implementation (internal API)
          */
@@ -95,7 +98,7 @@ namespace ard
          sc_integer ARM_IN() override {return 450;};
 
         //FSM Callback
-        sc_integer ARM_MID() override {return 610;};
+        sc_integer ARM_MID() override {return 575;};
 
         //FSM Callback
 		sc_integer ARM_OUT() override {return ARM_MAX;};
