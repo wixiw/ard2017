@@ -16,7 +16,7 @@
 #define TABLE_BORDER_Y      1000
 #define TABLE_BORDER_X      1500
 
-#define SAFETY_AREA 150 //distance in mm from border where we ignore opponents
+#define SAFETY_AREA 80 //distance in mm from border where we ignore opponents
 
 #define SERIAL_BAUDRATE 125000 //bit/s from 600 to 250k
 
@@ -30,7 +30,7 @@
 //Actuators config
 #define FUNNY_REST 			500
 #define FUNNY_LAUNCH 		1000
-#define ARM_MIN 			295
+#define ARM_MIN 			330 //was 295 but start position on flip flop is incorrect
 #define ARM_MAX 			750
 #define LIFTER_MIN 			390
 #define LIFTER_MAX 			790

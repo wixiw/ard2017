@@ -263,9 +263,24 @@ bool Detection::isDetectionValid(Pose2D p, Distance wallExtension)
     IS_OUT_RANGE(-TABLE_BORDER_Y + wallExtension, p.y, TABLE_BORDER_Y - wallExtension)
         return false;
 
-    //Exclude Yellow start opened area (safety area not count to prevent robot to ignore opponent when going out of start pos)
-    if( 430 < p.x && 618 < p.y)
-        return false;
+	//Opp top monocolor dispenser
+	if( isInCircle(p.x, p.y, -350,  960, 80 + wallExtension) )
+		return false;
+	//Our top monocolor dispenser
+	if( isInCircle(p.x, p.y, 350,  960, 80 + wallExtension) )
+		return false;
+	//Opp left bicolor dispenser
+	if( isInCircle(p.x, p.y, -1460,  -350, 80 + wallExtension) )
+		return false;
+	//Our top monocolor dispenser
+	if( isInCircle(p.x, p.y, 1460,  350, 80 + wallExtension) )
+		return false;
+
+
+	//It could be our robot.
+//    //Exclude Yellow start opened area (safety area not count to prevent robot to ignore opponent when going out of start pos)
+//    if( 430 < p.x && 618 < p.y)
+//        return false;
 
     //If detected point is in Yellow start area, behind the wall : ignore it.
     if( 790 < p.x && 618 - wallExtension < p.y && 10 < fabs(moduloPiPi(p.hDegree()-180)) )
