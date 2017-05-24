@@ -20,7 +20,7 @@
             <outgoingTransitions xmi:id="_N_9yITSnEeeAruf_Oz5lkQ" specification="[targetReached()]/ setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAAOQDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;logInfo(&quot;[LSA Dispenser] extraction...&quot;)" name="Wait Cylinder extraction from Dispenser" incomingTransitions="_N_45pTSnEeeAruf_Oz5lkQ _OAHjHjSnEeeAruf_Oz5lkQ">
-            <outgoingTransitions xmi:id="_OAAOQzSnEeeAruf_Oz5lkQ" specification="after 1000 ms " target="_OAA1VDSnEeeAruf_Oz5lkQ"/>
+            <outgoingTransitions xmi:id="_OAAOQzSnEeeAruf_Oz5lkQ" specification="after 1500 ms " target="_OAA1VDSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAA1VDSnEeeAruf_Oz5lkQ" specification="entry/ goForward(-2*HALF_MOVE);&#xD;&#xA;logInfo(&quot;[LSA Dispenser] moving back&quot;)" name="Moving back to get some space" incomingTransitions="_OAAOQzSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_OABccjSnEeeAruf_Oz5lkQ" specification="[targetReached()]" target="_X5ldAD_gEee235Xs-OCvvw"/>

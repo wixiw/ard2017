@@ -13,7 +13,7 @@
 
 #define GAIN_ANALOG_TENSION_BATTERIE 0.024
 
-#define TABLE_BORDER_Y     1000
+#define TABLE_BORDER_Y      1000
 #define TABLE_BORDER_X      1500
 
 #define SAFETY_AREA 150 //distance in mm from border where we ignore opponents
@@ -33,7 +33,7 @@
 #define ARM_MIN 			295
 #define ARM_MAX 			750
 #define LIFTER_MIN 			390
-#define LIFTER_MAX 			780
+#define LIFTER_MAX 			790
 
 namespace ard
 {
