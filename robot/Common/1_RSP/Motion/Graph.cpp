@@ -45,7 +45,7 @@ void Graph::defineGraph()
     NEW_NODE(  340,  -190);//6
     NEW_NODE( 1016,   116);//7
     NEW_NODE(  890,   -65);//8
-    NEW_NODE(  756,  -244);//9
+    NEW_NODE(  776,  -244);//9
     NEW_NODE( 1155,  -350);//10
     NEW_NODE(  875,  -535);//11
     NEW_NODE(  515,   625);//12
