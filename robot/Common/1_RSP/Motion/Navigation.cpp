@@ -618,7 +618,7 @@ void Navigation::turnTo(float angle, bool sym)
     m_startPoint = getPosition(NO_SYM_POS);
 
     if(sym && m_color == eColor_SYM)
-        target.hDegree(-angle);
+        target.hDegree(180-angle);
     else
         target.hDegree(angle);
 
