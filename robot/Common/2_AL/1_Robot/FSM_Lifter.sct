@@ -66,7 +66,7 @@
                 <outgoingTransitions xmi:id="_Gp5X4EAiEee235Xs-OCvvw" specification="after 5s" target="_IqaE0EAnEee235Xs-OCvvw"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_Y8yvMEAcEee235Xs-OCvvw" specification="//so that cylinder stabilize and omron filter to work" name="Wait a bit" incomingTransitions="_42WNYD49Eee2xNbiZ_Uvvw _LvnHcD8EEee8xeItEO-Xbg">
-                <outgoingTransitions xmi:id="_hwYEsEAcEee235Xs-OCvvw" specification="after 500ms " target="_qxvFkEAeEee235Xs-OCvvw"/>
+                <outgoingTransitions xmi:id="_hwYEsEAcEee235Xs-OCvvw" specification="after 800ms " target="_qxvFkEAeEee235Xs-OCvvw"/>
               </vertices>
               <vertices xsi:type="sgraph:Choice" xmi:id="_qxvFkEAeEee235Xs-OCvvw" incomingTransitions="_hwYEsEAcEee235Xs-OCvvw">
                 <outgoingTransitions xmi:id="_teppsEAcEee235Xs-OCvvw" specification="[cylinderPresent || simulation]/&#xD;&#xA;logInfo(&quot;Cylinder successfully prepared to poo&quot;)" target="__DopwEAkEee235Xs-OCvvw"/>
