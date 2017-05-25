@@ -602,7 +602,7 @@ void Navigation::turnDelta(float angle, bool sym)
 
     //Request turn
     applyCmdToTurn(radians(target), kinematics.maxTurnSpeed(), kinematics.maxTurnAcc());
-    orderTimeout.arm(2* fabs(target)*1000. / (double)kinematics.maxTurnSpeed());
+    orderTimeout.arm(2000 + 2* fabs(target)*1000. / (double)kinematics.maxTurnSpeed());
 
     //Change state
     m_order = eNavOrder_GOTO_CAP;
