@@ -9,7 +9,7 @@
       <vertices xsi:type="sgraph:State" xmi:id="_JI9m0DSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;enableAvoidance(false)&#xD;&#xA;//actCmd(AC_ARMS_STOP); // to prevent conflicts with FSM_Arms&#xD;&#xA;//actCmd(AC_LIFTER_STOP) // to prevent conflicts with FSM_Lifter&#xD;&#xA;&#xD;&#xA;//exit/&#xD;&#xA;//actCmd(AC_ARMS_START); // to prevent conflicts with FSM_Arms&#xD;&#xA;//actCmd(AC_LIFTER_START) // to prevent conflicts with FSM_Lifter&#xD;&#xA;exit/&#xD;&#xA;enableAvoidance(true)" name="nominal">
         <outgoingTransitions xmi:id="_1p8z8DSnEeeAruf_Oz5lkQ" specification="after 30s" target="_S_KTHTSrEeeAruf_Oz5lkQ"/>
         <regions xmi:id="_JI-N4jSnEeeAruf_Oz5lkQ" name="nominal">
-          <vertices xsi:type="sgraph:State" xmi:id="_N_45gDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;cylinderToTake = howManyToTake();&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;goForward(FIRST_MOVE); &#xD;&#xA;logInfo(&quot;[LSA Dispenser] Engaging dispenser&quot;)" name="Engage dispenser" incomingTransitions="_W2DMcDSoEeeAruf_Oz5lkQ">
+          <vertices xsi:type="sgraph:State" xmi:id="_N_45gDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;cylinderToTake = howManyToTake();&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;goForward(FIRST_MOVE);&#xD;&#xA;enableAvoidance(false);&#xD;&#xA;logInfo(&quot;[LSA Dispenser] Engaging dispenser&quot;)&#xD;&#xA;exit/ enableAvoidance(true)" name="Engage dispenser" incomingTransitions="_W2DMcDSoEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_N_45pTSnEeeAruf_Oz5lkQ" specification="[targetReached() &amp;&amp; armsReady()]" target="_OAAOQDSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:Choice" xmi:id="_N_7VwDSnEeeAruf_Oz5lkQ" incomingTransitions="_OAQF8TSnEeeAruf_Oz5lkQ">
@@ -25,7 +25,7 @@
           <vertices xsi:type="sgraph:State" xmi:id="_OAA1VDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;setSpeedAcc(50, 0, 0, 0);&#xD;&#xA;goForward(-FIRST_MOVE);&#xD;&#xA;logInfo(&quot;[LSA Dispenser] moving back slowly&quot;)" name="Moving back slowly to guide the fall of last cylinder" incomingTransitions="_M_eW0EEHEeePKIXvV6C2VA">
             <outgoingTransitions xmi:id="_OABccjSnEeeAruf_Oz5lkQ" specification="[targetReached()] / setSpeedAcc(0, 0, 0, 0)" target="_Ri1q8EEgEeep26-SvzAD1Q"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_OACqgDSnEeeAruf_Oz5lkQ" specification="entry/ &#xD;&#xA;goForward(SECOND_MOVE);&#xD;&#xA;setSpeedAcc(50, 0, 0, 0);&#xD;&#xA;logInfo(&quot;[LSA Dispenser] gob gob&quot;)&#xD;&#xA;exit/ setSpeedAcc(0, 0, 0, 0)" name="Moving forward a bit to lay the cylinder" incomingTransitions="_jrhaAD_gEee235Xs-OCvvw">
+          <vertices xsi:type="sgraph:State" xmi:id="_OACqgDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;enableAvoidance(false);&#xD;&#xA;setSpeedAcc(50, 0, 0, 0);&#xD;&#xA;goForward(SECOND_MOVE);&#xD;&#xA;logInfo(&quot;[LSA Dispenser] gob gob&quot;)&#xD;&#xA;exit/ setSpeedAcc(0, 0, 0, 0);&#xD;&#xA;enableAvoidance(true)" name="Moving forward a bit to lay the cylinder" incomingTransitions="_jrhaAD_gEee235Xs-OCvvw">
             <outgoingTransitions xmi:id="_OADRqjSnEeeAruf_Oz5lkQ" specification="[targetReached()]" target="_OANCkDSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAG78DSnEeeAruf_Oz5lkQ" specification="entry/ &#xD;&#xA;goForward(FIRST_MOVE);&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;logInfo(&quot;[LSA Dispenser] doing it again&quot;)" name="Re-engaging dispenser" incomingTransitions="_N_7VwTSnEeeAruf_Oz5lkQ">
@@ -79,7 +79,7 @@
           <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFm2RioLEee0mqFmHUZWcA" x="127" y="84" width="15" height="15"/>
         </children>
         <children xsi:type="notation:Shape" xmi:id="_2d4MUCoUEee0mqFmHUZWcA" type="FinalState" element="_2d2-MCoUEee0mqFmHUZWcA" fontName="Verdana" lineColor="4210752">
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_2d4MUSoUEee0mqFmHUZWcA" x="449" y="3696" width="28" height="29"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_2d4MUSoUEee0mqFmHUZWcA" x="449" y="3738" width="28" height="29"/>
         </children>
         <children xmi:id="_JI-08DSnEeeAruf_Oz5lkQ" type="State" element="_JI9m0DSnEeeAruf_Oz5lkQ">
           <children xsi:type="notation:DecorationNode" xmi:id="_JI-09DSnEeeAruf_Oz5lkQ" type="StateName">
@@ -112,7 +112,7 @@
                   <styles xsi:type="notation:ShapeStyle" xmi:id="_iG_8rUEnEeep26-SvzAD1Q" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
                   <styles xsi:type="notation:FontStyle" xmi:id="_iG_8rkEnEeep26-SvzAD1Q"/>
                   <styles xsi:type="notation:BooleanValueStyle" xmi:id="_iG_8r0EnEeep26-SvzAD1Q" name="isHorizontal" booleanValue="true"/>
-                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_iG_8sEEnEeep26-SvzAD1Q" x="88" y="98" height="122"/>
+                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_iG_8sEEnEeep26-SvzAD1Q" x="88" y="78" height="142"/>
                 </children>
                 <children xsi:type="notation:Shape" xmi:id="_iG_8sUEnEeep26-SvzAD1Q" type="Choice" element="_N_7VwDSnEeeAruf_Oz5lkQ" fontName="Verdana" lineColor="4210752">
                   <layoutConstraint xsi:type="notation:Bounds" xmi:id="_iG_8skEnEeep26-SvzAD1Q" x="488" y="1210"/>
@@ -179,7 +179,7 @@
                   <styles xsi:type="notation:ShapeStyle" xmi:id="_iHAjs0EnEeep26-SvzAD1Q" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
                   <styles xsi:type="notation:FontStyle" xmi:id="_iHAjtEEnEeep26-SvzAD1Q"/>
                   <styles xsi:type="notation:BooleanValueStyle" xmi:id="_iHAjtUEnEeep26-SvzAD1Q" name="isHorizontal" booleanValue="true"/>
-                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_iHAjtkEnEeep26-SvzAD1Q" x="81" y="740" width="370" height="101"/>
+                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_iHAjtkEnEeep26-SvzAD1Q" x="81" y="740" width="370" height="129"/>
                 </children>
                 <children xmi:id="_iHAjt0EnEeep26-SvzAD1Q" type="State" element="_OAG78DSnEeeAruf_Oz5lkQ">
                   <children xsi:type="notation:DecorationNode" xmi:id="_iHAjuEEnEeep26-SvzAD1Q" type="StateName">
@@ -313,7 +313,7 @@
           <styles xsi:type="notation:ShapeStyle" xmi:id="_JI-08TSnEeeAruf_Oz5lkQ" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
           <styles xsi:type="notation:FontStyle" xmi:id="_JI-08jSnEeeAruf_Oz5lkQ"/>
           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_JI_cATSnEeeAruf_Oz5lkQ" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_JI-08zSnEeeAruf_Oz5lkQ" x="173" y="88" width="974" height="1549"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_JI-08zSnEeeAruf_Oz5lkQ" x="173" y="88" width="974" height="1591"/>
         </children>
         <children xmi:id="_S_KTETSrEeeAruf_Oz5lkQ" type="State" element="_S_KTHTSrEeeAruf_Oz5lkQ">
           <children xsi:type="notation:DecorationNode" xmi:id="_S_KTEjSrEeeAruf_Oz5lkQ" type="StateName">
@@ -329,7 +329,7 @@
           <styles xsi:type="notation:ShapeStyle" xmi:id="_S_KTGTSrEeeAruf_Oz5lkQ" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
           <styles xsi:type="notation:FontStyle" xmi:id="_S_KTGjSrEeeAruf_Oz5lkQ"/>
           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_S_KTGzSrEeeAruf_Oz5lkQ" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_S_KTHDSrEeeAruf_Oz5lkQ" x="841" y="3624" width="264" height="117"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_S_KTHDSrEeeAruf_Oz5lkQ" x="841" y="3666" width="264" height="117"/>
         </children>
         <children xsi:type="notation:Shape" xmi:id="_cFLcYDSrEeeAruf_Oz5lkQ" type="Note" fontName="Verdana" description="Ajouter pilotage des actionneurs pour les rranger" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
           <children xsi:type="notation:BasicDecorationNode" xmi:id="_cFMqgDSrEeeAruf_Oz5lkQ" type="DiagramName">
@@ -341,7 +341,7 @@
           <styles xsi:type="notation:TextStyle" xmi:id="_cFLcYTSrEeeAruf_Oz5lkQ"/>
           <styles xsi:type="notation:LineTypeStyle" xmi:id="_cFLcYjSrEeeAruf_Oz5lkQ"/>
           <element xsi:nil="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cFLcYzSrEeeAruf_Oz5lkQ" x="893" y="3732" width="344" height="73"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cFLcYzSrEeeAruf_Oz5lkQ" x="893" y="3774" width="344" height="73"/>
         </children>
         <children xsi:type="notation:Shape" xmi:id="_DYGroEBREeeMKY188zCzIg" type="Note" fontName="Verdana" description="Timeout mis &#xe0; l'arrache &#xe0; verifier/r&#xe9;flchier confirmer" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
           <children xsi:type="notation:BasicDecorationNode" xmi:id="_DYHSsEBREeeMKY188zCzIg" type="DiagramName">
@@ -353,7 +353,7 @@
           <styles xsi:type="notation:TextStyle" xmi:id="_DYGroUBREeeMKY188zCzIg"/>
           <styles xsi:type="notation:LineTypeStyle" xmi:id="_DYGrokBREeeMKY188zCzIg"/>
           <element xsi:nil="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_DYGro0BREeeMKY188zCzIg" x="97" y="1813" width="344" height="58"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_DYGro0BREeeMKY188zCzIg" x="97" y="1855" width="344" height="58"/>
         </children>
         <children xsi:type="notation:Shape" xmi:id="_uFJ18EBREeeMKY188zCzIg" type="Note" fontName="Verdana" description="Notamment faudrait peut &#xea;tre d&#xe9;bourrer un coup pour &#xea;tre sur qu'il n'y ait pas un cylindre &#xe0; demi pris" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
           <children xsi:type="notation:BasicDecorationNode" xmi:id="_uFMSMEBREeeMKY188zCzIg" type="DiagramName">
@@ -365,7 +365,7 @@
           <styles xsi:type="notation:TextStyle" xmi:id="_uFJ18UBREeeMKY188zCzIg"/>
           <styles xsi:type="notation:LineTypeStyle" xmi:id="_uFJ18kBREeeMKY188zCzIg"/>
           <element xsi:nil="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_uFJ180BREeeMKY188zCzIg" x="17" y="1952" width="335" height="68"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_uFJ180BREeeMKY188zCzIg" x="17" y="1994" width="335" height="68"/>
         </children>
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFmPMSoLEee0mqFmHUZWcA"/>
       </children>
