@@ -32,6 +32,12 @@
         {
         	robot.actuators.arms.ackCylinderTaken();
         }
+
+        //Specific FSM LSA //TODO a mettre en standard
+        void recalRearSpecial(sc_integer border, sc_integer distance) override
+        {
+            robot.nav.recalRear((eTableBorder)(border), distance);
+        }
     };}
 
 //    #include "generated/FSM_WipTration.h"
