@@ -19,7 +19,6 @@
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_--8H4C7JEeeB-rUkkc3UJw" specification="entry/ &#xD;&#xA;logInfo(&quot;Waiting for Tration to move away...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;logInfo(&quot;Go go go !&quot;)" name="Wait Tration to move" incomingTransitions="_JbmxcC-CEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_cOlrMC7FEeeB-rUkkc3UJw" specification="after 1000ms" target="_KdTdYSYeEeeh1o2kvtdb7w"/>
-        <outgoingTransitions xmi:id="_hj-VQEC9Eee4meqcGxTAJQ" specification="always" target="_47or8C9pEeeSSu2RwF8Pmw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_bYjJ4C9bEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;goTo(600, 780, BWD, SYM)" name="Return to Start Area to recal" incomingTransitions="_D_FXEC7BEeeB-rUkkc3UJw">
         <outgoingTransitions xmi:id="_K4vTEC9cEeeSSu2RwF8Pmw" specification="[targetReached]" target="_AkbxsC9cEeeSSu2RwF8Pmw"/>
@@ -36,7 +35,7 @@
       <vertices xsi:type="sgraph:State" xmi:id="_0PdQsC9pEeeSSu2RwF8Pmw" specification="//Optionnal state&#xD;&#xA;entry/&#xD;&#xA;logInfo(&quot;Waiting for Tration to move away.&quot;)" name="Wait for Tration to finish his move" incomingTransitions="_4POR4C9pEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_rQ0sUC9qEeeSSu2RwF8Pmw" specification="[40000 &lt; matchDuration()]" target="_X-FqcDGmEeexn7S6mRK2_g"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_47or8C9pEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;graphToLSAEntry(LSA_C, FWD)" name="Go To Cylinder C" incomingTransitions="_pMNlsC9pEeeSSu2RwF8Pmw _ubLrIEBjEee9nYz1Txwrhg _hj-VQEC9Eee4meqcGxTAJQ">
+      <vertices xsi:type="sgraph:State" xmi:id="_47or8C9pEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;graphToLSAEntry(LSA_C, FWD)" name="Go To Cylinder C" incomingTransitions="_pMNlsC9pEeeSSu2RwF8Pmw _ubLrIEBjEee9nYz1Txwrhg">
         <outgoingTransitions xmi:id="_--3ZsC9pEeeSSu2RwF8Pmw" specification="[targetReached]" target="_mPU90C9pEeeSSu2RwF8Pmw"/>
       </vertices>
       <vertices xsi:type="sgraph:FinalState" xmi:id="_qlxkMC9qEeeSSu2RwF8Pmw" incomingTransitions="_0JX0cDGmEeexn7S6mRK2_g _nLth0EBlEee9nYz1Txwrhg"/>
@@ -854,17 +853,6 @@
       <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_dfGdIkBmEee9nYz1Txwrhg" points="[-30, -2, 244, 13]$[-269, 12, 5, 27]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_dfHEMEBmEee9nYz1Txwrhg" id="(0.5238095238095238,1.0)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_dfHEMUBmEee9nYz1Txwrhg" id="(0.9515570934256056,0.6989247311827957)"/>
-    </edges>
-    <edges xmi:id="_hkX94EC9Eee4meqcGxTAJQ" type="Transition" element="_hj-VQEC9Eee4meqcGxTAJQ" source="_---kIC7JEeeB-rUkkc3UJw" target="_47pTAC9pEeeSSu2RwF8Pmw">
-      <children xsi:type="notation:DecorationNode" xmi:id="_hkZzEEC9Eee4meqcGxTAJQ" type="TransitionExpression">
-        <styles xsi:type="notation:ShapeStyle" xmi:id="_hkZzEUC9Eee4meqcGxTAJQ"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_hkZzEkC9Eee4meqcGxTAJQ" y="10"/>
-      </children>
-      <styles xsi:type="notation:ConnectorStyle" xmi:id="_hkX94UC9Eee4meqcGxTAJQ" routing="Rectilinear" lineColor="4210752"/>
-      <styles xsi:type="notation:FontStyle" xmi:id="_hkYk8EC9Eee4meqcGxTAJQ" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_hkX94kC9Eee4meqcGxTAJQ" points="[-1, 12, 78, -1326]$[-75, 1357, 4, 19]"/>
-      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_hkc2YEC9Eee4meqcGxTAJQ" id="(0.9675174013921114,0.8811881188118812)"/>
-      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_hkc2YUC9Eee4meqcGxTAJQ" id="(0.772093023255814,0.6610169491525424)"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>

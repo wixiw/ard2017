@@ -17,7 +17,7 @@ LSA_Dispenser::LSA_Dispenser(Robot2017& robot, eLSA_DispType type):
 
     switch (type) {
         case Monocolor:
-            setEntryPoint(Pose2D(  350,  655, 90));
+            setEntryPoint(Pose2D(  350,  615, 90));
             break;
         case Bicolor:
             setEntryPoint(Pose2D( 1155, -350, 0));
