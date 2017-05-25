@@ -8,7 +8,7 @@
       <vertices xsi:type="sgraph:State" xmi:id="_KdTdYSYeEeeh1o2kvtdb7w" specification="entry /&#xD;&#xA;logInfo(&quot;Going to dispenser A...&quot;);&#xD;&#xA;goToCap(350, y(SYM), 90, FWD, SYM)&#xD;&#xA;&#xD;&#xA;//We don't go to entry point ON PURPOSE, &#xD;&#xA;//because it would make a turn at move start, &#xD;&#xA;//and the robot is blocked by the flip-flop&#xD;&#xA;" name="Go To Dispenser A" incomingTransitions="_cOlrMC7FEeeB-rUkkc3UJw" documentation="">
         <outgoingTransitions xmi:id="_oZIpUDHiEeexn7S6mRK2_g" specification="[targetReached]" target="_lNwScDHiEeexn7S6mRK2_g"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_lYFYkC7AEeeB-rUkkc3UJw" specification="entry / &#xD;&#xA;logInfo(&quot;Reaching 4 area.&quot;);&#xD;&#xA;graphToLSAEntry(LSA_4, FWD)" name="Go To Container 4" incomingTransitions="_drwtMC9cEeeSSu2RwF8Pmw">
+      <vertices xsi:type="sgraph:State" xmi:id="_lYFYkC7AEeeB-rUkkc3UJw" specification="entry / &#xD;&#xA;logInfo(&quot;Reaching 4 area.&quot;);&#xD;&#xA;setSpeedAcc(250,100,0,0);&#xD;&#xA;graphToLSAEntry(LSA_4, FWD)&#xD;&#xA;exit/ setSpeedAcc(0,0,0,0)" name="Go To Container 4" incomingTransitions="_drwtMC9cEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_oh5zwC7BEeeB-rUkkc3UJw" specification="[targetReached]" target="_gfZV4C7BEeeB-rUkkc3UJw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_6r57gC7AEeeB-rUkkc3UJw" specification="entry/ &#xD;&#xA;logInfo(&quot;Withdrawing elements from dispenser A ...&quot;);&#xD;&#xA;startLSA(LSA_A, 4)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;stopLSA()" name="Get 4 monocolor cylinders from Dispenser A" incomingTransitions="_BX7HkC7BEeeB-rUkkc3UJw">
@@ -144,7 +144,7 @@
           <styles xsi:type="notation:ShapeStyle" xmi:id="_lYKRES7AEeeB-rUkkc3UJw" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
           <styles xsi:type="notation:FontStyle" xmi:id="_lYKREi7AEeeB-rUkkc3UJw"/>
           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_lYPJkS7AEeeB-rUkkc3UJw" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_lYKREy7AEeeB-rUkkc3UJw" x="6" y="1144" width="431"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_lYKREy7AEeeB-rUkkc3UJw" x="6" y="1089" width="431"/>
         </children>
         <children xmi:id="_6r8XwC7AEeeB-rUkkc3UJw" type="State" element="_6r57gC7AEeeB-rUkkc3UJw">
           <children xsi:type="notation:DecorationNode" xmi:id="_6r8XxC7AEeeB-rUkkc3UJw" type="StateName">
