@@ -10,7 +10,7 @@
 
 #include "RSP.h"
 #include "generated/FSM_Lifter.h"
-
+#include "StrategyModel2017.h"
 
 namespace ard
 {
@@ -67,6 +67,18 @@ namespace ard
         /**
          * FSM operation implementation
          */
+        //FSM Callback
+        sc_integer upCmdWithStock() override
+		{
+        	if( fsm.get_stockCount() < 5)
+        	{
+        		return UP_CMD();
+        	}
+        	else
+        	{
+        		return DOWN_CMD();
+        	}
+		}
 
         //FSM Callback
         void logInfo(sc_string msg) override;
