@@ -5,13 +5,13 @@
       <vertices xsi:type="sgraph:Entry" xmi:id="_KdS2UCYeEeeh1o2kvtdb7w">
         <outgoingTransitions xmi:id="_JbmxcC-CEeeSSu2RwF8Pmw" specification="" target="_--8H4C7JEeeB-rUkkc3UJw"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_KdTdYSYeEeeh1o2kvtdb7w" specification="entry /&#xD;&#xA;logInfo(&quot;Going to dispenser A...&quot;);&#xD;&#xA;goToCap(350, y(SYM), 90, BWD, SYM)&#xD;&#xA;&#xD;&#xA;//We don't go to entry point ON PURPOSE, &#xD;&#xA;//because it would make a turn at move start, &#xD;&#xA;//and the robot is blocked by the flip-flop&#xD;&#xA;" name="Go To Dispenser A" incomingTransitions="_cOlrMC7FEeeB-rUkkc3UJw" documentation="">
+      <vertices xsi:type="sgraph:State" xmi:id="_KdTdYSYeEeeh1o2kvtdb7w" specification="entry /&#xD;&#xA;logInfo(&quot;Going to dispenser A...&quot;);&#xD;&#xA;goToCap(350, y(SYM), 90, FWD, SYM)&#xD;&#xA;&#xD;&#xA;//We don't go to entry point ON PURPOSE, &#xD;&#xA;//because it would make a turn at move start, &#xD;&#xA;//and the robot is blocked by the flip-flop&#xD;&#xA;" name="Go To Dispenser A" incomingTransitions="_cOlrMC7FEeeB-rUkkc3UJw" documentation="">
         <outgoingTransitions xmi:id="_oZIpUDHiEeexn7S6mRK2_g" specification="[targetReached]" target="_lNwScDHiEeexn7S6mRK2_g"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_lYFYkC7AEeeB-rUkkc3UJw" specification="entry / &#xD;&#xA;logInfo(&quot;Reaching 4 area.&quot;);&#xD;&#xA;graphToLSAEntry(LSA_4, BWD)" name="Go To Container 4" incomingTransitions="_wwQsIEBjEee9nYz1Txwrhg">
         <outgoingTransitions xmi:id="_oh5zwC7BEeeB-rUkkc3UJw" specification="[targetReached]" target="_gfZV4C7BEeeB-rUkkc3UJw"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_6r57gC7AEeeB-rUkkc3UJw" specification="entry/ &#xD;&#xA;logInfo(&quot;Withdrawing elements from dispenser A ...&quot;);&#xD;&#xA;startLSA(LSA_A, 3)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;stopLSA()" name="Get 4 monocolor cylinders from Dispenser A" incomingTransitions="_BX7HkC7BEeeB-rUkkc3UJw">
+      <vertices xsi:type="sgraph:State" xmi:id="_6r57gC7AEeeB-rUkkc3UJw" specification="entry/ &#xD;&#xA;logInfo(&quot;Withdrawing elements from dispenser A ...&quot;);&#xD;&#xA;startLSA(LSA_A, 4)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;stopLSA()" name="Get 4 monocolor cylinders from Dispenser A" incomingTransitions="_BX7HkC7BEeeB-rUkkc3UJw">
         <outgoingTransitions xmi:id="_D_FXEC7BEeeB-rUkkc3UJw" specification="[SUCCESS == getLSAStatus() || FAILURE == getLSAStatus()]" target="_bYjJ4C9bEeeSSu2RwF8Pmw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_gfZV4C7BEeeB-rUkkc3UJw" specification="entry/&#xD;&#xA;logInfo(&quot;Pooing 4 cylinders in 4 area.&quot;);&#xD;&#xA;informPushedAway_F();&#xD;&#xA;startLSA(LSA_4, 0)&#xD;&#xA;&#xD;&#xA;exit/&#xD;&#xA;stopLSA()" name="Poo 4 monocolor cylinders in 4" incomingTransitions="_oh5zwC7BEeeB-rUkkc3UJw">
@@ -26,7 +26,7 @@
       <vertices xsi:type="sgraph:State" xmi:id="_AkbxsC9cEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;recalRear(FLIP_FLOP_X)" name="Recal X against Start Area flip-flop" incomingTransitions="_K4vTEC9cEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_aQaAoC9cEeeSSu2RwF8Pmw" specification="[targetReached]" target="_WAttEC9cEeeSSu2RwF8Pmw"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_WAttEC9cEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;recalFace(REFEREE_Y)" name="Recal Y against Start Area border" incomingTransitions="_aQaAoC9cEeeSSu2RwF8Pmw">
+      <vertices xsi:type="sgraph:State" xmi:id="_WAttEC9cEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;recalRear(REFEREE_Y)" name="Recal Y against Start Area border" incomingTransitions="_aQaAoC9cEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_drwtMC9cEeeSSu2RwF8Pmw" specification="[targetReached]" target="_c7Ji4EBjEee9nYz1Txwrhg"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_mPU90C9pEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;startLSA(LSA_C, 1 /* means with recal */)&#xD;&#xA;&#xD;&#xA;exit/&#xD;&#xA;stopLSA()" name="Get C Cylinder" incomingTransitions="_--3ZsC9pEeeSSu2RwF8Pmw">
@@ -35,14 +35,14 @@
       <vertices xsi:type="sgraph:State" xmi:id="_0PdQsC9pEeeSSu2RwF8Pmw" specification="//Optionnal state&#xD;&#xA;entry/&#xD;&#xA;logInfo(&quot;Waiting for Tration to move away.&quot;)" name="Wait for Tration to finish his move" incomingTransitions="_4POR4C9pEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_rQ0sUC9qEeeSSu2RwF8Pmw" specification="[40000 &lt; matchDuration()]" target="_X-FqcDGmEeexn7S6mRK2_g"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_47or8C9pEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;graphToLSAEntry(LSA_C, FWD)" name="Go To Cylinder C" incomingTransitions="_pMNlsC9pEeeSSu2RwF8Pmw _ubLrIEBjEee9nYz1Txwrhg">
+      <vertices xsi:type="sgraph:State" xmi:id="_47or8C9pEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;graphToLSAEntry(LSA_C, FWD)" name="Go To Cylinder C" incomingTransitions="_pMNlsC9pEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_--3ZsC9pEeeSSu2RwF8Pmw" specification="[targetReached]" target="_mPU90C9pEeeSSu2RwF8Pmw"/>
       </vertices>
       <vertices xsi:type="sgraph:FinalState" xmi:id="_qlxkMC9qEeeSSu2RwF8Pmw" incomingTransitions="_0JX0cDGmEeexn7S6mRK2_g _nLth0EBlEee9nYz1Txwrhg"/>
       <vertices xsi:type="sgraph:State" xmi:id="_X-FqcDGmEeexn7S6mRK2_g" specification="entry/&#xD;&#xA;graphToLSAEntry(LSA_B, BWD)" name="Go to B" incomingTransitions="_rQ0sUC9qEeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_fZEOQDGmEeexn7S6mRK2_g" specification="[targetReached]" target="_cnRcHTGmEeexn7S6mRK2_g"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_cnRcHTGmEeexn7S6mRK2_g" specification="entry/&#xD;&#xA;startLSA(LSA_B, 1 /* means with recal */)&#xD;&#xA;&#xD;&#xA;exit/&#xD;&#xA;stopLSA()" name="Get B Cylinder" incomingTransitions="_fZEOQDGmEeexn7S6mRK2_g">
+      <vertices xsi:type="sgraph:State" xmi:id="_cnRcHTGmEeexn7S6mRK2_g" specification="entry/&#xD;&#xA;startLSA(LSA_B, 1 /* means with recal */)&#xD;&#xA;&#xD;&#xA;exit/&#xD;&#xA;stopLSA()" name="Get B Cylinder" incomingTransitions="_fZEOQDGmEeexn7S6mRK2_g _Kl3qEEEmEee4meqcGxTAJQ">
         <outgoingTransitions xmi:id="_sWV9ADGmEeexn7S6mRK2_g" specification="[SUCCESS == getLSAStatus() || FAILURE == getLSAStatus()]" target="_8TmzgEBjEee9nYz1Txwrhg"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_psBr3DGmEeexn7S6mRK2_g" specification="entry/&#xD;&#xA;graphToLSAEntry(LSA_3, FWD)" name="Go to poo in 3" incomingTransitions="_pXwYEEBkEee9nYz1Txwrhg">
@@ -55,7 +55,7 @@
         <outgoingTransitions xmi:id="_BX7HkC7BEeeB-rUkkc3UJw" specification="[targetReached]" target="_6r57gC7AEeeB-rUkkc3UJw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_c7Ji4EBjEee9nYz1Txwrhg" name="Shortcut for Homol" incomingTransitions="_drwtMC9cEeeSSu2RwF8Pmw">
-        <outgoingTransitions xmi:id="_ubLrIEBjEee9nYz1Txwrhg" specification="always" target="_47or8C9pEeeSSu2RwF8Pmw"/>
+        <outgoingTransitions xmi:id="_ubLrIEBjEee9nYz1Txwrhg" specification="always&#xD;&#xA;" target="_Iyu4gEEmEee4meqcGxTAJQ"/>
         <outgoingTransitions xmi:id="_wwQsIEBjEee9nYz1Txwrhg" specification="[false]" target="_lYFYkC7AEeeB-rUkkc3UJw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_8TmzgEBjEee9nYz1Txwrhg" specification="entry/&#xD;&#xA;goToCap(1280, 420, -90, FWD, SYM)" name="Greed" incomingTransitions="_sWV9ADGmEeexn7S6mRK2_g">
@@ -85,6 +85,9 @@
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_bpSyEEBmEee9nYz1Txwrhg" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_RETRACT)" name="Retract" incomingTransitions="_JZ964EBmEee9nYz1Txwrhg">
         <outgoingTransitions xmi:id="_dfFPAEBmEee9nYz1Txwrhg" specification="[armsReady]" target="_H-TDkEBlEee9nYz1Txwrhg"/>
+      </vertices>
+      <vertices xsi:type="sgraph:State" xmi:id="_Iyu4gEEmEee4meqcGxTAJQ" specification="entry/ graphToLSAEntry(LSA_B, BEST)" name="Shortcut" incomingTransitions="_ubLrIEBjEee9nYz1Txwrhg">
+        <outgoingTransitions xmi:id="_Kl3qEEEmEee4meqcGxTAJQ" specification="[targetReached]" target="_cnRcHTGmEeexn7S6mRK2_g"/>
       </vertices>
     </regions>
   </sgraph:Statechart>
@@ -527,10 +530,26 @@
           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_bpZfxEBmEee9nYz1Txwrhg" name="isHorizontal" booleanValue="true"/>
           <layoutConstraint xsi:type="notation:Bounds" xmi:id="_bpWcc0BmEee9nYz1Txwrhg" x="914" y="2829"/>
         </children>
+        <children xmi:id="_Iy0_IEEmEee4meqcGxTAJQ" type="State" element="_Iyu4gEEmEee4meqcGxTAJQ">
+          <children xsi:type="notation:DecorationNode" xmi:id="_Iy1mMEEmEee4meqcGxTAJQ" type="StateName">
+            <styles xsi:type="notation:ShapeStyle" xmi:id="_Iy1mMUEmEee4meqcGxTAJQ"/>
+            <layoutConstraint xsi:type="notation:Location" xmi:id="_Iy1mMkEmEee4meqcGxTAJQ"/>
+          </children>
+          <children xsi:type="notation:Compartment" xmi:id="_Iy1mM0EmEee4meqcGxTAJQ" type="StateTextCompartment">
+            <children xsi:type="notation:Shape" xmi:id="_Iy1mNEEmEee4meqcGxTAJQ" type="StateTextCompartmentExpression" fontName="Verdana" lineColor="4210752">
+              <layoutConstraint xsi:type="notation:Bounds" xmi:id="_Iy1mNUEmEee4meqcGxTAJQ"/>
+            </children>
+          </children>
+          <children xsi:type="notation:Compartment" xmi:id="_Iy2NQEEmEee4meqcGxTAJQ" type="StateFigureCompartment"/>
+          <styles xsi:type="notation:ShapeStyle" xmi:id="_Iy0_IUEmEee4meqcGxTAJQ" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
+          <styles xsi:type="notation:FontStyle" xmi:id="_Iy0_IkEmEee4meqcGxTAJQ"/>
+          <styles xsi:type="notation:BooleanValueStyle" xmi:id="_Iy2NQUEmEee4meqcGxTAJQ" name="isHorizontal" booleanValue="true"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_Iy0_I0EmEee4meqcGxTAJQ" x="715" y="1502"/>
+        </children>
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_KdSPRCYeEeeh1o2kvtdb7w"/>
       </children>
       <styles xsi:type="notation:ShapeStyle" xmi:id="_KdRoNCYeEeeh1o2kvtdb7w" fontName="Verdana" fillColor="15790320" lineColor="12632256"/>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_KdSPRSYeEeeh1o2kvtdb7w" x="50" y="10" width="1253" height="3016"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_KdSPRSYeEeeh1o2kvtdb7w" x="50" y="15" width="1253" height="3016"/>
     </children>
     <children xsi:type="notation:Shape" xmi:id="_KdVSlCYeEeeh1o2kvtdb7w" type="StatechartText" fontName="Verdana" lineColor="4210752">
       <children xsi:type="notation:DecorationNode" xmi:id="_KdVSliYeEeeh1o2kvtdb7w" type="StatechartName">
@@ -725,16 +744,15 @@
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_oZKegDHiEeexn7S6mRK2_g" id="(0.5467289719626168,1.0)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_oZKegTHiEeexn7S6mRK2_g" id="(0.03546099290780142,0.32075471698113206)"/>
     </edges>
-    <edges xmi:id="_ubQjoEBjEee9nYz1Txwrhg" type="Transition" element="_ubLrIEBjEee9nYz1Txwrhg" source="_c7VJEEBjEee9nYz1Txwrhg" target="_47pTAC9pEeeSSu2RwF8Pmw">
+    <edges xmi:id="_ubQjoEBjEee9nYz1Txwrhg" type="Transition" element="_ubLrIEBjEee9nYz1Txwrhg" source="_c7VJEEBjEee9nYz1Txwrhg" target="_Iy0_IEEmEee4meqcGxTAJQ">
       <children xsi:type="notation:DecorationNode" xmi:id="_ubSY0EBjEee9nYz1Txwrhg" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_ubSY0UBjEee9nYz1Txwrhg"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_ubSY0kBjEee9nYz1Txwrhg" y="10"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_ubSY0kBjEee9nYz1Txwrhg" x="-2" y="-128"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_ubQjoUBjEee9nYz1Txwrhg" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_ubRxwEBjEee9nYz1Txwrhg" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_ubQjokBjEee9nYz1Txwrhg" points="[0, 0, 194, -356]$[-187, 379, 7, 23]"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_ubQjokBjEee9nYz1Txwrhg" points="[0, 0, -264, -381]$[0, 275, -264, -106]$[220, 275, -44, -106]$[220, 357, -44, -24]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_ubcw4EBjEee9nYz1Txwrhg" id="(0.39814814814814814,1.0)"/>
-      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_ubcw4UBjEee9nYz1Txwrhg" id="(0.9837209302325581,0.6610169491525424)"/>
     </edges>
     <edges xmi:id="_wwTIYEBjEee9nYz1Txwrhg" type="Transition" element="_wwQsIEBjEee9nYz1Txwrhg" source="_c7VJEEBjEee9nYz1Txwrhg" target="_lYKREC7AEeeB-rUkkc3UJw">
       <children xsi:type="notation:DecorationNode" xmi:id="_wwUWgEBjEee9nYz1Txwrhg" type="TransitionExpression">
@@ -853,6 +871,17 @@
       <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_dfGdIkBmEee9nYz1Txwrhg" points="[-30, -2, 244, 13]$[-269, 12, 5, 27]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_dfHEMEBmEee9nYz1Txwrhg" id="(0.5238095238095238,1.0)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_dfHEMUBmEee9nYz1Txwrhg" id="(0.9515570934256056,0.6989247311827957)"/>
+    </edges>
+    <edges xmi:id="_Kl5fQEEmEee4meqcGxTAJQ" type="Transition" element="_Kl3qEEEmEee4meqcGxTAJQ" source="_Iy0_IEEmEee4meqcGxTAJQ" target="_cnRcETGmEeexn7S6mRK2_g">
+      <children xsi:type="notation:DecorationNode" xmi:id="_Kl5fREEmEee4meqcGxTAJQ" type="TransitionExpression">
+        <styles xsi:type="notation:ShapeStyle" xmi:id="_Kl5fRUEmEee4meqcGxTAJQ"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_Kl5fRkEmEee4meqcGxTAJQ" y="10"/>
+      </children>
+      <styles xsi:type="notation:ConnectorStyle" xmi:id="_Kl5fQUEmEee4meqcGxTAJQ" routing="Rectilinear" lineColor="4210752"/>
+      <styles xsi:type="notation:FontStyle" xmi:id="_Kl5fQ0EmEee4meqcGxTAJQ" fontName="Verdana"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_Kl5fQkEmEee4meqcGxTAJQ" points="[-15, 17, 316, -346]$[-15, 416, 316, 53]$[-331, 416, 0, 53]"/>
+      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_Kl77gEEmEee4meqcGxTAJQ" id="(0.17938931297709923,0.660377358490566)"/>
+      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_Kl77gUEmEee4meqcGxTAJQ" id="(1.0,0.0)"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>

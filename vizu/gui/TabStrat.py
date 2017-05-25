@@ -58,12 +58,10 @@ class TabStrat(QWidget):
             self.overview.robot = self.overview.robotPen
             self._setColorButtonState(Types_pb2.UNKNOWN)
             self._setStartButtonState("color") 
-            self.setColor(Types_pb2.PREF)
         elif name == "Tration":
             self.overview.robot = self.overview.robotTration
             self._setColorButtonState(Types_pb2.UNKNOWN)
             self._setStartButtonState("color")
-            self.setColor(Types_pb2.PREF) 
         else:
             self.overview.robot = None
             self.robotConfig = None

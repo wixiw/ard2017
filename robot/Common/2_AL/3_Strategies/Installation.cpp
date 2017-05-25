@@ -100,7 +100,7 @@ void InstallPen::update(TimeMs sinceLastCall)
             if(robot.nav.targetReached())
             {
                 state = IP_GO_TO_START_POS;
-                robot.nav.goToCap(PEN_START_POSE, eDir_FORWARD);
+                robot.nav.goToCap(PEN_START_POSE, eDir_BACKWARD);
                 LOG_INFO("Install : Positionning in start area");
             }
             if(robot.nav.blocked())

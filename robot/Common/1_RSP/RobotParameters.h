@@ -23,7 +23,7 @@
 #define LOG_QUEUE_SIZE 20       //number of logs that can be queued before being sent on the network
 
 #define PEN_INSTALL_POSE 		Pose2D(  600,     800,   90)
-#define PEN_START_POSE     		Pose2D(  645,   730+5,    0) //+5 to prevent to be out of start area, but not too much as we would hit the dispenser at rush
+#define PEN_START_POSE     		Pose2D(  760,   730+5,   180) //+5 to prevent to be out of start area, but not too much as we would hit the dispenser at rush
 #define TRATION_INSTALL_POSE 	PEN_INSTALL_POSE
 #define TRATION_START_POSE 		Pose2D(518-2,  785+20,  -90) //-2 to ensure room between 2 robots, +20 to leave room ahead in start area
 
