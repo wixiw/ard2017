@@ -36,6 +36,26 @@ namespace ard
 
         //Implements FSM_LSA_GetCylinder_B::DefaultSCI_OCB
         void goToEntryPoint() override;
+
+        //Specific FSM LSA //TODO a mettre en standard
+        void recalRearSpecial(sc_integer border, sc_integer distance) override
+        {
+            robot.nav.recalRear((eTableBorder)(border), distance);
+        }
+
+        //Specific FSM LSA //TODO a mettre en standard
+        void recalFaceSpecial(sc_integer border, sc_integer distance) override
+        {
+            robot.nav.recalFace((eTableBorder)(border), distance);
+        }
+
+        //Specific FSM LSA
+        void goToPoo5EntryPoint()
+        {
+			Pose2D truc = POO_BORDER_5_EP;
+			truc.hDegree(180);
+        	robot.nav.goToCap(truc, eDir_BACKWARD);
+        }
     };
 
     class LSA_GetCylinder_C: public LSA2017<FSM_LSA_GetCylinder_C, FSM_LSA_GetCylinder_C::FSM_LSA_GetCylinder_CStates>

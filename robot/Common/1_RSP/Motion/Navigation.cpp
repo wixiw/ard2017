@@ -17,7 +17,7 @@ using namespace ard;
 #define RECAL_FORCING_FAST 200     //mm/s
 #define RECAL_TIMEOUT 5000 //ms
 #define RECAL_RETRY_ESCAPE_DIST 50 //mm
-#define GRAPH_TIMEOUT 15000 //ms
+#define GRAPH_TIMEOUT 20000 //ms
 #define OPP_IMPATIENCE_TIMEOUT 10000 //ms
 #define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT(!orderOngoing(), "Nav cannot do 2 orders at a time");
 #define AVOID_MARGIN 50 //mm distance added to robot outer circle to consider an escape point as being on table
@@ -524,7 +524,7 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
         m_targetDir = sens;
     }
 
-    LOG_INFO("   new request : goTo" + m_target.toString() + " "  + sensToString(sens) + ".");
+    LOG_INFO("   new request : goTo" + static_cast<Point>(m_target).toString() + " "  + sensToString(sens) + ".");
     action_startOrder();
 
     orderTimeout.arm(moveDur + OPP_IMPATIENCE_TIMEOUT);

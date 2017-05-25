@@ -10,7 +10,7 @@ using namespace ard;
 
 
 LSA_GetCylinder_B::LSA_GetCylinder_B(Robot2017& robot, eLSA_GetCylinder_Recal type):
-        LSA2017(robot, "LSAPooMiddle", Pose2D(1016,116, 45))
+        LSA2017(robot, "LSAPooMiddle", Pose2D(1160,140, 180))
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);
