@@ -6,7 +6,7 @@
         <outgoingTransitions xmi:id="_wvXiQD_JEeeyFvJ9yEx4Uw" specification="" target="_Fk9akC-DEee1v-eVh51XZQ"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_Fk9akC-DEee1v-eVh51XZQ" specification="entry/ &#xD;&#xA;goTo(x(SYM), 382, FWD, SYM);&#xD;&#xA;logInfo(&quot;Moving away from start area so that Pen begin its match...&quot;)&#xD;&#xA;&#xD;&#xA;" name="Escaping from Start area : Goto Thru D" incomingTransitions="_wvXiQD_JEeeyFvJ9yEx4Uw">
-        <outgoingTransitions xmi:id="_gOa4cD_JEeeyFvJ9yEx4Uw" specification="[armsReady() &amp;&amp; lifterReady()] //waiting start() on actuators to be effective" target="_FaY1QD_JEeeyFvJ9yEx4Uw"/>
+        <outgoingTransitions xmi:id="_gOa4cD_JEeeyFvJ9yEx4Uw" specification="[armsReady()] //waiting start() on actuators to be effective" target="_FaY1QD_JEeeyFvJ9yEx4Uw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_xM-YXS-DEee1v-eVh51XZQ" specification="entry /&#xD;&#xA;logInfo(&quot;Going to dispenser G...&quot;);&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;goToLSAEntry(LSA_G, FWD)" name="Go To Dispenser G" incomingTransitions="_wTmyMD7rEeeKAL-xA1rs-Q _tCe_sD7rEeeKAL-xA1rs-Q" documentation="">
         <outgoingTransitions xmi:id="_6i4F0C-FEee1v-eVh51XZQ" specification="[targetReached &amp;&amp; armsReady]" target="_vaVEEC-FEee1v-eVh51XZQ"/>
