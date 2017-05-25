@@ -135,7 +135,7 @@
               <vertices xsi:type="sgraph:Entry" xmi:id="_T15IAEA2EeecUdNAJV3bMw">
                 <outgoingTransitions xmi:id="_Xj4csEA2EeecUdNAJV3bMw" specification="" target="_UtkW4EA2EeecUdNAJV3bMw"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_UtkW4EA2EeecUdNAJV3bMw" specification="entry/&#xD;&#xA;logInfo(&quot;Opening arms to poo&quot;);&#xD;&#xA;armsCmd(ARM_MID, WHEEL_IDLE)" name="Opening arms to let lifter work" incomingTransitions="_Xj4csEA2EeecUdNAJV3bMw">
+              <vertices xsi:type="sgraph:State" xmi:id="_UtkW4EA2EeecUdNAJV3bMw" specification="entry/&#xD;&#xA;logInfo(&quot;Opening arms to poo&quot;);&#xD;&#xA;armsCmd(ARM_MID, WHEEL_SWALLOW)" name="Opening arms to let lifter work" incomingTransitions="_Xj4csEA2EeecUdNAJV3bMw">
                 <outgoingTransitions xmi:id="_FD3BoEA3EeecUdNAJV3bMw" specification="[armsInPosition]" target="_trS_wEA2EeecUdNAJV3bMw"/>
                 <outgoingTransitions xmi:id="_G4F_YEA3EeecUdNAJV3bMw" specification="after 300ms [simulation]" target="_trS_wEA2EeecUdNAJV3bMw"/>
                 <outgoingTransitions xmi:id="_LRYT0EA3EeecUdNAJV3bMw" specification="after 1s [!simulation]" target="_hR6LwEA3EeecUdNAJV3bMw"/>

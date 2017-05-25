@@ -43,6 +43,10 @@ namespace ard
         //FSM API : Use this to compute the number of cylinders to withdraw
         sc_integer howManyToTake() override;
 
+        //FSM API : inform the robot if the cylinder is the last - 1 that we shall extract slowly to prevent issues with last one fall
+        sc_boolean shouldISlowOnNextCylinder() override;
+
+
     protected:
         eLSA_DispType type;
         //Use this hide in the FSM which dispenser is used

@@ -77,6 +77,11 @@ sc_integer LSA_Dispenser::howManyToTake()
 	return min(robot.stratInfo.getFreeStockRoom(), min(param, dispenserCount()));
 }
 
+sc_boolean LSA_Dispenser::shouldISlowOnNextCylinder()
+{
+	return (dispenserCount() == 2);
+}
+
 sc_integer LSA_Dispenser::dispenserCount()
 {
     sc_integer count;
