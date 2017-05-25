@@ -55,7 +55,7 @@
                   <vertices xsi:type="sgraph:State" xmi:id="_u0YpIEDCEee4meqcGxTAJQ" specification="entry/&#xD;&#xA;armsCmd(ARM_OUT, WHEEL_SWALLOW)" name="Looking for cylinder swapping out" incomingTransitions="_5JTqAEDMEee4meqcGxTAJQ">
                     <outgoingTransitions xmi:id="_57G6YEDMEee4meqcGxTAJQ" specification="after 500ms [armsInPosition]" target="_HY5ZkD56Eee2xNbiZ_Uvvw"/>
                   </vertices>
-                  <vertices xsi:type="sgraph:State" xmi:id="_HY5ZkD56Eee2xNbiZ_Uvvw" specification="entry/&#xD;&#xA;armsCmd(ARM_MID, WHEEL_SWALLOW)" name="Looking for cylinder swapping in" incomingTransitions="_Or3EID5qEee2xNbiZ_Uvvw _n1lwID8DEee8xeItEO-Xbg _57G6YEDMEee4meqcGxTAJQ">
+                  <vertices xsi:type="sgraph:State" xmi:id="_HY5ZkD56Eee2xNbiZ_Uvvw" specification="entry/&#xD;&#xA;Strategy.cylinderTaken = false;&#xD;&#xA;armsCmd(ARM_MID, WHEEL_SWALLOW)" name="Looking for cylinder swapping in" incomingTransitions="_Or3EID5qEee2xNbiZ_Uvvw _n1lwID8DEee8xeItEO-Xbg _57G6YEDMEee4meqcGxTAJQ">
                     <outgoingTransitions xmi:id="_TBWqcD56Eee2xNbiZ_Uvvw" specification="[cylinderPresent]" target="_NfZ8gEA1EeecUdNAJV3bMw"/>
                     <outgoingTransitions xmi:id="_syFfUD8DEee8xeItEO-Xbg" specification="[simulation]" target="_idIHMEEzEeep26-SvzAD1Q"/>
                     <outgoingTransitions xmi:id="_5JTqAEDMEee4meqcGxTAJQ" specification="[armsInPosition] " target="_u0YpIEDCEee4meqcGxTAJQ"/>
@@ -462,6 +462,18 @@
                                   <styles xsi:type="notation:FontStyle" xmi:id="_1SMZukDNEee4meqcGxTAJQ"/>
                                   <styles xsi:type="notation:BooleanValueStyle" xmi:id="_1SMZu0DNEee4meqcGxTAJQ" name="isHorizontal" booleanValue="true"/>
                                   <layoutConstraint xsi:type="notation:Bounds" xmi:id="_1SMZvEDNEee4meqcGxTAJQ" x="48" y="9"/>
+                                </children>
+                                <children xsi:type="notation:Shape" xmi:id="_UpPfkEE-Eeep26-SvzAD1Q" type="Note" fontName="Verdana" description="résoudre Strategy.cylinderTaken = true" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
+                                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_UpQGo0E-Eeep26-SvzAD1Q" type="DiagramName">
+                                    <element xsi:nil="true"/>
+                                  </children>
+                                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_UpQGpEE-Eeep26-SvzAD1Q" type="Description">
+                                    <element xsi:nil="true"/>
+                                  </children>
+                                  <styles xsi:type="notation:TextStyle" xmi:id="_UpQGoEE-Eeep26-SvzAD1Q"/>
+                                  <styles xsi:type="notation:LineTypeStyle" xmi:id="_UpQGoUE-Eeep26-SvzAD1Q"/>
+                                  <element xsi:nil="true"/>
+                                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_UpQGokE-Eeep26-SvzAD1Q" x="157" y="86"/>
                                 </children>
                                 <layoutConstraint xsi:type="notation:Bounds" xmi:id="_1SMZvUDNEee4meqcGxTAJQ"/>
                               </children>
@@ -1293,7 +1305,7 @@
     <edges xmi:id="_syJwwD8DEee8xeItEO-Xbg" type="Transition" element="_syFfUD8DEee8xeItEO-Xbg" source="_1SMZsUDNEee4meqcGxTAJQ" target="_idJVUEEzEeep26-SvzAD1Q">
       <children xsi:type="notation:DecorationNode" xmi:id="_syK-4D8DEee8xeItEO-Xbg" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_syK-4T8DEee8xeItEO-Xbg"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_syK-4j8DEee8xeItEO-Xbg" x="73" y="29"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_syK-4j8DEee8xeItEO-Xbg" x="21" y="-48"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_syJwwT8DEee8xeItEO-Xbg" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_syKX0D8DEee8xeItEO-Xbg" fontName="Verdana"/>
