@@ -34,7 +34,7 @@
 #define ARM_MIN 			295
 #define ARM_MAX 			750
 #define LIFTER_MIN 			390
-#define LIFTER_MAX 			790
+#define LIFTER_MAX 			800
 
 namespace ard
 {
