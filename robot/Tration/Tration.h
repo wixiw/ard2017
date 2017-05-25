@@ -22,10 +22,20 @@
 #define private public //#porky : workaround to gain introspection, because Yakindu guys thinks they'll anoy me in making data private...
 
     #include "generated/FSM_HomolTration.h"
-    DECLARE_FSM_STRATEGY(HomolTration);
+    namespace ard{
+    class HomolTration: public Strategy2017<FSM_HomolTration, FSM_HomolTration::FSM_HomolTrationStates>{
+    public:
+        HomolTration(Robot2017& robot, LSAList const& lsaList) :
+        Strategy2017<FSM_HomolTration, FSM_HomolTration::FSM_HomolTrationStates>(robot, "HomolTration", lsaList){};
 
-    #include "generated/FSM_WipTration.h"
-    DECLARE_FSM_STRATEGY(WipTration);
+        void ackCylinderTaken() override
+        {
+        	robot.actuators.arms.ackCylinderTaken();
+        }
+    };}
+
+//    #include "generated/FSM_WipTration.h"
+//    DECLARE_FSM_STRATEGY(WipTration);
 
 #undef private
 
@@ -51,7 +61,7 @@ namespace ard
         HomolTration stratHomol;
         InstallTration stratInstall;
         Selftest stratSelftest;
-        WipTration stratWIP;
+        //WipTration stratWIP;
         FunnyAction stratFunnyAction;
 
     protected:

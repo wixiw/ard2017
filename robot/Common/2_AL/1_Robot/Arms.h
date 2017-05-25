@@ -58,6 +58,9 @@ namespace ard
         //inform if a cylinder has been swallowed
         bool isCylinderTaken() { return fsm.getSCI_Strategy()->get_cylinderTaken();};
 
+        //Reset the cylinderTaken flag
+        void ackCylinderTaken(){fsm.getSCI_Strategy()->set_cylinderTaken(false);};
+
         /**
          * FSM operation implementation (internal API)
          */

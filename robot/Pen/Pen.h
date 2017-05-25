@@ -21,9 +21,6 @@
  */
 #define private public //#porky : workaround to gain introspection, because Yakindu guys thinks they'll anoy me in making data private...
 
-    #include "generated/FSM_WipPen.h"
-    DECLARE_FSM_STRATEGY(WipPen);
-
 #include "generated/FSM_HomolPen.h"
     namespace ard{
     class HomolPen: public Strategy2017<FSM_HomolPen, FSM_HomolPen::FSM_HomolPenStates>{
@@ -40,6 +37,8 @@
         }
     };}
 
+//#include "generated/FSM_WipPen.h"
+//DECLARE_FSM_STRATEGY(WipPen);
 
 #undef private
 
@@ -66,7 +65,7 @@ namespace ard
         HomolPen stratHomol;
         InstallPen stratInstall;
         Selftest stratSelftest;
-        WipPen stratWIP;
+        //WipPen stratWIP;
         FunnyAction stratFunnyAction;
 
     protected:

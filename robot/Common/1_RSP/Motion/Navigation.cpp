@@ -13,7 +13,7 @@ using namespace ard;
 #define NO_TURN_DELTA 0.0005 //rad
 #define NO_MOVE_DELTA 1      //mm
 #define KLAXON_FREQ 1000     //Hz
-#define RECAL_FORCING_SLOW 200     //mm
+#define RECAL_FORCING_SLOW 250     //mm
 #define RECAL_FORCING_FAST 200     //mm/s
 #define RECAL_TIMEOUT 5000 //ms
 #define RECAL_RETRY_ESCAPE_DIST 50 //mm
@@ -80,7 +80,7 @@ bool Navigation::wallTouched()
 	else
 	{
 		//If border is rounded, then recal switches won't contact, so do as if there were no switches
-		if(recalOnRoundedBorder)
+		if(recalOnRoundedBorder && subOrderFinished())
 		{
 			LOG_INFO(String("   wall touched (target reached roudned border)"));
 			return true;

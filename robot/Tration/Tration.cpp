@@ -14,7 +14,7 @@ Tration::Tration():
     stratHomol      (*this, lsaList),
     stratInstall    (*this),
     stratSelftest   (*this),
-    stratWIP        (*this, lsaList),
+//    stratWIP        (*this, lsaList),
     stratFunnyAction(*this)
 {
     exeBuildDate = String(__DATE__) + " " + __TIME__;

@@ -15,7 +15,7 @@ Pen::Pen():
     stratHomol      (*this, lsaList),
     stratInstall    (*this),
     stratSelftest   (*this),
-    stratWIP        (*this, lsaList),
+//    stratWIP        (*this, lsaList),
     stratFunnyAction(*this)
 {
     exeBuildDate = String(__DATE__) + " " + __TIME__;
@@ -42,7 +42,7 @@ void Pen::init(Robot2017Listener* client)
     strcpy(cfg.serialNumber,    "Pen");
     cfg.leftWheelDiameter       = 59.466; //calibrated 23 may
     cfg.rightWheelDiameter      = 59.466; //calibrated 23 may
-    cfg.voie                    = 160.1;  //calibrated 23 may
+    cfg.voie                    = 160.35;  //calibrated 23 may
     cfg.bipFreq					= 2500;
     cfg.bipAllowed				= true; //pour la nuit
     setConfig(cfg);
