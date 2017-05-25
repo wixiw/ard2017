@@ -49,7 +49,6 @@ class RemoteControl(QObject):
         self.timer_telemetry.timeout.connect(self._telemetryTick)
         self.serialNumber.connect(self._bootup)
         self.bootupReceived = False
-        self.simulated = False
         self.graphActive = False
           
 #---------------------------------------------------------------------------------
@@ -86,9 +85,6 @@ class RemoteControl(QObject):
     def isConnected(self):
         return self.com.isConnected()
     
-    #configure if the robot is accessed in a simulated or real environment
-    def setSimulated(self, on):
-        self.simulated = on
 #---------------------------------------------------------------------------------
 # TELEOP SEND/Request API : any of the method below send a msg with the same name in RemoteControl_pb2.py
 #---------------------------------------------------------------------------------
@@ -145,11 +141,11 @@ class RemoteControl(QObject):
         self._sendMsg(msg)
         
     @pyqtSlot(int, int)
-    def configureMatch(self, strategy, color, simulated=False):
+    def configureMatch(self, strategy, color, simulated):
         msg = RemoteControl_pb2.RemoteControlRequest()
         msg.configureMatch.strategy = strategy
         msg.configureMatch.matchColor = color
-        msg.configureMatch.simulated = self.simulated
+        msg.configureMatch.simulated = simulated
         self._sendMsg(msg)
     
     @pyqtSlot()

@@ -53,17 +53,17 @@ class TabStrat(QWidget):
         self.layout.addLayout(self.layoutInfo)
         self.layout.addWidget(self.overview)
         
-
-        
     def updateRobot(self, name):
         if name == "Pen":
             self.overview.robot = self.overview.robotPen
             self._setColorButtonState(Types_pb2.UNKNOWN)
             self._setStartButtonState("color") 
+            self.setColor(Types_pb2.PREF)
         elif name == "Tration":
             self.overview.robot = self.overview.robotTration
             self._setColorButtonState(Types_pb2.UNKNOWN)
-            self._setStartButtonState("color") 
+            self._setStartButtonState("color")
+            self.setColor(Types_pb2.PREF) 
         else:
             self.overview.robot = None
             self.robotConfig = None
@@ -100,6 +100,19 @@ class TabStrat(QWidget):
         self._setStartButtonState("color")    
         self.buttonStart.clicked.connect(self._startPressed)
         
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("Com")
+        defaultSimu = settings.value("simulated", "false")
+        
+        #Simulation check
+        self.simulation_check = QCheckBox()
+        if defaultSimu == "true":
+            self.simulated = True
+            self.simulation_check.setChecked(True)
+        else:
+            self.simulated = False
+        self.simulation_check.stateChanged.connect(self._simuChanged)
+        
         #Labels
         self.label["bootTime"] = QLabel("0")
         self.label["bootTime"].setAlignment(Qt.AlignRight)
@@ -111,6 +124,7 @@ class TabStrat(QWidget):
         box_layout.addRow("boot time (s): ", self.label["bootTime"])
         box_layout.addRow("chrono match (s): ", self.label["chronoMatch"])
         box_layout.addRow("time left (s): ", self.label["timeLeft"])
+        box_layout.addRow("Simul :", self.simulation_check)
         box_layout.addRow("strategy: ", self.comboStratId)
         box_layout.addRow("color: ", self.buttonColor)
         box_layout.addRow("start: ", self.buttonStart)
@@ -321,13 +335,13 @@ class TabStrat(QWidget):
     @pyqtSlot(int)
     def setColor(self, color):
         if color == Types_pb2.PREF:
-            print("Match color configured to Prefered (YELLOW) and strategy #" + str(self.uiStrategy))
-            self.teleop.configureMatch(self.uiStrategy, Types_pb2.PREF)
+            print("Match color configured to Prefered (YELLOW), strategy #" + str(self.uiStrategy) + " simu=" + str(self.simulated))
+            self.teleop.configureMatch(self.uiStrategy, Types_pb2.PREF, self.simulated)
             self._setColorButtonState(Types_pb2.PREF)
             self._setStartButtonState("go")
         elif color == Types_pb2.SYM:
-            print("Match color configured to Symetric (BLUE) and strategy #" + str(self.uiStrategy))
-            self.teleop.configureMatch(self.uiStrategy, Types_pb2.SYM)
+            print("Match color configured to Symetric (BLUE), strategy #" + str(self.uiStrategy) + " simu=" + str(self.simulated))
+            self.teleop.configureMatch(self.uiStrategy, Types_pb2.SYM, self.simulated)
             self._setColorButtonState(Types_pb2.SYM)
             self._setStartButtonState("go")
         else:
@@ -416,3 +430,15 @@ class TabStrat(QWidget):
             self.buttonStart.setText("color missing")
         else:
             assert False
+            
+    @pyqtSlot(int)
+    def _simuChanged(self, state):
+        settings = QSettings("config.ini", QSettings.IniFormat)
+        settings.beginGroup("Com")
+        if state == Qt.Checked:
+            self.simulated = True
+            settings.setValue("simulated", True)
+        else:
+            self.simulated = False
+            settings.setValue("simulated", False)
+        self.setColor(Types_pb2.PREF)

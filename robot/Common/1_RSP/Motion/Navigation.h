@@ -234,6 +234,7 @@ namespace ard
 
     protected:
         void recalSwitchContacted(bool contactOk, double escapeDist);
+	bool wallTouched();
 
     private:
         //Integrates the new displacement mesures with current position
@@ -261,18 +262,21 @@ namespace ard
         void applyCmdStop();
 
         //used internally after a straight/turn/face order to check completeness
-        bool subOrderFinished();
+        bool subOrderFinished(); //cannot be const as AccelStepper lib is not const on getters ...
 
         //Compute the point at which the recal shall set the new robot position
-        Pose2D getRecalPointFace(eTableBorder border);
-        Pose2D getRecalPointRear(eTableBorder border);
+        Pose2D getRecalPointFace(eTableBorder border) const;
+        Pose2D getRecalPointRear(eTableBorder border) const;
+
+        //tell if the border is rounded (no switch available)
+        bool isRoundedBorder(eTableBorder border) const;
 
         String
-        sensToString(eDir sens);
+        sensToString(eDir sens) const;
         String
-        orderToString(eNavOrder order);
+        orderToString(eNavOrder order) const;
         String
-        stateToString(eNavState state);
+        stateToString(eNavState state) const;
 
         //status
         Pose2D m_pose; //critical section
@@ -308,7 +312,7 @@ namespace ard
 
         //Recal management
         Distance escapeDist;
-        uint8_t triedCount;
+        bool recalOnRoundedBorder;
 
         //klaxon to warn for failure and request opponent to move
         Buzzer& klaxon;

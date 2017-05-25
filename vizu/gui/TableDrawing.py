@@ -171,7 +171,7 @@ class TableOverview(QWidget):
                     p = self.robotProxy.past[i].nav.pos
                     drawingPose = Pose2D(p.x, -p.y,  0)
                     drawingPose.h = -p.h
-                    self.robot.draw(drawingPose, self.parent().robotConfig, self.robotProxy.past[i].stratInfo)
+                    self.robot.draw(drawingPose, self.parent().robotConfig, self.robotProxy.past[i].stratInfo, 0, 0)
                     polyline.append(QPointF(p.x, -p.y))
             
             self.p.drawPolyline(QPolygonF(polyline))

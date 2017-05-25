@@ -17,7 +17,6 @@ class TabCom(QWidget):
         settings.beginGroup("Com")
         defaultPort = settings.value("port", "COM1")
         defaultBaudrate = settings.value("baudrate", "125000")
-        defaultSimu = settings.value("simulated", "false")
         
         self.connectedPort = None
         self.com.getUnexpectedDisconnect().connect(self._unexpectedDisconnect)
@@ -42,13 +41,6 @@ class TabCom(QWidget):
         if i != -1 :
             self.combo_Baudrate.setCurrentIndex(i)
 
-            #Simulation check
-        self.simulation_label = QLabel("Simul :")
-        self.simulation_check = QCheckBox()
-        if defaultSimu == "true":
-            self.simulation_check.setChecked(True)
-            self.com.setSimulated(True)
-        self.simulation_check.stateChanged.connect(self._simuChanged)
             #connection button
         self.btn_connect = QPushButton('Connect', self)
         self.btn_connect.setCheckable(True)
@@ -82,8 +74,6 @@ class TabCom(QWidget):
         
         layoutH1.addWidget(self.combo_COM)
         layoutH1.addWidget(self.combo_Baudrate)
-        layoutH1.addWidget(self.simulation_label)
-        layoutH1.addWidget(self.simulation_check)
         layoutH1.addWidget(self.btn_connect)  
         layoutH1.addWidget(self.connectedLed)
         layoutH1.addStretch()
@@ -206,17 +196,6 @@ class TabCom(QWidget):
        print("Receive a too little msg")
        self.com.requestTooLittleMsg()
        
-    @pyqtSlot(int)
-    def _simuChanged(self, state):
-        settings = QSettings("config.ini", QSettings.IniFormat)
-        settings.beginGroup("Com")
-        if state == Qt.Checked:
-            self.com.setSimulated(True)
-            settings.setValue("simulated", True)
-        else:
-            self.com.setSimulated(False)
-            settings.setValue("simulated", False)
-            
     @pyqtSlot()
     def _tick(self):
         self._updateComInfo()

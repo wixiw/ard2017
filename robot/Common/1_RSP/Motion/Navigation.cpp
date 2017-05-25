@@ -18,7 +18,7 @@ using namespace ard;
 #define RECAL_TIMEOUT 5000 //ms
 #define RECAL_RETRY_ESCAPE_DIST 50 //mm
 #define GRAPH_TIMEOUT 15000 //ms
-#define OPP_IMPATIENCE_TIMEOUT 5000 //ms
+#define OPP_IMPATIENCE_TIMEOUT 10000 //ms
 #define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT(!orderOngoing(), "Nav cannot do 2 orders at a time");
 #define AVOID_MARGIN 50 //mm distance added to robot outer circle to consider an escape point as being on table
 #define AVOID_BACK_DISTANCE 100 //mm distance used to go backward and let some space between robots.
@@ -45,7 +45,7 @@ Navigation::Navigation(Buzzer& klaxon, Detection& detection, Graph& graph, Kinem
 	m_graphDir(eDir_BEST),
 	state(),
 	escapeDist(0),
-	triedCount(0),
+	recalOnRoundedBorder(false),
 	klaxon(klaxon),
 	detection(detection),
 	graph(graph),
@@ -62,6 +62,57 @@ void Navigation::init()
 {
     ASSERT_CONFIGURED();
     Thread::init();
+}
+
+bool Navigation::wallTouched()
+{
+	//simulation
+	if(simulated)
+	{
+		//In simulation wall is touched when order is finished
+		if(subOrderFinished())
+		{
+			LOG_INFO(String("   wall touched (target reached simu)"));
+			return true;
+		}
+	}
+	//real conditions
+	else
+	{
+		//If border is rounded, then recal switches won't contact, so do as if there were no switches
+		if(recalOnRoundedBorder)
+		{
+			LOG_INFO(String("   wall touched (target reached roudned border)"));
+			return true;
+		}
+		//Use recal switches
+		else
+		{
+			//Front direction : use the 2 front switches or wait till target is reached
+			if( m_order == eNavOrder_RECAL_FACE )
+			{
+				//(switchRecalFL.read() && switchRecalFR.read()) //TODO a remettre si changés en méca
+				if(subOrderFinished())
+				{
+					LOG_INFO(String("   wall touched (real target reached fron)"));
+					return true;
+				}
+			}
+			//Rear direction use the unique rear switch or wait till target is reached
+			else
+			{
+				//switchRecalFR.read() //TODO a remettre si changés en méca
+				if(subOrderFinished())
+				{
+					LOG_INFO(String("   wall touched (real rear target reached rear)"));
+					return true;
+				}
+			}
+		}
+	}
+
+	//No wall touched
+	return false;
 }
 
 void Navigation::run()
@@ -284,15 +335,8 @@ void Navigation::run()
         case eNavState_PUSHING_WALL:
         {
             //If both switch are contacted (or target reached in no switch mode)
-            if( (simulated  && subOrderFinished())
-                  || (!simulated && m_order == eNavOrder_RECAL_FACE && switchRecalFL.read() && switchRecalFR.read())
-                  || (!simulated && m_order == eNavOrder_RECAL_REAR && (subOrderFinished() /* TODO a virer quand switch AR remis || switchRecalRC.read()*/)))
+        	if (wallTouched()) //in rear direction read rear switches
             {
-            	if( !subOrderFinished() )
-            		LOG_INFO(String("   wall touched with switches"));
-            	else
-            		LOG_INFO(String("   wall touched (target reached)"));
-
                 setPosition(m_target, false);//position has already been symetrized
 
                 klaxon.bip(1);
@@ -312,28 +356,6 @@ void Navigation::run()
                     m_order = eNavOrder_NOTHING;
                     m_state = eNavState_IDLE;
                 }
-            }
-            //If target is reached (in switch mode) then the recal failed
-            else if(!simulated && m_order == eNavOrder_RECAL_FACE //TODO a virer quand switch AR remis
-            		&& subOrderFinished() )
-            {
-            	if(triedCount < 1)
-            	{
-					triedCount++;
-					m_targetDir = computeRecalEscapdeDir();
-					applyCmdToGoStraight(m_targetDir * RECAL_RETRY_ESCAPE_DIST, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc());
-					LOG_ERROR("Failed to recal on border, escaped of " + String(m_targetDir * RECAL_RETRY_ESCAPE_DIST));
-					m_state = eNavState_ESCAPE_WALL_FAILED;
-					orderTimeout.arm(RECAL_TIMEOUT);
-				}
-				else
-            	{
-                	LOG_ERROR("Failed to recal on border, but still set position as it's would be worse not to do so.");
-                	setPosition(m_target, false);//position has already been symetrized
-                	klaxon.bip(5);
-                	m_order = eNavOrder_NOTHING;
-                	m_state = eNavState_IDLE;
-            	}
             }
             break;
         }
@@ -480,7 +502,6 @@ void Navigation::goTo(Point target, eDir sens, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
-    triedCount = 0;
     motorPower(true);
     m_order = eNavOrder_GOTO;
 
@@ -515,7 +536,6 @@ void Navigation::goToCap(Pose2D target, eDir sens, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
-    triedCount = 0;
     motorPower(true);
     m_order = eNavOrder_GOTO_CAP;
 
@@ -569,7 +589,6 @@ void Navigation::turnDelta(float angle, bool sym)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
-    triedCount = 0;
     motorPower(true);
     m_startPoint = getPosition(NO_SYM_POS);
 
@@ -643,7 +662,6 @@ void Navigation::recalFace(eTableBorder border, Distance _escapeDir)
     motorPower(true);
     m_order = eNavOrder_RECAL_FACE;
     m_targetDir = eDir_FORWARD;
-    triedCount = 0;
     m_target = getRecalPointFace(border).toAmbiPose(m_color);
     double angleDelta = moduloPiPi(m_target.h - getPosition(NO_SYM_POS).h);
 
@@ -652,6 +670,7 @@ void Navigation::recalFace(eTableBorder border, Distance _escapeDir)
     applyCmdToTurn(angleDelta, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc()); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
 
+    recalOnRoundedBorder = isRoundedBorder(border);
     orderTimeout.arm(RECAL_TIMEOUT);
 
     escapeDist = _escapeDir;
@@ -668,7 +687,6 @@ void Navigation::recalRear(eTableBorder border, Distance _escapeDir)
     motorPower(true);
     m_order = eNavOrder_RECAL_REAR;
     m_targetDir = eDir_BACKWARD;
-    triedCount = 0;
     m_target = getRecalPointRear(border).toAmbiPose(m_color);;
     double angleDelta = moduloPiPi(m_target.h - getPosition(NO_SYM_POS).h);
 
@@ -676,6 +694,7 @@ void Navigation::recalRear(eTableBorder border, Distance _escapeDir)
     LOG_INFO(String("   Facing table to recal at ") + m_target.toString() + "...");
     applyCmdToTurn(angleDelta, kinematics.maxSpeed(m_targetDir), kinematics.maxAcc()); //We will go to reset position, so let do it quickly ^^
     m_state = eNavState_FACING_WALL;
+    recalOnRoundedBorder = isRoundedBorder(border);
 
     orderTimeout.arm(RECAL_TIMEOUT);
 
@@ -688,7 +707,6 @@ void Navigation::graphTo(Pose2D target, eDir sens)
 {
     m_mutex.lock();
     CHECK_ONE_ORDER_AT_A_TIME();
-    triedCount = 0;
     motorPower(true);
     LOG_INFO(String("   new request :  graphTo ") + target.toString() + ", computation in progress...");
 
@@ -1114,7 +1132,7 @@ bool Navigation::subOrderFinished()
     return res;
 }
 
-Pose2D Navigation::getRecalPointFace(eTableBorder border)
+Pose2D Navigation::getRecalPointFace(eTableBorder border) const
 {
     switch (border) {
         case eTableBorder_REFEREE_Y:
@@ -1164,7 +1182,7 @@ Pose2D Navigation::getRecalPointFace(eTableBorder border)
     }
 }
 
-Pose2D Navigation::getRecalPointRear(eTableBorder border)
+Pose2D Navigation::getRecalPointRear(eTableBorder border) const
 {
     switch (border) {
         case eTableBorder_REFEREE_Y:
@@ -1214,7 +1232,31 @@ Pose2D Navigation::getRecalPointRear(eTableBorder border)
     }
 }
 
-String Navigation::sensToString(eDir sens)
+bool Navigation::isRoundedBorder(eTableBorder border) const
+{
+	switch (border) {
+		case eTableBorder_REFEREE_Y:
+		case eTableBorder_B_CORNER_Y:
+		case eTableBorder_BOT_Y:
+		case eTableBorder_OWN_B_CORNER_X:
+		case eTableBorder_OPP_B_CORNER_X:
+			return false;
+			break;
+		case eTableBorder_FLIP_FLOP_X:
+		case eTableBorder_OWN_BORDER_3_X:
+		case eTableBorder_OPP_BORDER_3_X:
+		case eTableBorder_OWN_BORDER_5_X:
+		case eTableBorder_OPP_BORDER_1_X:
+			return true;
+			break;
+		default:
+			ASSERT(false);
+			return false;
+			break;
+	}
+}
+
+String Navigation::sensToString(eDir sens) const
 {
     switch (sens)
     {
@@ -1228,7 +1270,7 @@ String Navigation::sensToString(eDir sens)
     }
 }
 
-String Navigation::orderToString(eNavOrder order)
+String Navigation::orderToString(eNavOrder order) const
 {
     switch (order)
     {
@@ -1246,7 +1288,7 @@ String Navigation::orderToString(eNavOrder order)
     }
 }
 
-String Navigation::stateToString(eNavState state)
+String Navigation::stateToString(eNavState state) const
 {
     switch (state)
     {
