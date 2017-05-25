@@ -15,7 +15,7 @@
           <vertices xsi:type="sgraph:State" xmi:id="_SJjUECoTEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)&#xD;&#xA;exit/&#xD;&#xA;informPoo_generic();&#xD;&#xA;cylinderToPut -= 1" name="Put 1 cylinder" incomingTransitions="_Tsj-8CoTEee0mqFmHUZWcA _wp1KECoUEee0mqFmHUZWcA">
             <outgoingTransitions xmi:id="_jwxCYCoTEee0mqFmHUZWcA" specification="[armsReady]" target="_smWtkCoUEee0mqFmHUZWcA"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_FuvuUCoVEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;goForward(-ENGAGE_MOVE);&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;goToEntryPoint();&#xD;&#xA;logInfo(&quot;[LSA Poo Middle] Cylinders successfully pooed&quot;)" name="Exit Poo Area" incomingTransitions="_WX0J8EEtEeep26-SvzAD1Q">
+          <vertices xsi:type="sgraph:State" xmi:id="_FuvuUCoVEee0mqFmHUZWcA" specification="entry/&#xD;&#xA;goForward(-ENGAGE_MOVE);&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;logInfo(&quot;[LSA Poo Middle] Cylinders successfully pooed&quot;)" name="Exit Poo Area" incomingTransitions="_WX0J8EEtEeep26-SvzAD1Q">
             <outgoingTransitions xmi:id="_JvkfcCoVEee0mqFmHUZWcA" specification="[targetReached()] / &#xD;&#xA;setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
           </vertices>
           <vertices xsi:type="sgraph:Choice" xmi:id="_smWtkCoUEee0mqFmHUZWcA" incomingTransitions="_jwxCYCoTEee0mqFmHUZWcA">

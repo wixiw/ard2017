@@ -21,11 +21,25 @@
  */
 #define private public //#porky : workaround to gain introspection, because Yakindu guys thinks they'll anoy me in making data private...
 
-    #include "generated/FSM_HomolPen.h"
-    DECLARE_FSM_STRATEGY(HomolPen);
-
     #include "generated/FSM_WipPen.h"
     DECLARE_FSM_STRATEGY(WipPen);
+
+#include "generated/FSM_HomolPen.h"
+    namespace ard{
+    class HomolPen: public Strategy2017<FSM_HomolPen, FSM_HomolPen::FSM_HomolPenStates>{
+    public:
+        HomolPen(Robot2017& robot, LSAList const& lsaList) :
+        Strategy2017<FSM_HomolPen, FSM_HomolPen::FSM_HomolPenStates>(robot, "HomolPen", lsaList){};
+
+        void rouleau(sc_boolean descendu) override
+        {
+        	if(descendu)
+        		robot.actuators.servo8.goTo(500); //TODO
+        	else
+        		robot.actuators.servo8.goTo(500); //TODO
+        }
+    };}
+
 
 #undef private
 
