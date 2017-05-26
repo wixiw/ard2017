@@ -148,6 +148,7 @@ void ActuatorThread::startAll()
 {
 	//c'est fait avec les bras lifter.start();
 	arms.start();
+	servo8.goTo(ROULEAU_RANGE);
 }
 
 void ActuatorThread::stopAll()

@@ -50,6 +50,7 @@ void Selftest::update(TimeMs sinceLastCall)
             {
                 state = ST_LIFTER_UP;
                 robot.actuators.servoLifter.goTo(LIFTER_MIN);
+                robot.actuators.servo8.goTo(ROULEAU_RANGE);
             }
             break;
 
@@ -66,6 +67,7 @@ void Selftest::update(TimeMs sinceLastCall)
             {
                 state = ST_LIFTER_UP2;
                 robot.actuators.servoLifter.goTo(LIFTER_MIN);
+                robot.actuators.servo8.goTo(ROULEAU_SORTI);
             }
             break;
 
@@ -104,6 +106,7 @@ void Selftest::update(TimeMs sinceLastCall)
             {
                 state = ST_FUNNY_LAUNCH;
                 robot.actuators.servoFunnyAction.goTo(FUNNY_LAUNCH);
+                robot.actuators.servo8.goTo(ROULEAU_RANGE);
                 chrono.arm(500);
             }
             break;

@@ -6,7 +6,7 @@
         <outgoingTransitions xmi:id="_K2Yk80FrEee9_cbfXutC0g" specification="&#xD;&#xA;" target="_1cMQoEHgEeeM5q-jnaIlQA"/>
       </vertices>
       <vertices xsi:type="sgraph:FinalState" xmi:id="_Kw11wDGVEeexn7S6mRK2_g" incomingTransitions="_Kw2c4jGVEeexn7S6mRK2_g _VyyUcDSvEeeAruf_Oz5lkQ"/>
-      <vertices xsi:type="sgraph:State" xmi:id="_89OJEDSuEeeAruf_Oz5lkQ" name="Composite_Recal X against Start Area flip-flop_Recal Y against Start Area border (Face)_Recal Y against Start Area border (Rea)_Position to poo_Put 1 cylinder_Exit Poo Area">
+      <vertices xsi:type="sgraph:State" xmi:id="_89OJEDSuEeeAruf_Oz5lkQ" name="Poo Start Area">
         <outgoingTransitions xmi:id="_ULVOcDSvEeeAruf_Oz5lkQ" specification="after 30s" target="_R3Od0DSvEeeAruf_Oz5lkQ"/>
         <regions xmi:id="_89RMYjSuEeeAruf_Oz5lkQ" name="inner region">
           <vertices xsi:type="sgraph:State" xmi:id="_Nobs8DGgEeexn7S6mRK2_g" specification="entry/&#xD;&#xA;recalRear(REFEREE_Y)" name="Recal Y against Start Area border (Rear)" incomingTransitions="_2v57QEHgEeeM5q-jnaIlQA">
@@ -35,19 +35,19 @@
             <outgoingTransitions xmi:id="_oIknkD2EEeeXi8405Aktgw" specification="[targetReached]" target="_lCaH4D2EEeeXi8405Aktgw"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_lCaH4D2EEeeXi8405Aktgw" specification="entry/&#xD;&#xA;logInfo(&quot;Poing some cylinders  cylinder&quot;);&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)" name="Put 3 cylinders" incomingTransitions="_oIknkD2EEeeXi8405Aktgw _Kw0noTGVEeexn7S6mRK2_g">
-            <outgoingTransitions xmi:id="_rmxMwD2EEeeXi8405Aktgw" specification="[armsReady]/informPooed_6(1);&#xD;&#xA;cylinderToPut -= 1" target="_Kw0noDGVEeexn7S6mRK2_g"/>
+            <outgoingTransitions xmi:id="_rmxMwD2EEeeXi8405Aktgw" specification="after 100ms [armsReady]/informPooed_6(1);&#xD;&#xA;cylinderToPut -= 1" target="_Kw0noDGVEeexn7S6mRK2_g"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_PLzMEEBlEee9nYz1Txwrhg" specification="entry/&#xD;&#xA;logInfo(&quot;Retract arms&quot;);&#xD;&#xA;actCmd(AC_ARMS_RETRACT)" name="Retract arms" incomingTransitions="_Hude0EF4Eeev8-1FgA8otA">
-            <outgoingTransitions xmi:id="_SVkZYEBlEee9nYz1Txwrhg" specification="[armsReady]" target="_Kw11wTGVEeexn7S6mRK2_g"/>
+            <outgoingTransitions xmi:id="_SVkZYEBlEee9nYz1Txwrhg" specification="after 100ms [armsReady]" target="_Kw11wTGVEeexn7S6mRK2_g"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_0f2U4EF3Eeev8-1FgA8otA" specification="entry/ goForward(-110)" name="Back a bit" incomingTransitions="_-8tzgEBSEeeMKY188zCzIg">
             <outgoingTransitions xmi:id="_Pb_yQEF4Eeev8-1FgA8otA" specification="[targetReached]" target="_MQe4gEF4Eeev8-1FgA8otA"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_-tiQ4EF3Eeev8-1FgA8otA" specification="entry/&#xD;&#xA;logInfo(&quot;Poing first fantom cylinder&quot;);&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)" name="Poo phantom cylinder 1" incomingTransitions="_Kw0nqDGVEeexn7S6mRK2_g">
-            <outgoingTransitions xmi:id="_CHvt8EF4Eeev8-1FgA8otA" specification="[armsReady]" target="_FMcODEF4Eeev8-1FgA8otA"/>
+            <outgoingTransitions xmi:id="_CHvt8EF4Eeev8-1FgA8otA" specification="after 100ms [armsReady]" target="_FMcODEF4Eeev8-1FgA8otA"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_FMcODEF4Eeev8-1FgA8otA" specification="entry/&#xD;&#xA;logInfo(&quot;Poing second fantom cylinder&quot;);&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)" name="Poo phantom cylinder 2" incomingTransitions="_CHvt8EF4Eeev8-1FgA8otA">
-            <outgoingTransitions xmi:id="_Hude0EF4Eeev8-1FgA8otA" specification="[armsReady]" target="_PLzMEEBlEee9nYz1Txwrhg"/>
+            <outgoingTransitions xmi:id="_Hude0EF4Eeev8-1FgA8otA" specification="after 100ms [armsReady]" target="_PLzMEEBlEee9nYz1Txwrhg"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_MQe4gEF4Eeev8-1FgA8otA" specification="entry/&#xD;&#xA;logInfo(&quot;Poing third  cylinder&quot;);&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)&#xD;&#xA;" name="Copy_1_Poo cylinder 3/6 " incomingTransitions="_Pb_yQEF4Eeev8-1FgA8otA">
             <outgoingTransitions xmi:id="_UfN0gEF4Eeev8-1FgA8otA" specification="[armsReady]/informPooed_6(1);&#xD;&#xA;cylinderToPut -= 1" target="_gm17gD2EEeeXi8405Aktgw"/>
@@ -59,7 +59,7 @@
         </regions>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_R3Od0DSvEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;logError(&quot;[LSA Poo Start] timeout&quot;);&#xD;&#xA;stopMoving()" name="Stopping" incomingTransitions="_ULVOcDSvEeeAruf_Oz5lkQ">
-        <outgoingTransitions xmi:id="_VyyUcDSvEeeAruf_Oz5lkQ" specification="[targetReached()] /&#xD;&#xA; setStatus(FAILURE)" target="_Kw11wDGVEeexn7S6mRK2_g"/>
+        <outgoingTransitions xmi:id="_VyyUcDSvEeeAruf_Oz5lkQ" specification="after 500ms [targetReached()] /&#xD;&#xA; setStatus(FAILURE)" target="_Kw11wDGVEeexn7S6mRK2_g"/>
       </vertices>
     </regions>
   </sgraph:Statechart>
@@ -626,7 +626,7 @@
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_43jkQUHgEeeM5q-jnaIlQA" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_43jkQ0HgEeeM5q-jnaIlQA" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_43jkQkHgEeeM5q-jnaIlQA" points="[-72, 3, 11, -388]$[-156, 3, -73, -388]$[-156, 204, -73, -187]$[-81, 204, 2, -187]$[-81, 384, 2, -7]"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_43jkQkHgEeeM5q-jnaIlQA" points="[-72, 3, 11, -388]$[-156, 3, -73, -388]$[-156, 204, -73, -187]$[-161, 204, -78, -187]$[-161, 432, -78, 41]$[-114, 432, -31, 41]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_43mnkEHgEeeM5q-jnaIlQA" id="(1.0,0.49056603773584906)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_43mnkUHgEeeM5q-jnaIlQA" id="(0.11149825783972125,0.08333333333333333)"/>
     </edges>
