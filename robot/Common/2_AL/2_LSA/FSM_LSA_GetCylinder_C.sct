@@ -17,12 +17,12 @@
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_5M3LsD8IEee_Aajq5WSBaQ" specification="" name="Wait arms swallow" incomingTransitions="_QR9wIEGoEee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_CLjlAD8JEee_Aajq5WSBaQ" specification="[armCylinderTaken] /&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;swallowed = true" target="_AhrXgDXREeeAruf_Oz5lkQ"/>
-            <outgoingTransitions xmi:id="_Dt0pAD8JEee_Aajq5WSBaQ" specification="[armsTimeout || armsBlocked]/&#xD;&#xA;actCmd(AC_ARMS_STOP);&#xD;&#xA;informPushedAway_C()" target="_HW-JkC9pEeeSSu2RwF8Pmw"/>
+            <outgoingTransitions xmi:id="_Dt0pAD8JEee_Aajq5WSBaQ" specification="after 3s/&#xD;&#xA;actCmd(AC_ARMS_STOP);&#xD;&#xA;informPushedAway_C()" target="_HW-JkC9pEeeSSu2RwF8Pmw"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_loU7oEGmEee9_cbfXutC0g" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;goForward(120);&#xD;&#xA;logInfo(&quot;[LSA Get C as a dispenser] Starting&quot;)" name="Engage as a dispenser" incomingTransitions="_PX6sQEG0Eee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_d-cjsEGnEee9_cbfXutC0g" specification="[targetReached() &amp;&amp; armsReady()]" target="_BGEDIEGnEee9_cbfXutC0g"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_BGEDIEGnEee9_cbfXutC0g" specification="entry/&#xD;&#xA;goForward(-80);&#xD;&#xA;logInfo(&quot;[LSA Get C as a dispenser] Moving Back here&quot;)" name="Moving back" incomingTransitions="_d-cjsEGnEee9_cbfXutC0g">
+          <vertices xsi:type="sgraph:State" xmi:id="_BGEDIEGnEee9_cbfXutC0g" specification="entry/&#xD;&#xA;goForward(-120);&#xD;&#xA;logInfo(&quot;[LSA Get C as a dispenser] Moving Back here&quot;)" name="Moving back" incomingTransitions="_d-cjsEGnEee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_uvamgEGnEee9_cbfXutC0g" specification="[targetReached()]" target="_ppRMEEGnEee9_cbfXutC0g"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_ppRMEEGnEee9_cbfXutC0g" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_SWALLOW)" name="Extend arms" incomingTransitions="_uvamgEGnEee9_cbfXutC0g">
@@ -205,18 +205,6 @@
                   <styles xsi:type="notation:LineTypeStyle" xmi:id="_s2_vgkGrEee9_cbfXutC0g"/>
                   <element xsi:nil="true"/>
                   <layoutConstraint xsi:type="notation:Bounds" xmi:id="_s2_vg0GrEee9_cbfXutC0g" x="292" y="478"/>
-                </children>
-                <children xsi:type="notation:Shape" xmi:id="_o5VxsEGsEee9_cbfXutC0g" type="Note" fontName="Verdana" description="Entrypoint change dans GetCylinder.cpp" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
-                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_o5aDIEGsEee9_cbfXutC0g" type="DiagramName">
-                    <element xsi:nil="true"/>
-                  </children>
-                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_o5aDIUGsEee9_cbfXutC0g" type="Description">
-                    <element xsi:nil="true"/>
-                  </children>
-                  <styles xsi:type="notation:TextStyle" xmi:id="_o5VxsUGsEee9_cbfXutC0g"/>
-                  <styles xsi:type="notation:LineTypeStyle" xmi:id="_o5VxskGsEee9_cbfXutC0g"/>
-                  <element xsi:nil="true"/>
-                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_o5Vxs0GsEee9_cbfXutC0g" x="990" y="-129" width="131" height="91"/>
                 </children>
                 <layoutConstraint xsi:type="notation:Bounds" xmi:id="_Z28cgT8JEee_Aajq5WSBaQ"/>
               </children>
