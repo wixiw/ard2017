@@ -45,7 +45,7 @@ void Graph::defineGraph()
     NEW_NODE(  340,  -190);//6
     NEW_NODE( 1016,   116);//7
     NEW_NODE(  890,   -65);//8
-    NEW_NODE(  776,  -244);//9
+    NEW_NODE(  776,  -234);//9
     NEW_NODE( 1155,  -350);//10
     NEW_NODE(  875,  -535);//11
     NEW_NODE(  515,   625);//12
@@ -55,7 +55,7 @@ void Graph::defineGraph()
     NEW_NODE( -340,  -190);//16 sym of 6
     NEW_NODE(-1016,   116);//17 sym of 7
     NEW_NODE( -890,   -65);//18 sym of 8
-    NEW_NODE( -756,  -244);//19 sym of 9
+    NEW_NODE( -756,  -234);//19 sym of 9
     NEW_NODE(-1155,  -350);//20 sym of 10
     NEW_NODE( -875,  -535);//21 sym of 11
     NEW_NODE( -485,   385);//22 nearly sym of 12
