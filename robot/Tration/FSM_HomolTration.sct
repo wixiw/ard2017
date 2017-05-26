@@ -60,7 +60,7 @@
           <vertices xsi:type="sgraph:State" xmi:id="_5CdLgEHGEeeMyfZaMj45pQ" specification="entry/&#xD;&#xA;informTaken_D()" name="Wait arms retracted" incomingTransitions="_5Cfnw0HGEeeMyfZaMj45pQ">
             <outgoingTransitions xmi:id="_5CdLjUHGEeeMyfZaMj45pQ" specification="[armsReady]" target="_qvwSMEHXEeeM5q-jnaIlQA"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_0NS5wEHOEeeMyfZaMj45pQ" specification="entry/&#xD;&#xA;logInfo(&quot;Taking D&quot;);&#xD;&#xA;goForward(100)" name="Taking" incomingTransitions="_5UCecEE8Eeep26-SvzAD1Q">
+          <vertices xsi:type="sgraph:State" xmi:id="_0NS5wEHOEeeMyfZaMj45pQ" specification="entry/&#xD;&#xA;logInfo(&quot;Taking D&quot;);&#xD;&#xA;goForward(120)" name="Taking" incomingTransitions="_5UCecEE8Eeep26-SvzAD1Q">
             <outgoingTransitions xmi:id="_q-5bEEHPEeeMyfZaMj45pQ" specification="[targetReached]" target="_slRSEEHGEeeMyfZaMj45pQ"/>
           </vertices>
         </regions>
