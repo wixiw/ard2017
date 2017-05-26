@@ -42,7 +42,7 @@ void Pen::init(Robot2017Listener* client)
     strcpy(cfg.serialNumber,    "Pen");
     cfg.leftWheelDiameter       = 59.466; //calibrated 23 may
     cfg.rightWheelDiameter      = 59.466; //calibrated 23 may
-    cfg.voie                    = 160.35;  //calibrated 23 may
+    cfg.voie                    = 161.25;  //calibrated 26 may 4h47 after rouleau changed from Pen to Tration
     cfg.bipFreq					= 2500;
     cfg.bipAllowed				= true; //pour la nuit
     setConfig(cfg);
