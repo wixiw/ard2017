@@ -17,7 +17,7 @@
             <outgoingTransitions xmi:id="_N_781jSnEeeAruf_Oz5lkQ" specification="else" target="_N_9yADSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_N_9yADSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;goToEntryPoint();&#xD;&#xA;logInfo(&quot;[LSA Dispenser] Cylinders successfully withdrawn&quot;)" name="Exit dispenser" incomingTransitions="_N_781jSnEeeAruf_Oz5lkQ _AYITgEBREeeMKY188zCzIg">
-            <outgoingTransitions xmi:id="_N_9yITSnEeeAruf_Oz5lkQ" specification="[targetReached()]/ setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
+            <outgoingTransitions xmi:id="_N_9yITSnEeeAruf_Oz5lkQ" specification="after 300ms [targetReached() &amp;&amp; armsReady]/ setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAAOQDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;logInfo(&quot;[LSA Dispenser] extraction...&quot;)" name="Wait Cylinder extraction from Dispenser" incomingTransitions="_N_45pTSnEeeAruf_Oz5lkQ _OAHjHjSnEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_KUhMcEEHEeePKIXvV6C2VA" specification="after 500ms" target="_JavEwEEHEeePKIXvV6C2VA"/>
@@ -370,7 +370,7 @@
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFmPMSoLEee0mqFmHUZWcA"/>
       </children>
       <styles xsi:type="notation:ShapeStyle" xmi:id="_FFlBECoLEee0mqFmHUZWcA" fontName="Verdana" fillColor="15790320" lineColor="12632256"/>
-      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFmPMioLEee0mqFmHUZWcA" x="20" width="1348" height="6620"/>
+      <layoutConstraint xsi:type="notation:Bounds" xmi:id="_FFmPMioLEee0mqFmHUZWcA" x="-115" y="-5" width="1348" height="6620"/>
     </children>
     <children xsi:type="notation:Shape" xmi:id="_FFp5kCoLEee0mqFmHUZWcA" type="StatechartText" fontName="Verdana" lineColor="4210752">
       <children xsi:type="notation:DecorationNode" xmi:id="_FFp5kioLEee0mqFmHUZWcA" type="StatechartName">
@@ -432,7 +432,7 @@
     <edges xmi:id="_OAzfgDSnEeeAruf_Oz5lkQ" type="Transition" element="_N_9yITSnEeeAruf_Oz5lkQ" source="_iG_8s0EnEeep26-SvzAD1Q" target="_2d4MUCoUEee0mqFmHUZWcA">
       <children xsi:type="notation:DecorationNode" xmi:id="_OAzfhDSnEeeAruf_Oz5lkQ" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_OAzfhTSnEeeAruf_Oz5lkQ"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_OAzfhjSnEeeAruf_Oz5lkQ" x="-166" y="-2"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_OAzfhjSnEeeAruf_Oz5lkQ" x="-195" y="-118"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_OAzfgTSnEeeAruf_Oz5lkQ" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_OAzfgzSnEeeAruf_Oz5lkQ" fontName="Verdana"/>

@@ -7,9 +7,9 @@
       </vertices>
       <vertices xsi:type="sgraph:FinalState" xmi:id="_2d2-MCoUEee0mqFmHUZWcA" incomingTransitions="_Tt3EwDSuEeeAruf_Oz5lkQ _fvJlwD8JEee_Aajq5WSBaQ _k93GUD8JEee_Aajq5WSBaQ"/>
       <vertices xsi:type="sgraph:State" xmi:id="_FQus0DSuEeeAruf_Oz5lkQ" name="b">
-        <outgoingTransitions xmi:id="_P785YDSuEeeAruf_Oz5lkQ" specification="after 12s" target="_KLpuvDSuEeeAruf_Oz5lkQ"/>
+        <outgoingTransitions xmi:id="_P785YDSuEeeAruf_Oz5lkQ" specification="after 15s" target="_KLpuvDSuEeeAruf_Oz5lkQ"/>
         <regions xmi:id="_FQvT4DSuEeeAruf_Oz5lkQ" name="">
-          <vertices xsi:type="sgraph:State" xmi:id="_HW-JkC9pEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;//recalRear(BOT_Y)&#xD;&#xA;recalFace(BOT_Y)" name="Recal Y against bottom wall" incomingTransitions="_C2MX0DXREeeAruf_Oz5lkQ _Dt0pAD8JEee_Aajq5WSBaQ">
+          <vertices xsi:type="sgraph:State" xmi:id="_HW-JkC9pEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;//recalRear(BOT_Y)&#xD;&#xA;recalFace(BOT_Y)" name="Recal Y against bottom wall" incomingTransitions="_C2MX0DXREeeAruf_Oz5lkQ _Dt0pAD8JEee_Aajq5WSBaQ _Tej8QEHaEeeM5q-jnaIlQA">
             <outgoingTransitions xmi:id="_QWnlIC9pEeeSSu2RwF8Pmw" specification="[targetReached]" target="_ccvZ0D8JEee_Aajq5WSBaQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_AhrXgDXREeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;informTaken_C()" name="Wait arms retracted" incomingTransitions="_CLjlAD8JEee_Aajq5WSBaQ">
@@ -17,7 +17,8 @@
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_5M3LsD8IEee_Aajq5WSBaQ" specification="" name="Wait arms swallow" incomingTransitions="_QR9wIEGoEee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_CLjlAD8JEee_Aajq5WSBaQ" specification="[armCylinderTaken] /&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;swallowed = true" target="_AhrXgDXREeeAruf_Oz5lkQ"/>
-            <outgoingTransitions xmi:id="_Dt0pAD8JEee_Aajq5WSBaQ" specification="after 3s/&#xD;&#xA;actCmd(AC_ARMS_STOP);&#xD;&#xA;informPushedAway_C()" target="_HW-JkC9pEeeSSu2RwF8Pmw"/>
+            <outgoingTransitions xmi:id="_Dt0pAD8JEee_Aajq5WSBaQ" specification="after 7s/&#xD;&#xA;actCmd(AC_ARMS_STOP);&#xD;&#xA;informPushedAway_C()" target="_HW-JkC9pEeeSSu2RwF8Pmw"/>
+            <outgoingTransitions xmi:id="_Tej8QEHaEeeM5q-jnaIlQA" specification="[armsTimeout || armsBlocked]/&#xD;&#xA;actCmd(AC_ARMS_STOP);&#xD;&#xA;informPushedAway_C" target="_HW-JkC9pEeeSSu2RwF8Pmw"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_loU7oEGmEee9_cbfXutC0g" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;goForward(120);&#xD;&#xA;logInfo(&quot;[LSA Get C as a dispenser] Starting&quot;)" name="Engage as a dispenser" incomingTransitions="_PX6sQEG0Eee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_d-cjsEGnEee9_cbfXutC0g" specification="[targetReached() &amp;&amp; armsReady()]" target="_BGEDIEGnEee9_cbfXutC0g"/>
@@ -395,6 +396,17 @@
       <styles xsi:type="notation:FontStyle" xmi:id="_PX76Y0G0Eee9_cbfXutC0g" fontName="Verdana"/>
       <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_PX76YkG0Eee9_cbfXutC0g" points="[7, 1, -819, -188]$[829, 187, 3, -2]"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_PX9vkEG0Eee9_cbfXutC0g" id="(0.580952380952381,0.034482758620689655)"/>
+    </edges>
+    <edges xmi:id="_TelxcEHaEeeM5q-jnaIlQA" type="Transition" element="_Tej8QEHaEeeM5q-jnaIlQA" source="_Z28cdT8JEee_Aajq5WSBaQ" target="_Z28cXT8JEee_Aajq5WSBaQ">
+      <children xsi:type="notation:DecorationNode" xmi:id="_TelxdEHaEeeM5q-jnaIlQA" type="TransitionExpression">
+        <styles xsi:type="notation:ShapeStyle" xmi:id="_TelxdUHaEeeM5q-jnaIlQA"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_TelxdkHaEeeM5q-jnaIlQA" x="-92" y="-32"/>
+      </children>
+      <styles xsi:type="notation:ConnectorStyle" xmi:id="_TelxcUHaEeeM5q-jnaIlQA" routing="Rectilinear" lineColor="4210752"/>
+      <styles xsi:type="notation:FontStyle" xmi:id="_Telxc0HaEeeM5q-jnaIlQA" fontName="Verdana"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_TelxckHaEeeM5q-jnaIlQA" points="[0, 0, 37, -194]$[-34, 190, 3, -4]"/>
+      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_Tem_kEHaEeeM5q-jnaIlQA" id="(0.8793103448275862,1.0)"/>
+      <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_Tem_kUHaEeeM5q-jnaIlQA" id="(0.7286432160804021,0.0821917808219178)"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>

@@ -16,7 +16,7 @@
 #define TABLE_BORDER_Y      1000
 #define TABLE_BORDER_X      1500
 
-#define SAFETY_AREA 80 //distance in mm from border where we ignore opponents
+#define SAFETY_AREA 130 //distance in mm from border where we ignore opponents
 
 #define SERIAL_BAUDRATE 125000 //bit/s from 600 to 250k
 

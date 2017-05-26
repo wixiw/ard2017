@@ -54,7 +54,7 @@ RobotParameters::RobotParameters():
     cfg.rightWheelDiameter      = 60.000;//mm
     cfg.voie                    = 160.4;//mm
     cfg.maxAcc                  = 500;
-    cfg.maxSpeed                = 350;
+    cfg.maxSpeed                = 250;
     cfg.recalSpeed              = 180;
     cfg.maxTurnAcc              = 150;
     cfg.maxTurnSpeed            = 150;
