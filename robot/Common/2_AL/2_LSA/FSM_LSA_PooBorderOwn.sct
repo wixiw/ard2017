@@ -10,11 +10,11 @@
         <outgoingTransitions xmi:id="_NnM1wEImEeexVP3cqzXOdQ" specification="after 20s" target="_q6ci3UIlEeexVP3cqzXOdQ"/>
         <regions xmi:id="_cX1ODkIlEeexVP3cqzXOdQ" name="s">
           <vertices xsi:type="sgraph:State" xmi:id="_cX1OD0IlEeexVP3cqzXOdQ" specification="entry/&#xD;&#xA;logInfo(&quot;[LSA PooBorder5] Poing 1 cylinder&quot;);&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)&#xD;&#xA;" name="Poo1" incomingTransitions="_FFoEZSoLEee0mqFmHUZWcA">
-            <outgoingTransitions xmi:id="_cX11CkIlEeexVP3cqzXOdQ" specification="after 100ms [armsReady]" target="_cX2cE0IlEeexVP3cqzXOdQ"/>
+            <outgoingTransitions xmi:id="_cX11CkIlEeexVP3cqzXOdQ" specification="[armsReady]" target="_cX2cE0IlEeexVP3cqzXOdQ"/>
             <outgoingTransitions xmi:id="_XljPEEJDEeexVP3cqzXOdQ" specification="[armsTimeout]/logError(&quot;Failed to Poo cylinder&quot;)" target="_Vod3XUJDEeexVP3cqzXOdQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_cX2cE0IlEeexVP3cqzXOdQ" specification="entry/&#xD;&#xA;logInfo(&quot;[LSA PooBorder5] Poing 2 cylinder&quot;);&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)&#xD;&#xA;" name="Copy_1_Poo1" incomingTransitions="_cX11CkIlEeexVP3cqzXOdQ">
-            <outgoingTransitions xmi:id="_cX3DKkIlEeexVP3cqzXOdQ" specification="after 100ms [armsReady]" target="_cX6thEIlEeexVP3cqzXOdQ"/>
+            <outgoingTransitions xmi:id="_cX3DKkIlEeexVP3cqzXOdQ" specification="[armsReady]" target="_cX6thEIlEeexVP3cqzXOdQ"/>
             <outgoingTransitions xmi:id="_EXmo8EJCEeexVP3cqzXOdQ" specification="[armsTimeout]/logError(&quot;Failed to Poo second cylinder&quot;)" target="_cX6thEIlEeexVP3cqzXOdQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_cX3qM0IlEeexVP3cqzXOdQ" specification="entry/ &#xD;&#xA;goTo(990, 160, FWD, SYM)&#xD;&#xA;" name="Align with cylinders" incomingTransitions="_cX7UnkIlEeexVP3cqzXOdQ">
@@ -41,7 +41,7 @@
         </regions>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_q6ci3UIlEeexVP3cqzXOdQ" specification="entry/&#xD;&#xA;logError(&quot;[LSA PooBorder5] timeout&quot;);&#xD;&#xA;stopMoving();&#xD;&#xA;actCmd(AC_ARMS_RETRACT)" name="Stopping" incomingTransitions="_NnM1wEImEeexVP3cqzXOdQ">
-        <outgoingTransitions xmi:id="_5223wEIlEeexVP3cqzXOdQ" specification="after 500ms [targetReached] /&#xD;&#xA; setStatus(FAILURE)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
+        <outgoingTransitions xmi:id="_5223wEIlEeexVP3cqzXOdQ" specification="[targetReached] /&#xD;&#xA; setStatus(FAILURE)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
       </vertices>
     </regions>
   </sgraph:Statechart>
@@ -99,7 +99,7 @@
                   <styles xsi:type="notation:ShapeStyle" xmi:id="_cXoZtUIlEeexVP3cqzXOdQ" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
                   <styles xsi:type="notation:FontStyle" xmi:id="_cXoZtkIlEeexVP3cqzXOdQ"/>
                   <styles xsi:type="notation:BooleanValueStyle" xmi:id="_cXoZt0IlEeexVP3cqzXOdQ" name="isHorizontal" booleanValue="true"/>
-                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cXoZuEIlEeexVP3cqzXOdQ" x="76" y="26" width="305"/>
+                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_cXoZuEIlEeexVP3cqzXOdQ" x="76" y="7" width="311" height="106"/>
                 </children>
                 <children xmi:id="_cXoZuUIlEeexVP3cqzXOdQ" type="State" element="_cX2cE0IlEeexVP3cqzXOdQ">
                   <children xsi:type="notation:DecorationNode" xmi:id="_cXoZukIlEeexVP3cqzXOdQ" type="StateName">

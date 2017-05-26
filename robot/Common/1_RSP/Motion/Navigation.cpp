@@ -18,7 +18,7 @@ using namespace ard;
 #define RECAL_TIMEOUT 5000 //ms
 #define RECAL_RETRY_ESCAPE_DIST 50 //mm
 #define GRAPH_TIMEOUT 20000 //ms
-#define OPP_IMPATIENCE_TIMEOUT 10000 //ms
+#define OPP_IMPATIENCE_TIMEOUT 90000 //ms
 #define CHECK_ONE_ORDER_AT_A_TIME() ASSERT_TEXT(!orderOngoing(), "Nav cannot do 2 orders at a time");
 #define AVOID_MARGIN 50 //mm distance added to robot outer circle to consider an escape point as being on table
 #define AVOID_BACK_DISTANCE 100 //mm distance used to go backward and let some space between robots.

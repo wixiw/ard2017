@@ -27,14 +27,6 @@
     public:
         HomolPen(Robot2017& robot, LSAList const& lsaList) :
         Strategy2017<FSM_HomolPen, FSM_HomolPen::FSM_HomolPenStates>(robot, "HomolPen", lsaList){};
-
-        void rouleau(sc_boolean descendu) override
-        {
-        	if(descendu)
-        		robot.actuators.servo8.goTo(500); //TODO
-        	else
-        		robot.actuators.servo8.goTo(500); //TODO
-        }
     };}
 
 //#include "generated/FSM_WipPen.h"

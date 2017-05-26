@@ -17,7 +17,7 @@
             <outgoingTransitions xmi:id="_N_781jSnEeeAruf_Oz5lkQ" specification="else" target="_N_9yADSnEeeAruf_Oz5lkQ"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_N_9yADSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;goToEntryPoint();&#xD;&#xA;logInfo(&quot;[LSA Dispenser] Cylinders successfully withdrawn&quot;)" name="Exit dispenser" incomingTransitions="_N_781jSnEeeAruf_Oz5lkQ">
-            <outgoingTransitions xmi:id="_N_9yITSnEeeAruf_Oz5lkQ" specification="after 300ms [targetReached() &amp;&amp; armsReady]/ setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
+            <outgoingTransitions xmi:id="_N_9yITSnEeeAruf_Oz5lkQ" specification="[targetReached() &amp;&amp; armsReady]/ setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_OAAOQDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;logInfo(&quot;[LSA Dispenser] extraction...&quot;)" name="Wait Cylinder extraction from Dispenser" incomingTransitions="_N_45pTSnEeeAruf_Oz5lkQ _OAHjHjSnEeeAruf_Oz5lkQ _ezC84EIJEeeRE70aid-aSQ">
             <outgoingTransitions xmi:id="_KUhMcEEHEeePKIXvV6C2VA" specification="after 500ms" target="_JavEwEEHEeePKIXvV6C2VA"/>
@@ -67,7 +67,7 @@
         </regions>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_S_KTHTSrEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;logError(&quot;[LSA Dispenser] timeout&quot;);&#xD;&#xA;stopMoving();&#xD;&#xA;actCmd(AC_ARMS_RETRACT)" name="Stopping" incomingTransitions="_1p8z8DSnEeeAruf_Oz5lkQ">
-        <outgoingTransitions xmi:id="_VtKKYDSrEeeAruf_Oz5lkQ" specification="[targetReached() &amp;&amp; armsReady()]/ setStatus(FAILURE)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
+        <outgoingTransitions xmi:id="_VtKKYDSrEeeAruf_Oz5lkQ" specification="[targetReached()]/ setStatus(FAILURE)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
       </vertices>
     </regions>
   </sgraph:Statechart>

@@ -50,10 +50,10 @@ ActuatorThread::ActuatorThread(KinematicManager& kinMan, HmiThread& hmi):
     servo8			.setAccMax(15);
 
     servoLifter		.setVmax(60);
-    servoLeftArm	.setVmax(100);
-    servoRightArm	.setVmax(100);
-    servoLeftWheel	.setVmax(100);
-    servoRightWheel	.setVmax(100);
+    servoLeftArm	.setVmax(60);
+    servoRightArm	.setVmax(60);
+    servoLeftWheel	.setVmax(60);
+    servoRightWheel	.setVmax(60);
     servoFunnyAction.setVmax(60);
     servoRotator	.setVmax(60);
     servo8			.setVmax(60);
@@ -166,7 +166,7 @@ void ActuatorThread::disableAll()
     servoLeftWheel.disable();
     servoRightWheel.disable();
     servoRotator.disable();
-    servo8.disable();
+    //servo8.disable();
 }
 
 void ActuatorThread::actCmd(eActCmd cmd)
@@ -239,6 +239,7 @@ void ActuatorThread::actCmd(eActCmd cmd)
 	 * default
 	 */
 		default:
+		
 			ASSERT(false);
 			break;
 

@@ -5,7 +5,7 @@
       <vertices xsi:type="sgraph:Entry" xmi:id="_whC38CUmEeeHgPR3RzRZqA">
         <outgoingTransitions xmi:id="_VNEYcC_yEeeSSu2RwF8Pmw" specification="" target="_Y1R-oCYVEeeh1o2kvtdb7w"/>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_i8UpgCU4EeeHgPR3RzRZqA" specification="entry / &#xD;&#xA;beep(1);&#xD;&#xA;displayMatchRGB(SLOW_BLINK);&#xD;&#xA;logInfo(&quot;[Lifecycle] Ready for match, waiting countdown.&quot;);&#xD;&#xA;disableActuatorsPower()" name="Waiting match" incomingTransitions="_LALCcC_5EeeSSu2RwF8Pmw">
+      <vertices xsi:type="sgraph:State" xmi:id="_i8UpgCU4EeeHgPR3RzRZqA" specification="entry / &#xD;&#xA;beep(1);&#xD;&#xA;displayMatchRGB(SLOW_BLINK);&#xD;&#xA;logInfo(&quot;[Lifecycle] Ready for match, waiting countdown.&quot;)&#xD;&#xA;//disableActuatorsPower()" name="Waiting match" incomingTransitions="_LALCcC_5EeeSSu2RwF8Pmw">
         <outgoingTransitions xmi:id="_8OTd0DDuEeeSSu2RwF8Pmw" specification="[!startIn] # > entry_Match" target="_M3wroC_4EeeSSu2RwF8Pmw"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_EQqtICU7EeeHgPR3RzRZqA" specification="entry / beep(2); &#xD;&#xA;bootUp();&#xD;&#xA;logInfo(&quot;[Lifecycle] Waiting start insertion to begin match preparation&quot;)&#xD;&#xA;always/displayColor()&#xD;&#xA;" name="Waiting start" incomingTransitions="_atfdcCYVEeeh1o2kvtdb7w">
@@ -21,7 +21,7 @@
           <vertices xsi:type="sgraph:State" xmi:id="_nyOyMC_xEeeSSu2RwF8Pmw" specification="entry / &#xD;&#xA;beep(1);&#xD;&#xA;logInfo(&quot;[Lifecycle] Waiting start withdraw to begin selftest&quot;)&#xD;&#xA;&#xA;exit / beep(1)" name="Waiting Selftest" incomingTransitions="_K9N1EC_5EeeSSu2RwF8Pmw _7RxlAC_6EeeSSu2RwF8Pmw">
             <outgoingTransitions xmi:id="_W8r78C_yEeeSSu2RwF8Pmw" specification="[!startIn]" target="_vHfTEC_yEeeSSu2RwF8Pmw"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_vHfTEC_yEeeSSu2RwF8Pmw" specification="entry/ &#xD;&#xA;startMode(MODE_SELFTEST);&#xD;&#xA;logInfo(&quot;[Lifecycle] Selftesting...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ stopMode()" name="Selftesting" incomingTransitions="_W8r78C_yEeeSSu2RwF8Pmw">
+          <vertices xsi:type="sgraph:State" xmi:id="_vHfTEC_yEeeSSu2RwF8Pmw" specification="entry/ &#xD;&#xA;startMode(MODE_SELFTEST);&#xD;&#xA;logInfo(&quot;[Lifecycle] Selftesting...&quot;)&#xD;&#xA;&#xD;&#xA;exit/ &#xD;&#xA;stopMode();&#xD;&#xA;actuatorsInitialCmd()" name="Selftesting" incomingTransitions="_W8r78C_yEeeSSu2RwF8Pmw">
             <outgoingTransitions xmi:id="_Ik6IoC_zEeeSSu2RwF8Pmw" specification="[SUCCESS == getModeStatus()] / &#xD;&#xA;beep(2);&#xD;&#xA;logInfo(&quot;Selftest success !&quot;)" target="_FJFiAC_zEeeSSu2RwF8Pmw"/>
             <outgoingTransitions xmi:id="_-NWCcC_zEeeSSu2RwF8Pmw" specification="[FAILURE == getModeStatus()]" target="_oGCv8C_6EeeSSu2RwF8Pmw"/>
           </vertices>
@@ -57,7 +57,7 @@
             <outgoingTransitions xmi:id="_Lg0HkDCMEeeSSu2RwF8Pmw" specification="" target="_-9nFsDCLEeeSSu2RwF8Pmw"/>
           </vertices>
           <vertices xsi:type="sgraph:Exit" xmi:id="_WImgsC__EeeSSu2RwF8Pmw" name="exit_Match" incomingTransitions="_fHtiIDDuEeeSSu2RwF8Pmw"/>
-          <vertices xsi:type="sgraph:State" xmi:id="_-9nFsDCLEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;beep(1); &#xD;&#xA;actuatorsInitialCmd();&#xD;&#xA;startMode(MODE_CORE_MATCH);&#xD;&#xA;logInfo(&quot;[Lifecycle] starting core match.&quot;)&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;exit/&#xD;&#xA;beep(3) ;&#xD;&#xA;stopMode()" name="Core Match running" incomingTransitions="_Lg0HkDCMEeeSSu2RwF8Pmw">
+          <vertices xsi:type="sgraph:State" xmi:id="_-9nFsDCLEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;beep(1); &#xD;&#xA;startMode(MODE_CORE_MATCH);&#xD;&#xA;logInfo(&quot;[Lifecycle] starting core match.&quot;)&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;exit/&#xD;&#xA;beep(3) ;&#xD;&#xA;stopMode()" name="Core Match running" incomingTransitions="_Lg0HkDCMEeeSSu2RwF8Pmw">
             <outgoingTransitions xmi:id="_lqRQMDDuEeeSSu2RwF8Pmw" specification="[strategyRemainingTime &lt;= 0 || SUCCESS == getModeStatus || FAILURE == getModeStatus]" target="_BuiVMDCMEeeSSu2RwF8Pmw"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_BuiVMDCMEeeSSu2RwF8Pmw" specification="entry/&#xD;&#xA;logInfo(&quot;[Lifecycle] Core match ended, waiting to do funny action.&quot;)" name="Waiting end of core match" incomingTransitions="_lqRQMDDuEeeSSu2RwF8Pmw">
@@ -433,7 +433,7 @@
             <layoutConstraint xsi:type="notation:Bounds" xmi:id="_WInHxS__EeeSSu2RwF8Pmw" x="19" y="-4"/>
           </children>
           <styles xsi:type="notation:ShapeStyle" xmi:id="_WInHwS__EeeSSu2RwF8Pmw" fontName="Verdana" lineColor="4210752"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_WInHwi__EeeSSu2RwF8Pmw" x="134" y="642"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_WInHwi__EeeSSu2RwF8Pmw" x="173" y="702"/>
         </children>
         <children xmi:id="_-9rXIDCLEeeSSu2RwF8Pmw" type="State" element="_-9nFsDCLEeeSSu2RwF8Pmw">
           <children xsi:type="notation:DecorationNode" xmi:id="_-9rXJDCLEeeSSu2RwF8Pmw" type="StateName">
@@ -481,7 +481,7 @@
           <styles xsi:type="notation:ShapeStyle" xmi:id="_E6QqUzCMEeeSSu2RwF8Pmw" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
           <styles xsi:type="notation:FontStyle" xmi:id="_E6QqVDCMEeeSSu2RwF8Pmw"/>
           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_E6RRYTCMEeeSSu2RwF8Pmw" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_E6QqVTCMEeeSSu2RwF8Pmw" x="104" y="422" width="295"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_E6QqVTCMEeeSSu2RwF8Pmw" x="104" y="422" width="296" height="176"/>
         </children>
         <layoutConstraint xsi:type="notation:Bounds" xmi:id="_8GDk0S_-EeeSSu2RwF8Pmw"/>
       </children>
@@ -511,7 +511,7 @@
     <edges xmi:id="_iRA1YDDuEeeSSu2RwF8Pmw" type="Transition" element="_iRAOUDDuEeeSSu2RwF8Pmw" source="_Bui8QjCMEeeSSu2RwF8Pmw" target="_E6QqUjCMEeeSSu2RwF8Pmw">
       <children xsi:type="notation:DecorationNode" xmi:id="_iRA1ZDDuEeeSSu2RwF8Pmw" type="TransitionExpression">
         <styles xsi:type="notation:ShapeStyle" xmi:id="_iRA1ZTDuEeeSSu2RwF8Pmw"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_iRA1ZjDuEeeSSu2RwF8Pmw" x="1" y="-98"/>
+        <layoutConstraint xsi:type="notation:Location" xmi:id="_iRA1ZjDuEeeSSu2RwF8Pmw" x="-69" y="-16"/>
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_iRA1YTDuEeeSSu2RwF8Pmw" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_iRA1YzDuEeeSSu2RwF8Pmw" fontName="Verdana"/>
@@ -567,7 +567,7 @@
           <styles xsi:type="notation:ShapeStyle" xmi:id="_gFfWyS_2EeeSSu2RwF8Pmw" fontName="Verdana" fillColor="15981773" lineColor="12632256"/>
           <styles xsi:type="notation:FontStyle" xmi:id="_gFfWyi_2EeeSSu2RwF8Pmw"/>
           <styles xsi:type="notation:BooleanValueStyle" xmi:id="_gFfWyy_2EeeSSu2RwF8Pmw" name="isHorizontal" booleanValue="true"/>
-          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_gFfWzC_2EeeSSu2RwF8Pmw" x="-65" y="194" width="397" height="107"/>
+          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_gFfWzC_2EeeSSu2RwF8Pmw" x="-65" y="194" width="397" height="129"/>
         </children>
         <children xmi:id="_gFfWzS_2EeeSSu2RwF8Pmw" type="State" element="_whGiUCUmEeeHgPR3RzRZqA">
           <children xsi:type="notation:DecorationNode" xmi:id="_gFfWzi_2EeeSSu2RwF8Pmw" type="StateName">

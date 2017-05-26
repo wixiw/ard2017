@@ -54,7 +54,7 @@
         </regions>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_pvH5UDSqEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;logError(&quot;[LSA Get B] timeout&quot;);&#xD;&#xA;stopMoving();&#xD;&#xA;actCmd(AC_ARMS_RETRACT)" name="Stopping" incomingTransitions="_meIpsDSqEeeAruf_Oz5lkQ">
-        <outgoingTransitions xmi:id="_B5r_4DSrEeeAruf_Oz5lkQ" specification="after 500ms [targetReached] / &#xD;&#xA;setStatus(FAILURE)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
+        <outgoingTransitions xmi:id="_B5r_4DSrEeeAruf_Oz5lkQ" specification="[targetReached] / &#xD;&#xA;setStatus(FAILURE)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
       </vertices>
       <vertices xsi:type="sgraph:State" xmi:id="_LsThADGsEeexn7S6mRK2_g" specification="entry/&#xD;&#xA;logInfo(&quot;[LSA Get B] start&quot;);&#xD;&#xA;//recalRearSpecial(OWN_BORDER_5_X, 270)&#xD;&#xA;recalRearSpecial(OWN_BORDER_5_X, 77)&#xD;&#xA;//Classic recall distance is 170 (see Action2017.h recalRear)" name="Recal X" incomingTransitions="_blYZ4DGpEeexn7S6mRK2_g">
         <outgoingTransitions xmi:id="_RmbF4EDdEee9_cbfXutC0g" specification="[targetReached]" target="_tezpgEHDEee9_cbfXutC0g"/>
