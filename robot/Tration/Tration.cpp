@@ -39,9 +39,9 @@ void Tration::init(Robot2017Listener* client)
     //Retrieve and modify config
     apb_Configuration cfg = getConfig();
     strcpy(cfg.serialNumber,    "Tration");
-    cfg.leftWheelDiameter       = 59.340; //Calib 19/may and 23/may
-    cfg.rightWheelDiameter      = 59.340; //Calib 19/may and 23/may
-    cfg.voie                    = 160;    //Calib 19/may and 23/may
+    cfg.leftWheelDiameter       = 59.4313; //Calib 26/may 6h après mise rouleau
+    cfg.rightWheelDiameter      = 59.4313; //Calib 26/may 6h après mise rouleau
+    cfg.voie                    = 160.26;  //Calib 26/may 6h après mise rouleau
     cfg.bipFreq					= 3000;
     cfg.bipAllowed				= true; //pour la nuit
     setConfig(cfg);
