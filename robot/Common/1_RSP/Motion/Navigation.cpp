@@ -629,12 +629,21 @@ void Navigation::faceTo(Point p, bool sym)
 {
     LOG_INFO(String("   new request : faceTo") + p.toString() + ".");
     m_startPoint = getPosition(NO_SYM_POS);
-    Pose2D target = m_startPoint;
+    Pose2D target;
 
     if( sym )
-        target.h = m_startPoint.angleTo(p.toAmbiPoint(m_color));
+    {
+    	target = m_startPoint.toAmbiPoint(m_color);
+    	if( m_color == eColor_SYM)
+    		target.h = moduloPiPi(M_PI -m_startPoint.angleTo(p));
+    	else
+    		target.h = m_startPoint.angleTo(p);
+    }
     else
+    {
+    	target = m_startPoint;
         target.h = m_startPoint.angleTo(p);
+    }
 
     goToCap(target, eDir_FORWARD, true);
 }
