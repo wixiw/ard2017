@@ -7,7 +7,7 @@
       </vertices>
       <vertices xsi:type="sgraph:FinalState" xmi:id="_2d2-MCoUEee0mqFmHUZWcA" incomingTransitions="_VtKKYDSrEeeAruf_Oz5lkQ _N_9yITSnEeeAruf_Oz5lkQ"/>
       <vertices xsi:type="sgraph:State" xmi:id="_JI9m0DSnEeeAruf_Oz5lkQ" specification="//In case of bug ^^&#xD;&#xA;exit/&#xD;&#xA;enableAvoidance(true)" name="nominal">
-        <outgoingTransitions xmi:id="_1p8z8DSnEeeAruf_Oz5lkQ" specification="after 30s" target="_S_KTHTSrEeeAruf_Oz5lkQ"/>
+        <outgoingTransitions xmi:id="_1p8z8DSnEeeAruf_Oz5lkQ" specification="after 35s" target="_S_KTHTSrEeeAruf_Oz5lkQ"/>
         <regions xmi:id="_JI-N4jSnEeeAruf_Oz5lkQ" name="nominal">
           <vertices xsi:type="sgraph:State" xmi:id="_N_45gDSnEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;cylinderToTake = howManyToTake();&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;goForward(FIRST_MOVE);&#xD;&#xA;enableAvoidance(false);&#xD;&#xA;logInfo(&quot;[LSA Dispenser] Engaging dispenser&quot;)&#xD;&#xA;exit/ enableAvoidance(true)" name="Engage dispenser" incomingTransitions="_W2DMcDSoEeeAruf_Oz5lkQ">
             <outgoingTransitions xmi:id="_N_45pTSnEeeAruf_Oz5lkQ" specification="[targetReached() &amp;&amp; armsReady()]" target="_OAAOQDSnEeeAruf_Oz5lkQ"/>
