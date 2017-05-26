@@ -83,8 +83,8 @@
               <vertices xsi:type="sgraph:State" xmi:id="_WLnZcEELEeePKIXvV6C2VA" specification="//mandatory to do it in 2 steps" name="wait simul" incomingTransitions="_njPT8EEIEeePKIXvV6C2VA">
                 <outgoingTransitions xmi:id="_XwP08EELEeePKIXvV6C2VA" specification="after 500ms " target="_7w0jsD-sEeez7OOREN4duQ"/>
               </vertices>
-              <vertices xsi:type="sgraph:State" xmi:id="_ot1uUEGWEee9_cbfXutC0g" specification="// C'est toi la little bit&#xD;&#xA;entry/ &#xD;&#xA;logInfo(&quot;Swallow request from dispenser mode&quot;);&#xD;&#xA;armsCmd(ARM_MID,WHEEL_SWALLOW)" name="Begin swallow a little bit" incomingTransitions="_9j2AgD-sEeez7OOREN4duQ">
-                <outgoingTransitions xmi:id="_BhjfkEGXEee9_cbfXutC0g" specification="after 400ms" target="_o8wUEEGWEee9_cbfXutC0g"/>
+              <vertices xsi:type="sgraph:State" xmi:id="_ot1uUEGWEee9_cbfXutC0g" specification="// C'est toi la little bit&#xD;&#xA;entry/ &#xD;&#xA;logInfo(&quot;Swallow request from dispenser mode&quot;);&#xD;&#xA;armsCmd(ARM_IN,WHEEL_SWALLOW)" name="Begin swallow a little bit" incomingTransitions="_9j2AgD-sEeez7OOREN4duQ">
+                <outgoingTransitions xmi:id="_BhjfkEGXEee9_cbfXutC0g" specification="after 600ms" target="_o8wUEEGWEee9_cbfXutC0g"/>
               </vertices>
               <vertices xsi:type="sgraph:State" xmi:id="_o8wUEEGWEee9_cbfXutC0g" specification="entry/ armsCmd(ARM_MID, WHEEL_POO)" name="poo a little to try having this shit sucked" incomingTransitions="_BhjfkEGXEee9_cbfXutC0g">
                 <outgoingTransitions xmi:id="_NQ0jEEGXEee9_cbfXutC0g" specification="after 600ms" target="_7wvrMD-sEeez7OOREN4duQ"/>
