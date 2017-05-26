@@ -41,7 +41,6 @@ namespace ard
         void goToPoo5EntryPoint()
         {
 			Pose2D truc = POO_BORDER_5_EP;
-			truc.hDegree(180);
         	robot.nav.goToCap(truc, eDir_BACKWARD);
         }
     };
