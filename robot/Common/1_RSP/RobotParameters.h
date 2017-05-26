@@ -26,7 +26,7 @@
 #define PEN_START_POSE     		Pose2D(  760,   730+5,   180) //+5 to prevent to be out of start area, but not too much as we would hit the dispenser at rush
 #define TRATION_INSTALL_POSE 	PEN_INSTALL_POSE
 #define TRATION_START_POSE 		Pose2D(518-2,  785+20,  -90) //-2 to ensure room between 2 robots, +20 to leave room ahead in start area
-#define POO_BORDER_5_EP			Pose2D(1280, 420, -90)
+#define POO_BORDER_5_EP			Pose2D(1250, 420, -77)
 
 //Actuators config
 #define FUNNY_REST 			500
