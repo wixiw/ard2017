@@ -35,6 +35,8 @@
 #define ARM_MAX 			750
 #define LIFTER_MIN 			390
 #define LIFTER_MAX 			800
+#define ROULEAU_SORTI		440
+#define ROULEAU_RANGE		880
 
 namespace ard
 {

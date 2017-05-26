@@ -120,7 +120,7 @@ GeneratorModel for yakindu::cpp {
       * Tration ---------------------
       */
       
-    statechart FSM_HomolTration {
+    statechart FSM_TrationBiBorder {
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Tration/generated"
@@ -128,7 +128,7 @@ GeneratorModel for yakindu::cpp {
         }
     }
     
-    statechart FSM_WipTration {
+    statechart FSM_TrationStartArea {
         feature Outlet {
             targetProject = "ard2017_master"
             targetFolder = "robot/Tration/generated"

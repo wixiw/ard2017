@@ -21,19 +21,21 @@
  */
 #define private public //#porky : workaround to gain introspection, because Yakindu guys thinks they'll anoy me in making data private...
 
-    #include "generated/FSM_HomolTration.h"
+    #include "generated/FSM_TrationBiBorder.h"
     namespace ard{
-    class HomolTration: public Strategy2017<FSM_HomolTration, FSM_HomolTration::FSM_HomolTrationStates>{
+    class TrationBiBorder: public Strategy2017<FSM_TrationBiBorder, FSM_TrationBiBorder::FSM_TrationBiBorderStates>{
     public:
-        HomolTration(Robot2017& robot, LSAList const& lsaList) :
-        Strategy2017<FSM_HomolTration, FSM_HomolTration::FSM_HomolTrationStates>(robot, "HomolTration", lsaList){};
-
-        void ackCylinderTaken() override
-        {
-        	robot.actuators.arms.ackCylinderTaken();
-        }
-
+    	TrationBiBorder(Robot2017& robot, LSAList const& lsaList) :
+        Strategy2017<FSM_TrationBiBorder, FSM_TrationBiBorder::FSM_TrationBiBorderStates>(robot, "HomolTration", lsaList){};
     };}
+
+	#include "generated/FSM_TrationStartArea.h"
+	namespace ard{
+	class TrationStartArea: public Strategy2017<FSM_TrationStartArea, FSM_TrationStartArea::FSM_TrationStartAreaStates>{
+	public:
+		TrationStartArea(Robot2017& robot, LSAList const& lsaList) :
+		Strategy2017<FSM_TrationStartArea, FSM_TrationStartArea::FSM_TrationStartAreaStates>(robot, "HomolTration", lsaList){};
+	};}
 
 //    #include "generated/FSM_WipTration.h"
 //    DECLARE_FSM_STRATEGY(WipTration);
@@ -59,11 +61,10 @@ namespace ard
         //LSA
         LSAList lsaList;
 
-        HomolTration stratHomol;
+        TrationBiBorder stratBiBorder;
+        TrationStartArea stratStartArea;
         InstallTration stratInstall;
         Selftest stratSelftest;
-        //WipTration stratWIP;
-        FunnyAction stratFunnyAction;
 
     protected:
         String exeBuildDate;

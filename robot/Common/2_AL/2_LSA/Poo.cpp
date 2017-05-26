@@ -73,7 +73,7 @@ DelayMs LSA_PooMiddle::getNominalDuration()
  */
 
 LSA_PooBorderOwn::LSA_PooBorderOwn(Robot2017& robot):
-        LSA2017(robot, "LSAPooMiddle", Pose2D(0, 0, 0)) //TODO define real point
+        LSA2017(robot, "LSAPooMiddle", POO_BORDER_5_EP) //See RobotParameters.h
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);

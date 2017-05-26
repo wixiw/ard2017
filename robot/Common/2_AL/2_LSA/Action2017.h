@@ -372,9 +372,9 @@ namespace ard
         void rouleau(sc_boolean descendu) override
         {
         	if(descendu)
-        		robot.actuators.servo8.goTo(500); //TODO
+			robot.actuators.servo8.goTo(ROULEAU_SORTI);
         	else
-        		robot.actuators.servo8.goTo(500); //TODO
+        		robot.actuators.servo8.goTo(ROULEAU_RANGE);
         }
 
         /**

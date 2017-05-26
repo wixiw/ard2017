@@ -11,11 +11,10 @@ using namespace ard;
 Tration::Tration():
     Robot2017(),
     lsaList(*this),
-    stratHomol      (*this, lsaList),
+	stratBiBorder   (*this, lsaList),
+	stratStartArea  (*this, lsaList),
     stratInstall    (*this),
-    stratSelftest   (*this),
-//    stratWIP        (*this, lsaList),
-    stratFunnyAction(*this)
+    stratSelftest   (*this)
 {
     exeBuildDate = String(__DATE__) + " " + __TIME__;
 }
@@ -27,10 +26,10 @@ void Tration::init(Robot2017Listener* client)
 
     //register strategies
     lifecycle.registerSelftest(&stratSelftest);
-    lifecycle.registerMatchType("Match",          &stratInstall,      &stratHomol,    &stratFunnyAction);
-    lifecycle.registerMatchType("Homol",          &stratInstall,      &stratHomol,    &stratFunnyAction);
-    lifecycle.registerMatchType("Selftest",       &stratInstall,      &stratHomol,    &stratFunnyAction);
-    lifecycle.registerMatchType("WIP",            &stratInstall,      &stratHomol,    &stratFunnyAction);
+    lifecycle.registerMatchType("BiBorder",         &stratInstall,      &stratBiBorder,    NULL);
+    lifecycle.registerMatchType("StartArea",        &stratInstall,      &stratStartArea,   NULL);
+    lifecycle.registerMatchType("BiBorder",       	&stratInstall,  	&stratBiBorder,    NULL);
+    lifecycle.registerMatchType("BiBorder",         &stratInstall,   	&stratBiBorder,    NULL);
 //    lifecycle.registerLinearStrat("UT LEDs",      Strategy_LedTest);
 //    lifecycle.registerLinearStrat("UT Button",    Strategy_ButtonTest);
 //    lifecycle.registerLinearStrat("UT Omron",     Strategy_OmronTest);
