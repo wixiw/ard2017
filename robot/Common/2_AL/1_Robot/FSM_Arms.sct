@@ -1575,7 +1575,7 @@
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_pa5XAUA1EeecUdNAJV3bMw" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_pa5XA0A1EeecUdNAJV3bMw" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_pa5XAkA1EeecUdNAJV3bMw" points="[-44, 19, 255, 960]$[-344, 19, -45, 960]$[-344, -933, -45, 8]"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_pa5XAkA1EeecUdNAJV3bMw" points="[-44, 20, 23, 959]$[-111, 20, -44, 959]$[-111, -931, -44, 8]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_pa6lIEA1EeecUdNAJV3bMw" id="(0.14423076923076922,0.0)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_pa6lIUA1EeecUdNAJV3bMw" id="(0.990990990990991,0.8490566037735849)"/>
     </edges>

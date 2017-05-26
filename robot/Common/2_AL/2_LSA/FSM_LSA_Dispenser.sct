@@ -53,7 +53,7 @@
           </vertices>
         </regions>
       </vertices>
-      <vertices xsi:type="sgraph:State" xmi:id="_S_KTHTSrEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;logError(&quot;[LSA Get B] timeout&quot;);&#xD;&#xA;stopMoving();&#xD;&#xA;actCmd(AC_ARMS_RETRACT)" name="Stopping" incomingTransitions="_1p8z8DSnEeeAruf_Oz5lkQ">
+      <vertices xsi:type="sgraph:State" xmi:id="_S_KTHTSrEeeAruf_Oz5lkQ" specification="entry/&#xD;&#xA;logError(&quot;[LSA Dispenser] timeout&quot;);&#xD;&#xA;stopMoving();&#xD;&#xA;actCmd(AC_ARMS_RETRACT)" name="Stopping" incomingTransitions="_1p8z8DSnEeeAruf_Oz5lkQ">
         <outgoingTransitions xmi:id="_VtKKYDSrEeeAruf_Oz5lkQ" specification="[targetReached() &amp;&amp; armsReady()]/ setStatus(FAILURE)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
       </vertices>
     </regions>

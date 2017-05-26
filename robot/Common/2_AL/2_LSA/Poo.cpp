@@ -136,7 +136,9 @@ DelayMs LSA_PooBorderOpp::getNominalDuration()
  */
 
 LSA_PooStartArea::LSA_PooStartArea(Robot2017& robot):
-        LSA2017(robot, "LSAPooMiddle", Pose2D(600, 760, -90))
+//LSA2017(robot, "LSAPooMiddle", Pose2D(600, 760, -90)) //avec recalage
+		LSA2017(robot, "LSAPooMiddle", Pose2D(545, 660, 115)) //sans recalage
+
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);

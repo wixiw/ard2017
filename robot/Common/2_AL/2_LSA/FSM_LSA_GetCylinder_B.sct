@@ -9,7 +9,7 @@
       <vertices xsi:type="sgraph:State" xmi:id="_fjlSYDSqEeeAruf_Oz5lkQ" name="GetB">
         <outgoingTransitions xmi:id="_meIpsDSqEeeAruf_Oz5lkQ" specification="after 23s" target="_pvH5UDSqEeeAruf_Oz5lkQ"/>
         <regions xmi:id="_fjnHkDSqEeeAruf_Oz5lkQ" name="inner region">
-          <vertices xsi:type="sgraph:State" xmi:id="_7tc_ADGoEeexn7S6mRK2_g" specification="entry/ &#xD;&#xA;recalFaceSpecial(B_CORNER_Y, 100)" name="Recal Y" incomingTransitions="_IhKToD7yEeeKAL-xA1rs-Q _PMcDYD7zEeeKAL-xA1rs-Q _U5troEHaEee9_cbfXutC0g">
+          <vertices xsi:type="sgraph:State" xmi:id="_7tc_ADGoEeexn7S6mRK2_g" specification="entry/ &#xD;&#xA;recalFaceSpecial(B_CORNER_Y, 100)" name="Recal Y" incomingTransitions="_IhKToD7yEeeKAL-xA1rs-Q _PMcDYD7zEeeKAL-xA1rs-Q">
             <outgoingTransitions xmi:id="_T6lxEDGsEeexn7S6mRK2_g" specification="[targetReached]" target="_8jNjMEHLEee9_cbfXutC0g"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_hMQYQDGoEeexn7S6mRK2_g" specification="entry/ &#xD;&#xA;goTo(1300,400,FWD, SYM)&#xD;&#xA;" name="Get B" incomingTransitions="_2pJQkD7uEeeKAL-xA1rs-Q">
@@ -20,8 +20,7 @@
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_6U5pQD7xEeeKAL-xA1rs-Q" specification="" name="Wait arms swallowed" incomingTransitions="_9KLbsDGoEeexn7S6mRK2_g _0wsiwEHDEee9_cbfXutC0g">
             <outgoingTransitions xmi:id="__De4QD7xEeeKAL-xA1rs-Q" specification="[armCylinderTaken] /&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;swallowed = true" target="_DVzpED7yEeeKAL-xA1rs-Q"/>
-            <outgoingTransitions xmi:id="_PMcDYD7zEeeKAL-xA1rs-Q" specification="after 7s/&#xD;&#xA;actCmd(AC_ARMS_STOP);&#xD;&#xA;informPushedAway_B()" target="_7tc_ADGoEeexn7S6mRK2_g"/>
-            <outgoingTransitions xmi:id="_U5troEHaEee9_cbfXutC0g" specification="[armsTimeout || armsBlocked]/&#xD;&#xA;actCmd(AC_ARMS_STOP);&#xD;&#xA;informPushedAway_B()" target="_7tc_ADGoEeexn7S6mRK2_g"/>
+            <outgoingTransitions xmi:id="_PMcDYD7zEeeKAL-xA1rs-Q" specification="after 5s/&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;informPushedAway_B()" target="_7tc_ADGoEeexn7S6mRK2_g"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_DVzpED7yEeeKAL-xA1rs-Q" specification="entry/&#xD;&#xA;informTaken_B()" name="Wait arms retracted" incomingTransitions="__De4QD7xEeeKAL-xA1rs-Q">
             <outgoingTransitions xmi:id="_IhKToD7yEeeKAL-xA1rs-Q" specification="after 1000ms [armsReady]" target="_7tc_ADGoEeexn7S6mRK2_g"/>
@@ -595,16 +594,6 @@
       <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_ZxygwkHNEee9_cbfXutC0g" points="[-38, 34, 282, -248]$[-322, 282, -2, 0]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_Zx0V8EHNEee9_cbfXutC0g" id="(0.22598870056497175,0.4520547945205479)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_Zx0V8UHNEee9_cbfXutC0g" id="(0.2,0.5333333333333333)"/>
-    </edges>
-    <edges xmi:id="_U5u5wEHaEee9_cbfXutC0g" type="Transition" element="_U5troEHaEee9_cbfXutC0g" source="_BuowiUE2Eee4meqcGxTAJQ" target="_BuowZUE2Eee4meqcGxTAJQ">
-      <children xsi:type="notation:DecorationNode" xmi:id="_U5vg0EHaEee9_cbfXutC0g" type="TransitionExpression">
-        <styles xsi:type="notation:ShapeStyle" xmi:id="_U5vg0UHaEee9_cbfXutC0g"/>
-        <layoutConstraint xsi:type="notation:Location" xmi:id="_U5vg0kHaEee9_cbfXutC0g" x="34" y="-108"/>
-      </children>
-      <styles xsi:type="notation:ConnectorStyle" xmi:id="_U5u5wUHaEee9_cbfXutC0g" routing="Rectilinear" lineColor="4210752"/>
-      <styles xsi:type="notation:FontStyle" xmi:id="_U5u5w0HaEee9_cbfXutC0g" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_U5u5wkHaEee9_cbfXutC0g" points="[-4, 15, 88, -280]$[-4, 268, 88, -27]"/>
-      <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_U5wH4EHaEee9_cbfXutC0g" id="(0.813953488372093,0.6981132075471698)"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>
