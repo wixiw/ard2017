@@ -17,13 +17,13 @@ LSA_PooMiddle::LSA_PooMiddle(Robot2017& robot, eLSA_PooMidArea type):
 
     switch (type) {
         case Opp:
-            setEntryPoint(Pose2D(-756, -234,  -45));
+            setEntryPoint(Pose2D(-746, -230,  -45));
             break;
         case Center:
             setEntryPoint(Pose2D(   0,   70,  -90));
             break;
         case Own:
-            setEntryPoint(Pose2D( 756, -234, -135));
+            setEntryPoint(Pose2D( 746, -230, -135));
             break;
         default:
             break;
