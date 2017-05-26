@@ -44,7 +44,7 @@ void LSA_GetCylinder_B::goToEntryPoint()
  */
 
 LSA_GetCylinder_C::LSA_GetCylinder_C(Robot2017& robot, eLSA_GetCylinder_Recal type):
-        LSA2017(robot, "LSAPooMiddle", Pose2D(715, -640, -90))
+        LSA2017(robot, "LSAPooMiddle", Pose2D(715, -630, -90))
 {
     fsm.setTimer(&(robot.lifecycle.fsmTimer));
     fsm.setDefaultSCI_OCB(this);

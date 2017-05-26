@@ -44,10 +44,10 @@
             <outgoingTransitions xmi:id="_Pb_yQEF4Eeev8-1FgA8otA" specification="[targetReached]" target="_MQe4gEF4Eeev8-1FgA8otA"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_-tiQ4EF3Eeev8-1FgA8otA" specification="entry/&#xD;&#xA;logInfo(&quot;Poing first fantom cylinder&quot;);&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)" name="Poo phantom cylinder 1" incomingTransitions="_Kw0nqDGVEeexn7S6mRK2_g">
-            <outgoingTransitions xmi:id="_CHvt8EF4Eeev8-1FgA8otA" specification="[targetReached]" target="_FMcODEF4Eeev8-1FgA8otA"/>
+            <outgoingTransitions xmi:id="_CHvt8EF4Eeev8-1FgA8otA" specification="[armsReady]" target="_FMcODEF4Eeev8-1FgA8otA"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_FMcODEF4Eeev8-1FgA8otA" specification="entry/&#xD;&#xA;logInfo(&quot;Poing second fantom cylinder&quot;);&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)" name="Poo phantom cylinder 2" incomingTransitions="_CHvt8EF4Eeev8-1FgA8otA">
-            <outgoingTransitions xmi:id="_Hude0EF4Eeev8-1FgA8otA" specification="[targetReached]" target="_PLzMEEBlEee9nYz1Txwrhg"/>
+            <outgoingTransitions xmi:id="_Hude0EF4Eeev8-1FgA8otA" specification="[armsReady]" target="_PLzMEEBlEee9nYz1Txwrhg"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_MQe4gEF4Eeev8-1FgA8otA" specification="entry/&#xD;&#xA;logInfo(&quot;Poing third  cylinder&quot;);&#xD;&#xA;actCmd(AC_ARMS_FASTPOO)&#xD;&#xA;" name="Copy_1_Poo cylinder 3/6 " incomingTransitions="_Pb_yQEF4Eeev8-1FgA8otA">
             <outgoingTransitions xmi:id="_UfN0gEF4Eeev8-1FgA8otA" specification="[armsReady]/informPooed_6(1);&#xD;&#xA;cylinderToPut -= 1" target="_gm17gD2EEeeXi8405Aktgw"/>
