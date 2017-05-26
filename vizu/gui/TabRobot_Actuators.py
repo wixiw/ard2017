@@ -168,6 +168,9 @@ class ArmsCmds(QWidget):
         self.btn_cmds["swallow"] = QPushButton('swallow', self)
         self.btn_cmds["swallow"].clicked.connect(self._swallow) 
         
+        self.btn_cmds["dispenser"] = QPushButton('dispenser', self)
+        self.btn_cmds["dispenser"].clicked.connect(self._dispenser) 
+        
         self.btn_cmds["fastPoo"] = QPushButton('fastPoo', self)
         self.btn_cmds["fastPoo"].clicked.connect(self._fastPoo) 
         
@@ -215,6 +218,11 @@ class ArmsCmds(QWidget):
     def _swallow(self):
         print("Arms : swallow")
         self.actCmd.emit(Types_pb2.AC_ARMS_SWALLOW)
+
+    def _dispenser(self):
+        print("Arms : dispenser")
+        self.actCmd.emit(Types_pb2.AC_ARMS_DISPENSER)        
+        
         
     def _fastPoo(self):
         print("Arms : fastPoo")

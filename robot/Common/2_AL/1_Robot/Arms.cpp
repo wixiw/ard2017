@@ -10,10 +10,11 @@
 
 using namespace ard;
 
-Arms::Arms(ActuatorThread& parent, TimerInterface& timer):
+Arms::Arms(ActuatorThread& parent, TimerInterface& timer, HmiThread& hmi):
     fsm(),
     acts(parent),
-    lifter(NULL)
+    lifter(NULL),
+	hmi(hmi)
 {
     fsm.setTimer(&timer);
     fsm.setDefaultSCI_OCB(this);
@@ -80,9 +81,14 @@ void Arms::prepareNextToPoo()
 	acts.actCmd(eActCmd_AC_LIFTER_PREPARE_NEXT_TO_POO);
 }
 
-void Arms::lifterRearm()
+void Arms::lifterStart()
 {
 	acts.actCmd(eActCmd_AC_LIFTER_START);
+}
+
+void Arms::lifterStop()
+{
+	acts.actCmd(eActCmd_AC_LIFTER_STOP);
 }
 
 void Arms::logInfo(sc_string msg)
@@ -93,6 +99,16 @@ void Arms::logInfo(sc_string msg)
 void Arms::logError(sc_string msg)
 {
 	LOG_ERROR(String("[Arms] ") + msg);
+}
+
+void Arms::publishTimeoutOnHMI()
+{
+	hmi.ledRGB.set(RED, SLOW_BLINK);
+}
+
+void Arms::publishBlockedOnHMI()
+{
+	hmi.ledRGB.set(RED, ON);
 }
 
 void Arms::armsCmd(sc_integer arms, sc_integer wheels)

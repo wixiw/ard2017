@@ -31,7 +31,7 @@ ActuatorThread::ActuatorThread(KinematicManager& kinMan, HmiThread& hmi):
 		servo8("Servo8", 				SERVO8, 0, 1000),
 		rotatorMotor(MOSFET1),
         lifter(*this, fsmTimeWheel, hmi),
-        arms(*this, fsmTimeWheel),
+        arms(*this, fsmTimeWheel, hmi),
         faceUp(*this),
 		state(),
 		fsmTimeWheel(),
@@ -146,13 +146,13 @@ apb_ActuatorsState const& ActuatorThread::serealize()
 
 void ActuatorThread::startAll()
 {
-	lifter.start();
+	//c'est fait avec les bras lifter.start();
 	arms.start();
 }
 
 void ActuatorThread::stopAll()
 {
-	lifter.stop();
+	//c'est fait avec les bras lifter.stop();
 	arms.stop();
 	disableAll();
 }

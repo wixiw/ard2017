@@ -23,7 +23,7 @@ namespace ard
          * @param parent : The parent thread is expected to hold all servo references
          * @param timer : a timer is required to feed yakindu timed machines
          */
-        Arms(ActuatorThread& parent, TimerInterface& timer);
+        Arms(ActuatorThread& parent, TimerInterface& timer, HmiThread& hmi);
 
         /**---------------------------------
          * Strat API
@@ -71,7 +71,8 @@ namespace ard
         void prepareNextToPoo() override;
 
         //FSM Callback
-		void lifterRearm() override;
+		void lifterStart() override;
+		void lifterStop() override;
 
         //FSM Callback
         bool lifterBlocked() override { return lifter->isBlocked();};
@@ -87,6 +88,12 @@ namespace ard
 
         //FSM Callback
         void logError(sc_string msg) override;
+
+        //FSM Callback
+        void publishTimeoutOnHMI() override;
+
+        //FSM Callback
+		void publishBlockedOnHMI() override;
 
         //FSM Callback
         void armsCmd(sc_integer arms, sc_integer wheels);
@@ -146,6 +153,8 @@ namespace ard
 
         //Reference to lifter machine
         Lifter* lifter;
+
+        HmiThread& hmi;
 
         void disableAll();
     };
