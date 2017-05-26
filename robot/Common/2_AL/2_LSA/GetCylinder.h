@@ -37,18 +37,6 @@ namespace ard
         //Implements FSM_LSA_GetCylinder_B::DefaultSCI_OCB
         void goToEntryPoint() override;
 
-        //Specific FSM LSA //TODO a mettre en standard
-        void recalRearSpecial(sc_integer border, sc_integer distance) override
-        {
-            robot.nav.recalRear((eTableBorder)(border), distance);
-        }
-
-        //Specific FSM LSA //TODO a mettre en standard
-        void recalFaceSpecial(sc_integer border, sc_integer distance) override
-        {
-            robot.nav.recalFace((eTableBorder)(border), distance);
-        }
-
         //Specific FSM LSA
         void goToPoo5EntryPoint()
         {

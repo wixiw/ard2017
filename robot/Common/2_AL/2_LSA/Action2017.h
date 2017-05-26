@@ -244,6 +244,16 @@ namespace ard
             robot.nav.recalRear((eTableBorder)(border), distance);
         }
 
+        void recalRearSpecial(sc_integer border, sc_integer distance) override
+        {
+            robot.nav.recalRear((eTableBorder)(border), distance);
+        }
+
+        void recalFaceSpecial(sc_integer border, sc_integer distance) override
+        {
+            robot.nav.recalFace((eTableBorder)(border), distance);
+        }
+
 		void graphTo(sc_real x, sc_real y, sc_real h, sc_integer dir) override
 		{
 			Pose2D target = Pose2D(x, y, h);
@@ -356,6 +366,15 @@ namespace ard
         sc_integer stockColor() override
         {
             return robot.actuators.stockColor.getColor();
+        }
+
+        //Specific FSM LSA
+        void rouleau(sc_boolean descendu) override
+        {
+        	if(descendu)
+        		robot.actuators.servo8.goTo(500); //TODO
+        	else
+        		robot.actuators.servo8.goTo(500); //TODO
         }
 
         /**

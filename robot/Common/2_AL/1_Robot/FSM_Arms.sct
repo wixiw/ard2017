@@ -736,18 +736,6 @@
                           <styles xsi:type="notation:NamedStyle" xmi:id="_1SMacEDNEee4meqcGxTAJQ" name="allowColors"/>
                           <layoutConstraint xsi:type="notation:Bounds" xmi:id="_1SMacUDNEee4meqcGxTAJQ" x="383" y="43"/>
                         </children>
-                        <children xsi:type="notation:Shape" xmi:id="_1SMackDNEee4meqcGxTAJQ" type="Note" fontName="Verdana" description="Gestion du 6ième cylindre" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
-                          <children xsi:type="notation:BasicDecorationNode" xmi:id="_1SMac0DNEee4meqcGxTAJQ" type="DiagramName">
-                            <element xsi:nil="true"/>
-                          </children>
-                          <children xsi:type="notation:BasicDecorationNode" xmi:id="_1SMadEDNEee4meqcGxTAJQ" type="Description">
-                            <element xsi:nil="true"/>
-                          </children>
-                          <styles xsi:type="notation:TextStyle" xmi:id="_1SMadUDNEee4meqcGxTAJQ"/>
-                          <styles xsi:type="notation:LineTypeStyle" xmi:id="_1SMadkDNEee4meqcGxTAJQ"/>
-                          <element xsi:nil="true"/>
-                          <layoutConstraint xsi:type="notation:Bounds" xmi:id="_1SMad0DNEee4meqcGxTAJQ" x="-146" y="-34"/>
-                        </children>
                         <children xmi:id="_1SMaeEDNEee4meqcGxTAJQ" type="State" element="_VVnjcEA4EeecUdNAJV3bMw">
                           <children xsi:type="notation:DecorationNode" xmi:id="_1SMaeUDNEee4meqcGxTAJQ" type="StateName">
                             <styles xsi:type="notation:ShapeStyle" xmi:id="_1SMaekDNEee4meqcGxTAJQ"/>
@@ -1090,18 +1078,6 @@
                   <styles xsi:type="notation:LineTypeStyle" xmi:id="_1SMbOUDNEee4meqcGxTAJQ"/>
                   <element xsi:nil="true"/>
                   <layoutConstraint xsi:type="notation:Bounds" xmi:id="_1SMbOkDNEee4meqcGxTAJQ" x="2899" y="339" width="189" height="60"/>
-                </children>
-                <children xsi:type="notation:Shape" xmi:id="_1SMbO0DNEee4meqcGxTAJQ" type="Note" fontName="Verdana" description="Gestion du 6ième cylindre" fillColor="13369343" transparency="0" lineColor="6737151" lineWidth="1">
-                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_1SMbPEDNEee4meqcGxTAJQ" type="DiagramName">
-                    <element xsi:nil="true"/>
-                  </children>
-                  <children xsi:type="notation:BasicDecorationNode" xmi:id="_1SMbPUDNEee4meqcGxTAJQ" type="Description">
-                    <element xsi:nil="true"/>
-                  </children>
-                  <styles xsi:type="notation:TextStyle" xmi:id="_1SMbPkDNEee4meqcGxTAJQ"/>
-                  <styles xsi:type="notation:LineTypeStyle" xmi:id="_1SMbP0DNEee4meqcGxTAJQ"/>
-                  <element xsi:nil="true"/>
-                  <layoutConstraint xsi:type="notation:Bounds" xmi:id="_1SMbQEDNEee4meqcGxTAJQ" x="557" y="405" width="241" height="50"/>
                 </children>
                 <children xmi:id="_1SMbQUDNEee4meqcGxTAJQ" type="State" element="_4yxGoEA6Eeeh_aT0yxDdCg">
                   <children xsi:type="notation:DecorationNode" xmi:id="_1SMbQkDNEee4meqcGxTAJQ" type="StateName">
