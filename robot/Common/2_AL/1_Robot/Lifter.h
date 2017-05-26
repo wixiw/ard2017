@@ -23,7 +23,7 @@ namespace ard
     class Lifter: public PolledObject, public FSM_Lifter::DefaultSCI_OCB
     {
     public:
-        Lifter(ActuatorThread& parent, TimerInterface& timer);
+        Lifter(ActuatorThread& parent, TimerInterface& timer, HmiThread& hmi);
 
         /**---------------------------------
          * Container thread interface
@@ -81,6 +81,12 @@ namespace ard
 		}
 
         //FSM Callback
+        void publishTimeoutOnHMI() override;
+
+        //FSM Callback
+		void publishBlockedOnHMI() override;
+
+        //FSM Callback
         void logInfo(sc_string msg) override;
 
         //FSM Callback
@@ -101,6 +107,8 @@ namespace ard
 
         //Actuators list
         ActuatorThread& acts;
+
+        HmiThread& hmi;
 
     };
 

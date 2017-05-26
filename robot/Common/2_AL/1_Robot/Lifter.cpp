@@ -11,9 +11,10 @@
 using namespace ard;
 
 
-Lifter::Lifter(ActuatorThread& parent, TimerInterface& timer):
+Lifter::Lifter(ActuatorThread& parent, TimerInterface& timer, HmiThread& hmi):
         fsm(),
-        acts(parent)
+        acts(parent),
+		hmi(hmi)
 {
     fsm.setTimer(&timer);
     fsm.setDefaultSCI_OCB(this);
@@ -54,6 +55,16 @@ void Lifter::stop()
     fsm.getSCI_Strategy()->raise_stop();
     acts.servoLifter.disable();
     fsm.set_started(false);
+}
+
+void Lifter::publishTimeoutOnHMI()
+{
+	hmi.buzzer.bip(4);
+}
+
+void Lifter::publishBlockedOnHMI()
+{
+	hmi.buzzer.playTone(3200, 3000);
 }
 
 void Lifter::logInfo(sc_string msg)
