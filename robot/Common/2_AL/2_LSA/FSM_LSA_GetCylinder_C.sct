@@ -19,7 +19,7 @@
             <outgoingTransitions xmi:id="_CLjlAD8JEee_Aajq5WSBaQ" specification="[armCylinderTaken] /&#xD;&#xA;actCmd(AC_ARMS_RETRACT);&#xD;&#xA;swallowed = true" target="_AhrXgDXREeeAruf_Oz5lkQ"/>
             <outgoingTransitions xmi:id="_Tej8QEHaEeeM5q-jnaIlQA" specification="[armsTimeout]/&#xD;&#xA;logInfo(&quot;GetC : wait arm retracted in FAILED condition&quot;);&#xD;&#xA;informPushedAway_C&#xD;&#xA;" target="_HW-JkC9pEeeSSu2RwF8Pmw"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_loU7oEGmEee9_cbfXutC0g" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;goForward(120);&#xD;&#xA;logInfo(&quot;[LSA Get C as a dispenser] Starting&quot;)" name="Engage as a dispenser" incomingTransitions="_PX6sQEG0Eee9_cbfXutC0g">
+          <vertices xsi:type="sgraph:State" xmi:id="_loU7oEGmEee9_cbfXutC0g" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;setSpeedAcc(100, 0, 0, 0);&#xD;&#xA;goForward(120);&#xD;&#xA;logInfo(&quot;[LSA Get C as a dispenser] Starting&quot;)&#xD;&#xA;exit/ resetAgonicMode()" name="Engage as a dispenser" incomingTransitions="_PX6sQEG0Eee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_d-cjsEGnEee9_cbfXutC0g" specification="[targetReached() &amp;&amp; armsReady()]" target="_BGEDIEGnEee9_cbfXutC0g"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_BGEDIEGnEee9_cbfXutC0g" specification="entry/&#xD;&#xA;goForward(-140);&#xD;&#xA;logInfo(&quot;[LSA Get C as a dispenser] Moving Back here&quot;)" name="Moving back" incomingTransitions="_d-cjsEGnEee9_cbfXutC0g">
@@ -28,7 +28,7 @@
           <vertices xsi:type="sgraph:State" xmi:id="_ppRMEEGnEee9_cbfXutC0g" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_SWALLOW)" name="Extend arms" incomingTransitions="_uvamgEGnEee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_Ca3dcEGoEee9_cbfXutC0g" specification="after 100ms" target="_58EFIEGnEee9_cbfXutC0g"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_58EFIEGnEee9_cbfXutC0g" specification="entry/&#xD;&#xA;setSpeedAcc(50, 0, 0, 0);&#xD;&#xA;goForward(100);&#xD;&#xA;logInfo(&quot;[LSA Get C as a dispenser] gob gob&quot;)&#xD;&#xA;exit/ setSpeedAcc(0, 0, 0, 0)" name="Moving Fwd to lay cylinder" incomingTransitions="_Ca3dcEGoEee9_cbfXutC0g">
+          <vertices xsi:type="sgraph:State" xmi:id="_58EFIEGnEee9_cbfXutC0g" specification="entry/&#xD;&#xA;setSpeedAcc(50, 0, 0, 0);&#xD;&#xA;goForward(100);&#xD;&#xA;logInfo(&quot;[LSA Get C as a dispenser] gob gob&quot;)&#xD;&#xA;exit/ resetAgonicMode()" name="Moving Fwd to lay cylinder" incomingTransitions="_Ca3dcEGoEee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_QR9wIEGoEee9_cbfXutC0g" specification="[targetReached]" target="_5M3LsD8IEee_Aajq5WSBaQ"/>
           </vertices>
         </regions>
@@ -269,7 +269,7 @@
       </children>
       <styles xsi:type="notation:ConnectorStyle" xmi:id="_P79gcTSuEeeAruf_Oz5lkQ" routing="Rectilinear" lineColor="4210752"/>
       <styles xsi:type="notation:FontStyle" xmi:id="_P7-HgDSuEeeAruf_Oz5lkQ" fontName="Verdana"/>
-      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_P79gcjSuEeeAruf_Oz5lkQ" points="[8, 0, 3, -123]$[8, 115, 3, -8]"/>
+      <bendpoints xsi:type="notation:RelativeBendpoints" xmi:id="_P79gcjSuEeeAruf_Oz5lkQ" points="[0, 0, 787, -86]$[0, 93, 787, 7]$[-678, 93, 109, 7]"/>
       <sourceAnchor xsi:type="notation:IdentityAnchor" xmi:id="_P7-ukDSuEeeAruf_Oz5lkQ" id="(0.901565995525727,1.0)"/>
       <targetAnchor xsi:type="notation:IdentityAnchor" xmi:id="_P7-ukTSuEeeAruf_Oz5lkQ" id="(0.5822784810126582,0.1643835616438356)"/>
     </edges>

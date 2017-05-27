@@ -20,7 +20,7 @@ LSA_PooMiddle::LSA_PooMiddle(Robot2017& robot, eLSA_PooMidArea type):
             setEntryPoint(Pose2D(-746, -230,  -45));
             break;
         case Center:
-            setEntryPoint(Pose2D(   0,   70,  -90));
+            setEntryPoint(Pose2D(   0,   35,  -90));
             break;
         case Own:
             setEntryPoint(Pose2D( 746, -230, -135));

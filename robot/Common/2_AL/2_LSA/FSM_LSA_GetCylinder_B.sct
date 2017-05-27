@@ -29,7 +29,7 @@
             <outgoingTransitions xmi:id="_hUVc4D7zEeeKAL-xA1rs-Q" specification="[swallowed]/&#xD;&#xA;logInfo(&quot;[LSA Get B] finished successfully&quot;) ; &#xD;&#xA;setStatus(SUCCESS)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
             <outgoingTransitions xmi:id="_lqN4AD7zEeeKAL-xA1rs-Q" specification="else/&#xD;&#xA;logError(&quot;[LSA Get B] finished with failure&quot;) ; &#xD;&#xA;setStatus(FAILURE)" target="_2d2-MCoUEee0mqFmHUZWcA"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_lLquoEHDEee9_cbfXutC0g" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;goForward(200);&#xD;&#xA;logInfo(&quot;[LSA Get B as a dispenser] Starting&quot;)" name="Engage as a dispenser" incomingTransitions="_dBvA0EHIEee9_cbfXutC0g">
+          <vertices xsi:type="sgraph:State" xmi:id="_lLquoEHDEee9_cbfXutC0g" specification="entry/&#xD;&#xA;setAgonicMode();&#xD;&#xA;actCmd(AC_ARMS_DISPENSER);&#xD;&#xA;goForward(200);&#xD;&#xA;logInfo(&quot;[LSA Get B as a dispenser] Starting&quot;)" name="Engage as a dispenser" incomingTransitions="_dBvA0EHIEee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_lLsj3UHDEee9_cbfXutC0g" specification="[targetReached() &amp;&amp; armsReady()]" target="_lL2U0EHDEee9_cbfXutC0g"/>
           </vertices>
           <vertices xsi:type="sgraph:State" xmi:id="_lL2U0EHDEee9_cbfXutC0g" specification="entry/&#xD;&#xA;goForward(-140);&#xD;&#xA;logInfo(&quot;[LSA Get B as a dispenser] Moving Back here&quot;)" name="Moving back" incomingTransitions="_lLsj3UHDEee9_cbfXutC0g">
@@ -38,7 +38,7 @@
           <vertices xsi:type="sgraph:State" xmi:id="_lL8bcEHDEee9_cbfXutC0g" specification="entry/&#xD;&#xA;actCmd(AC_ARMS_SWALLOW)" name="Extend arms" incomingTransitions="_lL3i_EHDEee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_lL9CjkHDEee9_cbfXutC0g" specification="after 100ms" target="_lMDJIEHDEee9_cbfXutC0g"/>
           </vertices>
-          <vertices xsi:type="sgraph:State" xmi:id="_lMDJIEHDEee9_cbfXutC0g" specification="entry/&#xD;&#xA;setSpeedAcc(50, 0, 0, 0);&#xD;&#xA;goForward(140);&#xD;&#xA;logInfo(&quot;[LSA Get B as a dispenser] gob gob&quot;)&#xD;&#xA;exit/ setSpeedAcc(0, 0, 0, 0)" name="Moving Fwd to lay cylinder" incomingTransitions="_lL9CjkHDEee9_cbfXutC0g">
+          <vertices xsi:type="sgraph:State" xmi:id="_lMDJIEHDEee9_cbfXutC0g" specification="entry/&#xD;&#xA;setSpeedAcc(50, 0, 0, 0);&#xD;&#xA;goForward(140);&#xD;&#xA;logInfo(&quot;[LSA Get B as a dispenser] gob gob&quot;)&#xD;&#xA;exit/ resetAgonicMode()" name="Moving Fwd to lay cylinder" incomingTransitions="_lL9CjkHDEee9_cbfXutC0g">
             <outgoingTransitions xmi:id="_0wsiwEHDEee9_cbfXutC0g" specification="[targetReached()]" target="_6U5pQD7xEeeKAL-xA1rs-Q"/>
           </vertices>
           <vertices xsi:type="sgraph:Choice" xmi:id="_tezpgEHDEee9_cbfXutC0g" incomingTransitions="_RmbF4EDdEee9_cbfXutC0g">

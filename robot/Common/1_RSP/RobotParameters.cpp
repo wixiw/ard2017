@@ -54,12 +54,12 @@ RobotParameters::RobotParameters():
     cfg.rightWheelDiameter      = 60.000;//mm
     cfg.voie                    = 160.4;//mm
     cfg.maxAcc                  = 600;
-    cfg.maxSpeed                = 400;
+    cfg.maxSpeed                = 450;
     cfg.recalSpeed              = 180;
-    cfg.maxTurnAcc              = 200;
+    cfg.maxTurnAcc              = 220;
     cfg.maxTurnSpeed            = 200;
-    cfg.avoidanceDistFront      = 160;
-    cfg.avoidanceDistRear       = 160;
+    cfg.avoidanceDistFront      = 200;
+    cfg.avoidanceDistRear       = 200;
     cfg.strategyDuration        = 89500;
     cfg.detectionWaitForOppMove = 1000;
     cfg.detectionActive         = true;
