@@ -195,6 +195,16 @@ namespace ard
             robot.kinematics.setSpeedAcc((uint16_t)vMax, (uint16_t)vMaxsTurn, (uint16_t)accMax, (uint16_t)accMaxTurn);
         }
 
+        void setAgonicMode() override
+        {
+            setSpeedAcc(250,150,500,150);
+        }
+
+        void resetAgonicMode() override
+        {
+            setSpeedAcc(0,0,0,0);
+        }
+
         void goTo_ID(sc_real x, sc_real y, sc_integer sens, sc_boolean sym) override
         {
             ASSERT(sens == -1 || sens == 1);
